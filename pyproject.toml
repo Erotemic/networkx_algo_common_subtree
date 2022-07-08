@@ -19,21 +19,11 @@ repo_name = "networkx_algo_common_subtree"
 rel_mod_parent_dpath = "."
 os = [ "all", "win", "osx", "linux",]
 min_python = 3.6
-version = "0.0.1"
 author = "joncrall"
 author_email = "erotemic@gmail.com"
 description = "A networkx implemention of algorithms to find common subtree minors and isomorphisms"
 license = "Apache 2"
 dev_status = "planning"
-
-[tool.cibuildwheel.linux]
-before-all = "yum install epel-release lz4 lz4-devel -y"
-
-[tool.cibuildwheel.windows]
-before-all = "choco install lz4 -y"
-
-[tool.cibuildwheel.macos]
-before-all = "brew install lz4"
 
 [tool.pytest.ini_options]
 addopts = "-p no:doctest --xdoctest --xdoctest-style=google --ignore-glob=setup.py --ignore-glob=dev"
