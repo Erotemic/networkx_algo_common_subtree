@@ -1,0 +1,48 @@
+[build-system]
+requires = [ "setuptools>=41.0.1", "scikit-build>=0.11.1", "numpy", "ninja>=1.10.2", "cmake>=3.21.2", "cython>=0.29.24",]
+
+[tool.cibuildwheel]
+build = "cp36-* cp37-* cp38-* cp39-* cp310-*"
+build-frontend = "build"
+skip = "pp* *-musllinux_*"
+build-verbosity = 1
+test-requires = [ "-r requirements/tests.txt",]
+test-command = "python {project}/run_tests.py"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.xcookie]
+tags = [ "github", "erotemic", "binpy",]
+mod_name = "networkx_algo_common_subtree"
+repo_name = "networkx_algo_common_subtree"
+rel_mod_parent_dpath = "."
+os = [ "all", "win", "osx", "linux",]
+min_python = 3.6
+version = "0.0.1"
+author = "joncrall"
+author_email = "erotemic@gmail.com"
+description = "A networkx implemention of algorithms to find common subtree minors and isomorphisms"
+license = "Apache 2"
+dev_status = "planning"
+
+[tool.cibuildwheel.linux]
+before-all = "yum install epel-release lz4 lz4-devel -y"
+
+[tool.cibuildwheel.windows]
+before-all = "choco install lz4 -y"
+
+[tool.cibuildwheel.macos]
+before-all = "brew install lz4"
+
+[tool.pytest.ini_options]
+addopts = "-p no:doctest --xdoctest --xdoctest-style=google --ignore-glob=setup.py --ignore-glob=dev"
+norecursedirs = ".git ignore build __pycache__ dev _skbuild"
+filterwarnings = [ "default", "ignore:.*No cfgstr given in Cacher constructor or call.*:Warning", "ignore:.*Define the __nice__ method for.*:Warning", "ignore:.*private pytest class or function.*:Warning",]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [ "pragma: no cover", ".*  # pragma: no cover", ".*  # nocover", "def __repr__", "raise AssertionError", "raise NotImplementedError", "if 0:", "if trace is not None", "verbose = .*", "^ *raise", "^ *pass *$", "if _debug:", "if __name__ == .__main__.:", ".*if six.PY2:",]
+omit = [ "networkx_algo_common_subtree/__main__.py", "*/setup.py",]
