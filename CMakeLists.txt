@@ -66,6 +66,7 @@ if (NOT SKBUILD)
   list(APPEND CMAKE_MODULE_PATH ${skbuild_cmake_dir})
 endif()
 
+find_package(PythonExtensions REQUIRED)
 
 
 ###
@@ -117,21 +118,8 @@ function(cpu_cython_module cython_source module_name)
 endfunction(cpu_cython_module)
 
 
-
 # Typically you would place this CMake code next to your Cython module
-#add_subdirectory("networkx_algo_common_subtree/submod/submod")
-option(BUILD_CPU_FEATURE "A Cython CPU Feature" True)
-if (BUILD_CPU_FEATURE)
-
-  #set(cython_source "cpu_nms.pyx")
-  #set(module_name "cpu_nms")
-  cpu_cython_module("cpu_nms.pyx" "cpu_nms")
-
-  #set(cython_source "cpu_soft_nms.pyx")
-  #set(module_name "cpu_soft_nms.pyx")
-  cpu_cython_module("cpu_soft_nms.pyx" "cpu_soft_nms")
-endif()
-
+add_subdirectory("networkx_algo_common_subtree")
 
 
 set(networkx_algo_common_subtree_CONFIG_STATUS "
