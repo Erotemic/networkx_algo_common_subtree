@@ -1,9 +1,28 @@
 The networkx_algo_common_subtree Module
 =======================================
 
-
-
 |Pypi| |PypiDownloads| |GithubActions| |Codecov|
+
+Networkx algorithms for maximum common ordered subtree minors (or embedding)
+and maximum common subtree isomorphism. Contains pure python and cython
+optimized versions.
+
+Standalone versions of code submitted to networkx proper, but not yet integrated:
+
+https://github.com/networkx/networkx/pull/4350
+https://github.com/networkx/networkx/pull/4327
+
+Supports algorithms in torch_liberator, see related information
+
++----------------------+------------------------------------------------------------+
+| TorchLiberator       | https://gitlab.kitware.com/computer-vision/torch_liberator |
++----------------------+------------------------------------------------------------+
+| Torch Hackathon 2021 | `Youtube Video`_ and `Google Slides`_                      |
++----------------------+------------------------------------------------------------+
+
+.. _Youtube Video: https://www.youtube.com/watch?v=GQqtn61iNsc
+.. _Google Slides: https://docs.google.com/presentation/d/1w9XHkPjtLRj29dw50WP0rSHRRlEfhksP_Sf8XldTSYE
+
 
 
 
