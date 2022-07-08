@@ -119,7 +119,7 @@ endfunction(cpu_cython_module)
 
 
 # Typically you would place this CMake code next to your Cython module
-#add_subdirectory("networkx_algo_common_subtree/submod/submod")
+add_subdirectory("networkx_algo_common_subtree")
 option(BUILD_CPU_FEATURE "A Cython CPU Feature" True)
 if (BUILD_CPU_FEATURE)
 

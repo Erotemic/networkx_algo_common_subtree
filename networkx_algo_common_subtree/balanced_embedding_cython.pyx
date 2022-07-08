@@ -15,8 +15,8 @@ CommandLine
 -----------
 # Explicitly build this cython module 
 # NOTE: cd to networkx repo root before running
-BASE_DPATH=$(python -c "import torch_liberator, pathlib; print(pathlib.Path(torch_liberator.__file__).parent)")
-cythonize -a -i $BASE_DPATH/_nx_ext_v2/balanced_embedding_cython.pyx
+BASE_DPATH=$(python -c "import networkx_algo_common_subtree, pathlib; print(pathlib.Path(networkx_algo_common_subtree.__file__).parent)")
+cythonize -a -i $BASE_DPATH/balanced_embedding_cython.pyx
 
 # With xdoctest this should work if networkx is installed (and this file is
 # distributed with it)
