@@ -142,12 +142,12 @@ def maximum_common_ordered_subtree_embedding(
         └─╼ 6
     """
     # Note: checks that inputs are forests are handled by tree_to_seq
-    if not isinstance(tree1, nx.DiGraph):
+    if not isinstance(tree1, OrderedDiGraph):
         raise nx.NetworkXNotImplemented(
             "only implemented for directed ordered trees. "
             "Got {} instead".format(type(tree1))
         )
-    if not isinstance(tree1, nx.DiGraph):
+    if not isinstance(tree1, OrderedDiGraph):
         raise nx.NetworkXNotImplemented(
             "only implemented for directed ordered trees. "
             "Got {} instead".format(type(tree2))
@@ -474,5 +474,3 @@ def seq_to_tree(subseq, open_to_close, open_to_node):
             if token != want_close:
                 raise balanced_sequence.UnbalancedException
     return subtree
-
-
