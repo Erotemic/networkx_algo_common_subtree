@@ -23,7 +23,7 @@ else:
     use_setuptools = True
 
 if not use_setuptools:
-    from skbuild import setup as skb_setup
+    from skbuild import skb_setup
 
     setup = skb_setup  # NOQA
 
