@@ -89,6 +89,7 @@ jobs:
       run: |-
         echo '############ PWD'
         pwd
+        cp .wheelhouse/.coverage* .
         ls -al
         python -m pip install coverage[toml]
         echo '############ combine'
