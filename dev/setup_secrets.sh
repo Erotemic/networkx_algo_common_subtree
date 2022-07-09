@@ -126,6 +126,8 @@ setup_package_environs_gitlab_kitware(){
     export VARNAME_TWINE_PASSWORD="EROTEMIC_PYPI_MASTER_TOKEN"
     export VARNAME_TEST_TWINE_PASSWORD="EROTEMIC_TEST_PYPI_MASTER_TOKEN"
     export VARNAME_PUSH_TOKEN="GITLAB_KITWARE_TOKEN"
+    export VARNAME_TWINE_USERNAME="EROTEMIC_PYPI_MASTER_TOKEN_USERNAME"
+    export VARNAME_TEST_TWINE_USERNAME="EROTEMIC_TEST_PYPI_MASTER_TOKEN_USERNAME"
     export GPG_IDENTIFIER="=Erotemic-CI <erotemic@gmail.com>"
     ' | python -c "import sys; from textwrap import dedent; print(dedent(sys.stdin.read()).strip(chr(10)))" > dev/secrets_configuration.sh
     git add dev/secrets_configuration.sh
@@ -136,6 +138,8 @@ setup_package_environs_github_erotemic(){
     export VARNAME_CI_SECRET="EROTEMIC_CI_SECRET"
     export VARNAME_TWINE_PASSWORD="EROTEMIC_PYPI_MASTER_TOKEN"
     export VARNAME_TEST_TWINE_PASSWORD="EROTEMIC_TEST_PYPI_MASTER_TOKEN"
+    export VARNAME_TWINE_USERNAME="EROTEMIC_PYPI_MASTER_TOKEN_USERNAME"
+    export VARNAME_TEST_TWINE_USERNAME="EROTEMIC_TEST_PYPI_MASTER_TOKEN_USERNAME"
     export GPG_IDENTIFIER="=Erotemic-CI <erotemic@gmail.com>"
     ' | python -c "import sys; from textwrap import dedent; print(dedent(sys.stdin.read()).strip(chr(10)))" > dev/secrets_configuration.sh
     git add dev/secrets_configuration.sh
@@ -146,6 +150,8 @@ setup_package_environs_github_pyutils(){
     export VARNAME_CI_SECRET="PYUTILS_CI_SECRET"
     export VARNAME_TWINE_PASSWORD="PYUTILS_PYPI_MASTER_TOKEN"
     export VARNAME_TEST_TWINE_PASSWORD="PYUTILS_TEST_PYPI_MASTER_TOKEN"
+    export VARNAME_TWINE_USERNAME="PYUTILS_PYPI_MASTER_TOKEN_USERNAME"
+    export VARNAME_TEST_TWINE_USERNAME="PYUTILS_TEST_PYPI_MASTER_TOKEN_USERNAME"
     export GPG_IDENTIFIER="=PyUtils-CI <openpyutils@gmail.com>"
     ' | python -c "import sys; from textwrap import dedent; print(dedent(sys.stdin.read()).strip(chr(10)))" > dev/secrets_configuration.sh
     git add dev/secrets_configuration.sh
