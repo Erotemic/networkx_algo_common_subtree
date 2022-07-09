@@ -181,6 +181,7 @@ upload_github_secrets(){
 toggle_setx_enter(){
     # Can we do something like a try/finally?
     # https://stackoverflow.com/questions/15656492/writing-try-catch-finally-in-shell
+    echo "Enter sensitive area"
     if [[ -n "${-//[^x]/}" ]]; then
         __context_1_toggle_setx=1
     else
@@ -193,6 +194,7 @@ toggle_setx_enter(){
 }
 
 toggle_setx_exit(){
+    echo "Exit sensitive area"
     # Can we guarentee this will happen?
     if [[ "$__context_1_toggle_setx" == "1" ]]; then
         set -x
