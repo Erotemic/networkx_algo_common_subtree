@@ -72,7 +72,7 @@ def longest_common_balanced_isomorphism(
 
     See Also
     --------
-    * This function is used to implement :func:`_nx_ext_v2.tree_isomorphism.maximum_common_ordered_subtree_isomorphism`
+    * This function is used to implement :func:`tree_isomorphism.maximum_common_ordered_subtree_isomorphism`
     * A similar function that relaxes isomorphisms to embeddings is :func:`networkx.algorithms.strength.balanced_sequence.longest_common_balanced_sequence`
 
     Example

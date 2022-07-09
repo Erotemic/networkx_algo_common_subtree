@@ -1,7 +1,6 @@
 """
 Core python implementations for the longest common balanced sequence
-subproblem, which is used by
-:mod:`_nx_ext_v2.tree_embedding`.
+subproblem, which is used by :mod:`tree_embedding`.
 """
 import operator
 from .balanced_sequence import (
@@ -66,7 +65,7 @@ def longest_common_balanced_embedding(
 
     See Also
     --------
-    * This function is used to implement :func:`_nx_ext_v2.tree_embedding.maximum_common_ordered_subtree_embedding`
+    * This function is used to implement :func:`tree_embedding.maximum_common_ordered_subtree_embedding`
 
     Notes
     -----
