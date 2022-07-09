@@ -27,7 +27,7 @@ license = "Apache 2"
 dev_status = "planning"
 
 [tool.pytest.ini_options]
-addopts = "-p no:doctest --xdoctest --xdoctest-style=google --ignore-glob=setup.py --ignore-glob=dev"
+addopts = "-p no:doctest --xdoctest --xdoctest-style=auto --ignore-glob=setup.py --ignore-glob=dev"
 norecursedirs = ".git ignore build __pycache__ dev _skbuild"
 filterwarnings = [ "default", "ignore:.*No cfgstr given in Cacher constructor or call.*:Warning", "ignore:.*Define the __nice__ method for.*:Warning", "ignore:.*private pytest class or function.*:Warning",]
 

@@ -59,7 +59,7 @@ def maximum_common_ordered_subtree_embedding(
 
     impl : str
         Determines the backend implementation. Defaults to "auto".
-        See :func:`_nx_ext_v2.balanced_embedding.longest_common_balanced_embedding`
+        See :func:`balanced_embedding.longest_common_balanced_embedding`
         for details. Other valid options are "iter", "recurse", and
         "iter-cython".
 

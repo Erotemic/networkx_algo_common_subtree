@@ -1,7 +1,6 @@
 """
 Core python implementations for the longest common balanced sequence
-subproblem, which is used by
-:mod:`_nx_ext_v2.tree_embedding`.
+subproblem, which is used by :mod:`tree_embedding`.
 """
 import operator
 from .balanced_sequence import (
@@ -66,7 +65,7 @@ def longest_common_balanced_embedding(
 
     See Also
     --------
-    * This function is used to implement :func:`_nx_ext_v2.tree_embedding.maximum_common_ordered_subtree_embedding`
+    * This function is used to implement :func:`tree_embedding.maximum_common_ordered_subtree_embedding`
 
     Notes
     -----
@@ -262,14 +261,6 @@ def _cython_lcse_backend(error="ignore", verbose=0):
     -----------
     xdoctest -m balanced_embedding _cython_lcse_backend
     """
-    # from networkx_algo_common_subtree._autojit import import_module_from_pyx
-    # from os.path import dirname
-    # import os
-
-    # Toggle comments depending on the desired autojit default
-    # NETWORKX_AUTOJIT = os.environ.get("NETWORKX_AUTOJIT", "")
-    # NETWORKX_AUTOJIT = not os.environ.get("NETWORKX_NO_AUTOJIT", "")
-
     try:
         # Attempt to use the module build with CMake
         from . import balanced_embedding_cython
@@ -280,14 +271,6 @@ def _cython_lcse_backend(error="ignore", verbose=0):
             raise
         else:
             raise KeyError(error)
-        # module = import_module_from_pyx(
-        #     "balanced_embedding_cython.pyx",
-        #     dpath=dirname(__file__),
-        #     error=error,
-        #     autojit=NETWORKX_AUTOJIT,
-        #     verbose=verbose,
-        # )
-        # balanced_embedding_cython = module
     return balanced_embedding_cython
 
 

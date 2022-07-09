@@ -163,7 +163,7 @@ common ordered tree embedding" problem.  The basic outline of the algorithm is:
    Thus we define our affinity score between two nodes to be the number of
    contiguous trailing components in common.
 
-3. Use :func:`networkx.algorithms.minors.tree_embedding.maximum_common_ordered_subtree_embedding`
+3. Use :func:`maximum_common_ordered_subtree_embedding`
    to find the maximum subtree embeddings subject to our node affinity
    function.
 
@@ -178,7 +178,7 @@ Benchmarks
 In addition to an example implementation for the path embedding problem this
 file also includes a set of benchmarks demonstrating runtime differences for
 different backend modes of the
-:func:`networkx.algorithms.string.balanced_sequence.longest_common_balanced_embedding`
+:func:`longest_common_balanced_embedding`
 algorithm, which is the core workhorse used to solve this problem. We use the
 :func:`random_paths` function defined here to simulate various conditions that
 may arise in real-world applications.
@@ -336,7 +336,6 @@ def paths_to_otree(paths, sep="/"):
                         └─╼ dist-packages
 
     >>> # Demo the actual node structure by printing without labels
-    >>> from networkx.readwrite.text import graph_str
     >>> paths = [
     ...     '1/1/2',
     ...     '1/3/2',
@@ -420,7 +419,7 @@ def random_paths(
 
     Examples
     --------
-    >>> from networkx.algorithms.minors.tree_embedding import tree_to_seq
+    >>> from networkx_algo_common_subtree.tree_embedding import tree_to_seq
     >>> paths1, paths2 = random_paths(
     ...     size=3, max_depth=3, common=3,
     ...     prefix_depth1=3, prefix_depth2=3, labels=2 ** 16,
@@ -541,7 +540,7 @@ def bench_maximum_common_path_embedding():
     import pandas as pd
     import numpy as np
     import timerit
-    from networkx.algorithms.string import balanced_embedding
+    from networkx_algo_common_subtree import balanced_embedding
 
     data_modes = []
 
