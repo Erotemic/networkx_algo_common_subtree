@@ -111,7 +111,7 @@ jobs:
     name: Uploading Test to PyPi
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && ! startsWith(github.event.ref, 'refs/tags') && ! startsWith(github.event.ref, 'refs/heads/release')
-    needs: &id001
+    needs:
     - build_binary_wheels
     steps:
     - name: Checkout source
@@ -154,7 +154,8 @@ jobs:
     name: Uploading Live to PyPi
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (startsWith(github.event.ref, 'refs/tags') || startsWith(github.event.ref, 'refs/heads/release'))
-    needs: *id001
+    needs:
+    - build_binary_wheels
     steps:
     - name: Checkout source
       uses: actions/checkout@v3
