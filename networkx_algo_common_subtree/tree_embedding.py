@@ -5,6 +5,8 @@ for more details.
 """
 from . import balanced_sequence
 from . import balanced_embedding
+from ._types import OrderedDiGraph
+import networkx as nx
 
 __all__ = ["maximum_common_ordered_subtree_embedding"]
 
@@ -46,7 +48,7 @@ def maximum_common_ordered_subtree_embedding(
 
     Parameters
     ----------
-    tree1, tree2 : nx.OrderedDiGraph
+    tree1, tree2 : OrderedDiGraph
         Trees to find the maximum embedding between
 
     node_affinity : None | str | callable
@@ -68,7 +70,7 @@ def maximum_common_ordered_subtree_embedding(
 
     Returns
     -------
-    S1, S2, value: Tuple[nx.OrderedDiGraph, nx.OrderedDiGraph, float]
+    S1, S2, value: Tuple[OrderedDiGraph, OrderedDiGraph, float]
         The maximum value common embedding for each tree with respect to the
         chosen ``node_affinity`` function. The topology of both graphs will
         always be the same, the only difference is that the node labels in the
@@ -86,16 +88,17 @@ def maximum_common_ordered_subtree_embedding(
 
     See Also
     --------
-    * For example usage see ``examples/applications/filesystem_embedding.py``
-    * Core backends are in :mod:`_nx_ext_v2.balanced_embedding.longest_common_balanced_embedding`
+    * For example usage see ``examples/path_correspondence.py``
+    * Core backends are in :mod:`balanced_embedding.longest_common_balanced_embedding`
 
     Example
     -------
-    >>> import networkx as nx
     >>> # Create two random trees
+    >>> from networkx_algo_common_subtree.utils import random_ordered_tree
+    >>> from networkx_algo_common_subtree.utils import graph_str
     >>> tree1 = random_ordered_tree(7, seed=3257073545741117277206611, directed=True)
     >>> tree2 = random_ordered_tree(7, seed=123568587133124688238689717, directed=True)
-    >>> print(forest_str(tree1))
+    >>> print(graph_str(tree1))
     ╙── 0
         ├─╼ 5
         │   └─╼ 2
@@ -103,7 +106,7 @@ def maximum_common_ordered_subtree_embedding(
             └─╼ 6
                 ├─╼ 3
                 └─╼ 4
-    >>> print(forest_str(tree2))
+    >>> print(graph_str(tree2))
     ╙── 0
         └─╼ 2
             ├─╼ 1
@@ -113,7 +116,7 @@ def maximum_common_ordered_subtree_embedding(
             └─╼ 6
     >>> # Compute the maximum common embedding between the two trees
     >>> embedding1, embedding2, _ = maximum_common_ordered_subtree_embedding(tree1, tree2)
-    >>> print(forest_str(embedding1))
+    >>> print(graph_str(embedding1))
     ╙── 0
         └─╼ 1
             └─╼ 4
@@ -127,24 +130,28 @@ def maximum_common_ordered_subtree_embedding(
     >>> embedding1, embedding2, _ = maximum_common_ordered_subtree_embedding(
     ...     tree1, tree2, node_affinity=custom_node_affinity)
     >>> # In this case the embeddings for each tree will be differnt
-    >>> print(forest_str(embedding1))
+    >>> print(graph_str(embedding1))
     ╙── 0
         ├─╼ 5
         │   └─╼ 2
         └─╼ 1
-    >>> print(forest_str(embedding2))
+    >>> print(graph_str(embedding2))
     ╙── 2
         ├─╼ 1
         │   └─╼ 5
         └─╼ 6
     """
-    import networkx as nx
-
     # Note: checks that inputs are forests are handled by tree_to_seq
-    if not isinstance(tree1, nx.OrderedDiGraph):
-        raise nx.NetworkXNotImplemented("only implemented for directed ordered trees")
-    if not isinstance(tree1, nx.OrderedDiGraph):
-        raise nx.NetworkXNotImplemented("only implemented for directed ordered trees")
+    if not isinstance(tree1, OrderedDiGraph):
+        raise nx.NetworkXNotImplemented(
+            "only implemented for directed ordered trees. "
+            "Got {} instead".format(type(tree1))
+        )
+    if not isinstance(tree1, OrderedDiGraph):
+        raise nx.NetworkXNotImplemented(
+            "only implemented for directed ordered trees. "
+            "Got {} instead".format(type(tree2))
+        )
 
     if tree1.number_of_nodes() == 0 or tree2.number_of_nodes() == 0:
         raise nx.NetworkXPointlessConcept
@@ -211,7 +218,7 @@ def tree_to_seq(
 
     Parameters
     ----------
-    tree: nx.OrderedDiGraph
+    tree: OrderedDiGraph
         The forest to encode as a string sequence.
 
     open_to_close : Dict | None
@@ -244,10 +251,10 @@ def tree_to_seq(
 
     Examples
     --------
-    >>> import networkx as nx
     >>> # This function helps us encode this graph as a balance sequence
-    >>> tree = nx.path_graph(3, nx.OrderedDiGraph)
-    >>> print(forest_str(tree))
+    >>> from networkx_algo_common_subtree.utils import graph_str
+    >>> tree = nx.path_graph(3, OrderedDiGraph)
+    >>> print(graph_str(tree))
     ╙── 0
         └─╼ 1
             └─╼ 2
@@ -277,7 +284,7 @@ def tree_to_seq(
 
     >>> # Here is a more complex example
     >>> tree = nx.balanced_tree(2, 2, nx.DiGraph)
-    >>> print(forest_str(tree))
+    >>> print(graph_str(tree))
     ╙── 0
         ├─╼ 1
         │   ├─╼ 3
@@ -294,6 +301,7 @@ def tree_to_seq(
 
     >>> # Demo custom label encoding: If you have custom labels on your
     >>> # tree nodes, those can be used in the encoding.
+    >>> from networkx_algo_common_subtree.utils import random_ordered_tree
     >>> import random
     >>> tree = random_ordered_tree(10, seed=1, directed=True)
     >>> rng = random.Random(0)
@@ -304,8 +312,6 @@ def tree_to_seq(
     >>> print('sequence = {!r}'.format(sequence))
     sequence = '{[{{{{}({})}{}{}}}]}'
     """
-    import networkx as nx
-
     # Create a sequence and mapping from each index in the sequence to the
     # graph edge is corresponds to.
     sequence = []
@@ -419,18 +425,19 @@ def seq_to_tree(subseq, open_to_close, open_to_node):
 
     Returns
     -------
-    subtree: nx.OrderedDiGraph
+    subtree: OrderedDiGraph
         The ordered tree that corresponds to the balanced sequence
 
     Example
     --------
     >>> # For a given balanced sequence
+    >>> from networkx_algo_common_subtree.utils import graph_str
     >>> open_to_close = {'{': '}', '(': ')', '[': ']'}
     >>> open_to_node = None
     >>> subseq = '({[[]]})[[][]]{{}}'
     >>> # We can convert it into an ordered directed tree
     >>> subtree = seq_to_tree(subseq, open_to_close, open_to_node)
-    >>> print(forest_str(subtree))
+    >>> print(graph_str(subtree))
     ╟── (
     ╎   └─╼ {
     ╎       └─╼ [
@@ -441,10 +448,8 @@ def seq_to_tree(subseq, open_to_close, open_to_node):
     ╙── {
         └─╼ {
     """
-    import networkx as nx
-
     nextnode = 0  # only used if open_to_node is not specified
-    subtree = nx.OrderedDiGraph()
+    subtree = OrderedDiGraph()
     stack = []
     for token in subseq:
         if token in open_to_close:
@@ -469,7 +474,3 @@ def seq_to_tree(subseq, open_to_close, open_to_node):
             if token != want_close:
                 raise balanced_sequence.UnbalancedException
     return subtree
-
-
-from .utils import forest_str  # NOQA
-from .utils import random_ordered_tree  # NOQA

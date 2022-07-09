@@ -8,8 +8,8 @@ import warnings
 
 
 # Track the number of times we've tried to autojit specific pyx files
-NUM_AUTOJIT_TRIES = defaultdict(lambda: 0)
-MAX_AUTOJIT_TRIES = 1
+NUM_AUTOJIT_TRIES: dict = defaultdict(lambda: 0)
+MAX_AUTOJIT_TRIES: int = 1
 
 
 def import_module_from_pyx(fname, dpath, error="raise", autojit=True, verbose=1):
