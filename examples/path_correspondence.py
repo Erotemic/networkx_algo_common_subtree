@@ -198,7 +198,7 @@ python examples/algorithms/path_correspondence.py --bench
 """
 import networkx as nx
 import pprint
-from networkx.algorithms.minors import maximum_common_ordered_subtree_embedding
+from networkx_algo_common_subtree import maximum_common_ordered_subtree_embedding
 
 
 def maximum_common_path_embedding(
@@ -302,7 +302,7 @@ def paths_to_otree(paths, sep="/"):
 
     Example
     -------
-    >>> from networkx.readwrite.text import forest_str
+    >>> from networkx_algo_common_subtree.utils import graph_str
     >>> paths = [
     ...     '/etc/ld.so.conf',
     ...     '/usr/bin/python3.6',
@@ -313,7 +313,7 @@ def paths_to_otree(paths, sep="/"):
     ...     '/usr/local/lib/python3.6/dist-packages',
     ... ]
     >>> otree = paths_to_otree(paths)
-    >>> print(forest_str(otree, with_labels=True))
+    >>> print(graph_str(otree, with_labels=True))
     ╙── /
         ├─╼ etc
         │   └─╼ ld.so.conf
@@ -336,7 +336,7 @@ def paths_to_otree(paths, sep="/"):
                         └─╼ dist-packages
 
     >>> # Demo the actual node structure by printing without labels
-    >>> from networkx.readwrite.text import forest_str
+    >>> from networkx.readwrite.text import graph_str
     >>> paths = [
     ...     '1/1/2',
     ...     '1/3/2',
@@ -344,7 +344,7 @@ def paths_to_otree(paths, sep="/"):
     ...     '1/2',
     ... ]
     >>> otree = paths_to_otree(paths)
-    >>> print(forest_str(otree, with_labels=False))
+    >>> print(graph_str(otree, with_labels=False))
     ╙── ('1',)
         ├─╼ ('1', '1')
         │   └─╼ ('1', '1', '2')
