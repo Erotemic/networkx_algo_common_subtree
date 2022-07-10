@@ -7,12 +7,30 @@ Networkx algorithms for maximum common ordered subtree minors (or embedding)
 and maximum common subtree isomorphism. Contains pure python and cython
 optimized versions.
 
-Standalone versions of code submitted to networkx proper, but not yet integrated:
+
+At its core the ``maximum_common_ordered_subtree_embedding`` function is an implementation of:
+
+.. code:: 
+
+    Lozano, Antoni, and Gabriel Valiente.
+        "On the maximum common embedded subtree problem for ordered trees."
+        String Algorithmics (2004): 155-170.
+        https://pdfs.semanticscholar.org/0b6e/061af02353f7d9b887f9a378be70be64d165.pdf
+
+
+And ``maximum_common_ordered_subtree_isomorphism`` is a variant of the above
+algorithm that returns common subtree ismorphism instead of subtree minors.
+
+
+Standalone versions of code were originally submitted as PRs to networkx
+proper:
 
 https://github.com/networkx/networkx/pull/4350
 https://github.com/networkx/networkx/pull/4327
 
-Supports algorithms in torch_liberator, see related information
+
+These algorithms are components of algorithms in torch_liberator, see related
+information:
 
 +----------------------+------------------------------------------------------------+
 | TorchLiberator       | https://gitlab.kitware.com/computer-vision/torch_liberator |
