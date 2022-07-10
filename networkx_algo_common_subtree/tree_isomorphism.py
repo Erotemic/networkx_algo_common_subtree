@@ -2,6 +2,7 @@ from .balanced_isomorphism import (
     longest_common_balanced_isomorphism,
 )
 from .tree_embedding import tree_to_seq, seq_to_tree
+from ._types import OrderedDiGraph
 
 
 def maximum_common_ordered_subtree_isomorphism(
@@ -23,7 +24,7 @@ def maximum_common_ordered_subtree_isomorphism(
 
     Parameters
     ----------
-    tree1, tree2 : nx.OrderedDiGraph
+    tree1, tree2 : OrderedDiGraph
         Trees to find the maximum subtree isomorphism between
 
     node_affinity : None | str | callable
@@ -45,7 +46,7 @@ def maximum_common_ordered_subtree_isomorphism(
 
     Returns
     -------
-    S1, S2, value: Tuple[nx.OrderedDiGraph, nx.OrderedDiGraph, int]
+    S1, S2, value: Tuple[OrderedDiGraph, OrderedDiGraph, int]
         The maximum value common subtree isomorphism for each tree with respect
         to the chosen ``node_affinity`` function. The topology of both graphs
         will always be the same, the only difference is that the node labels in
@@ -61,9 +62,9 @@ def maximum_common_ordered_subtree_isomorphism(
     import networkx as nx
 
     # Note: checks that inputs are forests are handled by tree_to_seq
-    if not isinstance(tree1, nx.OrderedDiGraph):
+    if not isinstance(tree1, OrderedDiGraph):
         raise nx.NetworkXNotImplemented("only implemented for directed ordered trees")
-    if not isinstance(tree1, nx.OrderedDiGraph):
+    if not isinstance(tree1, OrderedDiGraph):
         raise nx.NetworkXNotImplemented("only implemented for directed ordered trees")
 
     if tree1.number_of_nodes() == 0 or tree2.number_of_nodes() == 0:
