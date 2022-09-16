@@ -19,12 +19,12 @@ repo_name = "networkx_algo_common_subtree"
 rel_mod_parent_dpath = "."
 os = [ "all", "win", "osx", "linux",]
 url = 'https://github.com/Erotemic/networkx_algo_common_subtree'
-min_python = 3.6
+min_python = 3.7
 author = "Jon Crall"
 author_email = "erotemic@gmail.com"
 description = "A networkx implemention of algorithms to find common subtree minors and isomorphisms"
 license = "Apache 2"
-dev_status = "planning"
+dev_status = "alpha"
 
 [tool.pytest.ini_options]
 addopts = "-p no:doctest --xdoctest --xdoctest-style=auto --ignore-glob=setup.py --ignore-glob=dev"
