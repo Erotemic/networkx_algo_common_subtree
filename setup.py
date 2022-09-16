@@ -13,6 +13,7 @@ if exists("CMakeLists.txt"):
         use_setuptools = val in {"true", "on", "yes", "1"}
 
         if "--universal" in sys.argv:
+            sys.argv.remove("--universal")
             use_setuptools = True
 
         if "--disable-c-extensions" in sys.argv:
@@ -138,6 +139,9 @@ def parse_requirements(fname="requirements.txt", versions=False):
             if line.startswith("-e "):
                 info["package"] = line.split("#egg=")[1]
             else:
+                if "--find-links" in line:
+                    # setuptools doesnt seem to handle find links
+                    line = line.split("--find-links")[0]
                 if ";" in line:
                     pkgpart, platpart = line.split(";")
                     # Handle platform specific dependencies
@@ -195,6 +199,36 @@ def parse_requirements(fname="requirements.txt", versions=False):
     return packages
 
 
+# # Maybe use in the future? But has private deps
+# def parse_requirements_alt(fpath='requirements.txt', versions='loose'):
+#     """
+#     Args:
+#         versions (str): can be
+#             False or "free" - remove all constraints
+#             True or "loose" - use the greater or equal (>=) in the req file
+#             strict - replace all greater equal with equals
+#     """
+#     # Note: different versions of pip might have different internals.
+#     # This may need to be fixed.
+#     from pip._internal.req import parse_requirements
+#     from pip._internal.network.session import PipSession
+#     requirements = []
+#     for req in parse_requirements(fpath, session=PipSession()):
+#         if not versions or versions == 'free':
+#             req_name = req.requirement.split(' ')[0]
+#             requirements.append(req_name)
+#         elif versions == 'loose' or versions is True:
+#             requirements.append(req.requirement)
+#         elif versions == 'strict':
+#             part1, *rest = req.requirement.split(';')
+#             strict_req = ';'.join([part1.replace('>=', '==')] + rest)
+#             requirements.append(strict_req)
+#         else:
+#             raise KeyError(versions)
+#     requirements = [r.replace(' ', '') for r in requirements]
+#     return requirements
+
+
 NAME = "networkx_algo_common_subtree"
 INIT_PATH = "networkx_algo_common_subtree/__init__.py"
 VERSION = parse_version("networkx_algo_common_subtree/__init__.py")
@@ -217,29 +251,29 @@ if __name__ == "__main__":
         ),
     }
 
-    setup(
-        name=NAME,
-        version=VERSION,
-        author="Jon Crall",
-        author_email="erotemic@gmail.com",
-        url='https://github.com/Erotemic/networkx_algo_common_subtree',
-        description="A networkx implemention of algorithms to find common subtree minors and isomorphisms",
-        long_description=parse_description(),
-        long_description_content_type="text/x-rst",
-        license="Apache 2",
-        packages=find_packages("."),
-        python_requires=">=3.6",
-        classifiers=[
-            "Development Status :: 1 - Planning",
-            "Intended Audience :: Developers",
-            "Topic :: Software Development :: Libraries :: Python Modules",
-            "Topic :: Utilities",
-            "License :: OSI Approved :: Apache Software License",
-            "Programming Language :: Python :: 3.6",
-            "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8",
-            "Programming Language :: Python :: 3.9",
-            "Programming Language :: Python :: 3.10",
-        ],
-        **setupkw,
-    )
+    setupkw["name"] = NAME
+    setupkw["version"] = VERSION
+    setupkw["author"] = "Jon Crall"
+    setupkw["author_email"] = "erotemic@gmail.com"
+    setupkw["url"] = "https://github.com/Erotemic/networkx_algo_common_subtree"
+    setupkw[
+        "description"
+    ] = "A networkx implemention of algorithms to find common subtree minors and isomorphisms"
+    setupkw["long_description"] = parse_description()
+    setupkw["long_description_content_type"] = "text/x-rst"
+    setupkw["license"] = "Apache 2"
+    setupkw["packages"] = find_packages(".")
+    setupkw["python_requires"] = ">=3.7"
+    setupkw["classifiers"] = [
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Utilities",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ]
+    setup(**setupkw)

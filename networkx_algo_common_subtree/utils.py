@@ -72,6 +72,9 @@ def random_tree(n, seed=None, create_using=None):
             │           └─╼ 5
             └─╼ 9
     """
+    if hasattr(nx, 'random_tree'):
+        return nx.random_tree(n, seed=seed, create_using=create_using)
+
     if n == 0:
         raise nx.NetworkXPointlessConcept("the null graph is not a tree")
     # Cannot create a Prüfer sequence unless `n` is at least two.
