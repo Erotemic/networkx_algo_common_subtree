@@ -1,7 +1,7 @@
 """
 Algorithm extensions
 """
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 __mkinit__ = """
 mkinit -m networkx_algo_common_subtree -w
