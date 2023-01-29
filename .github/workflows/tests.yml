@@ -102,13 +102,13 @@ jobs:
         - macOS-latest
         - windows-latest
         cibw_skip:
-        - '*-win32 pp* *-musllinux_* *-win32'
+        - '*-win32'
         arch:
         - auto
         include:
         - os: windows-latest
           arch: auto
-          cibw_skip: '*-win_amd64 pp* *-musllinux_* *-win32'
+          cibw_skip: '*-win_amd64'
     steps:
     - name: Checkout source
       uses: actions/checkout@v3
