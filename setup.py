@@ -5,6 +5,7 @@ import sys
 import re
 from os.path import exists, dirname, join
 from setuptools import find_packages
+import warnings
 
 if exists("CMakeLists.txt"):
     try:
@@ -26,7 +27,6 @@ if not use_setuptools:
         setup = skb_setup  # NOQA
     except Exception:
         use_setuptools = True
-        import warnings
 
         warnings.warn("scikit-build was not found, but is required to build binaries")
 
@@ -65,8 +65,6 @@ def static_parse(varname, fpath):
     try:
         value = visitor.static_value
     except AttributeError:
-        import warnings
-
         value = "Unknown {}".format(varname)
         warnings.warn(value)
     return value
