@@ -1,0 +1,4 @@
+scikit-build>=0.11.1
+ninja>=1.10.2
+cmake>=3.21.2
+cython>=0.29.24
