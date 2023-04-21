@@ -105,21 +105,12 @@ jobs:
         - '*-win32'
         arch:
         - auto
-        include:
-        - os: windows-latest
-          arch: auto
-          cibw_skip: '*-win_amd64'
     steps:
     - name: Checkout source
       uses: actions/checkout@v3
     - name: Enable MSVC 64bit
       uses: ilammy/msvc-dev-cmd@v1
       if: matrix.os == 'windows-latest' && ${{ contains(matrix.cibw_skip, '*-win32') }}
-    - name: Enable MSVC 32bit
-      uses: ilammy/msvc-dev-cmd@v1
-      if: matrix.os == 'windows-latest' && ${{ contains(matrix.cibw_skip, '*-win_amd64') }}
-      with:
-        arch: x86
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
       if: runner.os == 'Linux' && matrix.arch != 'auto'
