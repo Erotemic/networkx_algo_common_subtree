@@ -52,7 +52,7 @@ endfunction()
 #
 
 find_package(PythonInterp REQUIRED)
-find_package(PythonLibs REQUIRED)
+#find_package(PythonLibs REQUIRED)
 include_directories(SYSTEM ${PYTHON_INCLUDE_DIR})
 
 
@@ -91,7 +91,7 @@ find_package(Cython REQUIRED)
 
 function(cpu_cython_module cython_source module_name)
   # Translate Cython into C/C++
-  add_cython_target(${module_name} "${cython_source}" C OUTPUT_VAR sources)
+  add_cython_target(${module_name} "${cython_source}" CXX OUTPUT_VAR sources)
   # Create C++ library. Specify include dirs and link libs as normal
   add_library(${module_name} MODULE ${sources})
   target_include_directories(

@@ -1,4 +1,7 @@
 # distutils: language = c++
+#!python
+#cython: language_level=3
+
 """
 This module re-implements functions in :module:`balanced_sequence` in cython
 and obtains 25-35% speedups in common circumstances. There are likely more
@@ -91,6 +94,12 @@ python -c "from networkx_algo_common_subtree import balanced_embedding_cython; p
 """
 cimport cython
 
+from cpython.ref cimport PyObject
+from cpython.ref cimport Py_XINCREF, Py_XDECREF
+from libcpp.unordered_map cimport unordered_map
+from libcpp.vector cimport vector
+from libcpp.string cimport string
+
 
 
 
@@ -98,6 +107,23 @@ cimport cython
 ctypedef fused SeqT:
     tuple
     str
+
+# String only
+# ctypedef str SeqT
+
+# TODO: For the decomposition create a struct that contains the data
+# cdef struct SeqTDecomp:
+#     string pop_open
+#     string pop_close
+#     string head
+#     string tail
+#     string head_tail
+
+
+class IdentityDictCython(dict):
+    """ Used when ``open_to_node`` is unspecified """
+    def __getitem__(self, key):
+        return key
 
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
@@ -206,6 +232,7 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
+# cdef PyObject** balanced_decomp_unsafe_cython(SeqT sequence, dict open_to_close):
 cdef tuple balanced_decomp_unsafe_cython(SeqT sequence, dict open_to_close):
     """
     Cython version of :func:`balanced_decomp_unsafe`. 
@@ -214,10 +241,9 @@ cdef tuple balanced_decomp_unsafe_cython(SeqT sequence, dict open_to_close):
     cdef int head_stop = 1
     cdef SeqT pop_open, pop_close, head, tail, head_tail
 
-    tok_curr = sequence[0]
-    want_close = open_to_close[tok_curr]
+    cdef str tok_curr = sequence[0]
+    cdef str want_close = open_to_close[tok_curr]
 
-    # for tok_curr in sequence[1:]:
     for head_stop in range(1, len(sequence)):
         tok_curr = sequence[head_stop]
         stacklen += 1 if tok_curr in open_to_close else -1
@@ -229,30 +255,55 @@ cdef tuple balanced_decomp_unsafe_cython(SeqT sequence, dict open_to_close):
     head = sequence[1:head_stop]
     tail = sequence[head_stop + 1:]
     head_tail = head + tail
-    return pop_open, pop_close, head, tail, head_tail
+
+    # Py_XINCREF(<PyObject*>pop_open)
+    # Py_XINCREF(<PyObject*>pop_close)
+    # Py_XINCREF(<PyObject*>head)
+    # Py_XINCREF(<PyObject*>tail)
+    # Py_XINCREF(<PyObject*>head_tail)
+
+    # cdef PyObject* ret[5]
+    # ret[:] = [<PyObject*>pop_open, <PyObject*>pop_close, <PyObject*>head, <PyObject*>tail, <PyObject*>head_tail]
+    # return ret
+    return (pop_open, pop_close, head, tail, head_tail)
 
 
-@cython.boundscheck(False) # turn off bounds-checking for entire function
-@cython.wraparound(False)  # turn off negative index wrapping for entire function
-cdef generate_all_decomp_cython(SeqT seq, dict open_to_close, open_to_node=None):
+# @cython.boundscheck(False) # turn off bounds-checking for entire function
+# @cython.wraparound(False)  # turn off negative index wrapping for entire function
+cdef dict generate_all_decomp_cython(SeqT seq, dict open_to_close, open_to_node):
     """
     Cython version of :func:`generate_all_decomp`.
     """
-    all_decomp = {}
-    stack = [seq]
+    # TODO: figure out how to replace the dict with a C++ unordered_map[SeqT, SeqT[5]]
+    cdef dict all_decomp = {}
+    cdef SeqT pop_open, pop_close, head, tail, head_tail
+    cdef list stack = [seq]
+
+    # TODO: figure out how to replace the list with a C++ vector for the stack
+    # cdef vector[SeqT] c_stack
+    # c_stack.push_back(seq)
+
     while stack:
+        # c_stack.back()  # causes a segfault?
+        # c_stack.at(c_stack.size() - 1)
+        # c_stack.pop_back()
+
         seq = stack.pop()
+
+        # if not all_decomp.count(seq) and seq:
         if seq not in all_decomp and seq:
+
             pop_open, pop_close, head, tail, head_tail = balanced_decomp_unsafe_cython(seq, open_to_close)
             node = open_to_node[pop_open[0]]
             all_decomp[seq] = (node, pop_open, pop_close, head, tail, head_tail)
+
             stack.append(head_tail)
             stack.append(head)
             stack.append(tail)
+
+            # c_stack.push_back(head_tail)
+            # c_stack.push_back(head)
+            # c_stack.push_back(tail)
+
+    # return <dict> all_decomp
     return all_decomp
-
-
-class IdentityDictCython:
-    """ Used when ``open_to_node`` is unspecified """
-    def __getitem__(self, key):
-        return key
