@@ -5,7 +5,6 @@ import sys
 import re
 from os.path import exists, dirname, join
 from setuptools import find_packages
-import warnings
 
 if exists("CMakeLists.txt"):
     try:
@@ -27,6 +26,7 @@ if not use_setuptools:
         setup = skb_setup  # NOQA
     except Exception:
         use_setuptools = True
+        import warnings
 
         warnings.warn("scikit-build was not found, but is required to build binaries")
 
@@ -65,6 +65,8 @@ def static_parse(varname, fpath):
     try:
         value = visitor.static_value
     except AttributeError:
+        import warnings
+
         value = "Unknown {}".format(varname)
         warnings.warn(value)
     return value
@@ -100,6 +102,9 @@ def parse_requirements(fname="requirements.txt", versions=False):
 
     Returns:
         List[str]: list of requirements items
+
+    CommandLine:
+        python -c "import setup, ubelt; print(ubelt.urepr(setup.parse_requirements()))"
     """
     require_fpath = fname
 
@@ -218,16 +223,21 @@ def parse_requirements(fname="requirements.txt", versions=False):
 
 NAME = "networkx_algo_common_subtree"
 INIT_PATH = "networkx_algo_common_subtree/__init__.py"
-VERSION = parse_version("networkx_algo_common_subtree/__init__.py")
+VERSION = parse_version(INIT_PATH)
 
 if __name__ == "__main__":
     setupkw = {}
 
-    setupkw["install_requires"] = parse_requirements("requirements/runtime.txt")
+    setupkw["install_requires"] = parse_requirements(
+        "requirements/runtime.txt", versions="loose"
+    )
     setupkw["extras_require"] = {
-        "all": parse_requirements("requirements.txt"),
-        "tests": parse_requirements("requirements/tests.txt"),
-        "optional": parse_requirements("requirements/optional.txt"),
+        "all": parse_requirements("requirements.txt", versions="loose"),
+        "runtime": parse_requirements("requirements/runtime.txt", versions="loose"),
+        "tests": parse_requirements("requirements/tests.txt", versions="loose"),
+        "optional": parse_requirements("requirements/optional.txt", versions="loose"),
+        "build": parse_requirements("requirements/build.txt", versions="loose"),
+        "docs": parse_requirements("requirements/docs.txt", versions="loose"),
         "all-strict": parse_requirements("requirements.txt", versions="strict"),
         "runtime-strict": parse_requirements(
             "requirements/runtime.txt", versions="strict"
@@ -236,16 +246,17 @@ if __name__ == "__main__":
         "optional-strict": parse_requirements(
             "requirements/optional.txt", versions="strict"
         ),
+        "build-strict": parse_requirements("requirements/build.txt", versions="strict"),
+        "docs-strict": parse_requirements("requirements/docs.txt", versions="strict"),
     }
-
     setupkw["name"] = NAME
     setupkw["version"] = VERSION
     setupkw["author"] = "Jon Crall"
     setupkw["author_email"] = "erotemic@gmail.com"
     setupkw["url"] = "https://github.com/Erotemic/networkx_algo_common_subtree"
-    setupkw[
-        "description"
-    ] = "A networkx implemention of algorithms to find common ordered subtree minors and isomorphisms"
+    setupkw["description"] = (
+        "A networkx implemention of algorithms to find common ordered subtree minors and isomorphisms"
+    )
     setupkw["long_description"] = parse_description()
     setupkw["long_description_content_type"] = "text/x-rst"
     setupkw["license"] = "Apache 2"
@@ -262,5 +273,6 @@ if __name__ == "__main__":
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ]
     setup(**setupkw)
