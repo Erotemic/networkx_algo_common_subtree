@@ -11,6 +11,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 * Add 3.12 support
+* arm64 and x86 osx wheels now built
+* signed wheels and timestamps are now hosted on github
+
 
 ## [Version 0.2.0] - Released 2022-09-16
 
