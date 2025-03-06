@@ -147,6 +147,8 @@ jobs:
       env:
         CIBW_SKIP: ${{ matrix.cibw_skip }}
         CIBW_ARCHS_LINUX: ${{ matrix.arch }}
+        CIBW_ENVIRONMENT: PYTHONUTF8=1
+        PYTHONUTF8: 1
     - name: Show built files
       shell: bash
       run: ls -la wheelhouse
