@@ -25,7 +25,8 @@ algorithm that returns common subtree ismorphism instead of subtree minors.
 Demo
 ----
 
-The following is a demo of what exactly these do. Consider two graphs:
+Consider two directed ordered trees (the algorithm also works on undirected
+ordered trees):
 
 .. code:: python
 

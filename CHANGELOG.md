@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Version 0.2.2] - Unreleased
 
+### Changed
+* Minimum Python is now 3.8
+* Added 3.13 support
+
 
 ## [Version 0.2.1] - Released 2024-04-28
 
