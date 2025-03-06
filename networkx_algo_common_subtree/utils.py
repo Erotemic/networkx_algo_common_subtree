@@ -44,6 +44,7 @@ def random_tree(n, seed=None, create_using=None):
 
     Example
     -------
+    >>> from networkx_algo_common_subtree.utils import *  # NOQA
     >>> import networkx as nx
     >>> tree = random_tree(n=10, seed=0)
     >>> print(graph_str(tree, sources=[0]))
@@ -92,11 +93,15 @@ def random_tree(n, seed=None, create_using=None):
         def new(cls_or_self):
             if hasattr(cls_or_self, "_adj"):
                 # create_using is a NetworkX style Graph
-                cls_or_self.clear()
-                self = cls_or_self
-            else:
-                # try create_using as constructor
-                self = cls_or_self()
+                try:
+                    cls_or_self.clear()
+                    self = cls_or_self
+                except TypeError:
+                    ...
+                else:
+                    return self
+            # try create_using as constructor
+            self = cls_or_self()
             return self
 
         tree = new(create_using)
@@ -136,7 +141,7 @@ def random_ordered_tree(n, seed=None, directed=False):
 
     Example
     -------
-    >>> import networkx as nx
+    >>> from networkx_algo_common_subtree.utils import *  # NOQA
     >>> assert len(random_ordered_tree(n=1, seed=0).nodes) == 1
     >>> assert len(random_ordered_tree(n=2, seed=0).nodes) == 2
     >>> assert len(random_ordered_tree(n=3, seed=0).nodes) == 3
