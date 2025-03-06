@@ -17,7 +17,7 @@ Notes:
     # need to edit the conf.py
 
     cd ~/code/networkx_algo_common_subtree/docs
-    sphinx-apidoc --private --separate -f -o ~/code/networkx_algo_common_subtree/docs/source/auto ~/code/networkx_algo_common_subtree/networkx_algo_common_subtree
+    sphinx-apidoc --private --separate --force --output-dir ~/code/networkx_algo_common_subtree/docs/source/auto ~/code/networkx_algo_common_subtree/networkx_algo_common_subtree
 
     # Note: the module should importable before running this
     # (e.g. install it in developer mode or munge the PYTHONPATH)
@@ -136,7 +136,7 @@ def parse_version(fpath):
     return visitor.version
 
 project = 'networkx_algo_common_subtree'
-copyright = '2024, Jon Crall'
+copyright = '2025, Jon Crall'
 author = 'Jon Crall'
 modname = 'networkx_algo_common_subtree'
 
@@ -217,7 +217,7 @@ intersphinx_mapping = {
     # 'xxhash': ('https://pypi.org/project/xxhash/', None),
     # 'pygments': ('https://pygments.org/docs/', None),
     # 'tqdm': ('https://tqdm.github.io/', None),
-    # Requries that the repo have objects.inv
+    # Requires that the repo have objects.inv
     'kwarray': ('https://kwarray.readthedocs.io/en/latest/', None),
     'kwimage': ('https://kwimage.readthedocs.io/en/latest/', None),
     # 'kwplot': ('https://kwplot.readthedocs.io/en/latest/', None),
@@ -588,7 +588,7 @@ class GoogleStyleDocstringProcessor:
 
             accum.append(line)
 
-        # Finialize the last section
+        # Finalize the last section
         accept()
 
         lines[:] = new_lines
