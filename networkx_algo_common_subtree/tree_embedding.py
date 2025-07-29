@@ -147,7 +147,7 @@ def maximum_common_ordered_subtree_embedding(
             "only implemented for directed ordered trees. "
             "Got {} instead".format(type(tree1))
         )
-    if not isinstance(tree1, OrderedDiGraph):
+    if not isinstance(tree2, OrderedDiGraph):
         raise nx.NetworkXNotImplemented(
             "only implemented for directed ordered trees. "
             "Got {} instead".format(type(tree2))

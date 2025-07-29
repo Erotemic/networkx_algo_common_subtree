@@ -64,7 +64,7 @@ def maximum_common_ordered_subtree_isomorphism(
     # Note: checks that inputs are forests are handled by tree_to_seq
     if not isinstance(tree1, OrderedDiGraph):
         raise nx.NetworkXNotImplemented("only implemented for directed ordered trees")
-    if not isinstance(tree1, OrderedDiGraph):
+    if not isinstance(tree2, OrderedDiGraph):
         raise nx.NetworkXNotImplemented("only implemented for directed ordered trees")
 
     if tree1.number_of_nodes() == 0 or tree2.number_of_nodes() == 0:
