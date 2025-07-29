@@ -498,7 +498,7 @@ def _lcsi_recurse(
             a2, b2, head2, tail2 = balanced_decomp_unsafe_nocat(seq2, open_to_close)
             _seq_memo[key2] = a2, b2, head2, tail2
 
-        # TODO: IS THIS THE CORRECT MODIFICATION TO THE RECURRANCE TO
+        # TODO: IS THIS THE CORRECT MODIFICATION TO THE RECURRENCE TO
         # ACHIEVE A SUBTREE ISOMORPHISM INSTEAD OF AN EMBEDDING?
         r"""
         We return two solutions at each step: the solution value at

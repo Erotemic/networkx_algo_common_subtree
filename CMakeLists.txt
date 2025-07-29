@@ -1,5 +1,5 @@
 ###
-# CMakeLists for networkx_algo_common_subtree C/C++/Cuda Python extention modules
+# CMakeLists for networkx_algo_common_subtree C/C++/Cuda Python extension modules
 #
 # Notes:
 # https://github.com/Erotemic/netharn/issues/7
