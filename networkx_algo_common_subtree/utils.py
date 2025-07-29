@@ -262,7 +262,7 @@ def generate_network_text(
     with_labels : bool | str
         If True will use the "label" attribute of a node to display if it
         exists otherwise it will use the node value itself. If given as a
-        string, then that attribte name will be used instead of "label".
+        string, then that attribute name will be used instead of "label".
         Defaults to True.
 
     sources : List
@@ -473,7 +473,7 @@ def write_network_text(
     with_labels : bool | str
         If True will use the "label" attribute of a node to display if it
         exists otherwise it will use the node value itself. If given as a
-        string, then that attribte name will be used instead of "label".
+        string, then that attribute name will be used instead of "label".
         Defaults to True.
 
     sources : List
@@ -488,7 +488,7 @@ def write_network_text(
         If True only ASCII characters are used to construct the visualization
 
     end : string
-        The line ending characater
+        The line ending character
 
     Example
     -------

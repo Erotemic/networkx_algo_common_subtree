@@ -6,7 +6,7 @@ Path Correspondence
 This example introduces the "maximum common path embedding" problem.
 
 Given two sets of filesystem-like paths, the maximum common path embedding
-problems seeks to find the maximium sized correspondence between these sets in
+problems seeks to find the maximum sized correspondence between these sets in
 the case where paths in either set may have been given extra prefixes,
 suffixes, or had intermediate directories removed.
 
@@ -56,7 +56,7 @@ Example 2
 ---------
 
 Another application of the "maximum common path embedding" occurs when
-transfering weights between PyTorch neural network. When training neural
+transferring weights between PyTorch neural network. When training neural
 networks it is common to train a core "backbone" network on some classification
 task and then use those weights as a component in a larger network for a more
 complex task.
@@ -157,7 +157,7 @@ common ordered tree embedding" problem.  The basic outline of the algorithm is:
    match if the final component of the paths are the same (e.g. Any path ending
    in ``weight`` should be able to match any other path ending in ``weight``).
    However, we do want to encourage matching between paths with more trailing
-   components in common to match with higer priority. (e.g.
+   components in common to match with higher priority. (e.g.
    ``backbone.layer1.0.conv1.weight`` should prefer matching
    ``layer1.0.conv1.weight`` over ``backbone.layer2.0.conv1.weight``).
    Thus we define our affinity score between two nodes to be the number of
@@ -389,10 +389,10 @@ def random_paths(
     Parameters
     ----------
     size : int
-        The number of independant random paths
+        The number of independent random paths
 
     max_depth : int
-        Maximum depth for the independant random paths
+        Maximum depth for the independent random paths
 
     common : int
         The number of shared common paths
@@ -938,7 +938,7 @@ def test_realworld_case1():
     In this example we take standard layer names for a torchvision ResNet50 and
     prefix them with the "module." prefix that is commonly exported with torch
     state dictionaries when using ``torch.nn.DataParallel``. This optimal
-    soltion in this case is to simply remove the module prefix, which our
+    solution in this case is to simply remove the module prefix, which our
     algorithm does nicely.
 
     Ignore

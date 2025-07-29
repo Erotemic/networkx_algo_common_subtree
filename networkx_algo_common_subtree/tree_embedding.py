@@ -124,12 +124,12 @@ def maximum_common_ordered_subtree_embedding(
     ...     'when node_affinity is "eq" both embeddings will be the same')
 
     >>> # Demo with a custom node affinity where any node can match unless
-    >>> # they are the same and we much prefer nodes that are disimilar
+    >>> # they are the same and we much prefer nodes that are dissimilar
     >>> def custom_node_affinity(n1, n2):
     ...     return abs(n1 - n2) ** 2
     >>> embedding1, embedding2, _ = maximum_common_ordered_subtree_embedding(
     ...     tree1, tree2, node_affinity=custom_node_affinity)
-    >>> # In this case the embeddings for each tree will be differnt
+    >>> # In this case the embeddings for each tree will be different
     >>> print(graph_str(embedding1))
     ╙── 0
         ├─╼ 5

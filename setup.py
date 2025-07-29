@@ -258,7 +258,7 @@ if __name__ == "__main__":
     setupkw["author_email"] = "erotemic@gmail.com"
     setupkw["url"] = "https://github.com/Erotemic/networkx_algo_common_subtree"
     setupkw["description"] = (
-        "A networkx implemention of algorithms to find common ordered subtree minors and isomorphisms"
+        "A networkx implementation of algorithms to find common ordered subtree minors and isomorphisms"
     )
     setupkw["long_description"] = parse_description()
     setupkw["long_description_content_type"] = "text/x-rst"
