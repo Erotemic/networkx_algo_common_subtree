@@ -20,6 +20,14 @@ def available_impls_longest_common_balanced_isomorphism():
         impls += [
             "iter-cython",
         ]
+    if _cython_lcsi_backend_orig():
+        impls += [
+            "iter-cython-orig",
+        ]
+    if _cython_lcsi_backend_alt():
+        impls += [
+            "iter-cython-alt",
+        ]
     return impls
 
 
@@ -144,6 +152,26 @@ def longest_common_balanced_isomorphism(
             val_lvl,
             best_lvl,
         ) = balanced_isomorphism_cython._lcsi_iter_cython(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
+    elif impl == "iter-cython-orig":
+        balanced_isomorphism_cython_orig = _cython_lcsi_backend_orig(error="raise")
+        (
+            val_any,
+            best_any,
+            val_lvl,
+            best_lvl,
+        ) = balanced_isomorphism_cython_orig._lcsi_iter_cython(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
+    elif impl == "iter-cython-alt":
+        balanced_isomorphism_cython_alt = _cython_lcsi_backend_alt(error="raise")
+        (
+            val_any,
+            best_any,
+            val_lvl,
+            best_lvl,
+        ) = balanced_isomorphism_cython_alt._lcsi_iter_cython(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
         )
     elif impl == "recurse":
@@ -727,3 +755,31 @@ def _cython_lcsi_backend(error="ignore", verbose=0):
         else:
             raise KeyError(error)
     return balanced_isomorphism_cython
+
+
+def _cython_lcsi_backend_orig(error="ignore", verbose=0):
+    """Returns the original cython backend if available"""
+    try:
+        from . import balanced_isomorphism_cython_orig
+    except Exception:
+        if error == "ignore":
+            balanced_isomorphism_cython_orig = None
+        elif error == "raise":
+            raise
+        else:
+            raise KeyError(error)
+    return balanced_isomorphism_cython_orig
+
+
+def _cython_lcsi_backend_alt(error="ignore", verbose=0):
+    """Returns the alternative cython backend if available"""
+    try:
+        from . import balanced_isomorphism_cython_alt
+    except Exception:
+        if error == "ignore":
+            balanced_isomorphism_cython_alt = None
+        elif error == "raise":
+            raise
+        else:
+            raise KeyError(error)
+    return balanced_isomorphism_cython_alt

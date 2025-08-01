@@ -212,6 +212,16 @@ def longest_common_balanced_embedding(
         value, best = balanced_embedding_cython._lcse_iter_cython(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
         )
+    elif impl == "iter-cython-orig":
+        balanced_embedding_cython_orig = _cython_lcse_backend_orig(error="raise")
+        value, best = balanced_embedding_cython_orig._lcse_iter_cython(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
+    elif impl == "iter-cython-alt":
+        balanced_embedding_cython_alt = _cython_lcse_backend_alt(error="raise")
+        value, best = balanced_embedding_cython_alt._lcse_iter_cython(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
     elif impl == "recurse":
         _memo = {}
         _seq_memo = {}
@@ -244,6 +254,14 @@ def available_impls_longest_common_balanced_embedding():
         impls += [
             "iter-cython",
         ]
+    if _cython_lcse_backend_orig():
+        impls += [
+            "iter-cython-orig",
+        ]
+    if _cython_lcse_backend_alt():
+        impls += [
+            "iter-cython-alt",
+        ]
 
     # Pure python backends
     impls += [
@@ -272,6 +290,34 @@ def _cython_lcse_backend(error="ignore", verbose=0):
         else:
             raise KeyError(error)
     return balanced_embedding_cython
+
+
+def _cython_lcse_backend_orig(error="ignore", verbose=0):
+    """Returns the original cython backend if available"""
+    try:
+        from . import balanced_embedding_cython_orig
+    except Exception:
+        if error == "ignore":
+            balanced_embedding_cython_orig = None
+        elif error == "raise":
+            raise
+        else:
+            raise KeyError(error)
+    return balanced_embedding_cython_orig
+
+
+def _cython_lcse_backend_alt(error="ignore", verbose=0):
+    """Returns the alternative cython backend if available"""
+    try:
+        from . import balanced_embedding_cython_alt
+    except Exception:
+        if error == "ignore":
+            balanced_embedding_cython_alt = None
+        elif error == "raise":
+            raise
+        else:
+            raise KeyError(error)
+    return balanced_embedding_cython_alt
 
 
 def _lcse_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):

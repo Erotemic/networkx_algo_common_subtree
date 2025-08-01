@@ -56,16 +56,6 @@ find_package(PythonInterp REQUIRED)
 include_directories(SYSTEM ${PYTHON_INCLUDE_DIR})
 
 
-###
-# Find scikit-build and include its cmake resource scripts
-#
-if (NOT SKBUILD)
-  pycmd(skbuild_location "import os, skbuild; print(os.path.dirname(skbuild.__file__))")
-  set(skbuild_cmake_dir "${skbuild_location}/resources/cmake")
-  # If skbuild is not the driver, then we need to include its utilities in our CMAKE_MODULE_PATH
-  list(APPEND CMAKE_MODULE_PATH ${skbuild_cmake_dir})
-endif()
-
 find_package(PythonExtensions REQUIRED)
 
 
