@@ -149,8 +149,10 @@ def main():
             '--cov-report', 'term',
             '--cov-report', 'xml',
             '--cov=' + package_name,
-            os.fspath(modpath), os.fspath(test_dir)
         ]
+        if modpath is not None:
+            pytest_args.append(os.fspath(modpath))
+        pytest_args.append(os.fspath(test_dir))
         if is_cibuildwheel():
             pytest_args.append('--cov-append')
 
