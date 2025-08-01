@@ -106,6 +106,8 @@ function(cpu_cython_module cython_source module_name)
 
   target_compile_definitions(${module_name} PUBLIC
     "NPY_NO_DEPRECATED_API"
+    "Py_LIMITED_API=0x03080000"
+    "CYTHON_LIMITED_API=1"
     #"NPY_1_7_API_VERSION=0x00000007"
     )
 

@@ -2,10 +2,14 @@
 requires = [ "setuptools>=41.0.1", "scikit-build>=0.11.1", "ninja>=1.10.2", "cmake>=3.21.2", "cython>=0.29.24",]
 
 [tool.cibuildwheel]
-build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+# Build only once for the oldest supported CPython version.  Because the
+# extensions are compiled against the stable ``abi3`` interface, the
+# resulting wheel will work on all newer Python versions as well.
+build = "cp38-*"
 build-frontend = "build"
 # skip = "pp* *-musllinux_* *-win32"
 build-verbosity = 1
+environment = {CFLAGS = "-DPy_LIMITED_API=0x03080000 -DCYTHON_LIMITED_API=1"}
 #test-requires = [ "-r requirements/tests.txt",]
 test-command = "python {project}/run_tests.py"
 test-extras = ["tests-strict", "runtime-strict"]
