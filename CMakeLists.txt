@@ -118,6 +118,19 @@ function(cpu_cython_module cython_source module_name)
 endfunction(cpu_cython_module)
 
 
+function(cpu_c_module source module_name)
+  add_library(${module_name} MODULE ${source})
+  target_include_directories(
+    ${module_name}
+    PUBLIC
+      ${PYTHON_INCLUDE_DIRS}
+  )
+  python_extension_module(${module_name})
+  file(RELATIVE_PATH _install_dest "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+  install(TARGETS ${module_name} LIBRARY DESTINATION "${_install_dest}")
+endfunction(cpu_c_module)
+
+
 # Typically you would place this CMake code next to your Cython module
 add_subdirectory("networkx_algo_common_subtree")
 

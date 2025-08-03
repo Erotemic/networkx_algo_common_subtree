@@ -200,6 +200,8 @@ def longest_common_balanced_embedding(
     if impl == "auto":
         if _cython_lcse_backend(error="ignore"):
             impl = "iter-cython"
+        elif _c_lcse_backend(error="ignore"):
+            impl = "iter-c"
         else:
             impl = "iter"
 
@@ -211,6 +213,14 @@ def longest_common_balanced_embedding(
         balanced_embedding_cython = _cython_lcse_backend(error="raise")
         value, best = balanced_embedding_cython._lcse_iter_cython(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
+    elif impl == "iter-c":
+        backend = _c_lcse_backend(error="raise")
+        # Pure C backend only supports equality or match-any affinity.
+        # Pass ``None`` for match-any, any other value triggers equality mode.
+        affinity_hint = None if node_affinity is None else True
+        value, best = backend._lcse_recurse_c(
+            full_seq1, full_seq2, open_to_close, affinity_hint
         )
     elif impl == "recurse":
         _memo = {}
@@ -244,6 +254,10 @@ def available_impls_longest_common_balanced_embedding():
         impls += [
             "iter-cython",
         ]
+    if _c_lcse_backend():
+        impls += [
+            "iter-c",
+        ]
 
     # Pure python backends
     impls += [
@@ -272,6 +286,20 @@ def _cython_lcse_backend(error="ignore", verbose=0):
         else:
             raise KeyError(error)
     return balanced_embedding_cython
+
+
+def _c_lcse_backend(error="ignore", verbose=0):
+    """Returns the C backend if available"""
+    try:
+        from . import balanced_embedding_c
+    except Exception:
+        if error == "ignore":
+            balanced_embedding_c = None
+        elif error == "raise":
+            raise
+        else:
+            raise KeyError(error)
+    return balanced_embedding_c
 
 
 def _lcse_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
