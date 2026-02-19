@@ -1,14 +1,66 @@
 [build-system]
-requires = [ "setuptools>=41.0.1", "scikit-build>=0.11.1", "ninja>=1.10.2", "cmake>=3.21.2", "cython>=0.29.24",]
+requires = [
+  "scikit-build-core>=0.10",
+  "cython>=0.29.24",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "networkx_algo_common_subtree"
+version = "0.2.3"
+description = "A networkx implementation of algorithms to find common ordered subtree minors and isomorphisms"
+readme = "README.rst"
+requires-python = ">=3.8"
+license = { text = "Apache 2" }
+authors = [
+  { name = "Jon Crall", email = "erotemic@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "networkx>=2.7",
+]
+
+[project.optional-dependencies]
+runtime = ["networkx>=2.7"]
+tests = [
+  "xdoctest>=1.1.3",
+  "pytest>=7.4.4",
+  "pytest-cov>=3.0.0",
+  "coverage[toml]>=6.5.0",
+  "ubelt>=1.3.4",
+]
+build = [
+  "scikit-build-core>=0.10",
+  "ninja>=1.10.2",
+  "cmake>=3.21.2",
+  "cython>=0.29.24",
+]
+
+[project.urls]
+Homepage = "https://github.com/Erotemic/networkx_algo_common_subtree"
+
+[tool.scikit-build]
+cmake.version = ">=3.21"
+wheel.packages = ["networkx_algo_common_subtree"]
 
 [tool.cibuildwheel]
 build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
 build-frontend = "build"
-# skip = "pp* *-musllinux_* *-win32"
 build-verbosity = 1
-#test-requires = [ "-r requirements/tests.txt",]
 test-command = "python {project}/run_tests.py"
-test-extras = ["tests-strict", "runtime-strict"]
+test-extras = ["tests", "runtime"]
 
 [tool.mypy]
 ignore_missing_imports = true

@@ -1,160 +1,102 @@
-###
-# CMakeLists for networkx_algo_common_subtree C/C++/Cuda Python extension modules
-#
-# Notes:
-# https://github.com/Erotemic/netharn/issues/7
-# https://github.com/amueller/word_cloud/pull/42ci
-
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.15)
 
 project(networkx_algo_common_subtree LANGUAGES C CXX)
 
-option(USE_CUDA "Build with CUDA" TRUE)
-option(networkx_algo_common_subtree_VERBOSE "Print extra info" FALSE)
-
-
-if (USE_CUDA)
-    include(CheckLanguage)
-    check_language(CUDA)
-    if(CMAKE_CUDA_COMPILER)
-        enable_language(CUDA)
-    elseif()
-        message(STATUS "CUDA not found, CUDA library will not be built")
-        set(USE_CUDA OFF)
-    endif()
+set(_disable_c_extensions "$ENV{DISABLE_C_EXTENSIONS}")
+string(TOLOWER "${_disable_c_extensions}" _disable_c_extensions)
+if(_disable_c_extensions MATCHES "^(1|on|yes|true)$")
+  set(_build_cython_default OFF)
+else()
+  set(_build_cython_default ON)
 endif()
 
-# Setup basic python stuff and ensure we have skbuild
-###
-# Private helper function to execute `python -c "<cmd>"`
-#
-# Runs a python command and populates an outvar with the result of stdout.
-# Be careful of indentation if `cmd` is multiline.
-#
-function(pycmd outvar cmd)
-  execute_process(
-    COMMAND "${PYTHON_EXECUTABLE}" -c "${cmd}"
-    RESULT_VARIABLE _exitcode
-    OUTPUT_VARIABLE _output)
-  if(NOT ${_exitcode} EQUAL 0)
-    message(ERROR "Failed when running python code: \"\"\"
-${cmd}\"\"\"")
-    message(FATAL_ERROR "Python command failed with error code: ${_exitcode}")
-  endif()
-  # Remove supurflous newlines (artifacts of print)
-  string(STRIP "${_output}" _output)
-  set(${outvar} "${_output}" PARENT_SCOPE)
-endfunction()
-
-
-###
-# Find current python major version user option
-#
-
-find_package(PythonInterp REQUIRED)
-#find_package(PythonLibs REQUIRED)
-include_directories(SYSTEM ${PYTHON_INCLUDE_DIR})
-
-
-###
-# Find scikit-build and include its cmake resource scripts
-#
-if (NOT SKBUILD)
-  pycmd(skbuild_location "import os, skbuild; print(os.path.dirname(skbuild.__file__))")
-  set(skbuild_cmake_dir "${skbuild_location}/resources/cmake")
-  # If skbuild is not the driver, then we need to include its utilities in our CMAKE_MODULE_PATH
-  list(APPEND CMAKE_MODULE_PATH ${skbuild_cmake_dir})
+set(_disable_rust_extensions "$ENV{DISABLE_RUST_EXTENSIONS}")
+string(TOLOWER "${_disable_rust_extensions}" _disable_rust_extensions)
+if(_disable_rust_extensions MATCHES "^(1|on|yes|true)$")
+  set(_build_rust_default OFF)
+else()
+  set(_build_rust_default ON)
 endif()
 
-find_package(PythonExtensions REQUIRED)
+option(BUILD_CYTHON_EXTENSIONS "Build Cython extension modules" ${_build_cython_default})
+option(BUILD_RUST_EXTENSIONS "Build Rust extension module" ${_build_rust_default})
 
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
-###
-# Status string for debugging
-#
-set(PYTHON_SETUP_STATUS "
-  * PYTHON_EXECUTABLE = \"${PYTHON_EXECUTABLE}\"
-
-  * PYTHON_INCLUDE_DIR = \"${PYTHON_INCLUDE_DIR}\"
-  * PYTHON_LIBRARY = \"${PYTHON_LIBRARY}\"
-  * PYTHON_LIBRARY_DEBUG = \"${PYTHON_LIBRARY_DEBUG}\"
-
-  * skbuild_location = \"${skbuild_location}\"
-  * skbuild_cmake_dir = \"${skbuild_cmake_dir}\"
-")
-
-
-
-find_package(Cython REQUIRED)
-#find_package(NumPy REQUIRED)
-
+execute_process(
+  COMMAND "${Python3_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX') or '')"
+  OUTPUT_VARIABLE PYTHON_EXT_SUFFIX
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 function(cpu_cython_module cython_source module_name)
-  # Translate Cython into C/C++
-  add_cython_target(${module_name} "${cython_source}" CXX OUTPUT_VAR sources)
-  # Create C++ library. Specify include dirs and link libs as normal
-  add_library(${module_name} MODULE ${sources})
-  target_include_directories(
-    ${module_name}
-    PUBLIC
-      #${NumPy_INCLUDE_DIRS}
-      ${PYTHON_INCLUDE_DIRS}
+  set(_generated_cpp "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.cpp")
+  add_custom_command(
+    OUTPUT "${_generated_cpp}"
+    COMMAND "${Python3_EXECUTABLE}" -m cython --cplus "${CMAKE_CURRENT_SOURCE_DIR}/${cython_source}" -o "${_generated_cpp}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${cython_source}"
+    COMMENT "Cythonizing ${cython_source}"
+    VERBATIM
   )
-  #target_link_libraries(${module_name} ${PYTHON_LIBRARIES})
-  #target_link_libraries(${module_name})
-  #${PYTHON_LIBRARIES})
 
-  target_compile_definitions(${module_name} PUBLIC
-    "NPY_NO_DEPRECATED_API"
-    #"NPY_1_7_API_VERSION=0x00000007"
+  Python3_add_library(${module_name} MODULE WITH_SOABI "${_generated_cpp}")
+  set_target_properties(${module_name} PROPERTIES PREFIX "")
+  target_include_directories(${module_name} PRIVATE "${Python3_INCLUDE_DIRS}")
+  target_compile_definitions(${module_name} PUBLIC "NPY_NO_DEPRECATED_API")
+
+  install(TARGETS ${module_name}
+    LIBRARY DESTINATION "networkx_algo_common_subtree"
+    RUNTIME DESTINATION "networkx_algo_common_subtree"
+  )
+endfunction()
+
+if(BUILD_CYTHON_EXTENSIONS)
+  add_subdirectory("networkx_algo_common_subtree")
+endif()
+
+if(BUILD_RUST_EXTENSIONS)
+  find_program(CARGO_EXECUTABLE cargo)
+  if(NOT CARGO_EXECUTABLE)
+    message(WARNING "cargo not found; skipping Rust extension build")
+  else()
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+      set(_cargo_profile_dir "debug")
+      set(_cargo_release_arg "")
+    else()
+      set(_cargo_profile_dir "release")
+      set(_cargo_release_arg "--release")
+    endif()
+
+    set(_cargo_target_dir "${CMAKE_CURRENT_BINARY_DIR}/cargo-target")
+    if(WIN32)
+      set(_cargo_lib_name "_rust.dll")
+    elseif(APPLE)
+      set(_cargo_lib_name "lib_rust.dylib")
+    else()
+      set(_cargo_lib_name "lib_rust.so")
+    endif()
+
+    set(_cargo_lib_path "${_cargo_target_dir}/${_cargo_profile_dir}/${_cargo_lib_name}")
+    set(_rust_ext_path "${CMAKE_CURRENT_BINARY_DIR}/_rust${PYTHON_EXT_SUFFIX}")
+
+    add_custom_command(
+      OUTPUT "${_rust_ext_path}"
+      COMMAND "${CMAKE_COMMAND}" -E env
+        PYO3_BUILD_EXTENSION_MODULE=1
+        PYO3_PYTHON=${Python3_EXECUTABLE}
+        "${CARGO_EXECUTABLE}" build
+        --manifest-path "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.toml"
+        --target-dir "${_cargo_target_dir}"
+        ${_cargo_release_arg}
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${_cargo_lib_path}" "${_rust_ext_path}"
+      DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.toml"
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/src/lib.rs"
+      COMMENT "Building Rust extension module with cargo"
+      VERBATIM
     )
 
-  # Transform the C++ library into an importable python module
-  python_extension_module(${module_name})
-  # Install the C++ module to the correct relative location
-  # (this will be an inplace build if you use `pip install -e`)
-  file(RELATIVE_PATH _install_dest "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-  install(TARGETS ${module_name} LIBRARY DESTINATION "${_install_dest}")
-endfunction(cpu_cython_module)
-
-
-# Typically you would place this CMake code next to your Cython module
-add_subdirectory("networkx_algo_common_subtree")
-
-
-set(networkx_algo_common_subtree_CONFIG_STATUS "
-PYTHON_CONFIG_STATUS
-====================
-
-Include Dirs:
-  * CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES = \"${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}\"
-  * NumPy_INCLUDE_DIRS = \"${NumPy_INCLUDE_DIRS}\"
-  * PYTHON_INCLUDE_DIRS = \"${PYTHON_INCLUDE_DIRS}\"
-
-status(Cython):
-  * CYTHON_FOUND = \"${CYTHON_FOUND}\"
-  * CYTHON_EXECUTABLE = \"${CYTHON_EXECUTABLE}\"
-  * CYTHON_VERSION = \"${CYTHON_VERSION}\"
-
-status(NumPy):
-  * NumPy_FOUND = \"${NumPy_FOUND}\"
-  * NumPy_INCLUDE_DIRS = \"${NumPy_INCLUDE_DIRS}\"
-  * NumPy_VERSION = \"${NumPy_VERSION}\"
-  * NumPy_CONV_TEMPLATE_EXECUTABLE = \"${NumPy_CONV_TEMPLATE_EXECUTABLE}\"
-  * NumPy_FROM_TEMPLATE_EXECUTABLE = \"${NumPy_FROM_TEMPLATE_EXECUTABLE}\"
-
-status(PythonExtensions):
-  * PYTHON_PREFIX = \"${PYTHON_PREFIX}\"
-  * PYTHON_SITE_PACKAGES_DIR = \"${PYTHON_SITE_PACKAGES_DIR}\"
-  * PYTHON_RELATIVE_SITE_PACKAGES_DIR = \"${PYTHON_RELATIVE_SITE_PACKAGES_DIR}\"
-  * PYTHON_SEPARATOR = \"${PYTHON_SEPARATOR}\"
-  * PYTHON_PATH_SEPARATOR = \"${PYTHON_PATH_SEPARATOR}\"
-  * PYTHON_EXTENSION_MODULE_SUFFIX = \"${PYTHON_EXTENSION_MODULE_SUFFIX}\"
-
-status(python-setup)
-${PYTHON_SETUP_STATUS}
-")
-
-if (networkx_algo_common_subtree_VERBOSE)
-  message(STATUS ${networkx_algo_common_subtree_CONFIG_STATUS})
-endif ()
+    add_custom_target(rust_extension ALL DEPENDS "${_rust_ext_path}")
+    install(FILES "${_rust_ext_path}" DESTINATION "networkx_algo_common_subtree")
+  endif()
+endif()

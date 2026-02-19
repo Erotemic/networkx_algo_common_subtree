@@ -156,3 +156,25 @@ information:
 
 .. |Codecov| image:: https://codecov.io/github/Erotemic/networkx_algo_common_subtree/badge.svg?branch=main&service=github
     :target: https://codecov.io/github/Erotemic/networkx_algo_common_subtree?branch=main
+
+
+Build Notes
+-----------
+
+This project now uses ``scikit-build-core`` as its PEP 517 backend. Typical
+local workflows are:
+
+.. code:: bash
+
+    pip install -e .
+    pip wheel .
+
+Build toggles:
+
+* ``DISABLE_C_EXTENSIONS=1`` disables Cython extension builds.
+* ``DISABLE_RUST_EXTENSIONS=1`` disables the Rust extension build.
+
+Rust backend notes:
+
+* The Rust extension module is ``networkx_algo_common_subtree._rust``.
+* If built, ``impl="auto"`` prefers Rust, then Cython, then pure Python.
