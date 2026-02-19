@@ -61,3 +61,16 @@ def test_python_cython_rust_agree_on_small_examples():
             )
             iso_values[impl] = value
         assert len(set(iso_values.values())) == 1
+
+
+def test_rust_impl_registration_behavior():
+    emb_impls = balanced_embedding.available_impls_longest_common_balanced_embedding()
+    iso_impls = balanced_isomorphism.available_impls_longest_common_balanced_isomorphism()
+    try:
+        import networkx_algo_common_subtree._rust  # NOQA
+    except Exception:
+        assert "iter-rust" not in emb_impls
+        assert "iter-rust" not in iso_impls
+    else:
+        assert "iter-rust" in emb_impls
+        assert "iter-rust" in iso_impls
