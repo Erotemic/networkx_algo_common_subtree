@@ -25,9 +25,43 @@ struct Decomp {
     head_tail: u32,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+struct IndexRange {
+    start: u32,
+    end: u32,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Hash)]
+struct StateKey {
+    len: u32,
+    ranges: Vec<IndexRange>,
+}
+
+impl StateKey {
+    fn empty() -> Self {
+        Self {
+            len: 0,
+            ranges: Vec::new(),
+        }
+    }
+
+    fn full(len: usize) -> Self {
+        if len == 0 {
+            return Self::empty();
+        }
+        Self {
+            len: len as u32,
+            ranges: vec![IndexRange {
+                start: 0,
+                end: len as u32,
+            }],
+        }
+    }
+}
+
 struct StatePool {
-    states: Vec<Vec<u32>>,
-    index: HashMap<Vec<u32>, u32>,
+    states: Vec<StateKey>,
+    index: HashMap<StateKey, u32>,
 }
 
 impl StatePool {
@@ -39,7 +73,26 @@ impl StatePool {
     }
 
     fn intern(&mut self, state: Vec<u32>) -> u32 {
-        if let Some(&sid) = self.index.get(state.as_slice()) {
+        let mut ranges = Vec::<IndexRange>::new();
+        let mut len = 0u32;
+        for idx in state {
+            len += 1;
+            if let Some(last) = ranges.last_mut() {
+                if last.end == idx {
+                    last.end += 1;
+                    continue;
+                }
+            }
+            ranges.push(IndexRange {
+                start: idx,
+                end: idx + 1,
+            });
+        }
+        self.intern_key(StateKey { len, ranges })
+    }
+
+    fn intern_key(&mut self, state: StateKey) -> u32 {
+        if let Some(&sid) = self.index.get(&state) {
             return sid;
         }
         let sid = self.states.len() as u32;
@@ -48,8 +101,99 @@ impl StatePool {
         sid
     }
 
-    fn get(&self, sid: u32) -> &[u32] {
+    fn get(&self, sid: u32) -> &StateKey {
         &self.states[sid as usize]
+    }
+
+    #[inline]
+    fn is_empty(&self, sid: u32) -> bool {
+        self.get(sid).len == 0
+    }
+
+    fn first(&self, sid: u32) -> Option<u32> {
+        self.get(sid).ranges.first().map(|r| r.start)
+    }
+
+    fn index_at_pos(&self, sid: u32, pos: u32) -> Option<u32> {
+        let state = self.get(sid);
+        if pos >= state.len {
+            return None;
+        }
+        let mut cursor = 0u32;
+        for r in &state.ranges {
+            let span = r.end - r.start;
+            if pos < cursor + span {
+                return Some(r.start + (pos - cursor));
+            }
+            cursor += span;
+        }
+        None
+    }
+
+    fn slice_by_pos(&self, sid: u32, start_pos: u32, end_pos: u32) -> StateKey {
+        let state = self.get(sid);
+        if start_pos >= end_pos || start_pos >= state.len {
+            return StateKey::empty();
+        }
+        let end_pos = end_pos.min(state.len);
+        let mut out = Vec::<IndexRange>::new();
+        let mut cursor = 0u32;
+        for r in &state.ranges {
+            let span = r.end - r.start;
+            let seg_start = cursor;
+            let seg_end = cursor + span;
+            if seg_end <= start_pos {
+                cursor = seg_end;
+                continue;
+            }
+            if seg_start >= end_pos {
+                break;
+            }
+            let local_start = start_pos.saturating_sub(seg_start);
+            let local_end = (end_pos - seg_start).min(span);
+            let start = r.start + local_start;
+            let end = r.start + local_end;
+            if start < end {
+                if let Some(last) = out.last_mut() {
+                    if last.end == start {
+                        last.end = end;
+                    } else {
+                        out.push(IndexRange { start, end });
+                    }
+                } else {
+                    out.push(IndexRange { start, end });
+                }
+            }
+            cursor = seg_end;
+        }
+        StateKey {
+            len: end_pos - start_pos,
+            ranges: out,
+        }
+    }
+
+    fn concat(&self, left: &StateKey, right: &StateKey) -> StateKey {
+        if left.len == 0 {
+            return right.clone();
+        }
+        if right.len == 0 {
+            return left.clone();
+        }
+        let mut ranges = Vec::with_capacity(left.ranges.len() + right.ranges.len());
+        ranges.extend_from_slice(&left.ranges);
+        for &r in &right.ranges {
+            if let Some(last) = ranges.last_mut() {
+                if last.end == r.start {
+                    last.end = r.end;
+                    continue;
+                }
+            }
+            ranges.push(r);
+        }
+        StateKey {
+            len: left.len + right.len,
+            ranges,
+        }
     }
 }
 
@@ -177,10 +321,10 @@ impl<'py> Solver<'py> {
 
         let mut pool1 = StatePool::with_capacity(state_cap1);
         let mut pool2 = StatePool::with_capacity(state_cap2);
-        pool1.intern((0..len1 as u32).collect());
-        pool2.intern((0..len2 as u32).collect());
-        pool1.intern(Vec::new());
-        pool2.intern(Vec::new());
+        pool1.intern_key(StateKey::full(len1));
+        pool2.intern_key(StateKey::full(len2));
+        pool1.intern_key(StateKey::empty());
+        pool2.intern_key(StateKey::empty());
 
         Ok(Self {
             py,
@@ -273,46 +417,51 @@ impl<'py> Solver<'py> {
             return Ok(d.clone());
         }
         let state = self.pool1.get(sid);
-        if state.is_empty() {
+        if state.len == 0 {
             return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
         }
 
         let mut depth = 0i32;
         let mut match_pos = None;
-        for (pos, &idx) in state.iter().enumerate() {
-            let i = idx as usize;
-            if self.seq1_is_open[i] {
-                depth += 1;
-            } else {
-                depth -= 1;
-                if depth == 0 {
-                    match_pos = Some(pos);
-                    break;
+        let mut pos = 0u32;
+        for r in &state.ranges {
+            for idx in r.start..r.end {
+                let i = idx as usize;
+                if self.seq1_is_open[i] {
+                    depth += 1;
+                } else {
+                    depth -= 1;
+                    if depth == 0 {
+                        match_pos = Some(pos);
+                        break;
+                    }
                 }
+                pos += 1;
+            }
+            if match_pos.is_some() {
+                break;
             }
         }
         let m = match_pos.ok_or_else(|| pyo3::exceptions::PyValueError::new_err("No matching close token found"))?;
 
-        let a = state[0];
-        let b = state[m];
+        let a = self.pool1.first(sid).unwrap_or(0);
+        let b = self.pool1.index_at_pos(sid, m).unwrap_or(0);
         let open_id = self.seq1_tok_id[a as usize];
         let close_id = self.seq1_tok_id[b as usize];
         if self.open_to_close_id.get(&open_id) != Some(&close_id) {
             return Err(pyo3::exceptions::PyValueError::new_err("Mismatched close token"));
         }
 
-        let head = state[1..m].to_vec();
-        let tail = state[(m + 1)..].to_vec();
-        let mut head_tail = Vec::with_capacity(head.len() + tail.len());
-        head_tail.extend_from_slice(&head);
-        head_tail.extend_from_slice(&tail);
+        let head = self.pool1.slice_by_pos(sid, 1, m);
+        let tail = self.pool1.slice_by_pos(sid, m + 1, state.len);
+        let head_tail = self.pool1.concat(&head, &tail);
 
         let d = Decomp {
             a,
             b,
-            head: self.pool1.intern(head),
-            tail: self.pool1.intern(tail),
-            head_tail: self.pool1.intern(head_tail),
+            head: self.pool1.intern_key(head),
+            tail: self.pool1.intern_key(tail),
+            head_tail: self.pool1.intern_key(head_tail),
         };
         self.decomp1.insert(sid, d.clone());
         Ok(d)
@@ -323,46 +472,51 @@ impl<'py> Solver<'py> {
             return Ok(d.clone());
         }
         let state = self.pool2.get(sid);
-        if state.is_empty() {
+        if state.len == 0 {
             return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
         }
 
         let mut depth = 0i32;
         let mut match_pos = None;
-        for (pos, &idx) in state.iter().enumerate() {
-            let i = idx as usize;
-            if self.seq2_is_open[i] {
-                depth += 1;
-            } else {
-                depth -= 1;
-                if depth == 0 {
-                    match_pos = Some(pos);
-                    break;
+        let mut pos = 0u32;
+        for r in &state.ranges {
+            for idx in r.start..r.end {
+                let i = idx as usize;
+                if self.seq2_is_open[i] {
+                    depth += 1;
+                } else {
+                    depth -= 1;
+                    if depth == 0 {
+                        match_pos = Some(pos);
+                        break;
+                    }
                 }
+                pos += 1;
+            }
+            if match_pos.is_some() {
+                break;
             }
         }
         let m = match_pos.ok_or_else(|| pyo3::exceptions::PyValueError::new_err("No matching close token found"))?;
 
-        let a = state[0];
-        let b = state[m];
+        let a = self.pool2.first(sid).unwrap_or(0);
+        let b = self.pool2.index_at_pos(sid, m).unwrap_or(0);
         let open_id = self.seq2_tok_id[a as usize];
         let close_id = self.seq2_tok_id[b as usize];
         if self.open_to_close_id.get(&open_id) != Some(&close_id) {
             return Err(pyo3::exceptions::PyValueError::new_err("Mismatched close token"));
         }
 
-        let head = state[1..m].to_vec();
-        let tail = state[(m + 1)..].to_vec();
-        let mut head_tail = Vec::with_capacity(head.len() + tail.len());
-        head_tail.extend_from_slice(&head);
-        head_tail.extend_from_slice(&tail);
+        let head = self.pool2.slice_by_pos(sid, 1, m);
+        let tail = self.pool2.slice_by_pos(sid, m + 1, state.len);
+        let head_tail = self.pool2.concat(&head, &tail);
 
         let d = Decomp {
             a,
             b,
-            head: self.pool2.intern(head),
-            tail: self.pool2.intern(tail),
-            head_tail: self.pool2.intern(head_tail),
+            head: self.pool2.intern_key(head),
+            tail: self.pool2.intern_key(tail),
+            head_tail: self.pool2.intern_key(head_tail),
         };
         self.decomp2.insert(sid, d.clone());
         Ok(d)
@@ -386,7 +540,7 @@ impl<'py> Solver<'py> {
     }
 
     fn emb(&mut self, s1: u32, s2: u32) -> PyResult<Arc<MatchResult>> {
-        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
+        if self.pool1.is_empty(s1) || self.pool2.is_empty(s2) {
             return Ok(self.empty_match.clone());
         }
         let key = Self::memo_key(s1, s2);
@@ -434,7 +588,7 @@ impl<'py> Solver<'py> {
     }
 
     fn iso(&mut self, s1: u32, s2: u32) -> PyResult<IsoResult> {
-        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
+        if self.pool1.is_empty(s1) || self.pool2.is_empty(s2) {
             return Ok(IsoResult::default());
         }
         let key = Self::memo_key(s1, s2);
