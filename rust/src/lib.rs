@@ -1,6 +1,5 @@
 use pyo3::prelude::*;
 use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple};
-use std::cmp::Ordering;
 use rustc_hash::FxHashMap as HashMap;
 
 #[derive(Clone, Debug, Default)]
@@ -16,17 +15,36 @@ struct IsoResult {
     lvl: MatchResult,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Decomp {
     a: u32,
     b: u32,
-    head: Vec<u32>,
-    tail: Vec<u32>,
-    head_tail: Vec<u32>,
+    head: u32,
+    tail: u32,
+    head_tail: u32,
 }
 
-type State = Vec<u32>;
-type StateKey = (State, State);
+#[derive(Default)]
+struct StatePool {
+    states: Vec<Vec<u32>>,
+    index: HashMap<Vec<u32>, u32>,
+}
+
+impl StatePool {
+    fn intern(&mut self, state: Vec<u32>) -> u32 {
+        if let Some(&sid) = self.index.get(&state) {
+            return sid;
+        }
+        let sid = self.states.len() as u32;
+        self.index.insert(state.clone(), sid);
+        self.states.push(state);
+        sid
+    }
+
+    fn get(&self, sid: u32) -> &[u32] {
+        &self.states[sid as usize]
+    }
+}
 
 struct Interner<'py> {
     py: Python<'py>,
@@ -77,12 +95,15 @@ struct Solver<'py> {
     seq1_is_open: Vec<bool>,
     seq2_is_open: Vec<bool>,
     open_to_close_id: HashMap<u32, u32>,
-    close_to_open_id: HashMap<u32, u32>,
     node_affinity: Option<Py<PyAny>>,
-    decomp1: HashMap<State, Decomp>,
-    decomp2: HashMap<State, Decomp>,
-    memo_emb: HashMap<StateKey, MatchResult>,
-    memo_iso: HashMap<StateKey, IsoResult>,
+
+    pool1: StatePool,
+    pool2: StatePool,
+    decomp1: HashMap<u32, Decomp>,
+    decomp2: HashMap<u32, Decomp>,
+
+    memo_emb: HashMap<u64, MatchResult>,
+    memo_iso: HashMap<u64, IsoResult>,
 }
 
 impl<'py> Solver<'py> {
@@ -111,12 +132,10 @@ impl<'py> Solver<'py> {
 
         let mut interner = Interner::new(py);
         let mut open_to_close_id = HashMap::default();
-        let mut close_to_open_id = HashMap::default();
         for (k, v) in open_to_close.iter() {
             let ok = interner.id_for(&k)?;
             let cv = interner.id_for(&v)?;
             open_to_close_id.insert(ok, cv);
-            close_to_open_id.insert(cv, ok);
         }
 
         let (seq1_tok_id, seq1_aff_id, seq1_aff_py) = Self::encode_sequence(
@@ -141,6 +160,13 @@ impl<'py> Solver<'py> {
             .map(|tid| open_to_close_id.contains_key(tid))
             .collect::<Vec<_>>();
 
+        let mut pool1 = StatePool::default();
+        let mut pool2 = StatePool::default();
+        pool1.intern((0..seq1_py.len() as u32).collect());
+        pool2.intern((0..seq2_py.len() as u32).collect());
+        pool1.intern(Vec::new());
+        pool2.intern(Vec::new());
+
         Ok(Self {
             py,
             seq1_obj,
@@ -156,8 +182,9 @@ impl<'py> Solver<'py> {
             seq1_is_open,
             seq2_is_open,
             open_to_close_id,
-            close_to_open_id,
             node_affinity,
+            pool1,
+            pool2,
             decomp1: HashMap::default(),
             decomp2: HashMap::default(),
             memo_emb: HashMap::default(),
@@ -176,8 +203,7 @@ impl<'py> Solver<'py> {
         let mut aff_py = Vec::with_capacity(seq.len());
         for tok in seq {
             let tokb = tok.bind(py);
-            let tid = interner.id_for(&tokb)?;
-            tok_ids.push(tid);
+            tok_ids.push(interner.id_for(&tokb)?);
             let mapped = if let Some(map) = open_to_node {
                 match map.bind(py).get_item(tokb) {
                     Ok(v) => v,
@@ -186,11 +212,15 @@ impl<'py> Solver<'py> {
             } else {
                 tokb.clone()
             };
-            let aid = interner.id_for(&mapped)?;
-            aff_ids.push(aid);
+            aff_ids.push(interner.id_for(&mapped)?);
             aff_py.push(mapped.unbind());
         }
         Ok((tok_ids, aff_ids, aff_py))
+    }
+
+    #[inline]
+    fn memo_key(a: u32, b: u32) -> u64 {
+        ((a as u64) << 32) | (b as u64)
     }
 
     fn affinity(&self, tok1: u32, tok2: u32, which1: u8, which2: u8) -> PyResult<f64> {
@@ -232,63 +262,36 @@ impl<'py> Solver<'py> {
         }
     }
 
-    fn decompose(&mut self, which: u8, state: &[u32]) -> PyResult<Decomp> {
+    fn decompose1(&mut self, sid: u32) -> PyResult<Decomp> {
+        if let Some(d) = self.decomp1.get(&sid) {
+            return Ok(d.clone());
+        }
+        let state = self.pool1.get(sid).to_vec();
         if state.is_empty() {
             return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
         }
-        let cache = if which == 1 {
-            &mut self.decomp1
-        } else {
-            &mut self.decomp2
-        };
-        if let Some(d) = cache.get(state) {
-            return Ok(d.clone());
-        }
-
-        let (seq_tok_id, seq_is_open) = if which == 1 {
-            (&self.seq1_tok_id, &self.seq1_is_open)
-        } else {
-            (&self.seq2_tok_id, &self.seq2_is_open)
-        };
 
         let mut depth = 0i32;
         let mut match_pos = None;
         for (pos, &idx) in state.iter().enumerate() {
             let i = idx as usize;
-            if seq_is_open[i] {
+            if self.seq1_is_open[i] {
                 depth += 1;
             } else {
-                if depth == 0 {
-                    return Err(pyo3::exceptions::PyValueError::new_err("Invalid balanced sequence"));
-                }
                 depth -= 1;
                 if depth == 0 {
                     match_pos = Some(pos);
                     break;
                 }
             }
-
-            // quick structural validation for close tokens
-            if !seq_is_open[i] {
-                let close_id = seq_tok_id[i];
-                if !self.close_to_open_id.contains_key(&close_id) {
-                    return Err(pyo3::exceptions::PyKeyError::new_err(
-                        "Token missing from open_to_close mapping",
-                    ));
-                }
-            }
         }
+        let m = match_pos.ok_or_else(|| pyo3::exceptions::PyValueError::new_err("No matching close token found"))?;
 
-        let m = match_pos.ok_or_else(|| {
-            pyo3::exceptions::PyValueError::new_err("No matching close token found")
-        })?;
         let a = state[0];
         let b = state[m];
-
-        // validate matching type for first open and detected close
-        let a_tok = seq_tok_id[a as usize];
-        let b_tok = seq_tok_id[b as usize];
-        if self.open_to_close_id.get(&a_tok) != Some(&b_tok) {
+        let open_id = self.seq1_tok_id[a as usize];
+        let close_id = self.seq1_tok_id[b as usize];
+        if self.open_to_close_id.get(&open_id) != Some(&close_id) {
             return Err(pyo3::exceptions::PyValueError::new_err("Mismatched close token"));
         }
 
@@ -301,14 +304,65 @@ impl<'py> Solver<'py> {
         let d = Decomp {
             a,
             b,
-            head,
-            tail,
-            head_tail,
+            head: self.pool1.intern(head),
+            tail: self.pool1.intern(tail),
+            head_tail: self.pool1.intern(head_tail),
         };
-        cache.insert(state.to_vec(), d.clone());
+        self.decomp1.insert(sid, d.clone());
         Ok(d)
     }
 
+    fn decompose2(&mut self, sid: u32) -> PyResult<Decomp> {
+        if let Some(d) = self.decomp2.get(&sid) {
+            return Ok(d.clone());
+        }
+        let state = self.pool2.get(sid).to_vec();
+        if state.is_empty() {
+            return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
+        }
+
+        let mut depth = 0i32;
+        let mut match_pos = None;
+        for (pos, &idx) in state.iter().enumerate() {
+            let i = idx as usize;
+            if self.seq2_is_open[i] {
+                depth += 1;
+            } else {
+                depth -= 1;
+                if depth == 0 {
+                    match_pos = Some(pos);
+                    break;
+                }
+            }
+        }
+        let m = match_pos.ok_or_else(|| pyo3::exceptions::PyValueError::new_err("No matching close token found"))?;
+
+        let a = state[0];
+        let b = state[m];
+        let open_id = self.seq2_tok_id[a as usize];
+        let close_id = self.seq2_tok_id[b as usize];
+        if self.open_to_close_id.get(&open_id) != Some(&close_id) {
+            return Err(pyo3::exceptions::PyValueError::new_err("Mismatched close token"));
+        }
+
+        let head = state[1..m].to_vec();
+        let tail = state[(m + 1)..].to_vec();
+        let mut head_tail = Vec::with_capacity(head.len() + tail.len());
+        head_tail.extend_from_slice(&head);
+        head_tail.extend_from_slice(&tail);
+
+        let d = Decomp {
+            a,
+            b,
+            head: self.pool2.intern(head),
+            tail: self.pool2.intern(tail),
+            head_tail: self.pool2.intern(head_tail),
+        };
+        self.decomp2.insert(sid, d.clone());
+        Ok(d)
+    }
+
+    #[inline]
     fn better_match(&self, cand: &MatchResult, best: &MatchResult) -> bool {
         if cand.val > best.val {
             return true;
@@ -316,36 +370,37 @@ impl<'py> Solver<'py> {
         if cand.val < best.val {
             return false;
         }
-        match cand.s1.cmp(&best.s1) {
-            Ordering::Greater => return true,
-            Ordering::Less => return false,
-            Ordering::Equal => {}
+        if cand.s1 > best.s1 {
+            return true;
+        }
+        if cand.s1 < best.s1 {
+            return false;
         }
         cand.s2 > best.s2
     }
 
-    fn emb(&mut self, s1: State, s2: State) -> PyResult<MatchResult> {
-        if s1.is_empty() || s2.is_empty() {
+    fn emb(&mut self, s1: u32, s2: u32) -> PyResult<MatchResult> {
+        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
             return Ok(MatchResult::default());
         }
-        let key = (s1.clone(), s2.clone());
+        let key = Self::memo_key(s1, s2);
         if let Some(found) = self.memo_emb.get(&key) {
             return Ok(found.clone());
         }
 
-        let d1 = self.decompose(1, &s1)?;
-        let d2 = self.decompose(2, &s2)?;
+        let d1 = self.decompose1(s1)?;
+        let d2 = self.decompose2(s2)?;
 
-        let mut best = self.emb(d1.head_tail.clone(), s2.clone())?;
-        let cand2 = self.emb(s1.clone(), d2.head_tail.clone())?;
+        let mut best = self.emb(d1.head_tail, s2)?;
+        let cand2 = self.emb(s1, d2.head_tail)?;
         if self.better_match(&cand2, &best) {
             best = cand2;
         }
 
         let aff = self.affinity(d1.a, d2.a, 1, 2)?;
         if aff > 0.0 {
-            let h = self.emb(d1.head.clone(), d2.head.clone())?;
-            let t = self.emb(d1.tail.clone(), d2.tail.clone())?;
+            let h = self.emb(d1.head, d2.head)?;
+            let t = self.emb(d1.tail, d2.tail)?;
             let mut s1v = Vec::with_capacity(h.s1.len() + t.s1.len() + 2);
             s1v.push(d1.a);
             s1v.extend_from_slice(&h.s1);
@@ -372,22 +427,22 @@ impl<'py> Solver<'py> {
         Ok(best)
     }
 
-    fn iso(&mut self, s1: State, s2: State) -> PyResult<IsoResult> {
-        if s1.is_empty() || s2.is_empty() {
+    fn iso(&mut self, s1: u32, s2: u32) -> PyResult<IsoResult> {
+        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
             return Ok(IsoResult::default());
         }
-        let key = (s1.clone(), s2.clone());
+        let key = Self::memo_key(s1, s2);
         if let Some(found) = self.memo_iso.get(&key) {
             return Ok(found.clone());
         }
 
-        let d1 = self.decompose(1, &s1)?;
-        let d2 = self.decompose(2, &s2)?;
+        let d1 = self.decompose1(s1)?;
+        let d2 = self.decompose2(s2)?;
 
-        let r_h1s2 = self.iso(d1.head.clone(), s2.clone())?;
-        let r_t1s2 = self.iso(d1.tail.clone(), s2.clone())?;
-        let r_s1h2 = self.iso(s1.clone(), d2.head.clone())?;
-        let r_s1t2 = self.iso(s1.clone(), d2.tail.clone())?;
+        let r_h1s2 = self.iso(d1.head, s2)?;
+        let r_t1s2 = self.iso(d1.tail, s2)?;
+        let r_s1h2 = self.iso(s1, d2.head)?;
+        let r_s1t2 = self.iso(s1, d2.tail)?;
 
         let mut any = MatchResult::default();
         for cand in [
@@ -410,8 +465,8 @@ impl<'py> Solver<'py> {
 
         let aff = self.affinity(d1.a, d2.a, 1, 2)?;
         if aff > 0.0 {
-            let r_h1h2 = self.iso(d1.head.clone(), d2.head.clone())?;
-            let r_t1t2 = self.iso(d1.tail.clone(), d2.tail.clone())?;
+            let r_h1h2 = self.iso(d1.head, d2.head)?;
+            let r_t1t2 = self.iso(d1.tail, d2.tail)?;
             let mut s1v = Vec::with_capacity(r_h1h2.lvl.s1.len() + r_t1t2.lvl.s1.len() + 2);
             s1v.push(d1.a);
             s1v.extend_from_slice(&r_h1h2.lvl.s1);
@@ -485,8 +540,8 @@ fn longest_common_balanced_embedding(
         node_affinity,
     )?;
 
-    let s1 = (0..solver.seq1_py.len() as u32).collect::<Vec<_>>();
-    let s2 = (0..solver.seq2_py.len() as u32).collect::<Vec<_>>();
+    let s1 = 0u32;
+    let s2 = 0u32;
     let out = solver.emb(s1, s2)?;
     let best1 = solver.indices_to_seq(1, &out.s1)?;
     let best2 = solver.indices_to_seq(2, &out.s2)?;
@@ -511,8 +566,8 @@ fn longest_common_balanced_isomorphism(
         node_affinity,
     )?;
 
-    let s1 = (0..solver.seq1_py.len() as u32).collect::<Vec<_>>();
-    let s2 = (0..solver.seq2_py.len() as u32).collect::<Vec<_>>();
+    let s1 = 0u32;
+    let s2 = 0u32;
     let out = solver.iso(s1, s2)?.any;
     let best1 = solver.indices_to_seq(1, &out.s1)?;
     let best2 = solver.indices_to_seq(2, &out.s2)?;
