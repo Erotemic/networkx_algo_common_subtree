@@ -20,6 +20,7 @@ endif()
 
 option(BUILD_CYTHON_EXTENSIONS "Build Cython extension modules" ${_build_cython_default})
 option(BUILD_RUST_EXTENSIONS "Build Rust extension module" ${_build_rust_default})
+option(REQUIRE_RUST_EXTENSIONS "Fail configure if Rust extension cannot be built" OFF)
 
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
@@ -57,7 +58,11 @@ endif()
 if(BUILD_RUST_EXTENSIONS)
   find_program(CARGO_EXECUTABLE cargo)
   if(NOT CARGO_EXECUTABLE)
+    if(REQUIRE_RUST_EXTENSIONS)
+    message(FATAL_ERROR "cargo not found but REQUIRE_RUST_EXTENSIONS=ON")
+  else()
     message(WARNING "cargo not found; skipping Rust extension build")
+  endif()
   else()
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
       set(_cargo_profile_dir "debug")
@@ -87,11 +92,14 @@ if(BUILD_RUST_EXTENSIONS)
         "${CARGO_EXECUTABLE}" build
         --manifest-path "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.toml"
         --target-dir "${_cargo_target_dir}"
+        --locked
         ${_cargo_release_arg}
       COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${_cargo_lib_path}" "${_rust_ext_path}"
       DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.toml"
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/src/lib.rs"
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/build.rs"
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.lock"
       COMMENT "Building Rust extension module with cargo"
       VERBATIM
     )
