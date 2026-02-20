@@ -25,15 +25,21 @@ struct Decomp {
     head_tail: u32,
 }
 
-#[derive(Default)]
 struct StatePool {
     states: Vec<Vec<u32>>,
     index: HashMap<Vec<u32>, u32>,
 }
 
 impl StatePool {
+    fn with_capacity(cap: usize) -> Self {
+        Self {
+            states: Vec::with_capacity(cap),
+            index: HashMap::with_capacity_and_hasher(cap, Default::default()),
+        }
+    }
+
     fn intern(&mut self, state: Vec<u32>) -> u32 {
-        if let Some(&sid) = self.index.get(&state) {
+        if let Some(&sid) = self.index.get(state.as_slice()) {
             return sid;
         }
         let sid = self.states.len() as u32;
@@ -105,6 +111,7 @@ struct Solver<'py> {
 
     memo_emb: HashMap<u64, Arc<MatchResult>>,
     memo_iso: HashMap<u64, IsoResult>,
+    affinity_cache: HashMap<u64, f64>,
 }
 
 impl<'py> Solver<'py> {
@@ -161,10 +168,16 @@ impl<'py> Solver<'py> {
             .map(|tid| open_to_close_id.contains_key(tid))
             .collect::<Vec<_>>();
 
-        let mut pool1 = StatePool::default();
-        let mut pool2 = StatePool::default();
-        pool1.intern((0..seq1_py.len() as u32).collect());
-        pool2.intern((0..seq2_py.len() as u32).collect());
+        let len1 = seq1_py.len();
+        let len2 = seq2_py.len();
+        let state_cap1 = len1.saturating_mul(8).max(64);
+        let state_cap2 = len2.saturating_mul(8).max(64);
+        let memo_cap = ((len1.saturating_mul(len2)) / 2).clamp(1024, 2_000_000);
+
+        let mut pool1 = StatePool::with_capacity(state_cap1);
+        let mut pool2 = StatePool::with_capacity(state_cap2);
+        pool1.intern((0..len1 as u32).collect());
+        pool2.intern((0..len2 as u32).collect());
         pool1.intern(Vec::new());
         pool2.intern(Vec::new());
 
@@ -186,10 +199,11 @@ impl<'py> Solver<'py> {
             node_affinity,
             pool1,
             pool2,
-            decomp1: HashMap::default(),
-            decomp2: HashMap::default(),
-            memo_emb: HashMap::default(),
-            memo_iso: HashMap::default(),
+            decomp1: HashMap::with_capacity_and_hasher(state_cap1, Default::default()),
+            decomp2: HashMap::with_capacity_and_hasher(state_cap2, Default::default()),
+            memo_emb: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            memo_iso: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            affinity_cache: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
         })
     }
 
@@ -224,43 +238,32 @@ impl<'py> Solver<'py> {
         ((a as u64) << 32) | (b as u64)
     }
 
-    fn affinity(&self, tok1: u32, tok2: u32, which1: u8, which2: u8) -> PyResult<f64> {
+    fn affinity(&mut self, tok1: u32, tok2: u32) -> PyResult<f64> {
+        let key = Self::memo_key(tok1, tok2);
+        if let Some(v) = self.affinity_cache.get(&key) {
+            return Ok(*v);
+        }
+
         let i1 = tok1 as usize;
         let i2 = tok2 as usize;
-        if let Some(ref func) = self.node_affinity {
-            let n1 = if which1 == 1 {
-                self.seq1_aff_py[i1].bind(self.py)
-            } else {
-                self.seq2_aff_py[i1].bind(self.py)
-            };
-            let n2 = if which2 == 1 {
-                self.seq1_aff_py[i2].bind(self.py)
-            } else {
-                self.seq2_aff_py[i2].bind(self.py)
-            };
+        let val = if let Some(ref func) = self.node_affinity {
+            let n1 = self.seq1_aff_py[i1].bind(self.py);
+            let n2 = self.seq2_aff_py[i2].bind(self.py);
             let out = func.bind(self.py).call1((n1, n2))?;
             if out.is_truthy()? {
-                out.extract::<f64>()
+                out.extract::<f64>()?
             } else {
-                Ok(0.0)
+                0.0
             }
         } else {
-            let a1 = if which1 == 1 {
-                self.seq1_aff_id[i1]
+            if self.seq1_aff_id[i1] == self.seq2_aff_id[i2] {
+                1.0
             } else {
-                self.seq2_aff_id[i1]
-            };
-            let a2 = if which2 == 1 {
-                self.seq1_aff_id[i2]
-            } else {
-                self.seq2_aff_id[i2]
-            };
-            if a1 == a2 {
-                Ok(1.0)
-            } else {
-                Ok(0.0)
+                0.0
             }
-        }
+        };
+        self.affinity_cache.insert(key, val);
+        Ok(val)
     }
 
     fn decompose1(&mut self, sid: u32) -> PyResult<Decomp> {
@@ -398,7 +401,7 @@ impl<'py> Solver<'py> {
             best = cand2;
         }
 
-        let aff = self.affinity(d1.a, d2.a, 1, 2)?;
+        let aff = self.affinity(d1.a, d2.a)?;
         if aff > 0.0 {
             let h = self.emb(d1.head, d2.head)?;
             let t = self.emb(d1.tail, d2.tail)?;
@@ -464,7 +467,7 @@ impl<'py> Solver<'py> {
             }
         }
 
-        let aff = self.affinity(d1.a, d2.a, 1, 2)?;
+        let aff = self.affinity(d1.a, d2.a)?;
         if aff > 0.0 {
             let r_h1h2 = self.iso(d1.head, d2.head)?;
             let r_t1t2 = self.iso(d1.tail, d2.tail)?;
