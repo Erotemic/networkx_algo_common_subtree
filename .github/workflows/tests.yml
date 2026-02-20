@@ -151,6 +151,15 @@ jobs:
       env:
         CIBW_SKIP: ${{ matrix.cibw_skip }}
         CIBW_ARCHS_LINUX: ${{ matrix.arch }}
+        CIBW_BEFORE_ALL_LINUX: >-
+          if [ "$(uname -m)" != "i686" ]; then
+            curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain stable;
+            . "$HOME/.cargo/env";
+          else
+            echo "Skipping rust toolchain install for i686";
+          fi
+        CIBW_ENVIRONMENT_LINUX: PATH=/root/.cargo/bin:$PATH CMAKE_ARGS="-DREQUIRE_RUST_EXTENSIONS=ON"
+        CIBW_ENVIRONMENT_LINUX_I686: DISABLE_RUST_EXTENSIONS=1 CMAKE_ARGS="-DBUILD_RUST_EXTENSIONS=OFF"
         PYTHONUTF8: '1'
     - name: Show built files
       shell: bash
