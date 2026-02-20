@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple};
 use rustc_hash::FxHashMap as HashMap;
+use std::sync::Arc;
 
 #[derive(Clone, Debug, Default)]
 struct MatchResult {
@@ -102,7 +103,7 @@ struct Solver<'py> {
     decomp1: HashMap<u32, Decomp>,
     decomp2: HashMap<u32, Decomp>,
 
-    memo_emb: HashMap<u64, MatchResult>,
+    memo_emb: HashMap<u64, Arc<MatchResult>>,
     memo_iso: HashMap<u64, IsoResult>,
 }
 
@@ -266,7 +267,7 @@ impl<'py> Solver<'py> {
         if let Some(d) = self.decomp1.get(&sid) {
             return Ok(d.clone());
         }
-        let state = self.pool1.get(sid).to_vec();
+        let state = self.pool1.get(sid);
         if state.is_empty() {
             return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
         }
@@ -316,7 +317,7 @@ impl<'py> Solver<'py> {
         if let Some(d) = self.decomp2.get(&sid) {
             return Ok(d.clone());
         }
-        let state = self.pool2.get(sid).to_vec();
+        let state = self.pool2.get(sid);
         if state.is_empty() {
             return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
         }
@@ -379,9 +380,9 @@ impl<'py> Solver<'py> {
         cand.s2 > best.s2
     }
 
-    fn emb(&mut self, s1: u32, s2: u32) -> PyResult<MatchResult> {
+    fn emb(&mut self, s1: u32, s2: u32) -> PyResult<Arc<MatchResult>> {
         if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
-            return Ok(MatchResult::default());
+            return Ok(Arc::new(MatchResult::default()));
         }
         let key = Self::memo_key(s1, s2);
         if let Some(found) = self.memo_emb.get(&key) {
@@ -413,11 +414,11 @@ impl<'py> Solver<'py> {
             s2v.push(d2.b);
             s2v.extend_from_slice(&t.s2);
 
-            let cand = MatchResult {
+            let cand = Arc::new(MatchResult {
                 val: h.val + t.val + aff,
                 s1: s1v,
                 s2: s2v,
-            };
+            });
             if self.better_match(&cand, &best) {
                 best = cand;
             }
