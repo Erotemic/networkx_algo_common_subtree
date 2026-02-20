@@ -112,6 +112,7 @@ struct Solver<'py> {
     memo_emb: HashMap<u64, Arc<MatchResult>>,
     memo_iso: HashMap<u64, IsoResult>,
     affinity_cache: HashMap<u64, f64>,
+    empty_match: Arc<MatchResult>,
 }
 
 impl<'py> Solver<'py> {
@@ -204,6 +205,7 @@ impl<'py> Solver<'py> {
             memo_emb: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
             memo_iso: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
             affinity_cache: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            empty_match: Arc::new(MatchResult::default()),
         })
     }
 
@@ -385,7 +387,7 @@ impl<'py> Solver<'py> {
 
     fn emb(&mut self, s1: u32, s2: u32) -> PyResult<Arc<MatchResult>> {
         if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
-            return Ok(Arc::new(MatchResult::default()));
+            return Ok(self.empty_match.clone());
         }
         let key = Self::memo_key(s1, s2);
         if let Some(found) = self.memo_emb.get(&key) {
