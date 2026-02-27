@@ -19,10 +19,10 @@ the children of the node, each of them preceded by an additional 0 and followed
 by an additional 1. The balanced sequence of T is the balanced sequence of the
 root of T. A string t over {0, 1} is a balanced sequence if there is a tree T such
 that t is the balanced sequence of T.
-The length of a balanced sequence x, denoted by |x|, is the number of edges
+The length of a balanced sequence x, denoted by `|x|`, is the number of edges
 in the tree described by x, that is, the number of 0 characters or the number
 of 1 characters in x. The empty balanced sequence, which describes the tree
-with no nodes and no edges, is denoted by λ. Concatenation is indicated by
+with no nodes and no edges, is denoted by `λ`. Concatenation is indicated by
 juxtaposition.
 
 **Remark 1.** Notice that there is a one-to-one correspondence between edges in a
@@ -43,9 +43,9 @@ obtained from the latter by deleting edge annotations (character pairs), that
 is, if the tree represented by the former sequence can be embedded in the tree
 represented by the latter sequence.
 
-**Definition 2.** A balanced sequence s is said to be contained in a balanced sequence t, denoted by s ⊆ t, if either s = t or there exist balanced sequences
-s1, s2, s3 and t1, t2, t3 with si ⊆ ti, 1 ≤ i ≤ 3, such that s = s1 s2 s3 and
-t = t1 0 t2 1 t3. A longest common balanced sequence of s and t is a balanced
+**Definition 2.** A balanced sequence s is said to be contained in a balanced sequence t, denoted by `s ⊆ t`, if either `s = t` or there exist balanced sequences
+s1, s2, s3 and t1, t2, t3 with `si ⊆ ti`, `1 ≤ i ≤ 3`, such that `s = s1 s2 s3` and
+`t = t1 0 t2 1 t3`. A longest common balanced sequence of s and t is a balanced
 sequence of largest length among all balanced sequences that are contained in
 both s and t.
 
@@ -85,7 +85,7 @@ and the forest whose first tree is rooted at the next sibling of the first child
 **Definition 4.** Let s be a balanced sequence. The decomposition of s, denoted by
 `decomp(s)`, is the set of balanced sequences defined as follows:
 
-– s ∈ decomp(s),
+– `s ∈ decomp(s)`,
 – for all nonempty balanced sequences `t ∈ decomp(s)`,
  • `head(t) ∈ decomp(s)`,
  • `tail(t) ∈ decomp(s)`,
@@ -105,7 +105,7 @@ suffix of another balanced sequence, belongs to the decomposition of the latter
 sequence.
 
 **Lemma 1.** `D[y] ⊆ D[xy]` for all balanced sequences x and y.
-*Proof.* By induction on |x|. Let x and y be balanced sequences. If 
+*Proof.* By induction on `|x|`. Let x and y be balanced sequences. If 
 `|x| = 0, D[y] = D[xy]`. Otherwise, let `x = 0x′1y′`. Then,
 
 ```
@@ -136,7 +136,7 @@ D[x] = {x} ∪ D[x′] ∪ D[y′] ∪ D[x′y′]  (by definition of D)
      = {x} ∪ D[x′] ∪ D[x′y′]          (by Lemma 1)
 ```
 
-Moreover, {x} ∈ R[x] by definition of R, D[x′] ⊆ D[xy] by definition of D and,
+Moreover, `{x} ∈ R[x]` by definition of R, `D[x′] ⊆ D[xy]` by definition of D and,
 further,
 
 ```
@@ -145,7 +145,7 @@ D[x′y′] ⊆ D[x′y′y] ∪ R[x′y′]   (by induction hypothesis)
         ⊆ D[xy] ∪ R[x]         (by definition of D)
 ```
 
-Therefore, it holds that D[x] ⊆ D[xy] ∪ R[x]. ∎
+Therefore, it holds that `D[x] ⊆ D[xy] ∪ R[x]`. ∎
 
 The previous lemmata combine into the following result.
 
@@ -205,7 +205,7 @@ cardinal of D. The following fact is easy to prove by induction.
 
 **Fact 2.** The cardinal of `R[x]` is equal to `|x| + 1`, for any balanced sequence x.
 Now, the depth and the number of leaves of a balanced sequence t, denoted
-respectively by d(t) and ℓ(t), are just the depth and the number of leaves of the
+respectively by `d(t)` and `ℓ(t)`, are just the depth and the number of leaves of the
 tree represented by t. They are described by the following recurrences:
 ```
 d(λ) = 1
@@ -215,8 +215,8 @@ d(0x1y) = max(d(x) + 1, d(y))
 ```
 
 **Lemma 6.** `|S[x]| ≤ |x| d(x) + 1` for any balanced sequence x.
-*Proof.* By induction on |x|. If |x| = 0, |S[x]| ≤ |λ|d(λ) + 1 = 1. Otherwise, let
-x = 0x′1y′. By Lemma 5, S[x] ⊆ R[x′] ∪ S[x′] ∪ S[y′] and then,
+*Proof.* By induction on `|x|`. If `|x| = 0, |S[x]| ≤ |λ|d(λ) + 1 = 1`. Otherwise, let
+`x = 0x′1y′`. By Lemma 5, `S[x] ⊆ R[x′] ∪ S[x′] ∪ S[y′]` and then,
 
 ```
 |S[x]| ≤ |R[x′]| + |S[x′]| + |S[y′]|
@@ -250,7 +250,7 @@ Otherwise, let `x = 0x′1y′`. Then, `S[x] = R[x′]∪S[x′y′] ⊆R[x′]�
 Now, the previous lemmata combine into the following main result.
 
 **Theorem 1.** `|D[x]| ≤|x|(min(d(x), ℓ(x)) + 1) + 1` for any balanced sequence x.
-*Proof.* By Corollary 1, D[x] ⊆ R[x] ∪ S[x] and then,
+*Proof.* By Corollary 1, `D[x] ⊆ R[x] ∪ S[x]` and then,
 
 ```
 |D[x]| ≤ |R[x]| + |S[x]| -1              (λ ∈ R[x] and λ ∈ S[x])
@@ -263,7 +263,7 @@ Now, the previous lemmata combine into the following main result.
 by an infinite number of sequences. As a matter of fact, the decomposition of
 a balanced sequence that describes the leftist full binary tree with m edges,
 for all even values of m, which has depth m/2 and m/2 + 1 leaves, contains
-m^2/8 + m/4 + 1 ≤ m(m/2 + 1) + 1 sequences.
+`m^2/8 + m/4 + 1 ≤ m(m/2 + 1) + 1` sequences.
 
 ## Section 3 — Embedded Subtrees and Balanced Sequences
 
@@ -350,27 +350,27 @@ expected time linear in the cardinal of the decomposition, meaning expected
 time linear in the size times the minimum of the depth and the number of
 leaves.
 
-**Theorem 3.** The maximum common embedded subtree problem can be solved in `O(n1 n2 min(d1, ℓ1) min(d2, ℓ2))` time, on ordered trees with n1 and n2 nodes, of depth d1 and d2 and with ℓ1 and ℓ2 leaves, respectively.
+**Theorem 3.** The maximum common embedded subtree problem can be solved in `O(n1 n2 min(d1, ℓ1) min(d2, ℓ2))` time, on ordered trees with `n1` and `n2` nodes, of depth `d1` and `d2` and with `ℓ1` and `ℓ2` leaves, respectively.
 
 *Proof.* Given a balanced sequence s, the unique number `code(t)` for each sequence
-t ∈ `decomp(s)` is set to either the number already assigned to that sequence
+`t ∈ decomp(s)` is set to either the number already assigned to that sequence
 (looking it up in a dictionary), or to the next non-assigned number for the
 decomposition (updating, in this case, the dictionary). Now, for each sequence
-t ∈ `decomp(s)`, one unsuccessful dictionary lookup of t and one insertion of
+`t ∈ decomp(s)`, one unsuccessful dictionary lookup of t and one insertion of
 ⟨t, `code(t)`⟩ in the dictionary are made. With standard hashing techniques, each
 such operation takes expected `O(1)` time and, by Theorem 1, the number of
 sequences in the decomposition of the balanced sequence of a tree with m edges,
 depth d and ℓ leaves is `O(m min(d, ℓ))`.
 
-Further, the size of a longest common balanced sequence lcs(s, t) of two
+Further, the size of a longest common balanced sequence `lcs(s, t)` of two
 sequences s and t is found with standard dynamic programming techniques, where
 memoization is realized by storing the solution to a subproblem on sequences
 x and y at entry `a[code(x), code(y)]` in an integer array a. The size of a longest
-common balanced sequence lcs(s, t) of two sequences s and t is either looked
+common balanced sequence `lcs(s, t)` of two sequences s and t is either looked
 up at array entry `a[code(s), code(t)]`, or computed according to Lemma 8 and
 stored in that array entry. There are, by Theorem 1, `O(m1 min(d1, ℓ1))` and
 `O(m2 min(d2, ℓ2))` sequences in the decomposition of the balanced sequences of
-two trees with respectively m1 and m2 edges, depth d1 and d2, and ℓ1 and ℓ2
+two trees with respectively `m1` and `m2` edges, depth `d1` and `d2`, and `ℓ1` and `ℓ2`
 leaves and, for each pair of sequences, four array accesses and one array update
 are made, each taking `O(1)` time.
 
