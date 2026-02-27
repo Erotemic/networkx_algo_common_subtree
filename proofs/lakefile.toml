@@ -1,0 +1,23 @@
+name = "subtree_proofs"
+version = "0.1.0"
+defaultTargets = ["subtree_proofs"]
+
+[leanOptions]
+#pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+linter.unnecessarySimpa = false
+
+[[lean_lib]]
+name = "SubtreeProofs"
+
+[[lean_exe]]
+name = "subtree_proofs"
+root = "Main"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+# [[require]]
+# name = "Hammer"
+# git = "https://github.com/JOSHCLUNE/LeanHammer"
+# rev = "v4.28.0"
