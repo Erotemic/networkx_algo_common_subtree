@@ -100,6 +100,12 @@ theorem add_assoc (a b c : BSeq) : (a + b) + c = a + (b + c) := by
   | cons x y ihx ihy =>
       simp [append, ihy]
 
+@[simp] theorem add_nil (a : BSeq) : a + nil = a := by
+  induction a with
+  | nil => simp
+  | cons x y ihx ihy =>
+      simp [append, ihy]
+
 instance : Std.Associative (α:=BSeq) (· + ·) := ⟨add_assoc⟩
 
 /-- Semilength is additive under concatenation. -/
@@ -312,7 +318,20 @@ theorem lemma2 (x y : BSeq) : (D x : Set BSeq) ⊆ (D (x + y) ∪ R x : Finset B
 /-- Lemma 3 (paper). -/
 theorem lemma3 (x y : BSeq) :
     (D (cons x y) : Set BSeq) ⊆ ({cons x y} ∪ D (x + y) ∪ R x : Finset BSeq) := by
-  sorry
+  intro z hz
+  rcases (by simpa [D] using hz) with hz0 | hz1 | hz2 | hz3
+  · -- z = cons x y
+    exact Finset.mem_union.mpr <| Or.inl <| by simpa [hz0]
+  · -- z ∈ D x
+    have hz1' : z ∈ (D (x + y) ∪ R x : Finset BSeq) := lemma2 x y hz1
+    rcases Finset.mem_union.mp hz1' with hz1d | hz1r
+    · exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inr hz1d
+    · exact Finset.mem_union.mpr <| Or.inr hz1r
+  · -- z ∈ D y ⊆ D (x + y)
+    have hz2' : z ∈ D (x + y) := lemma1 x y hz2
+    exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inr hz2'
+  · -- z ∈ D (x + y)
+    exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inr hz3
 
 /--
 Lemma 4 (paper): `D[zy] ⊆ D[y] ∪ R[x]{y} ∪ S[x]` for all `z ∈ R[x]`.
@@ -323,27 +342,225 @@ def R_app (x y : BSeq) : Finset BSeq := (R x).image (fun z => z + y)
 
 theorem lemma4 (x y z : BSeq) (hz : z ∈ R x) :
     (D (z + y) : Set BSeq) ⊆ (D y ∪ R_app x y ∪ S x : Finset BSeq) := by
-  -- Paper proof is by induction on |z| with Lemma 3.
-  -- This is a fairly long Finset-subset induction. We include the statement and defer the proof
-  -- until Lemma 2/Lemma 3 are fully formalized (they are prerequisites).
-  sorry
+  let P : BSeq → Prop := fun x =>
+    ∀ z, z ∈ R x → (D (z + y) : Set BSeq) ⊆ (D y ∪ R_app x y ∪ S x : Finset BSeq)
+  have hmain : P x := by
+    refine (measure semilen).wf.induction x ?_
+    intro x ih z hz t ht
+    cases x with
+    | nil =>
+        have hz0 : z = nil := by simpa [R] using hz
+        subst hz0
+        -- D (nil + y) = D y
+        have htDy : t ∈ D y := by simpa using ht
+        exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inl htDy
+    | cons x1 x2 =>
+        have hz_cases : z = cons x1 x2 ∨ z ∈ R (x1 + x2) := by
+          simpa [R] using hz
+        have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
+          simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
+        have R_embed : ∀ {u : BSeq}, u ∈ R (x1 + x2) → u ∈ R (cons x1 x2) := by
+          intro u hu
+          simpa [R] using (Or.inr hu : u = cons x1 x2 ∨ u ∈ R (x1 + x2))
+        have Rapp_embed : ∀ {u : BSeq}, u ∈ R_app (x1 + x2) y → u ∈ R_app (cons x1 x2) y := by
+          intro u hu
+          rcases Finset.mem_image.mp hu with ⟨w, hw, rfl⟩
+          exact Finset.mem_image.mpr ⟨w, R_embed hw, rfl⟩
+        have S_embed : ∀ {u : BSeq}, u ∈ S (x1 + x2) → u ∈ S (cons x1 x2) := by
+          intro u hu
+          simpa [S] using (Finset.mem_union.mpr (Or.inr hu) : u ∈ R x1 ∪ S (x1 + x2))
+        have Rx1_to_S : ∀ {u : BSeq}, u ∈ R x1 → u ∈ S (cons x1 x2) := by
+          intro u hu
+          simpa [S] using (Finset.mem_union.mpr (Or.inl hu) : u ∈ R x1 ∪ S (x1 + x2))
+        rcases hz_cases with hz_self | hz_tail
+        · -- z = cons x1 x2
+          subst hz_self
+          have h3 : (D (cons x1 (x2 + y)) : Set BSeq) ⊆
+              ({cons x1 (x2 + y)} ∪ D (x1 + (x2 + y)) ∪ R x1 : Finset BSeq) := lemma3 x1 (x2 + y)
+          have ht3 : t ∈ ({cons x1 (x2 + y)} ∪ D (x1 + (x2 + y)) ∪ R x1 : Finset BSeq) := h3 (by simpa using ht)
+          rcases Finset.mem_union.mp ht3 with hleft | hRx1
+          · rcases Finset.mem_union.mp hleft with hsingle | hDtail
+            · -- singleton -> in R_app
+              have hRself : cons x1 x2 ∈ R (cons x1 x2) := by
+                simpa [R] using (Or.inl rfl : cons x1 x2 = cons x1 x2 ∨ cons x1 x2 ∈ R (x1 + x2))
+              have hRapp : cons x1 (x2 + y) ∈ R_app (cons x1 x2) y := by
+                exact Finset.mem_image.mpr ⟨cons x1 x2, hRself, by simp⟩
+              have ht_eq : t = cons x1 (x2 + y) := by simpa using hsingle
+              have : t ∈ R_app (cons x1 x2) y := by simpa [ht_eq] using hRapp
+              exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inr this
+            · -- recurse on x1+x2 with z' = x1+x2
+              have hz_self_tail : x1 + x2 ∈ R (x1 + x2) := by
+                cases hxy : x1 + x2 with
+                | nil => simpa [R]
+                | cons a b => simpa [R] using (Or.inl rfl : cons a b = cons a b ∨ cons a b ∈ R (a + b))
+              have hrec : (D ((x1 + x2) + y) : Set BSeq) ⊆
+                  (D y ∪ R_app (x1 + x2) y ∪ S (x1 + x2) : Finset BSeq) :=
+                (ih (x1 + x2) hlt) (x1 + x2) hz_self_tail
+              have hrec_t : t ∈ (D y ∪ R_app (x1 + x2) y ∪ S (x1 + x2) : Finset BSeq) := by
+                have : t ∈ D ((x1 + x2) + y) := by simpa [add_assoc] using hDtail
+                exact hrec this
+              rcases Finset.mem_union.mp hrec_t with hDy_or_Rapp | hS
+              · rcases Finset.mem_union.mp hDy_or_Rapp with hDy | hRapp
+                · exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inl hDy
+                · exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inr (Rapp_embed hRapp)
+              · exact Finset.mem_union.mpr <| Or.inr (S_embed hS)
+          · -- R x1 branch goes to S x
+            exact Finset.mem_union.mpr <| Or.inr (Rx1_to_S hRx1)
+        · -- z ∈ R (x1+x2): recurse directly and lift
+          have hrec : (D (z + y) : Set BSeq) ⊆
+              (D y ∪ R_app (x1 + x2) y ∪ S (x1 + x2) : Finset BSeq) :=
+            (ih (x1 + x2) hlt) z hz_tail
+          have hrec_t : t ∈ (D y ∪ R_app (x1 + x2) y ∪ S (x1 + x2) : Finset BSeq) := hrec ht
+          rcases Finset.mem_union.mp hrec_t with hDy_or_Rapp | hS
+          · rcases Finset.mem_union.mp hDy_or_Rapp with hDy | hRapp
+            · exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inl hDy
+            · exact Finset.mem_union.mpr <| Or.inl <| Finset.mem_union.mpr <| Or.inr (Rapp_embed hRapp)
+          · exact Finset.mem_union.mpr <| Or.inr (S_embed hS)
+  exact hmain z hz
 
 /-- Corollary 1 (paper): `D[x] ⊆ R[x] ∪ S[x]`. -/
 theorem corollary1 (x : BSeq) : (D x : Set BSeq) ⊆ (R x ∪ S x : Finset BSeq) := by
-  -- Paper: apply Lemma 4 with y=λ and use x ∈ R[x].
-  -- Depends on Lemma 4.
-  sorry
+  -- Apply Lemma 4 with y = λ and z = x.
+  have hxR : x ∈ R x := by
+    cases x with
+    | nil =>
+        simp [R]
+    | cons a b =>
+        simp [R]
+  have nil_mem_R : ∀ x : BSeq, nil ∈ R x := by
+    intro x
+    let P : BSeq → Prop := fun x => nil ∈ R x
+    have hmain : P x := by
+      refine (measure semilen).wf.induction x ?_
+      intro x ih
+      cases x with
+      | nil =>
+          simpa [P, R]
+      | cons x1 x2 =>
+          have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
+            simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
+          have ih' : nil ∈ R (x1 + x2) := by simpa [P] using ih (x1 + x2) hlt
+          exact by
+            simpa [P, R] using (Or.inr ih' : nil = cons x1 x2 ∨ nil ∈ R (x1 + x2))
+    exact hmain
+  have h4 := lemma4 x nil x hxR
+  intro z hz
+  have hz' : z ∈ (D nil ∪ R_app x nil ∪ S x : Finset BSeq) := h4 (by simpa [add_nil] using hz)
+  rcases Finset.mem_union.mp hz' with hDnil_or_Rapp | hS
+  · rcases Finset.mem_union.mp hDnil_or_Rapp with hDnil | hRapp
+    · -- D nil = {nil}, and nil ∈ R x (by repeated tail-deletion recurrence base)
+      have hnil : z = nil := by simpa [D] using hDnil
+      exact Finset.mem_union.mpr <| Or.inl <| by simpa [hnil] using nil_mem_R x
+    · -- R_app x nil = image (fun z => z+nil) (R x) = R x
+      rcases Finset.mem_image.mp hRapp with ⟨w, hwR, hwz⟩
+      have : z = w := by simpa [add_nil] using hwz.symm
+      exact Finset.mem_union.mpr <| Or.inl <| by simpa [this]
+  · exact Finset.mem_union.mpr <| Or.inr hS
 
 /-- Lemma 5 (paper): `S[xy] ⊆ S[x] ∪ S[y]`. -/
 theorem lemma5 (x y : BSeq) : (S (x + y) : Set BSeq) ⊆ (S x ∪ S y : Finset BSeq) := by
-  -- Paper proof is by induction on |x|.
-  -- Deferred until the R/S machinery is completed.
-  sorry
+  let P : BSeq → Prop := fun x => (S (x + y) : Set BSeq) ⊆ (S x ∪ S y : Finset BSeq)
+  have hmain : P x := by
+    refine (measure semilen).wf.induction x ?_
+    intro x ih z hz
+    cases x with
+    | nil =>
+        -- S(nil + y) = S y ⊆ S nil ∪ S y
+        have : z ∈ S y := by simpa using hz
+        exact Finset.mem_union.mpr <| Or.inr this
+    | cons x1 x2 =>
+        -- S((cons x1 x2)+y) = R x1 ∪ S((x1+x2)+y)
+        have hz' : z ∈ (R x1 ∪ S ((x1 + x2) + y) : Finset BSeq) := by
+          simpa [S, add_assoc] using hz
+        rcases Finset.mem_union.mp hz' with hzR | hzS
+        · -- R x1 ⊆ S(cons x1 x2)
+          have hzSinX : z ∈ S (cons x1 x2) := by simpa [S] using Finset.mem_union.mpr (Or.inl hzR)
+          exact Finset.mem_union.mpr <| Or.inl hzSinX
+        · -- recurse on x1+x2
+          have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
+            simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
+          have hrec : z ∈ (S (x1 + x2) ∪ S y : Finset BSeq) := (ih (x1 + x2) hlt) hzS
+          rcases Finset.mem_union.mp hrec with hzSX | hzSY
+          · have hzSinX : z ∈ S (cons x1 x2) := by simpa [S] using Finset.mem_union.mpr (Or.inr hzSX)
+            exact Finset.mem_union.mpr <| Or.inl hzSinX
+          · exact Finset.mem_union.mpr <| Or.inr hzSY
+  exact hmain
 
 /-- Lemma 6 (paper): `|S[x]| ≤ |x| d(x) + 1`. -/
 theorem lemma6 (x : BSeq) : (S x).card ≤ semilen x * depth x + 1 := by
-  -- Paper proof by induction using Lemma 5 and a bound on |R[x]|.
-  sorry
+  -- First, a cardinal upper bound for R.
+  have R_card_le : ∀ x : BSeq, (R x).card ≤ semilen x + 1 := by
+    intro x
+    let P : BSeq → Prop := fun x => (R x).card ≤ semilen x + 1
+    have hmain : P x := by
+      refine (measure semilen).wf.induction x ?_
+      intro x ih
+      cases x with
+      | nil =>
+          simpa [P, R, semilen]
+      | cons x1 x2 =>
+          have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
+            simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
+          have ih' : (R (x1 + x2)).card ≤ semilen (x1 + x2) + 1 := by
+            simpa [P] using ih (x1 + x2) hlt
+          calc
+            (R (cons x1 x2)).card = ({cons x1 x2} ∪ R (x1 + x2)).card := by simp [R]
+            _ ≤ ({cons x1 x2} : Finset BSeq).card + (R (x1 + x2)).card := Finset.card_union_le _ _
+            _ = 1 + (R (x1 + x2)).card := by simp
+            _ ≤ 1 + (semilen (x1 + x2) + 1) := Nat.add_le_add_left ih' 1
+            _ = semilen (cons x1 x2) + 1 := by
+              simp [semilen, semilen_add, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+    exact hmain
+  -- Depth is always at least 1.
+  have depth_ge_one : ∀ x : BSeq, 1 ≤ depth x := by
+    intro x
+    induction x with
+    | nil => simp [depth]
+    | cons x1 x2 ih1 ih2 =>
+        have : 1 ≤ depth x1 + 1 := Nat.succ_le_succ (Nat.zero_le _)
+        exact le_trans this (Nat.le_max_left _ _)
+  -- For non-empty constructor case, depth is at least 2.
+  have depth_cons_ge_two : ∀ x y : BSeq, 2 ≤ depth (cons x y) := by
+    intro x y
+    have : 1 ≤ depth x := depth_ge_one x
+    exact le_trans (Nat.succ_le_succ this) (Nat.le_max_left _ _)
+  -- Main proof by structural induction on x.
+  induction x with
+  | nil =>
+      simp [S, semilen, depth]
+  | cons x1 x2 ih1 ih2 =>
+      have hSsplit : (S (x1 + x2)).card ≤ (S x1 ∪ S x2).card := by
+        exact Finset.card_le_card (by
+          intro z hz
+          exact lemma5 x1 x2 hz)
+      have hunion : (S (x1 + x2)).card ≤ (S x1).card + (S x2).card := by
+        exact le_trans hSsplit (Finset.card_union_le (S x1) (S x2))
+      calc
+        (S (cons x1 x2)).card = (R x1 ∪ S (x1 + x2)).card := by simp [S]
+        _ ≤ (R x1).card + (S (x1 + x2)).card := Finset.card_union_le _ _
+        _ ≤ (R x1).card + ((S x1).card + (S x2).card) := by
+              exact Nat.add_le_add_left hunion _
+        _ ≤ (semilen x1 + 1) + ((semilen x1 * depth x1 + 1) + (semilen x2 * depth x2 + 1)) := by
+              exact Nat.add_le_add (R_card_le x1) (Nat.add_le_add ih1 ih2)
+        _ = semilen x1 * (depth x1 + 1) + semilen x2 * depth x2 + 3 := by
+              ring_nf
+        _ ≤ semilen x1 * depth (cons x1 x2) + semilen x2 * depth (cons x1 x2) + 3 := by
+              have hdx : depth x1 + 1 ≤ depth (cons x1 x2) := Nat.le_max_left _ _
+              have hdy : depth x2 ≤ depth (cons x1 x2) := Nat.le_max_right _ _
+              exact Nat.add_le_add
+                (Nat.add_le_add (Nat.mul_le_mul_left _ hdx) (Nat.mul_le_mul_left _ hdy))
+                (Nat.le_refl _)
+        _ = (semilen x1 + semilen x2) * depth (cons x1 x2) + 3 := by
+              ring_nf
+        _ ≤ (semilen x1 + semilen x2) * depth (cons x1 x2) + (depth (cons x1 x2) + 1) := by
+              have h23 : 3 ≤ depth (cons x1 x2) + 1 := by
+                have h2 : 2 ≤ depth (cons x1 x2) := depth_cons_ge_two x1 x2
+                exact Nat.succ_le_succ h2
+              exact Nat.add_le_add_left h23 _
+        _ = (semilen x1 + semilen x2 + 1) * depth (cons x1 x2) + 1 := by
+              ring_nf
+        _ = semilen (cons x1 x2) * depth (cons x1 x2) + 1 := by
+              simp [semilen, semilen_add, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
 
 /-- Lemma 7 (paper): `|S[x]| ≤ |x| ℓ(x) + 1`. -/
 theorem lemma7 (x : BSeq) : (S x).card ≤ semilen x * leaves x + 1 := by
