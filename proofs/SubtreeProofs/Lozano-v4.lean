@@ -39,22 +39,22 @@ open scoped BigOperators
 namespace LozanoValiente2004
 
 /-!
-## File Status (v3)
+## File Status (v4)
 
-This file is a mostly paper-faithful formalization attempt where:
-- Definitions follow the paper closely.
-- Many Section 2 bounds are proved.
-- Some later results are still incomplete (`sorry`), especially where compositional/transitivity
-  behavior of containment is needed.
+This file is an intermediate refactor toward a more proof-friendly containment setup.
+
+What is happening:
+- The original paper-style containment relation is still present.
+- A local one-step deletion relation (`Del1`) and an RTC containment relation (`ContainedRTC`)
+  were added.
+- Core lemmas for RTC containment (including transitivity and semilength monotonicity) were added.
 
 Main limitation:
-- Containment is encoded directly as a paper-style recursive relation (`Contained`), which makes
-  transitivity/composition proofs technically difficult in Lean. This blocks parts of the later
-  development (Theorem 2 / Lemma 8 style arguments).
+- The file is transitional: some theorem statements/proofs still rely on older structure, and
+  full end-to-end alignment on a single containment notion was not completed here.
 
 Use this file when:
-- You want the closest structure to the paper’s original statement style and intermediate objects.
-- You are willing to accept remaining proof gaps.
+- You want to inspect the pivot mechanics from paper-style containment to RTC containment.
 -/
 
 /-! ## Section 2: Balanced sequences -/
@@ -155,6 +155,60 @@ inductive Contained : BSeq → BSeq → Prop
       (h3 : Contained s3 t3) : Contained s t
 
 infix:50 " ⊑ " => Contained
+
+/--
+One-step contextual deletion of exactly one matched pair.
+
+This is the operational relation used for the RTC refactor:
+`Del1 big small` means one deletion step from `big` to `small`.
+-/
+inductive Del1 : BSeq → BSeq → Prop
+  | core (b : BSeq) : Del1 (nest b) b
+  | left  (a t s : BSeq) (h : Del1 t s) : Del1 (a + t) (a + s)
+  | right (t s c : BSeq) (h : Del1 t s) : Del1 (t + c) (s + c)
+  | nest  (t s : BSeq) (h : Del1 t s) : Del1 (nest t) (nest s)
+
+/--
+RTC containment for refactoring: `r ⊑ᵣ p` iff `r` is reachable from `p`
+by zero or more `Del1` steps.
+-/
+def ContainedRTC (r p : BSeq) : Prop := Relation.ReflTransGen Del1 p r
+
+infix:50 " ⊑ᵣ " => ContainedRTC
+
+@[simp] theorem containedRTC_refl (s : BSeq) : s ⊑ᵣ s := Relation.ReflTransGen.refl
+
+theorem containedRTC_trans {a b c : BSeq} (hab : a ⊑ᵣ b) (hbc : b ⊑ᵣ c) : a ⊑ᵣ c := by
+  exact Relation.ReflTransGen.trans hbc hab
+
+theorem semilen_of_del1 : ∀ {t s : BSeq}, Del1 t s → semilen s + 1 = semilen t
+  | _, _, Del1.core b => by
+      simp [nest, semilen]
+  | _, _, Del1.left a t s h => by
+      have ih := semilen_of_del1 (t := t) (s := s) h
+      simpa [semilen_add, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+        congrArg (fun n => semilen a + n) ih
+  | _, _, Del1.right t s c h => by
+      have ih := semilen_of_del1 (t := t) (s := s) h
+      simpa [semilen_add, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+        congrArg (fun n => n + semilen c) ih
+  | _, _, Del1.nest t s h => by
+      have ih := semilen_of_del1 (t := t) (s := s) h
+      have := congrArg (fun n => n + 1) ih
+      simpa [nest, semilen, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using this
+
+theorem semilen_le_of_del1 {t s : BSeq} (h : Del1 t s) : semilen s ≤ semilen t := by
+  have eq : semilen s + 1 = semilen t := semilen_of_del1 h
+  have lt : semilen s < semilen t := by
+    simpa [eq] using (Nat.lt_succ_self (semilen s))
+  exact Nat.le_of_lt lt
+
+theorem semilen_le_of_containedRTC {r p : BSeq} (h : r ⊑ᵣ p) : semilen r ≤ semilen p := by
+  induction h with
+  | refl =>
+      simp
+  | tail _ hstep ih =>
+      exact le_trans (semilen_le_of_del1 hstep) ih
 
 /-- Common balanced sequence. -/
 def IsCommon (r s t : BSeq) : Prop := r ⊑ s ∧ r ⊑ t
