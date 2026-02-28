@@ -1,0 +1,50 @@
+- Lean 4.29 `termination_by` syntax: do not include the function name (`termination_by s => ...`, not `termination_by f s => ...`).
+- For recursive defs calling on non-structural arguments (e.g. `x + y`), `termination_by` + `decreasing_by` can work, but proof goals often need explicit arithmetic lemmas, not just `simp`.
+- In `decreasing_by`, `all_goals` can fail with “No goals to be solved” when branches close early; use branch-specific blocks or `try` around finishing tactics.
+- `simp` is often insufficient for strict Nat inequalities from recursive measures; adding `omega` after normalization is a robust fallback.
+- Finset membership under coercions (`(A : Set α)` / `↑A`) is not always friendly to `left`/`right`; using `Finset.mem_union.mp` / `Finset.mem_union.mpr` is more reliable.
+- When goal is a Finset-membership proposition, do not assume `Or` tactic sugar applies directly; first convert with `Finset.mem_union` lemmas.
+- `simp` on nested `Finset` unions may not build desired disjunction automatically; constructing explicit `Or.inl` / `Or.inr` witnesses can be necessary.
+- Induction branch syntax is sensitive to indentation and branch names. A misindented `| cons ... =>` can produce parser errors like “Alternative `cons` has not been provided”.
+- Pattern-induction hypotheses may bind multiple IH names (`ihx`, `ihy`); using the wrong one causes unsolved goals or unused-simp warnings.
+- Deriving `DecidableEq` can fail on recursive inductives depending on environment/setup; removing the derive and relying on existing structures can unblock compilation.
+- Prefer keeping files compiling between major proof attempts; when a refactor destabilizes many goals, temporarily restore `sorry` and proceed incrementally.
+- For `Set.Subset` goals (`A ⊆ B`), the element argument is implicit; apply IH as `(ih ...) hz`, not `ih ... z hz`.
+- Well-founded induction motive inference can fail when the goal is a coerced `Finset`-to-`Set` subset; wrapping the motive in an explicit `let P` plus `have hmain : P x := ...` stabilizes elaboration.
+- When proving recursive set-inclusion lemmas over custom recursive structures, `measure semilen` induction is often required if recursion needs non-structural terms like `x1 + x2`.
+- For `Finset` unions defined by recurrences, proving membership in a larger recurrence often works by constructing a disjunction explicitly and then `simpa [D]`.
+- In recurrence branches, converting `hR : z ∈ R (x1 + x2)` into membership in `R (cons x1 x2)` may require explicitly injecting into the defining disjunction first (e.g., `Or.inr hR`) before `simpa [R]`.
+- For expressions like `A ∪ B ∪ C` over `Finset`, Lean parses as `((A ∪ B) ∪ C)`; membership witnesses must follow that association exactly.
+- In singleton branches from `Finset.mem_union` splits, you often get `h : t ∈ ({a} : Finset α)` rather than `t = a`; convert via `have ht_eq : t = a := by simpa using h`.
+- For lifting image-membership between related source finsets, `Finset.mem_image.mp` / `Finset.mem_image.mpr` with an explicit witness is more reliable than trying to `simp` across both sides.
+- A practical pattern for hard recursive inclusions is: define local embedding helpers (`R_embed`, `Rapp_embed`, `S_embed`) once inside the inductive branch, then use them to lift recursive results to the parent goal.
+- For recursive theorems with extra parameters, setting `P : X → Prop := fun x => ∀ ...` and proving `have hmain : P x := ...` helps keep well-founded induction calls ergonomic.
+- With local motive aliases like `let P : X → Prop := ...`, induction branch goals may not simplify unless you explicitly `simpa [P, ...]` when extracting IH results.
+- For recursive membership lemmas over recursively-defined finsets, proving `hmain : P x` and then returning `hmain` avoids repeated elaboration failures.
+- `Finset.mem_image` equalities may come out oriented as `f w = z`; sometimes the easiest path is `have hz : z = w := by simpa [add_nil] using hwz.symm` before rewriting.
+- For right-identity rewrites with custom `HAdd`, it is useful to prove and register `[simp] theorem add_nil` early; this unlocks many `simpa` steps in later recurrence proofs.
+- In union-shaped goals, if a branch target is `(A ∪ B) ∪ C`, map disjuncts carefully: `A/B` must go through the left side, and only `C` goes through the top-level right.
+- In Nat inequality chains, replacing subtraction-heavy algebra with additive equalities (e.g., proving `(s*d)+(d+1) = (s+1)*d+1`) is more robust than `ring_nf` over expressions containing `Nat.sub`.
+- `Nat.zero_lt` may not exist under that exact name in the active imports/toolchain; when proving positivity for recursive Nat-valued functions, introducing an explicit helper lemma (e.g., `have leaves_ge_one : ∀ z, 1 ≤ f z := ...`) is often more robust than relying on a specific theorem name.
+- For `Finset` membership goals where the target is a defined expression, `simpa [definition_name] using (...)` is often required so that elaboration sees the expected type after unfolding.
+- If `ring_nf` is blocked by `Nat` subtraction (`a - 1`), first isolate the subtraction-free arithmetic with a lemma (`have htmp : ... := by omega` or by `Nat` subtraction lemmas), rewrite with `rw`, then run `ring_nf`.
+- The `unusedSimpArgs` linter is usually solved by deleting exactly the flagged rewrite terms; avoid over-specifying `[simp ...]` lists, because `simp [needed_defs, needed_ih]` is often enough and more stable.
+- For list `foldr` proofs with custom non-commutative operations, `simp` may stall; a `calc` proof with an explicit induction hypothesis rewrite and one associativity rewrite is often the reliable pattern.
+- If an inductive transitive-closure constructor composes steps in the wrong direction, downstream proofs fail with irreconcilable type mismatches; fix the constructor direction to match the intended composition law instead of forcing coercions.
+- When `simpa` does not close a goal due definitional differences like parenthesized `List.append`, introduce a normalized intermediate equality first (e.g., via `[List.append_assoc]`) and rewrite through it.
+- For difficult inductive relation transitivity proofs, `induction ... generalizing` can expose the precise missing compositional lemma; capturing that goal explicitly is useful even when the main theorem remains `sorry`.
+- `aesop` is good for quickly testing whether a proof is first-order/constructor-trivial; when it fails after exhaustive search, the emitted remaining goal often pinpoints the exact helper lemma needed.
+- For `Relation.ReflTransGen`, verify edge orientation before composing: if containment is defined as `ReflTransGen step source target` but your notation flips arguments (`r` from `p`), composition order in `.trans` will also be flipped.
+- A staged refactor can keep both a paper-style relation and an operational RTC relation in the same file; this preserves buildability while progressively porting lemmas.
+- Lean's `induction` tactic does not support nested inductive types (like `OTree` with recursive occurrences under `List`); for these, use alternative recursion patterns (e.g., measure-based recursion) or avoid relying on generated nested IHs.
+- In `decreasing_by`, mixing `simp` and `omega` can leave some branches already solved; if a later tactic reports "No goals to be solved", split branches explicitly and only run heavy tactics where needed.
+- For asymptotics in this setup, the reflexive Big-O lemma is `Asymptotics.isBigO_refl`, not `Asymptotics.IsBigO.refl`.
+- Well-founded recursive definitions may need explicit `[simp]` base-case lemmas (e.g., `@[simp] theorem f_nil_left/right`) to make later case-split simplifications close automatically.
+- In Lean 4's `WellFounded.induction` via `(measure f).wf.induction`, passing `motive := ...` as a named argument may fail; using a local `let P : α → Prop := ...` and proving `have hmain : P x := ...` is a robust workaround.
+- In this toolchain, `Nat.le_min` is available as an iff lemma (`a ≤ min b c ↔ a ≤ b ∧ a ≤ c`), so construction uses `(Nat.le_min).2 ⟨..., ...⟩` rather than a direct theorem `Nat.le_min` with two arguments.
+- Definitions depending on `Classical.choose`-based objects (like `LCBS`) must be marked `noncomputable` even when they are used as algorithmic witnesses in theorem statements.
+- When importing modules whose file name contains a hyphen (e.g., `Lozano-v6.lean`), Lean module import syntax may require quoted identifiers like `import SubtreeProofs.«Lozano-v6»`.
+- `Asymptotics.isBigO_of_le` is a practical way to lift a global pointwise inequality `f x ≤ C * g x` into Big-O when `0 ≤ C`; proving `f ≤ C*g` directly often avoids heavier filter/eventually machinery.
+- For `Nat`/`Real` mixed inequalities, `exact_mod_cast` is often the cleanest bridge from a `Nat` inequality to the corresponding casted `Real` inequality.
+- In cast-heavy arithmetic goals, introducing a short local abbreviation (e.g., `let R := runtimeBoundNat ...`) reduces elaboration noise and makes `simp`/`linarith` steps more stable.
+- When proving nonnegativity of linear combinations in `Real`, `linarith` with previously proved nonnegativity lemmas is usually more robust than trying to normalize manually.
