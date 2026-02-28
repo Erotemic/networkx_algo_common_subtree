@@ -19,9 +19,10 @@
     where a contraction merges a child into its parent (splicing the child’s children into the parent’s list).
 
   Notes:
-  - Theorem 3 runtime statement is included as a formal companion theorem.
-  - If you later want a full runtime proof, it will require additional infrastructure (tight complexity analysis,
-    counting arguments, and a formal cost model), which is substantial.
+  - Theorem 3 now has a concrete runtime theorem for `mcesAlgPaper` with explicit runtime assumptions.
+  - Big-O and existential compatibility forms are derived from the concrete bound.
+  - The model is still assumption-driven (expected unit-cost operations and decomposition-size bound),
+    not a verified probabilistic/hash-table implementation.
 
   This file is self-contained (no DyckWord import required).
 -/
@@ -38,7 +39,7 @@ open scoped BigOperators
 namespace LozanoValiente2004
 
 /-!
-## File Status (v5)
+## File Status (v6)
 
 This is the completed, no-`sorry` path produced from the v3/v4 work.
 
@@ -55,9 +56,12 @@ Important limitations / divergence from paper phrasing:
   explicit tree contraction closure. This keeps equivalence-to-encoding at the definition level.
 - `IsMCES` uses encoded semilength as the maximality measure.
 - `lcsLen` is defined directly by the DP recurrence (so Lemma 8 is proved by unfolding/case split).
-- `theorem3_runtime_bound` is a formal companion statement with an abstract cost function and a
-  Big-O witness; it does **not** formalize the concrete implementation-level complexity proof from
-  the paper (e.g., hashing/data-structure operations and full algorithmic cost derivation).
+- `theorem3_runtime_concrete` gives an explicit pointwise bound for `mcesAlgPaper` using
+  `RuntimeAssumptions` and a decomposition-size hypothesis `hkappa`.
+- `theorem3_runtime_bigO_concrete` and `theorem3_runtime_bound` are wrappers derived from the
+  concrete theorem.
+- The runtime proof remains assumption-explicit: expected `O(1)` operation costs are hypotheses,
+  and no concrete hash-table internals/probabilistic semantics are verified in this file.
 
 Use this file when:
 - You want a fully compiling, end-to-end Lean development with all stated lemmas/theorems closed.
@@ -950,30 +954,296 @@ def paramsOfTrees (S T : OTree) : Params :=
   (OTree.nodes S, (OTree.nodes T, (OTree.depth S, (OTree.leaves S, (OTree.depth T, OTree.leaves T)))))
 
 /--
-Theorem 3 runtime companion statement.
-
-Interpretation note:
-- This theorem proves existence of an algorithm/cost/bound triple satisfying the stated inequalities
-  and asymptotic relation.
-- The construction here uses a specification-level algorithm and a matching bound function, so the
-  asymptotic step is reflexive at the level of functions.
-- It should be read as a formal companion to the paper's Theorem 3 statement shape, not as a full
-  mechanization of the paper's concrete runtime-analysis argument.
+Specification-level algorithm used in Theorem 3:
+compute LCBS on encodings, then decode.
 -/
-theorem theorem3_runtime_bound :
-    ∃ (mcesAlg : OTree → OTree → OTree) (mcesCost : OTree → OTree → Nat) (T : Params → Nat),
+noncomputable def mcesAlgPaper (S T : OTree) : OTree :=
+  OTree.decode (BSeq.LCBS (OTree.encode S) (OTree.encode T))
+
+/--
+Expected-cost assumptions for dictionary/array operations in Theorem 3.
+
+These are explicit hypotheses, not hidden axioms.
+-/
+structure RuntimeAssumptions where
+  cLookup : Real
+  cInsert : Real
+  cRead   : Real
+  cWrite  : Real
+  hLookup_nonneg : 0 ≤ cLookup
+  hInsert_nonneg : 0 ≤ cInsert
+  hRead_nonneg   : 0 ≤ cRead
+  hWrite_nonneg  : 0 ≤ cWrite
+
+/-- Aggregated per-sequence coding coefficient. -/
+def RuntimeAssumptions.cCode (A : RuntimeAssumptions) : Real := A.cLookup + A.cInsert
+
+/-- Aggregated per-DP-cell coefficient (`4` reads + `1` write). -/
+def RuntimeAssumptions.cDP (A : RuntimeAssumptions) : Real := 4 * A.cRead + A.cWrite
+
+/-- Overall multiplicative constant used in the final runtime bound. -/
+def runtimeConstant (A : RuntimeAssumptions) : Real := 2 * A.cCode + A.cDP
+
+theorem cCode_nonneg (A : RuntimeAssumptions) : 0 ≤ A.cCode := by
+  exact add_nonneg A.hLookup_nonneg A.hInsert_nonneg
+
+theorem cDP_nonneg (A : RuntimeAssumptions) : 0 ≤ A.cDP := by
+  have h4 : (0 : Real) ≤ 4 := by norm_num
+  exact add_nonneg (mul_nonneg h4 A.hRead_nonneg) A.hWrite_nonneg
+
+/-- Paper decomposition cardinality on encoded tree sequence. -/
+def kappa (t : OTree) : Nat :=
+  (BSeq.D (OTree.encode t)).card
+
+/--
+Target decomposition-size bound shape from paper Theorem 1, in tree parameters.
+
+This is the quantity later used in the DP complexity product.
+-/
+def kappaBound (t : OTree) : Nat :=
+  OTree.nodes t * Nat.min (OTree.depth t) (OTree.leaves t)
+
+/-- Backward-compatible alias for the coding phase cardinality bound. -/
+abbrev codingPhaseBound (t : OTree) : Nat := kappaBound t
+
+/--
+Expected coding phase cost:
+- one dictionary lookup + one insertion per decomposed sequence.
+-/
+def codeCost (A : RuntimeAssumptions) (t : OTree) : Real :=
+  A.cCode * (kappa t : Real)
+
+/-- Expected DP phase cost over decomposition pair table. -/
+def dpCost (A : RuntimeAssumptions) (S T : OTree) : Real :=
+  A.cDP * ((kappa S * kappa T : Nat) : Real)
+
+/-- Total expected cost of the paper-style algorithm model. -/
+def mcesExpectedCost (A : RuntimeAssumptions) (S T : OTree) : Real :=
+  codeCost A S + codeCost A T + dpCost A S T
+
+/--
+Parametric cost envelope used in asymptotic theorem.
+
+MATHLIB_CANDIDATE:
+- A helper API that packages "constant-times-polynomial envelope" functions and their Big-O
+  reflexive proofs would reduce boilerplate in runtime formalisms.
+-/
+def mcesExpectedCostParam (A : RuntimeAssumptions) (p : Params) : Real :=
+  runtimeConstant A * (runtimeBoundNat p : Real)
+
+/-- `nodes` is always at least one. -/
+theorem nodes_pos (t : OTree) : 1 ≤ OTree.nodes t := by
+  cases t with
+  | node cs =>
+      simp [OTree.nodes]
+
+/-- `depth` is always at least one. -/
+theorem depth_pos (t : OTree) : 1 ≤ OTree.depth t := by
+  cases t with
+  | node cs =>
+      cases cs with
+      | nil =>
+          simp [OTree.depth]
+      | cons c cs =>
+          simp [OTree.depth]
+
+/--
+`leaves` is always at least one.
+
+MATHLIB_CANDIDATE:
+- A generic lower-bound lemma for recursively-defined tree leaf-counts over list children
+  (in terms of positivity of each child's contribution) would be broadly reusable.
+-/
+theorem leaves_pos (t : OTree) : 1 ≤ OTree.leaves t := by
+  let P : OTree → Prop := fun u => 1 ≤ OTree.leaves u
+  have hmain : P t := by
+    refine (measure OTree.nodes).wf.induction t ?_
+    intro t ih
+    cases t with
+    | node cs =>
+        cases cs with
+        | nil =>
+            simp [P, OTree.leaves]
+        | cons c cs =>
+            have hlt : OTree.nodes c < OTree.nodes (OTree.node (c :: cs)) := by
+              have hle : OTree.nodes c ≤ OTree.nodes c + (cs.map OTree.nodes).sum := Nat.le_add_right _ _
+              have hlt' : OTree.nodes c < OTree.nodes c + (cs.map OTree.nodes).sum + 1 := Nat.lt_succ_of_le hle
+              simpa [OTree.nodes, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hlt'
+            have hc : 1 ≤ OTree.leaves c := by simpa [P] using ih c hlt
+            calc
+              1 ≤ OTree.leaves c := hc
+              _ ≤ OTree.leaves c + (cs.map OTree.leaves).sum := Nat.le_add_right _ _
+              _ = OTree.leaves (OTree.node (c :: cs)) := by simp [OTree.leaves]
+  exact hmain
+
+/--
+`min(depth, leaves)` is always at least one.
+
+MATHLIB_CANDIDATE:
+- A small lemma packaging `a≥1` and `b≥1` into `Nat.min a b ≥ 1` with rewriting-friendly simp
+  support would simplify many asymptotic positivity proofs.
+-/
+theorem min_depth_leaves_pos (t : OTree) : 1 ≤ Nat.min (OTree.depth t) (OTree.leaves t) := by
+  exact (Nat.le_min).2 ⟨depth_pos t, leaves_pos t⟩
+
+/-- Product of `kappaBound`s equals the theorem-3 polynomial core. -/
+theorem kappaBound_mul_eq_runtimeCore (S T : OTree) :
+    kappaBound S * kappaBound T = runtimeBoundNat (paramsOfTrees S T) := by
+  simp [kappaBound, runtimeBoundNat, paramsOfTrees, Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+
+/--
+Coding one input is bounded by the full two-input polynomial core,
+because the other input contributes a factor at least one.
+
+MATHLIB_CANDIDATE:
+- A lemma of the form `a ≤ a * b` from `1 ≤ b` with multiplication-on-right rewriting support
+  (for `Nat`) would shorten many asymptotic phase-composition proofs.
+-/
+theorem codingPhaseBound_le_runtimeCore_left (S T : OTree) :
+    kappaBound S ≤ runtimeBoundNat (paramsOfTrees S T) := by
+  have hfac : 1 ≤ OTree.nodes T * Nat.min (OTree.depth T) (OTree.leaves T) := by
+    exact Nat.mul_le_mul (nodes_pos T) (min_depth_leaves_pos T)
+  calc
+    kappaBound S = kappaBound S * 1 := by simp
+    _ ≤ kappaBound S * (OTree.nodes T * Nat.min (OTree.depth T) (OTree.leaves T)) :=
+          Nat.mul_le_mul_left _ hfac
+    _ = runtimeBoundNat (paramsOfTrees S T) := by
+          simp [kappaBound, runtimeBoundNat, paramsOfTrees, Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+
+/-- Symmetric coding-phase bound. -/
+theorem codingPhaseBound_le_runtimeCore_right (S T : OTree) :
+    kappaBound T ≤ runtimeBoundNat (paramsOfTrees S T) := by
+  have hfac : 1 ≤ OTree.nodes S * Nat.min (OTree.depth S) (OTree.leaves S) := by
+    exact Nat.mul_le_mul (nodes_pos S) (min_depth_leaves_pos S)
+  calc
+    kappaBound T = kappaBound T * 1 := by simp
+    _ ≤ kappaBound T * (OTree.nodes S * Nat.min (OTree.depth S) (OTree.leaves S)) :=
+          Nat.mul_le_mul_left _ hfac
+    _ = runtimeBoundNat (paramsOfTrees S T) := by
+          simp [kappaBound, runtimeBoundNat, paramsOfTrees, Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+
+/-- Concrete pointwise cost bound used in Theorem 3. -/
+theorem theorem3_runtime_concrete (A : RuntimeAssumptions)
+    (hkappa : ∀ t : OTree, kappa t ≤ kappaBound t)
+    (S T : OTree) :
+    mcesExpectedCost A S T ≤
+      runtimeConstant A * (runtimeBoundNat (paramsOfTrees S T) : Real) := by
+  let R : Nat := runtimeBoundNat (paramsOfTrees S T)
+  have hkS : (kappa S : Real) ≤ (kappaBound S : Real) := by
+    exact_mod_cast hkappa S
+  have hkT : (kappa T : Real) ≤ (kappaBound T : Real) := by
+    exact_mod_cast hkappa T
+  have hkMul : ((kappa S * kappa T : Nat) : Real) ≤ ((kappaBound S * kappaBound T : Nat) : Real) := by
+    exact_mod_cast (Nat.mul_le_mul (hkappa S) (hkappa T))
+  have hBoundS : (kappaBound S : Real) ≤ (R : Real) := by
+    exact_mod_cast codingPhaseBound_le_runtimeCore_left S T
+  have hBoundT : (kappaBound T : Real) ≤ (R : Real) := by
+    exact_mod_cast codingPhaseBound_le_runtimeCore_right S T
+  have hBoundMul : ((kappaBound S * kappaBound T : Nat) : Real) ≤ (R : Real) := by
+    have hEq : kappaBound S * kappaBound T = R := by
+      simpa [R] using kappaBound_mul_eq_runtimeCore S T
+    simpa [hEq]
+  have hCodeS : codeCost A S ≤ A.cCode * (R : Real) := by
+    calc
+      codeCost A S = A.cCode * (kappa S : Real) := by rfl
+      _ ≤ A.cCode * (kappaBound S : Real) := mul_le_mul_of_nonneg_left hkS (cCode_nonneg A)
+      _ ≤ A.cCode * (R : Real) := mul_le_mul_of_nonneg_left hBoundS (cCode_nonneg A)
+  have hCodeT : codeCost A T ≤ A.cCode * (R : Real) := by
+    calc
+      codeCost A T = A.cCode * (kappa T : Real) := by rfl
+      _ ≤ A.cCode * (kappaBound T : Real) := mul_le_mul_of_nonneg_left hkT (cCode_nonneg A)
+      _ ≤ A.cCode * (R : Real) := mul_le_mul_of_nonneg_left hBoundT (cCode_nonneg A)
+  have hDP : dpCost A S T ≤ A.cDP * (R : Real) := by
+    calc
+      dpCost A S T = A.cDP * ((kappa S * kappa T : Nat) : Real) := by rfl
+      _ ≤ A.cDP * ((kappaBound S * kappaBound T : Nat) : Real) := mul_le_mul_of_nonneg_left hkMul (cDP_nonneg A)
+      _ ≤ A.cDP * (R : Real) := mul_le_mul_of_nonneg_left hBoundMul (cDP_nonneg A)
+  calc
+    mcesExpectedCost A S T = codeCost A S + codeCost A T + dpCost A S T := by
+      rfl
+    _ ≤ A.cCode * (R : Real) + A.cCode * (R : Real) + A.cDP * (R : Real) := by
+          exact add_le_add (add_le_add hCodeS hCodeT) hDP
+    _ = runtimeConstant A * (R : Real) := by
+          simp [runtimeConstant, RuntimeAssumptions.cCode, RuntimeAssumptions.cDP]
+          ring_nf
+    _ = runtimeConstant A * (runtimeBoundNat (paramsOfTrees S T) : Real) := by
+          rfl
+
+/--
+Algorithm-specific theorem-3 statement: correctness + concrete runtime inequality.
+-/
+theorem theorem3_paper_algorithm (A : RuntimeAssumptions)
+    (hkappa : ∀ t : OTree, kappa t ≤ kappaBound t)
+    (S T : OTree) :
+    OTree.IsMCES (mcesAlgPaper S T) S T ∧
+      mcesExpectedCost A S T ≤
+        runtimeConstant A * (runtimeBoundNat (paramsOfTrees S T) : Real) := by
+  refine ⟨?_, ?_⟩
+  · simpa [mcesAlgPaper] using (OTree.theorem2 S T)
+  · exact theorem3_runtime_concrete A hkappa S T
+
+/--
+Asymptotic theorem for the explicit param-envelope cost function.
+
+MATHLIB_CANDIDATE:
+- A theorem turning pointwise `f ≤ C*g` into `f =O g` with explicit nonnegativity side conditions
+  is frequently needed in cost-model formalizations.
+-/
+theorem theorem3_runtime_bigO_concrete (A : RuntimeAssumptions) :
+    mcesExpectedCostParam A =O[Filter.atTop] (fun p : Params => (runtimeBoundNat p : Real)) := by
+  have hBig :
+      (fun p : Params => runtimeConstant A * (runtimeBoundNat p : Real))
+        =O[Filter.atTop] fun p : Params => (runtimeBoundNat p : Real) := by
+    simpa using
+      (Asymptotics.isBigO_const_mul_self (runtimeConstant A)
+        (fun p : Params => (runtimeBoundNat p : Real)) Filter.atTop)
+  simpa [mcesExpectedCostParam] using hBig
+
+/--
+Compatibility corollary: existential packaging derived from concrete theorem.
+-/
+theorem theorem3_runtime_bound (A : RuntimeAssumptions)
+    (hkappa : ∀ t : OTree, kappa t ≤ kappaBound t) :
+    ∃ (mcesAlg : OTree → OTree → OTree) (mcesCost : OTree → OTree → Real) (T : Params → Real),
       (∀ S Ttree, OTree.IsMCES (mcesAlg S Ttree) S Ttree) ∧
       (∀ S Ttree, mcesCost S Ttree ≤ T (paramsOfTrees S Ttree)) ∧
-      ((fun p : Params => (T p : Real)) =O[Filter.atTop] fun p : Params => (runtimeBoundNat p : Real)) := by
-  refine ⟨(fun S Ttree => OTree.decode (BSeq.LCBS (OTree.encode S) (OTree.encode Ttree))),
-    (fun S Ttree => runtimeBoundNat (paramsOfTrees S Ttree)),
-    runtimeBoundNat, ?_⟩
+      (T =O[Filter.atTop] fun p : Params => (runtimeBoundNat p : Real)) := by
+  refine ⟨mcesAlgPaper, mcesExpectedCost A, mcesExpectedCostParam A, ?_⟩
   refine ⟨?_, ?_, ?_⟩
   · intro S Ttree
-    simpa using (OTree.theorem2 S Ttree)
+    exact (theorem3_paper_algorithm A hkappa S Ttree).1
   · intro S Ttree
-    exact Nat.le_refl _
-  · simpa using (Asymptotics.isBigO_refl (fun p : Params => (runtimeBoundNat p : Real)) Filter.atTop)
+    have hrt := (theorem3_paper_algorithm A hkappa S Ttree).2
+    simpa [mcesExpectedCost, mcesExpectedCostParam] using hrt
+  · simpa using theorem3_runtime_bigO_concrete A
 end BSeq
+
+/--
+Convenience aliases so theorem-3 runtime API can be accessed from `LozanoValiente2004`
+without qualifying through `BSeq`.
+-/
+abbrev RuntimeAssumptions := BSeq.RuntimeAssumptions
+abbrev Params := BSeq.Params
+abbrev OTree := BSeq.OTree
+
+theorem theorem3_runtime_concrete (A : RuntimeAssumptions)
+    (hkappa : ∀ t : OTree, BSeq.kappa t ≤ BSeq.kappaBound t)
+    (S T : OTree) :
+    BSeq.mcesExpectedCost A S T ≤
+      BSeq.runtimeConstant A * (BSeq.runtimeBoundNat (BSeq.paramsOfTrees S T) : Real) := by
+  exact BSeq.theorem3_runtime_concrete A hkappa S T
+
+theorem theorem3_runtime_bigO_concrete (A : RuntimeAssumptions) :
+    BSeq.mcesExpectedCostParam A =O[Filter.atTop]
+      (fun p : Params => (BSeq.runtimeBoundNat p : Real)) := by
+  exact BSeq.theorem3_runtime_bigO_concrete A
+
+theorem theorem3_runtime_bound (A : RuntimeAssumptions)
+    (hkappa : ∀ t : OTree, BSeq.kappa t ≤ BSeq.kappaBound t) :
+    ∃ (mcesAlg : OTree → OTree → OTree) (mcesCost : OTree → OTree → Real) (T : Params → Real),
+      (∀ S Ttree, BSeq.OTree.IsMCES (mcesAlg S Ttree) S Ttree) ∧
+      (∀ S Ttree, mcesCost S Ttree ≤ T (BSeq.paramsOfTrees S Ttree)) ∧
+      (T =O[Filter.atTop] fun p : Params => (BSeq.runtimeBoundNat p : Real)) := by
+  exact BSeq.theorem3_runtime_bound A hkappa
 
 end LozanoValiente2004
