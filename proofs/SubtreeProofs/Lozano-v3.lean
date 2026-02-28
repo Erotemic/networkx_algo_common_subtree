@@ -74,7 +74,7 @@ def semilen : BSeq → Nat
 @[simp] theorem semilen_nil : semilen nil = 0 := rfl
 @[simp] theorem semilen_cons (x y : BSeq) : semilen (cons x y) = semilen x + semilen y + 1 := rfl
 @[simp] theorem semilen_nest (s : BSeq) : semilen (nest s) = semilen s + 1 := by
-  simp [nest, semilen, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+  simp [nest, semilen, Nat.add_comm]
 
 /-- Paper Definition 3: `head(0x1y)=x`, `tail(0x1y)=y`. -/
 def head : BSeq → BSeq
@@ -98,13 +98,13 @@ theorem add_assoc (a b c : BSeq) : (a + b) + c = a + (b + c) := by
   induction a with
   | nil => simp
   | cons x y ihx ihy =>
-      simp [append, ihy]
+      simp [ihy]
 
 @[simp] theorem add_nil (a : BSeq) : a + nil = a := by
   induction a with
   | nil => simp
   | cons x y ihx ihy =>
-      simp [append, ihy]
+      simp [ihy]
 
 instance : Std.Associative (α:=BSeq) (· + ·) := ⟨add_assoc⟩
 
@@ -113,7 +113,7 @@ theorem semilen_add (a b : BSeq) : semilen (a + b) = semilen a + semilen b := by
   induction a with
   | nil => simp
   | cons x y ihx ihy =>
-      simp [append, semilen, ihy, Nat.add_assoc, Nat.add_left_comm, Nat.add_comm]
+      simp [semilen, ihy, Nat.add_left_comm, Nat.add_comm]
 
 /-! ## Definition 2: recursive containment `s ⊆ t` -/
 
@@ -149,30 +149,37 @@ theorem contained_refl (s : BSeq) : s ⊑ s := Contained.refl s
 
 /-- Containment is transitive (needed throughout). -/
 theorem contained_trans {a b c : BSeq} (hab : a ⊑ b) (hbc : b ⊑ c) : a ⊑ c := by
-  induction hbc with
-  | refl _ => simpa using hab
+  induction hbc generalizing a with
+  | refl _ =>
+      simpa using hab
   | step s t s1 s2 s3 t1 t2 t3 hs ht h1 h2 h3 ih1 ih2 ih3 =>
-      -- a ⊑ s, and s ⊑ t by this step.
-      -- We rebuild a step using the same outer witness, pushing `a ⊑ s` through the decomposition.
-      -- To do that, we need to decompose `a` along `s = s1+s2+s3`. Use existence of factors:
-      -- We can simply take `a1=a`, `a2=λ`, `a3=λ` with `a=a+λ+λ` and rely on monotonicity
-      -- via `Contained.step` plus reflexive containments of λ. That would be cheating if it
-      -- forced `a ⊑ s1`. So instead, we prove a stronger lemma below by induction on `hab`.
-      -- Here we invoke that stronger lemma.
-      -- (This is a standard difficulty: Definition 2 is not syntactically a closure operator.)
-      --
-      -- We resolve it by using `decode/encode` later; for the sequence-only part we avoid
-      -- requiring full transitivity. For now we keep this lemma as an admitted fact.
-      --
-      -- NOTE: This is the only non-runtime `sorry` in this file. If you want it fully proved,
-      -- the clean path is to rephrase `⊑` as the *reflexive transitive closure* of the single
-      -- deletion relation induced by `Contained.step` at one pair, and then show equivalence
-      -- with Definition 2. That equivalence is standard but lengthy.
+      -- Core remaining obligation:
+      -- from `a ⊑ (s1 + s2 + s3)` and `s1 ⊑ t1`, `s2 ⊑ t2`, `s3 ⊑ t3`,
+      -- derive `a ⊑ (t1 + cons t2 t3)`.
       sorry
 
 /-- Semilength monotonicity: if `r ⊑ s` then `|r| ≤ |s|`. -/
 theorem semilen_le_of_contained {r s : BSeq} (h : r ⊑ s) : semilen r ≤ semilen s := by
-  sorry
+  induction h with
+  | refl s =>
+      exact Nat.le_refl _
+  | step s t s1 s2 s3 t1 t2 t3 hs ht h1 h2 h3 ih1 ih2 ih3 =>
+      have hslen : semilen s = semilen s1 + semilen s2 + semilen s3 := by
+        calc
+          semilen s = semilen (s1 + s2 + s3) := by simpa [hs]
+          _ = semilen s1 + semilen s2 + semilen s3 := by
+                simp [semilen_add, add_assoc, Nat.add_assoc]
+      have htlen : semilen t = semilen t1 + semilen t2 + semilen t3 + 1 := by
+        calc
+          semilen t = semilen (t1 + cons t2 t3) := by simpa [ht]
+          _ = semilen t1 + semilen t2 + semilen t3 + 1 := by
+                simp [semilen_add, semilen, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+      calc
+        semilen s = semilen s1 + semilen s2 + semilen s3 := hslen
+        _ ≤ semilen t1 + semilen t2 + semilen t3 := by
+              exact Nat.add_le_add (Nat.add_le_add ih1 ih2) ih3
+        _ ≤ semilen t1 + semilen t2 + semilen t3 + 1 := Nat.le_succ _
+        _ = semilen t := by simpa [htlen]
 
 /-- The empty sequence is contained in every sequence (by deleting all annotations). -/
 theorem empty_contained (s : BSeq) : (nil : BSeq) ⊑ s := by
@@ -184,7 +191,7 @@ theorem empty_contained (s : BSeq) : (nil : BSeq) ⊑ s := by
       -- nil ⊑ x and nil ⊑ y, then nil = nil+nil+nil ⊑ nil + cons x y by step
       refine Contained.step _ _ nil nil nil nil x y ?_ ?_ (Contained.refl _) ihx ihy
       · simp
-      · simp [append]
+      · simp
 
 /-- Existence of an LCBS by `Nat.findGreatest` (bounded by `min |s| |t|`). -/
 theorem exists_LCBS (s t : BSeq) : ∃ r : BSeq, IsLCBS r s t := by
@@ -435,7 +442,8 @@ theorem corollary1 (x : BSeq) : (D x : Set BSeq) ⊆ (R x ∪ S x : Finset BSeq)
       intro x ih
       cases x with
       | nil =>
-          simpa [P, R]
+          change nil ∈ R nil
+          simp [R]
       | cons x1 x2 =>
           have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
             simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
@@ -497,7 +505,8 @@ theorem lemma6 (x : BSeq) : (S x).card ≤ semilen x * depth x + 1 := by
       intro x ih
       cases x with
       | nil =>
-          simpa [P, R, semilen]
+          change (R nil).card ≤ semilen nil + 1
+          simp [R, semilen]
       | cons x1 x2 =>
           have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
             simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
@@ -509,7 +518,7 @@ theorem lemma6 (x : BSeq) : (S x).card ≤ semilen x * depth x + 1 := by
             _ = 1 + (R (x1 + x2)).card := by simp
             _ ≤ 1 + (semilen (x1 + x2) + 1) := Nat.add_le_add_left ih' 1
             _ = semilen (cons x1 x2) + 1 := by
-              simp [semilen, semilen_add, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+              simp [semilen, semilen_add, Nat.add_comm]
     exact hmain
   -- Depth is always at least 1.
   have depth_ge_one : ∀ x : BSeq, 1 ≤ depth x := by
@@ -560,23 +569,119 @@ theorem lemma6 (x : BSeq) : (S x).card ≤ semilen x * depth x + 1 := by
         _ = (semilen x1 + semilen x2 + 1) * depth (cons x1 x2) + 1 := by
               ring_nf
         _ = semilen (cons x1 x2) * depth (cons x1 x2) + 1 := by
-              simp [semilen, semilen_add, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+              simp [semilen, Nat.add_comm]
 
 /-- Lemma 7 (paper): `|S[x]| ≤ |x| ℓ(x) + 1`. -/
 theorem lemma7 (x : BSeq) : (S x).card ≤ semilen x * leaves x + 1 := by
-  -- Paper proof by induction using Lemma 5 and replacing depth with leaves.
-  sorry
+  have leaves_ge_one : ∀ z : BSeq, 1 ≤ leaves z := by
+    intro z
+    induction z with
+    | nil =>
+        simp [leaves]
+    | cons z1 z2 ih1 ih2 =>
+        exact le_trans ih1 (Nat.le_add_right _ _)
+  have depth_le_leaves : ∀ x : BSeq, depth x ≤ leaves x := by
+    intro x
+    induction x with
+    | nil =>
+        simp [depth, leaves]
+    | cons x1 x2 ih1 ih2 =>
+        have h1 : depth x1 + 1 ≤ leaves x1 + leaves x2 := by
+          calc
+            depth x1 + 1 ≤ leaves x1 + 1 := Nat.add_le_add_right ih1 1
+            _ ≤ leaves x1 + leaves x2 := by
+                  exact Nat.add_le_add_left (leaves_ge_one x2) _
+        have h2 : depth x2 ≤ leaves x1 + leaves x2 := by
+          exact le_trans ih2 (Nat.le_add_left _ _)
+        exact max_le h1 h2
+  have h6 := lemma6 x
+  have hmul : semilen x * depth x ≤ semilen x * leaves x := Nat.mul_le_mul_left _ (depth_le_leaves x)
+  exact le_trans h6 (Nat.add_le_add_right hmul 1)
 
 /-- Corollary 2 (paper): `|S[x]| ≤ |x| min(d(x),ℓ(x)) + 1`. -/
 theorem corollary2 (x : BSeq) :
     (S x).card ≤ semilen x * Nat.min (depth x) (leaves x) + 1 := by
-  sorry
+  have htot := le_total (depth x) (leaves x)
+  rcases htot with hdl | hld
+  · simpa [Nat.min_eq_left hdl] using lemma6 x
+  · simpa [Nat.min_eq_right hld] using lemma7 x
 
 /-- Theorem 1 (paper): cardinality bound on decomposition. -/
 theorem theorem1 (x : BSeq) :
     (D x).card ≤ semilen x * (Nat.min (depth x) (leaves x) + 1) + 1 := by
   -- Paper: D ⊆ R ∪ S and |R[x]| ≤ |x|+1, then apply Corollary 2.
-  sorry
+  have R_card_le : ∀ x : BSeq, (R x).card ≤ semilen x + 1 := by
+    intro x
+    let P : BSeq → Prop := fun x => (R x).card ≤ semilen x + 1
+    have hmain : P x := by
+      refine (measure semilen).wf.induction x ?_
+      intro x ih
+      cases x with
+      | nil =>
+          change (R nil).card ≤ semilen nil + 1
+          simp [R, semilen]
+      | cons x1 x2 =>
+          have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
+            simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
+          have ih' : (R (x1 + x2)).card ≤ semilen (x1 + x2) + 1 := by
+            simpa [P] using ih (x1 + x2) hlt
+          calc
+            (R (cons x1 x2)).card = ({cons x1 x2} ∪ R (x1 + x2)).card := by simp [R]
+            _ ≤ ({cons x1 x2} : Finset BSeq).card + (R (x1 + x2)).card := Finset.card_union_le _ _
+            _ = 1 + (R (x1 + x2)).card := by simp
+            _ ≤ 1 + (semilen (x1 + x2) + 1) := Nat.add_le_add_left ih' 1
+            _ = semilen (cons x1 x2) + 1 := by
+              simp [semilen, semilen_add, Nat.add_comm]
+    exact hmain
+  have nil_mem_R : ∀ x : BSeq, nil ∈ R x := by
+    intro x
+    let P : BSeq → Prop := fun x => nil ∈ R x
+    have hmain : P x := by
+      refine (measure semilen).wf.induction x ?_
+      intro x ih
+      cases x with
+      | nil =>
+          change nil ∈ R nil
+          simp [R]
+      | cons x1 x2 =>
+          have hlt : semilen (x1 + x2) < semilen (cons x1 x2) := by
+            simpa [semilen, semilen_add] using (Nat.lt_succ_self (x1.semilen + x2.semilen))
+          have ih' : nil ∈ R (x1 + x2) := by simpa [P] using ih (x1 + x2) hlt
+          exact by
+            simpa [P, R] using (Or.inr ih' : nil = cons x1 x2 ∨ nil ∈ R (x1 + x2))
+    exact hmain
+  have nil_mem_S : ∀ x : BSeq, nil ∈ S x := by
+    intro x
+    cases x with
+    | nil =>
+        simp [S]
+    | cons x1 x2 =>
+        simpa [S] using (Finset.mem_union.mpr <| Or.inl (nil_mem_R x1))
+  have hDsub : (D x).card ≤ (R x ∪ S x).card := Finset.card_le_card (corollary1 x)
+  have hinter_one : 1 ≤ (R x ∩ S x).card := by
+    apply Finset.one_le_card.mpr
+    exact ⟨nil, by simp [nil_mem_R x, nil_mem_S x]⟩
+  have hunion_plus_one : (R x ∪ S x).card + 1 ≤ (R x).card + (S x).card := by
+    calc
+      (R x ∪ S x).card + 1 ≤ (R x ∪ S x).card + (R x ∩ S x).card := Nat.add_le_add_left hinter_one _
+      _ = (R x).card + (S x).card := by
+            simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using (Finset.card_union_add_card_inter (R x) (S x))
+  have hunion_le : (R x ∪ S x).card ≤ (R x).card + (S x).card - 1 := Nat.le_sub_of_add_le hunion_plus_one
+  have hsum : (R x).card + (S x).card ≤ (semilen x + 1) + (semilen x * Nat.min (depth x) (leaves x) + 1) := by
+    exact Nat.add_le_add (R_card_le x) (corollary2 x)
+  have hsum_sub : (R x).card + (S x).card - 1 ≤ ((semilen x + 1) + (semilen x * Nat.min (depth x) (leaves x) + 1)) - 1 :=
+    Nat.sub_le_sub_right hsum 1
+  calc
+    (D x).card ≤ (R x ∪ S x).card := hDsub
+    _ ≤ (R x).card + (S x).card - 1 := hunion_le
+    _ ≤ ((semilen x + 1) + (semilen x * Nat.min (depth x) (leaves x) + 1)) - 1 := hsum_sub
+    _ = semilen x * (Nat.min (depth x) (leaves x) + 1) + 1 := by
+          have htmp :
+              ((semilen x + 1) + (semilen x * Nat.min (depth x) (leaves x) + 1)) - 1 =
+                semilen x + (semilen x * Nat.min (depth x) (leaves x)) + 1 := by
+            omega
+          rw [htmp]
+          ring_nf
 
 /-! ## Section 3: Ordered trees, embedded subtrees, and Theorem 2 -/
 
@@ -619,10 +724,15 @@ def decode (s : BSeq) : OTree := node (decodeForest s)
 
 /-- Encode∘Decode is identity on balanced sequences. -/
 theorem encode_decodeForest (s : BSeq) : (decodeForest s).foldr (fun c acc => (BSeq.nest (encode c)) + acc) BSeq.nil = s := by
-  sorry
+  induction s with
+  | nil =>
+      simp [decodeForest]
+  | cons x y ihx ihy =>
+      simp [decodeForest, encode]
+      exact ⟨ihx, ihy⟩
 
 theorem encode_decode (s : BSeq) : encode (decode s) = s := by
-  sorry
+  simpa [decode, encode] using encode_decodeForest s
 
 /-- A single edge contraction step (contract one parent-child edge, splicing grandchildren). -/
 inductive Contract1 : OTree → OTree → Prop
@@ -632,7 +742,7 @@ inductive Contract1 : OTree → OTree → Prop
 /-- Embedded subtree relation = reflexive-transitive closure of contractions (paper Def. 5). -/
 inductive EmbSub : OTree → OTree → Prop
   | refl (t) : EmbSub t t
-  | tail {a b c} : EmbSub a b → Contract1 b c → EmbSub a c
+  | tail {a b c} : EmbSub a b → Contract1 c b → EmbSub a c
 
 /-- Common embedded subtree. -/
 def IsCommonEmbedded (u s t : OTree) : Prop := EmbSub u s ∧ EmbSub u t
@@ -646,13 +756,61 @@ Key lemma: contracting one edge deletes exactly one annotation pair in the encod
 -/
 theorem encode_contract1 {t u : OTree} (h : Contract1 t u) :
     BSeq.Contained (encode u) (encode t) := by
-  sorry
+  have encode_node_append : ∀ as bs : List OTree, encode (node (as ++ bs)) = encode (node as) + encode (node bs) := by
+    intro as bs
+    induction as with
+    | nil =>
+        simp [encode]
+    | cons a as ih =>
+        calc
+          encode (node ((a :: as) ++ bs))
+              = BSeq.nest (encode a) + encode (node (as ++ bs)) := by
+                  simp [encode]
+          _ = BSeq.nest (encode a) + (encode (node as) + encode (node bs)) := by
+                rw [ih]
+          _ = (BSeq.nest (encode a) + encode (node as)) + encode (node bs) := by
+                rw [BSeq.add_assoc]
+          _ = encode (node (a :: as)) + encode (node bs) := by
+                simp [encode]
+  rcases h with ⟨pre, post, gc⟩
+  let a : BSeq := encode (node pre)
+  let b : BSeq := encode (node gc)
+  let c : BSeq := encode (node post)
+  have hu : encode (node (pre ++ gc ++ post)) = a + b + c := by
+    calc
+      encode (node (pre ++ gc ++ post))
+          = encode (node pre) + encode (node (gc ++ post)) := by
+              simpa [a] using encode_node_append pre (gc ++ post)
+      _ = a + (encode (node gc) + encode (node post)) := by
+            simpa [a] using congrArg (fun z => a + z) (encode_node_append gc post)
+      _ = a + b + c := by
+            simp [a, b, c, BSeq.add_assoc]
+  have hu' : encode (node (pre ++ (gc ++ post))) = a + b + c := by
+    simpa [List.append_assoc] using hu
+  have ht : encode (node (pre ++ node gc :: post)) = a + BSeq.cons b c := by
+    calc
+      encode (node (pre ++ node gc :: post))
+          = encode (node pre) + encode (node (node gc :: post)) := by
+              simpa [a] using encode_node_append pre (node gc :: post)
+      _ = a + (BSeq.nest (encode (node gc)) + encode (node post)) := by
+            simp [encode, a]
+      _ = a + BSeq.cons b c := by
+            simp [a, b, c, BSeq.nest]
+  have hstep : Contained (a + b + c) (a + BSeq.cons b c) := by
+    refine Contained.step (a + b + c) (a + BSeq.cons b c) a b c a b c ?_ ?_ (Contained.refl _) (Contained.refl _) (Contained.refl _)
+    · rfl
+    · rfl
+  simpa [hu', ht] using hstep
 
 /--
 If `u` is an embedded subtree of `t`, then `encode u ⊑ encode t`.
 -/
 theorem encode_embSub {u t : OTree} (h : EmbSub u t) : encode u ⊑ encode t := by
-  sorry
+  induction h with
+  | refl =>
+      exact Contained.refl _
+  | tail hab hcb ih =>
+      exact contained_trans ih (encode_contract1 hcb)
 
 /--
 Theorem 2 (paper): LCBS of the balanced sequences corresponds to MCES.
