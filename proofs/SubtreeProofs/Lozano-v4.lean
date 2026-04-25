@@ -32,6 +32,7 @@ import Mathlib.Data.Nat.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Tactic
 import Mathlib.Analysis.Asymptotics.Defs
+import SubtreeProofs.Lib
 --import Mathlib.Analysis.Analytic.Basic
 
 open scoped BigOperators
@@ -782,6 +783,19 @@ def depth : OTree → Nat
 def leaves : OTree → Nat
   | node [] => 1
   | node cs => (cs.map leaves).sum
+
+/-! ### Bridge to reusable ordered-tree core library -/
+
+/-- Canonical core-tree type used in shared library modules. -/
+abbrev CoreTree := SubtreeProofs.Lib.OrderedTree.Tree
+
+/-- Convert local `OTree` to the shared core-tree representation. -/
+def toCore : OTree → CoreTree
+  | node cs => .node (cs.map toCore)
+
+/-- Convert core-tree back to local `OTree`. -/
+def ofCore : CoreTree → OTree
+  | .node cs => node (cs.map ofCore)
 
 /-- Paper Definition 1: balanced sequence encoding of an ordered tree. -/
 def encode : OTree → BSeq

@@ -48,3 +48,31 @@
 - For `Nat`/`Real` mixed inequalities, `exact_mod_cast` is often the cleanest bridge from a `Nat` inequality to the corresponding casted `Real` inequality.
 - In cast-heavy arithmetic goals, introducing a short local abbreviation (e.g., `let R := runtimeBoundNat ...`) reduces elaboration noise and makes `simp`/`linarith` steps more stable.
 - When proving nonnegativity of linear combinations in `Real`, `linarith` with previously proved nonnegativity lemmas is usually more robust than trying to normalize manually.
+- For nested inductive types (like `OTree` with recursive children under `List`), `OTree.rec` can expose two motives (`motive_1` for trees, `motive_2` for lists), which is useful for proving tree/list fold properties together.
+- Specializing a previously proved generic theorem can often remove a runtime hypothesis cleanly (e.g., proving `kappa t ≤ ...` by instantiating `theorem1` at `encode t`).
+- In Nat positivity proofs for expressions of the form `expr + 1`, `Nat.succ_le_succ (Nat.zero_le _)` is a concise way to produce a `1 ≤ ...` bound.
+- For product-envelope bounds, a reusable pattern is: prove per-factor lower bound `1 ≤ b`, lift to `a ≤ a*b` with `Nat.mul_le_mul_left`, then cast with `exact_mod_cast` in Real-valued runtime inequalities.
+- When recursively proving properties of expressions built by the same fold in multiple lemmas, introducing a named helper definition for the fold (e.g., `encodeForest`) avoids brittle simplification mismatches between equivalent lambda forms.
+- For overloaded constants like `nil` in goals (`BSeq.nil` vs list `[]`), an explicit `change` can disambiguate the target and make `simp` succeed.
+- In Nat equalities after rewriting `n = (n-1)+1` (under `1 ≤ n`), using `Nat.add_mul` plus `simp` is often more stable than `ring`/`omega`.
+- To lift an assumption-free tree-pair bound to a parameter-only theorem, first prove a monotone bridge `bound_tree_pair ≤ bound_params (paramsOfTrees ...)`, then compose with `mul_le_mul_of_nonneg_left` for Real costs.
+- `le_total a b` yields `a ≤ b ∨ b ≤ a` (both non-strict); if a strict branch is needed later, do not apply lemmas expecting `<` without deriving strictness separately.
+- In large files, theorem order matters: referencing a helper theorem defined later (even in same namespace) fails; either move the helper earlier or prove a local version inline.
+- For Nat polynomial identities in inequality proofs, rewriting with `Nat.add_mul` + `simp` is often more predictable than relying on `ring` over goals containing subtraction.
+- When deriving coefficient inequalities in Real runtime bounds, unfold the coefficient definition first and use `nlinarith` with nonnegativity lemmas; this is more robust than `linarith` on opaque defs.
+- In `OTree.rec` with two motives (`motive_1` for trees and `motive_2` for child lists), the `hcs` hypothesis in the `node` branch has the list motive type; using `simpa using hcs` to solve a tree-motive goal can produce subtle type mismatches.
+- For recursive functions over an inductive constructor with multiple recursive fields, `induction` introduces one IH per recursive field (e.g., `ih1`, `ih2` for `cons x y`); when the target recursion follows only one field (like `x + y` recursing through the tail), using the wrong IH leaves non-obvious unsolved goals.
+- If mutually recursive helpers trigger brittle parsing/elaboration in a large file, defining a single structurally recursive function returning a pair and projecting components (`.1` / `.2`) can be a stable alternative.
+- For large developments, extracting small generic helper lemmas into a separate module (e.g., `SubtreeProofs/RuntimeUtils`) and importing it can reduce proof boilerplate without risking circular dependencies; move only definitions that do not depend on file-local domain structures.
+- In local project modules, import paths follow Lean module names from the `proofs` root (e.g., `import SubtreeProofs.RuntimeUtils` for `proofs/SubtreeProofs/RuntimeUtils.lean`).
+- For gradual library extraction, keep a compatibility shim module that forwards old theorem names to new generic modules; this avoids breaking historical proof files while enabling incremental migration.
+- To prepare for possible mathlib upstreaming, place reusable lemmas in neutral, project-level namespaces (not paper-specific namespaces) and keep them independent from domain-specific inductive types.
+- Nested inductive datatypes (e.g., trees with recursive occurrences under `List`) are brittle with plain `induction`; for portability, prefer either dedicated recursors (`.rec` with list motive) or start with definition-level conversion shims and add transport lemmas later.
+- A practical library migration strategy is: extract canonical core definitions first, keep historical files unchanged except for lightweight `toCore`/`ofCore` adapters, and only then migrate proofs in small batches.
+- When aliasing methods from an imported namespace, `abbrev RuntimeAssumptions.cCode := ...` can break field notation; defining explicit local wrapper defs (`def RuntimeAssumptions.cCode (A) := ...`) is more robust.
+- After moving definitions behind wrapper aliases, proofs that relied on `simp`/`linarith` over old opaque names may need explicit unfolding of both local wrappers and imported definitions.
+- In `calc` chains for `≤` goals, ending with an equality expression can leave an unsolved reflexive inequality; either finish with `... ≤ ... := le_rfl` or produce an equality lemma and conclude via `le_of_eq`.
+- `simpa` on Nat inequalities can fail only due operand order (`a + b` vs `b + a`); adding `Nat.add_comm` in the simp set often resolves this without extra arithmetic tactics.
+- Inside a `calc` chain, you cannot insert `have` declarations as a step; derive intermediate lemmas before/after the `calc` and reference them in explicit `≤` steps.
+- For `WellFounded.induction` in a theorem of shape `∀ x, ...`, elaboration is more stable if you introduce `let P : α → Prop := ...` and prove `have hmain : P x := ...`; direct `refine ...` can fail with a motive mismatch.
+- When a `simp` call succeeds but emits `unused simp argument` warnings, remove the extra lemmas (`simp` linter is often right and keeping minimal simp sets reduces brittleness).
