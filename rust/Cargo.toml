@@ -1,0 +1,22 @@
+[package]
+name = "networkx_algo_common_subtree_rust"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+name = "_rust"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module"] }
+rustc-hash = "2"
+
+[build-dependencies]
+pyo3-build-config = "0.22"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"

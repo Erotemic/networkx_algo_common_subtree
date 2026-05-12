@@ -1,5 +1,5 @@
-option(BUILD_CPU_FEATURE "A Cython CPU Feature" True)
-if (BUILD_CPU_FEATURE)
+option(BUILD_CPU_FEATURE "Build Cython CPU features" ON)
+if(BUILD_CPU_FEATURE)
   cpu_cython_module("balanced_embedding_cython.pyx" "balanced_embedding_cython")
   cpu_cython_module("balanced_isomorphism_cython.pyx" "balanced_isomorphism_cython")
 endif()

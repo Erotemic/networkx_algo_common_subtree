@@ -96,3 +96,13 @@ _skbuild
 pip-wheel-metadata/
 
 wheelhouse
+networkx_algo_common_subtree/*.cpp
+
+# These shouldn't be here anyway
+CMakeCache.txt
+CMakeFiles/
+CMakeInit.txt
+.cmake/
+.ninja_deps
+.ninja_log
+
