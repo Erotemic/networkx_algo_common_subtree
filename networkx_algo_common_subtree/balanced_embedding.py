@@ -55,7 +55,7 @@ def longest_common_balanced_embedding(
     impl : str
         Determines the backend implementation. Available choices are given by
         :func:`available_impls_longest_common_balanced_embedding`. The default
-        is "auto", which chooses "iter-cython" if available, otherwise "iter".
+        is "auto", which chooses "iter-rust" if available, then "iter-cython", otherwise "iter".
 
     Returns
     -------
@@ -198,7 +198,9 @@ def longest_common_balanced_embedding(
     full_seq1 = seq1
     full_seq2 = seq2
     if impl == "auto":
-        if _cython_lcse_backend(error="ignore"):
+        if _rust_lcse_backend(error="ignore"):
+            impl = "iter-rust"
+        elif _cython_lcse_backend(error="ignore"):
             impl = "iter-cython"
         else:
             impl = "iter"
@@ -210,6 +212,10 @@ def longest_common_balanced_embedding(
     elif impl == "iter-cython":
         balanced_embedding_cython = _cython_lcse_backend(error="raise")
         value, best = balanced_embedding_cython._lcse_iter_cython(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
+    elif impl == "iter-rust":
+        value, best = _lcse_iter_rust(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
         )
     elif impl == "recurse":
@@ -240,6 +246,10 @@ def available_impls_longest_common_balanced_embedding():
         the string code for each available implementation
     """
     impls = []
+    if _rust_lcse_backend():
+        impls += [
+            "iter-rust",
+        ]
     if _cython_lcse_backend():
         impls += [
             "iter-cython",
@@ -251,6 +261,25 @@ def available_impls_longest_common_balanced_embedding():
         "recurse",
     ]
     return impls
+
+
+def _rust_lcse_backend(error="ignore"):
+    """Returns the rust backend if available, otherwise None."""
+    try:
+        from .balanced_embedding_rust import _rust_lcse_backend as _backend
+    except Exception:
+        if error == "ignore":
+            return None
+        if error == "raise":
+            raise
+        raise KeyError(error)
+    return _backend(error=error)
+
+
+def _lcse_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
+    from .balanced_embedding_rust import _lcse_iter_rust as _backend
+
+    return _backend(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
 
 
 def _cython_lcse_backend(error="ignore", verbose=0):

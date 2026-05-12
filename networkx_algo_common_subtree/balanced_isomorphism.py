@@ -16,6 +16,10 @@ def available_impls_longest_common_balanced_isomorphism():
         the string code for each available implementation
     """
     impls = ["recurse", "iter"]
+    if _rust_lcsi_backend():
+        impls += [
+            "iter-rust",
+        ]
     if _cython_lcsi_backend():
         impls += [
             "iter-cython",
@@ -61,8 +65,8 @@ def longest_common_balanced_isomorphism(
     impl : str
         Determines the backend implementation. Available choices are given by
         :func:`available_impls_longest_common_balanced_isomorphism`.
-        The default is "auto", which chooses "iter-cython" if available,
-        otherwise "iter".
+        The default is "auto", which chooses "iter-rust" if available,
+        then "iter-cython", otherwise "iter".
 
     Returns
     -------
@@ -123,7 +127,9 @@ def longest_common_balanced_isomorphism(
     full_seq1 = seq1
     full_seq2 = seq2
     if impl == "auto":
-        if _cython_lcsi_backend(error="ignore"):
+        if _rust_lcsi_backend(error="ignore"):
+            impl = "iter-rust"
+        elif _cython_lcsi_backend(error="ignore"):
             impl = "iter-cython"
         else:
             impl = "iter"
@@ -146,6 +152,10 @@ def longest_common_balanced_isomorphism(
         ) = balanced_isomorphism_cython._lcsi_iter_cython(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
         )
+    elif impl == "iter-rust":
+        val_any, best_any, val_lvl, best_lvl = _lcsi_iter_rust(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
     elif impl == "recurse":
         _memo = {}
         _seq_memo = {}
@@ -165,6 +175,28 @@ def longest_common_balanced_isomorphism(
     value = val_any
 
     return best, value
+
+
+def _rust_lcsi_backend(error="ignore"):
+    """Returns the rust backend if available, otherwise None."""
+    try:
+        from .balanced_isomorphism_rust import _rust_lcsi_backend as _backend
+    except Exception:
+        if error == "ignore":
+            return None
+        if error == "raise":
+            raise
+        raise KeyError(error)
+    return _backend(error=error)
+
+
+def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
+    from .balanced_isomorphism_rust import _lcsi_iter_rust as _backend
+
+    best, value = _backend(
+        full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+    )
+    return value, best, value, best
 
 
 def _lcsi_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
