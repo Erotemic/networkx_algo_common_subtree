@@ -17,6 +17,7 @@ Welcome to networkx_algo_common_subtree's documentation!
    networkx_algo_common_subtree
    common_subtree_algorithm_families
    common_subtree_algorithms_rust
+   common_subtree_correctness
 
 
 Indices and tables

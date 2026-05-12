@@ -55,6 +55,13 @@ slow executable specification. It enumerates small connected subtrees, embedding
 skeletons, and bijections directly. It is intended to validate semantics, not to
 serve as a production backend.
 
+Correctness artifacts
+---------------------
+
+See :doc:`common_subtree_correctness` for the proof obligations, witness
+validators, brute-force reference checks, and fixture strategy used to validate
+this crate before exposing it as a public backend.
+
 Testing
 -------
 

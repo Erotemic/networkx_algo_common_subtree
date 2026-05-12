@@ -47,6 +47,21 @@ slow pure-Python reference module. It is designed for small examples and tests,
 not for normal use. Its purpose is to make the intended graph objective easy to
 inspect and to provide an independent oracle for future Rust/PyO3 integration.
 
+## Correctness argument roadmap
+
+The repository now contains `docs/source/common_subtree_correctness.rst`, which
+spells out the non-formal proof obligations for the new weighted-tree family.
+The current plan is to keep three artifacts synchronized:
+
+1. a written recurrence/proof sketch;
+2. a slow Python executable specification with witness rescoring; and
+3. Rust tests that compare optimized routines against brute-force oracles on
+   small cases.
+
+This is intentionally compatible with the existing Lean sketch area for the
+Lozano-Valiente family, but it avoids starting a new formalization until the
+weighted-tree API and semantics stabilize.
+
 ## Validation roadmap
 
 Completed in this overlay:

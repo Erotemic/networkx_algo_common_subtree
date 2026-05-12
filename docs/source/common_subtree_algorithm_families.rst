@@ -64,6 +64,14 @@ different sibling order, an ordered-tree algorithm may lose matches because the
 sequence order changed. The unordered weighted-tree algorithm can still match all
 three leaves by solving the child correspondence as a bipartite matching.
 
+Correctness and validation
+--------------------------
+
+The page :doc:`common_subtree_correctness` records the proof-oriented
+validation plan for the new weighted-tree algorithms.  It distinguishes the
+mathematical recurrence, the slow executable specification, the optimized Rust
+implementation, and the fixture/property tests used to connect them.
+
 Status in this repository
 -------------------------
 

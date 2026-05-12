@@ -155,7 +155,9 @@ class ExactLabelScoring:
         v: NodeId,
         v_child: NodeId,
     ) -> Weight | None:
-        if left.edge_label(u, u_child) == right.edge_label(v, v_child):
+        left_label = left.edge_label(u, u_child)
+        right_label = right.edge_label(v, v_child)
+        if left_label is not None and left_label == right_label:
             return self.edge_match_weight
         return None
 
@@ -239,6 +241,123 @@ def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
                 if candidate is not None:
                     best = _keep_better(best, candidate)
     return best
+
+
+def score_subtree_isomorphism_witness(
+    left: ReferenceLabeledTree,
+    right: ReferenceLabeledTree,
+    node_pairs: Iterable[tuple[NodeId, NodeId]],
+    scoring: ExactLabelScoring | None = None,
+) -> Weight:
+    """Validate and rescore a subtree-isomorphism witness.
+
+    The witness is checked directly against the problem definition: node pairs
+    must form a bijection between connected selected vertex sets, compatible
+    nodes must map to compatible nodes, and induced edges in the left selection
+    must map exactly to induced edges in the right selection.  The returned value
+    is the objective value implied by the witness.
+
+    Raises
+    ------
+    ValueError
+        If the witness is structurally invalid or contains an incompatible node
+        or edge pair.
+    """
+
+    scoring = ExactLabelScoring() if scoring is None else scoring
+    pairs = _canonical_pairs(node_pairs)
+    if not pairs:
+        return 0.0
+    node_map = dict(pairs)
+    left_subset = tuple(sorted(node_map))
+    right_subset = tuple(sorted(node_map.values()))
+    if not _is_connected_subset(left, left_subset):
+        raise ValueError("left witness vertices are not connected")
+    if not _is_connected_subset(right, right_subset):
+        raise ValueError("right witness vertices are not connected")
+
+    weight = 0.0
+    for u, v in pairs:
+        node_w = scoring.node_weight(left, u, right, v)
+        if node_w is None:
+            raise ValueError(f"incompatible mapped nodes ({u}, {v})")
+        weight += node_w
+
+    left_edges = _induced_edges(left, left_subset)
+    right_edges = frozenset(_induced_edges(right, right_subset))
+    mapped_edges = frozenset(_normalized_edge(node_map[u], node_map[u2]) for u, u2 in left_edges)
+    if mapped_edges != right_edges:
+        raise ValueError("mapped induced edges do not equal the right induced edges")
+
+    for u, u2 in left_edges:
+        v = node_map[u]
+        v2 = node_map[u2]
+        edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
+        if edge_w is None:
+            raise ValueError(f"incompatible mapped edges ({u}, {u2}) -> ({v}, {v2})")
+        weight += edge_w
+    return weight
+
+
+def score_embedding_witness(
+    left: ReferenceLabeledTree,
+    right: ReferenceLabeledTree,
+    node_pairs: Iterable[tuple[NodeId, NodeId]],
+    scoring: ExactLabelScoring | None = None,
+    skip_vertex_penalty: Weight = 0.0,
+) -> Weight:
+    """Validate and rescore a distance-penalized embedding witness.
+
+    The selected vertices on each side define an embedding skeleton.  The
+    witness is valid when the node mapping is a skeleton isomorphism and each
+    mapped skeleton edge has compatible first-step edge labels.  The returned
+    value is the node weight plus mapped skeleton-edge weight minus skipped
+    internal vertex penalties.
+    """
+
+    scoring = ExactLabelScoring() if scoring is None else scoring
+    pairs = _canonical_pairs(node_pairs)
+    if not pairs:
+        return 0.0
+    node_map = dict(pairs)
+    left_subset = tuple(sorted(node_map))
+    right_subset = tuple(sorted(node_map.values()))
+
+    weight = 0.0
+    for u, v in pairs:
+        node_w = scoring.node_weight(left, u, right, v)
+        if node_w is None:
+            raise ValueError(f"incompatible mapped nodes ({u}, {v})")
+        weight += node_w
+
+    left_skeleton = _embedding_skeleton_edges(left, left_subset)
+    right_skeleton = frozenset(_embedding_skeleton_edges(right, right_subset))
+    mapped_skeleton = frozenset(_normalized_edge(node_map[u], node_map[u2]) for u, u2 in left_skeleton)
+    if mapped_skeleton != right_skeleton:
+        raise ValueError("mapped embedding skeleton does not equal the right embedding skeleton")
+
+    for u, u2 in left_skeleton:
+        v = node_map[u]
+        v2 = node_map[u2]
+        left_path = left.path(u, u2)
+        right_path = right.path(v, v2)
+        edge_w = scoring.edge_weight(left, u, left_path[1], right, v, right_path[1])
+        if edge_w is None:
+            raise ValueError(f"incompatible embedded edge ({u}, {u2}) -> ({v}, {v2})")
+        skipped = (len(left_path) - 2) + (len(right_path) - 2)
+        weight += edge_w - skip_vertex_penalty * skipped
+    return weight
+
+
+def _canonical_pairs(node_pairs: Iterable[tuple[NodeId, NodeId]]) -> tuple[tuple[NodeId, NodeId], ...]:
+    pairs = tuple((int(u), int(v)) for u, v in node_pairs)
+    left_nodes = [u for u, _v in pairs]
+    right_nodes = [v for _u, v in pairs]
+    if len(set(left_nodes)) != len(left_nodes):
+        raise ValueError("left witness contains a duplicate node")
+    if len(set(right_nodes)) != len(right_nodes):
+        raise ValueError("right witness contains a duplicate node")
+    return tuple(sorted(pairs))
 
 
 def _validate_tree(labels: tuple[int, ...], edges: tuple[Edge, ...]) -> None:
@@ -398,4 +517,6 @@ __all__ = [
     "ReferenceLabeledTree",
     "largest_weight_common_subtree_embedding_with_distance_penalty_reference",
     "maximum_common_subtree_isomorphism_reference",
+    "score_embedding_witness",
+    "score_subtree_isomorphism_witness",
 ]
