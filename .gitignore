@@ -96,3 +96,4 @@ _skbuild
 pip-wheel-metadata/
 
 wheelhouse
+networkx_algo_common_subtree/*.cpp
