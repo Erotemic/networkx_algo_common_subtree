@@ -11,3 +11,7 @@ name = "common_subtree_algorithms"
 path = "src/lib.rs"
 
 [dependencies]
+
+[[bench]]
+name = "pytorch_sized_trees"
+harness = false

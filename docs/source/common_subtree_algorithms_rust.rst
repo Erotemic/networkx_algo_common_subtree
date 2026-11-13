@@ -55,13 +55,6 @@ slow executable specification. It enumerates small connected subtrees, embedding
 skeletons, and bijections directly. It is intended to validate semantics, not to
 serve as a production backend.
 
-Correctness artifacts
----------------------
-
-See :doc:`common_subtree_correctness` for the proof obligations, witness
-validators, brute-force reference checks, and fixture strategy used to validate
-this crate before exposing it as a public backend.
-
 Testing
 -------
 
@@ -72,3 +65,12 @@ Run the Rust-side tests with::
 Run the Python reference tests with::
 
     python -m pytest tests/test_common_subtree_reference.py
+
+
+Benchmarking
+------------
+
+PyTorch-sized module-tree benchmark fixtures are documented in
+:doc:`common_subtree_benchmarks`.  They target model-hierarchy sizes and
+perturbations that are relevant to partial weight loading between related neural
+network models.

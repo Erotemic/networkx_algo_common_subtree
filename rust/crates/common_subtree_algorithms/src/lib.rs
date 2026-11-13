@@ -14,9 +14,11 @@
 //! before a Python or NetworkX-facing wrapper is added.
 
 pub mod matching;
+pub mod model_trees;
 pub mod tree;
 
 pub use matching::{max_weight_bipartite_matching, WeightedMatching};
+pub use model_trees::{label_name, make_benchmark_tree_pairs, make_resnet_module_tree, BenchmarkTreePair, ModuleTree, ModuleTreeSpec};
 pub use tree::{
     largest_weight_common_subtree_embedding_with_distance_penalty,
     maximum_common_subtree_isomorphism, CommonSubtree, EdgeRef, ExactLabelScoring,

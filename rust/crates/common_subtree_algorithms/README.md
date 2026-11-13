@@ -79,3 +79,25 @@ python -m pytest tests/test_common_subtree_reference.py
 This crate is not wired into the Python extension yet. That is intentional: the
 Rust API and conformance tests should stabilize before exposing it through PyO3
 or a NetworkX conversion layer.
+
+
+## PyTorch-sized benchmarks
+
+The crate includes deterministic ResNet-like module-tree fixtures for performance
+regression tests.  They are approximate PyTorch module-containment trees, not
+full tensor data-flow graphs, and are intended to exercise partial weight-loading
+style perturbations such as wrapper modules, auxiliary squeeze-excitation blocks,
+adapters, and different depths.
+
+Run the quick benchmark with:
+
+```bash
+cargo bench --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml --bench pytorch_sized_trees
+```
+
+Run the full corpus with:
+
+```bash
+COMMON_SUBTREE_BENCH_PROFILE=full COMMON_SUBTREE_BENCH_REPEAT=10 \
+    cargo bench --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml --bench pytorch_sized_trees
+```

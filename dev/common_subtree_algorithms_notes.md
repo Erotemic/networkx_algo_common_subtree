@@ -47,21 +47,6 @@ slow pure-Python reference module. It is designed for small examples and tests,
 not for normal use. Its purpose is to make the intended graph objective easy to
 inspect and to provide an independent oracle for future Rust/PyO3 integration.
 
-## Correctness argument roadmap
-
-The repository now contains `docs/source/common_subtree_correctness.rst`, which
-spells out the non-formal proof obligations for the new weighted-tree family.
-The current plan is to keep three artifacts synchronized:
-
-1. a written recurrence/proof sketch;
-2. a slow Python executable specification with witness rescoring; and
-3. Rust tests that compare optimized routines against brute-force oracles on
-   small cases.
-
-This is intentionally compatible with the existing Lean sketch area for the
-Lozano-Valiente family, but it avoids starting a new formalization until the
-weighted-tree API and semantics stabilize.
-
 ## Validation roadmap
 
 Completed in this overlay:
@@ -81,3 +66,26 @@ Still useful future work:
   Rust once a Python wrapper exists;
 - optimize repeated matching instances only after the reference semantics are
   locked down by tests.
+
+
+## PyTorch-sized benchmark target
+
+The benchmark target is now a dependency-free ResNet-like module-containment
+tree corpus.  This is deliberately shaped around the partial-weight-loading use
+case: two related model hierarchies should match most of their common modules
+even when one side adds wrappers, extra normalization, squeeze-excitation
+modules, adapters, or a different number of bottleneck blocks.
+
+Large benchmark runs should use the Rust crate:
+
+```bash
+COMMON_SUBTREE_BENCH_PROFILE=full COMMON_SUBTREE_BENCH_REPEAT=10 \
+    cargo bench --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml --bench pytorch_sized_trees
+```
+
+The Python helper is for inspecting and exporting the same family of fixtures:
+
+```bash
+python dev/bench_pytorch_sized_common_subtree.py --summary
+python dev/bench_pytorch_sized_common_subtree.py --write-json dev/pytorch_sized_tree_cases.json
+```

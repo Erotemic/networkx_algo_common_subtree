@@ -106,3 +106,5 @@ CMakeInit.txt
 .ninja_deps
 .ninja_log
 
+*.tar.gz
+cargo-target

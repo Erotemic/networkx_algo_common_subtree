@@ -47,6 +47,9 @@ build = [
   "cmake>=3.21.2",
   "cython>=0.29.24",
 ]
+benchmarks = [
+  "rich>=13.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/Erotemic/networkx_algo_common_subtree"
