@@ -1,6 +1,6 @@
 # Verified Lozano-Valiente Common Subtree Algorithm: Rust, Aeneas, and Lean
 
-Status: proposed implementation plan
+Status: revised after source and proof-claim audit (2026-11-13)
 Prepared: 2026-11-13
 Primary paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees*, 2004.
 Repository: `networkx_algo_common_subtree`
@@ -39,7 +39,7 @@ Earlier PyO3/Rust implementation and tuning commits (`52c2a04` through `fee67db`
 
 ### 2.2 Formalization recovery: high priority
 
-The current snapshot's `next_steps.md` (text dated 2026-03-01) describes a much more advanced `proofs/SubtreeProofs/Lozano-v6.lean` than is included in the snapshot. The `proofs` GitHub branch does contain it:
+The current snapshot's `next_steps.md` (text dated 2026-03-01) describes a much more advanced `proofs/SubtreeProofs/Lozano-v6.lean` than is included **in the current checked-out branch**. The local `proofs/` directory does exist: it holds reusable libraries, `Attempts/`, and a pinned manifest, but not `Lozano-v6.lean` or a `lakefile.toml`. `proofs/Main.lean` imports `SubtreeProofs`, which is also absent from that snapshot. The separate `proofs` GitHub branch contains the mature experimental version:
 
 - branch: `proofs`
 - observed branch HEAD: `f147a30a2d1e8a3c0e03a00caddc4a8f93db24df`
@@ -59,15 +59,38 @@ git show origin/proofs:proofs/lakefile.toml
 git diff --stat HEAD origin/proofs -- proofs/
 ```
 
-Recover all proof source, its imports and Lake configuration into a functioning Lean workspace while retaining original provenance. Audit older variants for additional useful theorems rather than indiscriminately deleting them. Move superseded attempts to an `Attempts`/historical area if needed; keep the trusted build target small.
+Bring the needed proof source, its imports and Lake configuration into a functioning Lean workspace while retaining original provenance. The task is **selective integration and proof repair**, not rediscovery from scratch. Audit older variants for additional useful theorems rather than indiscriminately deleting them. Keep superseded attempts in an `Attempts`/historical area, excluded from the trusted build target.
 
-### 2.3 Baseline validation
+### 2.3 Independent critical review of the existing `Lozano-v6.lean`
+
+**Do not equate the absence of `sorry` with a completed formalization of the paper.** The most mature file has about 2,530 lines, nontrivial proofs of the `D`/`R`/`S` decomposition machinery, and an older reported successful build. It also contains important specification shortcuts. Audit the theorem **statements**, not merely their proof terms or names.
+
+| Priority | Existing declaration / source location on `proofs` branch | What is established / remaining requirement |
+| --- | --- | --- |
+| P0 | `BSeq.leaves` (around line 364), `lemma7` (743), `theorem1` (778) | The recurrence `leaves nil = 1; leaves (cons x y) = leaves x + leaves y` implies `leaves x = semilen x + 1`. Thus the proof that `depth x <= leaves x` makes `lemma7` a corollary of the depth bound; it does **not** prove the bound with real tree leaves. Prove a corrected tree/forest-leaf theorem separately. |
+| P0 | `Contract1` (906), `EmbSub` (911), `theorem2` (987) | `Contract1` describes root-level contractions only. `EmbSub` is *defined* as `encode u ⊑ encode t`, so Theorem 2 bypasses the equivalence to the reflexive-transitive closure of contractions at **arbitrary child positions**. Establish that equivalence in both directions. |
+| P0 | `lcsLen` (301), `LCBS` (294), `lemma8` (1008) | `lcsLen` is **defined by** the Lemma 8 recurrence, while `LCBS` is a separate noncomputable choice of a maximum. `lemma8` unfolds `lcsLen`; prove `lcsLen s t = semilen (LCBS s t)` or an equivalent independent optimality statement. |
+| P0 | `ContainedDef2` (165), `ContainedRTC` (193) | The paper's inductive containment and the operational deletion-closure relation are both present, but no equivalence bridge was found in v6. Prove both implications, independently of the DP. |
+| P0 | `mcesAlgPaper` (1037), `mcesExpectedCost` (1894), runtime theorems (1997+) | `mcesAlgPaper` uses noncomputable `Classical.choose` through `LCBS`; it is not an executable DP. `mcesExpectedCost` is a synthetic operation-count expression. Prove runtime against an actual executable state machine with a justified step/cost correspondence. |
+| P1 | `lemma7_tree_of_nil_tail_bound` (1372), tree-leaf theorem wrappers | The stronger, tree-leaf-specific Lemma 7 is only conditional on the `cons x nil` case. This is a genuine unresolved combinatorial obligation, distinct from the already proved weaker `lemma7`. |
+| P1 | `SubtreeProofs.Lib.OrderedTree.Tree` and `LozanoValiente2004.OTree` | Two tree datatypes exist. Pick a canonical one or prove an explicit isomorphism and transfer of node, depth, leaves, encoding, and contractions. |
+| P1 | Current branch `proofs/README.md`, `Main.lean`, and missing `lakefile.toml` | The checked-out source tree does not reproduce the historical `v6` build. Reconcile configurations and replace the stale README with a truthful module/build inventory. |
+
+**Mathematical source discrepancy requiring its own issue and resolution.** On page 7 of the published PDF (PDF page index 6), the paper prints `ell(lambda)=1` and `ell(0x1y)=ell(x)+ell(y)` while describing `ell` as the number of tree leaves. For a one-edge tree (`0 lambda 1 lambda`), these equations yield `2`, but the tree has `1` leaf. Inductively they imply `ell(x)=|x|+1` for *every* balanced sequence. Therefore the printed recurrence cannot represent the number of leaves of the rooted tree. Its written Lemma-7 derivation does not directly justify the claimed dependence on true leaves. Keep the printed algebraic recurrence as a distinctly named **paper measure** if needed for textual correspondence. Formalize actual tree leaves via a tree/forest distinction, repair the proof, and record whether the final theorem is identical, corrected, or weakened. Do not silently substitute a new definition into a theorem that claims literal correspondence to the printed paper.
+
+The v6 file already includes `leavesPairOfSeq`, `treeLeavesOfSeq`, `forestLeavesOfSeq`, a nonempty-tail proof, and the conditional reduction to the empty-tail case; those are the right pieces to reuse. They do not yet remove that final hypothesis.
+
+**Small independent diagnostic (2026-11-13):** enumerated every balanced sequence with 0 through 10 edge pairs (Catalan counts totaling **23,714**); computed `R`, `S`, `D` as sets and the actual leaves of the decoded rooted tree. No counterexample was found to `|S(x)| <= |x| * actualLeaves(x) + 1` or the corresponding `D` bound using `min(actualDepth,actualLeaves)`. This is exploratory evidence for the corrected statement, not a Lean proof or a checked-in regression suite. Convert this check to a small independent, reviewed test/oracle during W1.
+
+**Acceptance rule:** the public theorem index must identify the exact *independent specification* each theorem establishes. Names like `theorem2`, `lemma8`, and `theorem3_runtime_bound` cannot be marked `paper_proved` merely because Lean checks their current statements. Prefer positive, explicit theorem names and separate `paper_printed`, `mathematically_corrected`, `abstract_algorithm`, and `rust_refinement` views.
+
+### 2.4 Baseline validation
 
 From the supplied snapshot, with Python 3.13.5, `PYTHONPATH=. pytest -q -o addopts='' tests` yielded **46 passed and 2 skipped**. The two skipped tests require the compiled `networkx_algo_common_subtree._rust` extension. The normal pytest configuration requests `--xdoctest`, which was not installed in the review environment; the command above overrides only that configuration for a focused audit.
 
 `python dev/bench_pytorch_sized_common_subtree.py --summary` produced seven deterministic ResNet-like cases (166 left nodes, 166-319 right nodes). That checks fixture generation, **not** Rust performance. Rust, Lean, Charon, and Aeneas were unavailable in this review environment, so native compilation/extraction and proof status remain to be established in the project's normal toolchain.
 
-### 2.4 Architectural inventory
+### 2.5 Architectural inventory
 
 - `networkx_algo_common_subtree/tree_embedding.py`: public ordered-tree embedding API and balanced-sequence conversion.
 - `networkx_algo_common_subtree/balanced_embedding.py`: pure-Python recursive/iterative LCBS implementations.
@@ -159,22 +182,22 @@ Work packages below are ordered by dependency, not by estimated calendar time. C
 ### W0 - Reconcile source, history, and toolchains (blocking)
 
 - [ ] Preserve the present branch and its history; record HEAD, refs, working tree status, and any unpublished files.
-- [ ] Fetch `origin/proofs`; compare v3-v6, companion modules, Lake config, Mathlib pins, and copied May work.
-- [ ] Recover the most advanced Lean source without overwriting unrelated Rust/Python developments.
+- [ ] Compare the local `proofs/` tree with `origin/proofs` (including v3-v6), companion modules, Lake config, Mathlib pins, and copied May work; treat the existing local files as input, not lost artifacts.
+- [ ] Selectively integrate the best Lean modules without overwriting unrelated Rust/Python developments or keeping obsolete modules in the default build.
 - [ ] Make `proofs/` a clean, reproducible Lake workspace; repair `proofs/Main.lean` or remove it from build if it is a stale scaffold.
-- [ ] Run the historical v6 target and full Lake build; capture exact results and unproven assumptions.
+- [ ] Run the historical v6 target and full Lake build; capture exact results, theorem statements, direct hypotheses, `#print axioms` closures, and mismatches with independent paper specifications.
 - [ ] Record rustc/Cargo, Charon, Aeneas, Lean, and Mathlib versions by actual commit or toolchain pin; keep compatible Aeneas Lean libraries on the same revision as the translator.
 - [ ] Run Python tests with configured dependencies, Rust crate tests, PyO3 backend tests, `cargo fmt`, and `cargo clippy`; record failures and the initially skipped tests.
 - [ ] Remove the generated tracked `cmake_install.cmake` in a targeted follow-up cleanup.
 
-**Gate W0:** current sources have a reproducing baseline and the proof branch is integrated or explicitly indexed; no performance or formal claim relies on a historical build log.
+**Gate W0:** current sources have a reproducing baseline and the local and remote proof trees are reconciled or explicitly indexed; no performance or formal claim relies on a historical build log.
 
 ### W1 - Create an independent, executable mathematical specification
 
 - [ ] Define the ordered-tree and balanced-sequence objects, contraction relation, containment, common-embedding witness and optimum without referring to a production implementation.
-- [ ] Prove round-trip and structural correspondence between ordered trees and balanced sequences, including child order, contractions, and lengths.
+- [ ] Prove round-trip and structural correspondence between ordered trees and balanced sequences, including child order, contractions at any depth, and lengths; specifically bridge `ContainedDef2` to `ContainedRTC` and encoding containment to contraction RTC.
 - [ ] Implement a slow, independently structured exhaustive oracle for small ordered trees (actual contraction/embedding enumeration, not a copy of Lemma 8).
-- [ ] Make edge/node scoring, root retention, empty inputs, labels, and repeated identities explicit; create focused counterexample fixtures for each ambiguity.
+- [ ] Make edge/node scoring, root retention, empty inputs, labels, and repeated identities explicit; create focused counterexample fixtures for each ambiguity, including the single-edge `paperLeaves=2` vs. `actualLeaves=1` discrepancy.
 - [ ] Establish an independently checkable witness verifier and score calculator.
 
 **Gate W1:** representative hand-checked and exhaustively generated small cases have one unambiguous expected objective, and the mathematical model is stable.
@@ -188,22 +211,22 @@ Paper coverage checklist:
 - [ ] Definition 3: head and tail decomposition.
 - [ ] Definition 4, Lemmas 1-5, Corollary 1: `D`, `R`, `S`, append/decomposition closure.
 - [ ] Fact 2: `|R[x]| = |x| + 1`.
-- [ ] Lemmas 6 and 7: depth and leaf cardinality bounds, including exact empty-tail cases.
+- [ ] Lemmas 6 and 7: separate the printed (degenerate) `ell` recurrence from the actual leaf-count bound; prove corrected, tree-leaf Lemma 7, including exact empty-tail cases.
 - [ ] Corollary 2 and Theorem 1: `|D[x]|` bound using `min(depth, leaves)`.
-- [ ] Definition 5 and Theorem 2: contraction-based embedding equivalent to LCBS.
-- [ ] Lemma 8: sound, complete, optimal dynamic-programming recurrence.
-- [ ] Theorem 3: concrete runtime/cost relation and asymptotic statement with documented dictionary assumptions.
+- [ ] Definition 5 and Theorem 2: contraction-based embedding at any position (independent of encoding) equivalent to sequence containment/LCBS in both directions.
+- [ ] Lemma 8: sound, complete, optimal dynamic-programming recurrence, with an explicit theorem relating the recursive `lcsLen` result to the independently chosen `LCBS` optimum.
+- [ ] Theorem 3: concrete runtime/cost relation and asymptotic statement with documented dictionary assumptions, over an executable algorithm instead of the noncomputable `mcesAlgPaper`.
 - [ ] Labeled-tree extension: formal theorem for the scope actually stated; account for the paper's informal prose separately.
 
-**Known immediate subgoal:** the recovered v6 scaffold reduces the unconditional tree-leaf result to the nil-tail obligation:
+**Known immediate subgoal:** the existing v6 scaffold reduces the unconditional tree-leaf result to the nil-tail obligation:
 
 ```text
 forall x, |S(cons x nil)| <= semilen(cons x nil) * treeLeaves(cons x nil) + 1
 ```
 
-Use `S_cons_nil_eq_D` and the existing nonempty-tail lemma, but first check the exact tree/forest leaf conventions and search for a smallest counterexample to every proposed strengthening. Do not force an invalid exact constant. If a corrected/slack statement is needed, state and prove it transparently, then derive the required asymptotic result. A theorem with an explicit `h7tree`, `hnil`, or cardinality hypothesis is valuable intermediate work but is **not** the unconditional paper theorem.
+Use `S_cons_nil_eq_D` and the existing nonempty-tail lemma, but first establish the corrected tree/forest leaf conventions and search for a smallest counterexample to every proposed strengthening. Do not force an invalid exact constant. If a corrected/slack statement is needed, state and prove it transparently, then derive the required asymptotic result. A theorem with an explicit `h7tree`, `hnil`, or cardinality hypothesis is valuable intermediate work but is **not** the unconditional paper theorem.
 
-**Gate W2:** the paper-facing theorem graph builds from checked definitions and proofs; no `sorry`, `admit`, arbitrary axiom, or undeclared assumption occurs in the accepted dependency closure. Assumptions modeling dictionary runtime are explicitly named, not hidden inside a theorem claiming unconditional worst-case execution.
+**Gate W2:** the paper-facing theorem graph builds from checked definitions, repaired real-leaf bounds, and proofs; no `sorry`, `admit`, arbitrary axiom, or undeclared assumption occurs in the accepted dependency closure. Assumptions modeling dictionary runtime are explicitly named, not hidden inside a theorem claiming unconditional worst-case execution.
 
 ### W3 - Verify the paper-level executable recurrence
 
@@ -214,7 +237,7 @@ Use `S_cons_nil_eq_D` and the existing nonempty-tail lemma, but first check the 
 - [ ] Establish normalization/canonicalization of states and identify which equality notion permits safe memoization.
 - [ ] Isolate a formal cost counter for recurrence steps/state accesses.
 
-**Gate W3:** executable Lean specification has optimality, witness validity, termination, and an explicit dependency/cost model; no external Rust code is needed to state these theorems.
+**Gate W3:** executable Lean specification has optimality proved *against contraction/containment rather than an unfold-equivalence*, witness validity, termination, and an explicit dependency/cost model; no external Rust code is needed to state these theorems.
 
 ### W4 - Rust proof-friendly core and first Aeneas extraction
 
@@ -321,11 +344,12 @@ Track these claims with exact source location, theorem name, supporting command,
 | --- | --- | --- |
 | Paper's Definition 1-5 accurately modeled | partial | checked Lean definitions and equivalence lemmas |
 | Lemmas 1-6 and structural decomposition | partial | recovered branch build and theorem inventory |
-| Lemma 7, empty-tail case | blocked/unverified | unconditional checked lemma or proven corrected bound |
-| Corollary 2 / Theorem 1 leaf-dependent bound | conditional | no remaining `h7tree`/`hnil` hypothesis |
-| Theorem 2 LCBS vs. contractions | unverified | checked theorem and exact witness semantics |
-| Lemma 8 recurrence / optimum | unverified | checked recurrence theorem plus independent oracle |
-| Theorem 3 runtime bound | conditional | explicit state and cost lemmas, dictionary assumptions |
+| Lemma 7 for actual tree leaves; empty-tail case | blocked | unconditional checked lemma with corrected tree/forest leaves; distinguish paper algebraic measure |
+| Corollary 2 / Theorem 1 for actual leaves | conditional | no remaining `h7tree`/`hnil` hypothesis; derive bound from actual leaf counts, not `semilen+1` |
+| Definition 2 vs. operational containment | unproved bridge | both directions between `ContainedDef2` and `ContainedRTC` |
+| Theorem 2 LCBS vs. real edge contractions | unproved bridge | contraction relation at arbitrary depth; two-way equivalence with encoding containment |
+| Lemma 8 recurrence / independent optimum | unproved bridge | `lcsLen` equal to the LCBS optimum, plus independent contraction oracle |
+| Theorem 3 runtime bound for executable solver | conditional/model-only | explicit actual-leaf state bound and a cost semantics for an executable DP; dictionary assumptions |
 | Rust core translation via Charon/Aeneas | not_started | pinned extraction/regeneration CI |
 | Rust optimum and witness refinement | not_started | theorem about actual generated entry point |
 | Rust no-failure property on valid inputs | not_started | checked safety proof and preconditions |
@@ -350,12 +374,12 @@ For future work, use reviewable commits at working boundaries: recovery, paper t
 
 ## 8. Immediate next sequence
 
-1. **Recover and build `Lozano-v6.lean`** from branch `proofs`, reconcile Lake configuration, record the true remaining mathematical gap.
-2. **Close/repair the Lemma 7 empty-tail obligation** and then get unconditional Theorem 1 and the properly conditional-on-hashing Theorem 3. Audit exact alignment with the 2004 paper.
-3. **Lock down the paper-exact executable specification and independent small-tree oracle**; separate node-count/weight extensions from edge-count optimality.
-4. **Prototype Aeneas extraction on a real LCBS state transition** before restructuring the existing optimized PyO3 backend.
-5. **Prove one end-to-end Rust function against the independent Lean specification**, expand to the full DP and witness, and gate regeneration in CI.
-6. **Measure and refine performance**, keeping the existing Python/Cython/PyO3 solver as the benchmark/reference baseline until the verified replacement has demonstrated parity and value.
+1. **Reconcile and build `Lozano-v6.lean`** with the existing local `proofs/` tree. Preserve all source history; record theorem statements, dependencies, and build results.
+2. **Fix the mathematical specification first.** Separate the paper's printed `ell(x)=|x|+1` measure from actual leaf count; prove/refute the corrected cardinality bound (especially `cons x nil`) with independent exhaustive regressions.
+3. **Prove the missing semantic equivalences.** Connect `ContainedDef2`, deletion RTC, encoding, and ordered-tree contractions at arbitrary depth. Prove `lcsLen` equals the independently specified LCBS optimum, and Theorem 2 with actual contractions.
+4. **Formalize executable DP semantics and its runtime.** Derive a decomposition-index/step bound for the actual implementation model; only then publish a corrected Theorem 3 with exactly stated hashing assumptions.
+5. **Prototype Aeneas extraction on a real LCBS state transition** before restructuring the optimized PyO3 backend; prove the generated Rust semantics refine the independent Lean specification.
+6. **Measure and refine performance**, retaining Python/Cython/PyO3 as reference baselines until verified Rust parity and benchmarks justify adoption.
 
 ## 9. Primary sources and tooling
 
@@ -367,5 +391,6 @@ For future work, use reviewable commits at working boundaries: recovery, paper t
 - Droschinsky, Kriege, and Mutzel (2016), unordered MCSI: https://arxiv.org/abs/1602.07210
 - Droschinsky et al. (2018), distance-penalized embeddings: https://arxiv.org/abs/1805.00821
 - Existing advanced Lean source: https://github.com/Erotemic/networkx_algo_common_subtree/blob/proofs/proofs/SubtreeProofs/Lozano-v6.lean
+- Original paper PDF p. 7 (PDF page index 6), printed `ell` recurrence and Lemma 7: https://www.cs.upc.edu/~antoni/subtree.pdf
 
 This plan is an inventory and execution roadmap, not a claim that unrun Lean/Rust checks already pass. Update the source audit and ledger as soon as the recovery and toolchain baseline are reproduced.
