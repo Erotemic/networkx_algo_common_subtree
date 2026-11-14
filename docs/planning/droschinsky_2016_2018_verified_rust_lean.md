@@ -14,6 +14,35 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual scan/adjust cut invariants and search capacity: 2026-11-14
+
+`Shared.AssignmentSearchCapacity` derives the number of matched columns,
+existence of a free column before completion, pointer injectivity including
+the fresh row at reserved column zero, and finite visit capacity from the
+independent partial-assignment specification. Its Rust bridge proves unused
+free-column availability, the source's visit-counter guard, used-pointer
+injectivity, and the exact candidate-set insertion induced by marking a
+physical boolean vector slot.
+
+`Shared.AssignmentSlack.MinimumAt` independently specifies an attained minimum
+with infinity for an absent value. Candidate insertion preserves ties and
+uniform finite subtraction preserves the attaining predecessor.
+`Rust.AssignmentScanCut.scan_columns_cut_spec` proves actual successful
+scanning extends this invariant by the active row. Its returned scalar is
+attained by the physical stored predecessor and bounds every candidate reduced
+cost across every unused real target. The precise whole-table scan frames
+are retained. `AssignmentAdjustmentCut.complete_slack_invariant` proves the
+actual returned potentials and slacks preserve all these attained minima.
+
+`AssignmentCutFeasibility` derives nonnegative adjustment from feasible
+potentials and an attaining candidate, converts actual candidate bounds into
+the independent finite cut inequalities, and derives matching endpoint
+lockstep from partial-pointer injectivity. These close substantive bridges
+between the actual scan/adjust loops and search invariants. The complete
+search loop still needs their initialization and preservation together with
+discovery ranks and numeric envelopes; full driver and entry-point correctness
+remain open. All six new maintained modules compile in the full library.
+
 ## Actual complete Rust assignment reconstruction: 2026-11-14
 
 `Shared.AssignmentPointerDecoding.PartialRows.exists_permutation` derives an

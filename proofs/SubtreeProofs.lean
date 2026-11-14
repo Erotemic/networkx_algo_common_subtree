@@ -71,3 +71,9 @@ public import SubtreeProofs.Shared.AssignmentPointerDecoding
 public import SubtreeProofs.Rust.AssignmentInverseReconstruction
 public import SubtreeProofs.Rust.AssignmentCostReconstruction
 public import SubtreeProofs.Rust.AssignmentReconstruction
+public import SubtreeProofs.Shared.AssignmentSearchCapacity
+public import SubtreeProofs.Shared.AssignmentSlack
+public import SubtreeProofs.Rust.AssignmentSearchCapacity
+public import SubtreeProofs.Rust.AssignmentScanCut
+public import SubtreeProofs.Rust.AssignmentAdjustmentCut
+public import SubtreeProofs.Rust.AssignmentCutFeasibility

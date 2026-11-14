@@ -43,6 +43,12 @@ Current assurance is deliberately narrower than the crate's eventual target:
   dimension. `reconstruct_assignment_minimum_spec` proves the actual result is
   globally optimal from independent complete matching, feasible potentials and
   tight matched edges. The search and driver must still establish those premises.
+- The search-capacity proofs derive unused free columns and the visit guard
+  from partial matching. `Rust.AssignmentScanCut` proves the actual scan
+  extends an independently attained cut minimum, including its physical
+  predecessor; `AssignmentAdjustmentCut` proves the actual adjustment preserves
+  it. Feasibility supplies nonnegative adjustment and the required cut bounds,
+  while pointer injectivity supplies matching endpoint lockstep.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.
