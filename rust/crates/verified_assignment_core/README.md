@@ -31,6 +31,12 @@ Current assurance is deliberately narrower than the crate's eventual target:
   actual returned potentials to independent feasibility and tightness proofs.
   `Rust.AssignmentAdjustmentProgress` derives the cut cardinality, exact dual
   progress and reserved-column accumulator update.
+- `Rust.AssignmentAugmentation` proves the complete actual path walk safely
+  terminates with exact simultaneous pointer shifts. Discovery-rank forest
+  conditions construct the required simple path. The independent `PartialRows`
+  specification and actual `augment_matching_ranked_tight_spec` show that
+  augmentation adds the fresh row, preserves unique earlier-row coverage,
+  and retains tightness from tight predecessor edges.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.

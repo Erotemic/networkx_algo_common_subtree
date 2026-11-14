@@ -14,6 +14,32 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual Rust augmentation and partial matching: 2026-11-14
+
+`Rust.AssignmentAugmentation.augment_matching_spec` proves successful,
+terminating execution of the entire generated path walk, with exact vector
+length and pointer values at every slot. A simple positive predecessor path
+supplies the indexing and termination facts; its length bound is derived from
+distinct indices in the represented dimension. `AssignmentPredecessorPaths`
+constructs such a path from a local strictly decreasing discovery-rank forest,
+retaining membership in that forest.
+
+`Shared.AssignmentAugmentation.PartialRows` independently specifies unique
+coverage of exactly the processed positive rows, allowing zero pointers at
+unmatched columns. Its generic rerouting theorem extends coverage by the
+fresh row. `Rust.AssignmentAugmentationPath` proves the input path reroutes
+real columns bijectively onto the original columns with its unmatched head
+replaced by reserved column zero. The actual vector frame connects that
+combinatorics to `augment_matching_ranked_partial_spec`.
+
+`augment_matching_ranked_tight_spec` combines actual successful execution,
+matching extension and tightness preservation from tight predecessor-forest
+edges. These are structural properties of the input matching and forest,
+not certificates of the augmentation program's result. The full library
+builds with all five new maintained modules. Establishing those forest and
+tightness premises from the actual search, final decoding, numeric bounds,
+entry-point correctness and implementation cost remain open.
+
 ## Complete actual Rust potential adjustment: 2026-11-14
 
 `Rust.AssignmentAdjustmentLoop.adjust_potentials_spec` proves terminating,

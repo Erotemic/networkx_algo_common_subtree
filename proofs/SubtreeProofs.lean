@@ -62,3 +62,8 @@ public import SubtreeProofs.Rust.AssignmentAdjustmentInvariant
 public import SubtreeProofs.Rust.AssignmentAdjustmentLoop
 public import SubtreeProofs.Rust.AssignmentAdjustmentFeasibility
 public import SubtreeProofs.Rust.AssignmentAdjustmentProgress
+public import SubtreeProofs.Shared.AssignmentAugmentation
+public import SubtreeProofs.Rust.AssignmentAugmentation
+public import SubtreeProofs.Rust.AssignmentPredecessorPaths
+public import SubtreeProofs.Rust.AssignmentAugmentationPath
+public import SubtreeProofs.Rust.AssignmentAugmentationMatching
