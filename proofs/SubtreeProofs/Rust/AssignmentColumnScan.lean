@@ -2,8 +2,7 @@ module
 
 public import SubtreeProofs.Rust.AssignmentPotentialInitialization
 public import SubtreeProofs.Shared.AssignmentPotentials
-public import Aeneas.Std.Scalar.CheckedOps.Sub
-import all Aeneas.Std.Scalar.CheckedOps.Sub
+public import SubtreeProofs.Rust.AssignmentArithmetic
 import Mathlib.Tactic
 
 /-!
@@ -55,16 +54,8 @@ theorem relaxed_value (old : Option I128) (fresh : I128) :
 integer range bounds. These bounds are discharged from potential invariants. -/
 theorem checked_sub_spec (x y : I128)
     (hmin : I128.min ≤ x.val - y.val) (hmax : x.val - y.val ≤ I128.max) :
-    lift (I128.checked_sub x y) ⦃ output => ∃ value, output = some value ∧ value.val = x.val - y.val ⦄ := by
-  simp only [lift, WP.spec_ok, I128.checked_sub]
-  have h := I128.checked_sub_bv_spec x y
-  cases he : core.num.checked_sub_IScalar x y with
-  | none =>
-    simp only [he] at h
-    exact False.elim (h ⟨hmin,hmax⟩)
-  | some value =>
-    simp only [he] at h
-    exact ⟨value, rfl, h.2.2.1⟩
+    lift (I128.checked_sub x y) ⦃ output => ∃ value, output = some value ∧ value.val = x.val - y.val ⦄ :=
+  AssignmentArithmetic.checked_sub_spec x y hmin hmax
 
 def predecessorAfter (slack : alloc.vec.Vec (Option I128)) (predecessor : alloc.vec.Vec Usize)
     (candidate column : Usize) (fresh : I128) : alloc.vec.Vec Usize :=

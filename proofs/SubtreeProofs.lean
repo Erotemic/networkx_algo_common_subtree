@@ -56,3 +56,5 @@ public import SubtreeProofs.Rust.AssignmentPotentialInitialization
 public import SubtreeProofs.Shared.AssignmentPotentials
 public import SubtreeProofs.Rust.AssignmentColumnScan
 public import SubtreeProofs.Rust.AssignmentScanInvariant
+public import SubtreeProofs.Rust.AssignmentArithmetic
+public import SubtreeProofs.Rust.AssignmentAdjustment

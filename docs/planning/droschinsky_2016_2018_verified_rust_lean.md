@@ -13,6 +13,24 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Actual Rust potential-adjustment branches: 2026-11-14
+
+`Rust.AssignmentAdjustment` proves all four generated adjustment branches.
+`body_used_spec` verifies exact checked row addition and column subtraction
+with the correct two array writes and unchanged slacks. The two unused-column
+lemmas verify absent slacks remain absent and finite slacks lose the exact
+adjustment. `body_done_spec` verifies the completion result. Premises are
+input representation/index bounds and explicit signed arithmetic ranges.
+
+Checked addition and subtraction now share `Rust.AssignmentArithmetic`; the
+existing column-scan subtraction declaration remains a compatible proved
+wrapper. The pinned signed-alias bodies are imported only in this arithmetic
+module to bridge its public specifications, without dependency modifications.
+The full library builds (3,563 jobs). Combining these branches with injective
+matching rows into the full adjustment invariant, then deriving driver-level
+feasibility, tightness and arithmetic safety, remains open.
+
 ## Complete actual Rust column scan: 2026-11-14
 
 `Rust.AssignmentScanInvariant.scan_columns_spec` proves successful terminating
