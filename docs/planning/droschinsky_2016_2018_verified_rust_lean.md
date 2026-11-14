@@ -14,6 +14,30 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Paper deletion repair's exact single-pair deficit: 2026-11-14
+
+`AssignmentVertexDeletion` independently retains original perfect-assignment
+edges after one row and one column are removed. If those endpoints were paired,
+the remainder has cardinality n-1. Otherwise `one_pair_deficit` proves it is
+exactly one edge short of a surviving perfect matching, not an assumed bound.
+`row_unmatched_iff` and `column_unmatched_iff` identify the unique surviving
+free endpoints. Compatibility holds in the induced deleted graph, and every
+retained tight edge keeps its equality under the old potentials.
+
+`WeightedMatching.CopiedAssignmentReduction.matched_deletion_ready` applies
+this to the source graph when an original right vertex is matched by the
+decoded matching. Its copy row and original column belong to different old
+edges, so their removal leaves a compatible matching of size |L|+|R|-2 on
+|L|+|R|-1 surviving vertices per side, with exactly identified free endpoints.
+`deletion_preserves_tight` proves the retained-edge equality. `edgeWeight`
+represents source-allowed edges with `Option`; original, reversed-copy and
+identity-edge weight lemmas establish exact nonnegative/zero source weights.
+
+These close the combinatorial deficit and tightness-preservation steps of
+2016 Lemma 6. Existence/correctness of the optimized sparse augmentation,
+restriction of feasible duals, initial larger-side tight matching, actual Rust
+repair and the running-time bounds remain separate open obligations.
+
 ## Paper copied-graph assignment reduction: 2026-11-14
 
 `WeightedMatching.CopiedAssignmentReduction` now specifies the exact copied
