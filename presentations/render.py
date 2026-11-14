@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import os
 from html.parser import HTMLParser
 from pathlib import Path
 import re
@@ -31,17 +32,18 @@ import shutil
 import subprocess
 import sys
 
-from deck import MATHEMATICS
+from deck import MATHEMATICS, DECKS
 
 HERE = Path(__file__).resolve().parent
-SCENES = MATHEMATICS.scenes  # compatibility for old tooling/tests
+ACTIVE_DECK = MATHEMATICS
+SCENES = MATHEMATICS.scenes  # backwards compatibility for existing tests
 SLIDES_FOLDER = f"slides-{MATHEMATICS.slug}"
 RENDERS = HERE / "renders"
 
 
 def execute(args: list[str], *, cwd: Path = HERE) -> None:
     print("+", " ".join(args), flush=True)
-    subprocess.run(args, cwd=cwd, check=True)
+    subprocess.run(args, cwd=cwd, check=True, env={**os.environ, "SUBTREE_PRESENTATION_SLUG": ACTIVE_DECK.slug})
 
 
 def native_slide_render_command(name: str, quality: str, fps: float | None = None) -> list[str]:
@@ -51,7 +53,7 @@ def native_slide_render_command(name: str, quality: str, fps: float | None = Non
     result = [sys.executable, "-m", "manim_slides", "render", f"--quality={quality}"]
     if fps is not None:
         result.append(f"--fps={fps:g}")
-    return result + ["scenes.py", name]
+    return result + [ACTIVE_DECK.module_for(name), name]
 
 
 def export_path(suffix: str) -> Path:
@@ -59,7 +61,7 @@ def export_path(suffix: str) -> Path:
         raise ValueError(f"Unsupported export: {suffix}")
     # A new, explicit filename prevents accidentally opening the old custom
     # media/*.html player and interpreting it as a new render.
-    return RENDERS / f"{MATHEMATICS.slug}.{suffix}"
+    return RENDERS / f"{ACTIVE_DECK.slug}.{suffix}"
 
 
 
@@ -247,7 +249,7 @@ def verify_slide_metadata(names: tuple[str, ...]) -> None:
 def continuous_render_command(name: str, quality: str) -> list[str]:
     return [sys.executable, "-m", "manim", f"--quality={quality}", "--format", "mp4",
             "--media_dir", str(HERE / "media"), "-o", f"{name}.mp4",
-            "scenes.py", name]
+            ACTIVE_DECK.module_for(name), name]
 
 
 def stitch_videos(names: tuple[str, ...], *, dry_run: bool = False) -> None:
@@ -266,18 +268,20 @@ def stitch_videos(names: tuple[str, ...], *, dry_run: bool = False) -> None:
     manifest = directory / "lecture-concat.txt"
     manifest.write_text("".join("file '" + str(path).replace("'", "'\\''") + "'\n"
                                 for path in found))
-    output = directory / f"{MATHEMATICS.slug}.mp4"
+    output = directory / f"{ACTIVE_DECK.slug}.mp4"
     execute(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(manifest),
              "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", str(output)])
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--deck", choices=tuple(DECKS), default="mathematics",
+                        help="standalone lecture (old combined talk remains under mathematics)")
     parser.add_argument("--list", action="store_true", help="list scenes in deck order")
     parser.add_argument("--check", action="store_true", help="run source-level unit tests")
     parser.add_argument("--check-tex", action="store_true", help="preflight all MathTex expressions")
-    parser.add_argument("--scene", choices=SCENES, help="preview a single scene")
-    parser.add_argument("--scenes", nargs="+", choices=SCENES,
+    parser.add_argument("--scene", help="preview one scene from --deck")
+    parser.add_argument("--scenes", nargs="+",
                         help="re-render these scenes, then export the full deck")
     parser.add_argument("--html", action="store_true", help="native Reveal.js slide deck")
     parser.add_argument("--pdf", action="store_true", help="PDF from native slide builds")
@@ -295,6 +299,16 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--stitch", action="store_true", help="stitch continuous MP4 scenes")
     parser.add_argument("--dry-run", action="store_true", help="print build commands")
     args = parser.parse_args(argv)
+    global ACTIVE_DECK, SCENES, SLIDES_FOLDER
+    ACTIVE_DECK = DECKS[args.deck]
+    SCENES = ACTIVE_DECK.scenes
+    SLIDES_FOLDER = 'slides-' + ACTIVE_DECK.slug
+    if args.scene and args.scene not in SCENES:
+        parser.error(f'Unknown scene for {args.deck}: {args.scene}')
+    if args.scenes and any(name not in SCENES for name in args.scenes):
+        parser.error(f'--scenes contains a scene outside {args.deck}')
+    if (args.classic_html or args.classic_pdf) and args.deck != 'mathematics':
+        parser.error('Classic exports are supported only for the original mathematics deck')
 
     if args.list:
         print("\n".join(SCENES))
@@ -304,7 +318,10 @@ def main(argv: list[str] | None = None) -> None:
             parser.error("Manim is required for --check-tex")
         sys.path.insert(0, str(HERE))
         from tex_preflight import check_manim_tex
-        check_manim_tex(HERE / "scenes.py")
+        # Each talk combines new scenes with selected chapters from scenes.py.
+        # Preflight every distinct scene source, including shared chapters.
+        for module in dict.fromkeys(ACTIVE_DECK.module_for(scene) for scene in SCENES):
+            check_manim_tex(HERE / module)
         return
     if args.check:
         execute([sys.executable, "-m", "unittest", "discover",
@@ -371,9 +388,9 @@ def main(argv: list[str] | None = None) -> None:
         print("+", " ".join(cmd)) if args.dry_run else execute(cmd)
         if not args.dry_run:
             if args.classic_html:
-                print("Generated classic HTML:", HERE / "media" / f"{MATHEMATICS.slug}.html")
+                print("Generated classic HTML:", HERE / "media" / f"{ACTIVE_DECK.slug}.html")
             if args.classic_pdf:
-                print("Generated classic PDF:", HERE / "media" / f"{MATHEMATICS.slug}.pdf")
+                print("Generated classic PDF:", HERE / "media" / f"{ACTIVE_DECK.slug}.pdf")
 
     if slides_mode:
         old = HERE / "media" / f"{MATHEMATICS.slug}.html"

@@ -7,6 +7,7 @@ No binary assets or repository implementations are required to render.
 from __future__ import annotations
 
 from pathlib import Path
+import os
 
 from manim import (
     VGroup, Text, MathTex as ManimMathTex, TexTemplate, FadeIn, FadeOut, Create, Write,
@@ -61,7 +62,7 @@ class MathPresentation(Slide):
     def __init__(self, *args, **kwargs):
         # Equivalent to the DKPS per-deck output_folder: scene metadata is
         # separate from ordinary Manim videos and from any older HTML viewer.
-        kwargs.setdefault("output_folder", Path("slides-common-subtree-mathematics"))
+        kwargs.setdefault("output_folder", Path("slides-" + os.environ.get("SUBTREE_PRESENTATION_SLUG", "common-subtree-mathematics")))
         super().__init__(*args, **kwargs)
 
     def finish(self):
@@ -111,7 +112,7 @@ class MathPresentation(Slide):
         self.add(heading, section, line, source_line)
         # Follow the DKPS convention: the first build starts before drawing,
         # and carries the authored chapter narration as presenter notes.
-        self.next_slide(notes=notes_for(type(self).__name__))
+        self.next_slide(notes=getattr(self, "intro_notes", None) or notes_for(type(self).__name__))
 
     def beat(self, seconds=1.0, *, notes=""):
         """Advance to the next mathematical step with optional presenter notes.

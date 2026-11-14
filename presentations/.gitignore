@@ -1,9 +1,12 @@
-media/
-slides/
-__pycache__/
-.pytest_cache/
-*.mp4
-*.webm
-*.png
-*.svg
-*.pdf
+# Third-party packages are installed locally, not committed.
+/node_modules/
+
+# Render products (native Manim Slides, video and classic viewer outputs).
+/renders/
+/media/
+/slides-*/
+
+# Python caches and local tests.
+/__pycache__/
+/.pytest_cache/
+/tests/__pycache__/
