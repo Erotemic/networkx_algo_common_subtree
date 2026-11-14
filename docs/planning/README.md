@@ -18,6 +18,17 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Verified actual indexed LCBE reference: 2026-11-14
+
+The public Rust indexed contraction solver now returns independently maximum
+trees with exact scores and canonical original edge/pair identities in both
+inputs. `Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees`
+and `maximum_common_embedding_indexed_indices` prove success, actual original
+pair deletions, unique indices in bounds and one pair identity per output edge.
+The bound is fewer than 2^32 edges per input. Efficient witness reconstruction,
+isomorphism indices and token/NetworkX conversion remain open; the current
+reconstruction backtracks and makes no paper runtime claim.
+
 ## Verified actual exact assignment API: 2026-11-14
 
 The actual square signed-i64 Rust assignment API now has an end-to-end total

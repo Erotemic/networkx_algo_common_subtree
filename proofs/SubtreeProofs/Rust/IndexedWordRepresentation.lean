@@ -1,7 +1,7 @@
 module
 
 public import SubtreeProofs.Rust.OrderedSolver
-public import SubtreeProofs.Paper2004.IndexedWord
+public import SubtreeProofs.Paper2004.CanonicalIndexedWord
 import Mathlib.Tactic
 
 /-! # Actual indexed Rust words and identity-preserving structural helpers -/
@@ -13,6 +13,22 @@ open verified_ordered_core
 
 namespace SubtreeProofs.Rust.IndexedOrderedSolver
 
+
+/-- Structural source shape in Mathlib's independent binary-tree type. -/
+def sourceShape : BalancedWord → BinaryTree Unit
+  | .Empty => .nil
+  | .Pair head tail => .node () (sourceShape head) (sourceShape tail)
+
+@[simp] theorem sourceShape_encode (word : BalancedWord) : DyckWord.ofTree (sourceShape word) = OrderedSolver.toDyck word := by
+  induction word with
+  | Empty => rfl
+  | Pair head tail ihHead ihTail => simp only [sourceShape,DyckWord.ofTree,OrderedSolver.toDyck,ihHead,ihTail]
+
+@[simp] theorem sourceShape_toTree (word : BalancedWord) : sourceShape word = (OrderedSolver.toDyck word).toTree := by
+  rw [← sourceShape_encode word,DyckWord.toTree_ofTree]
+
+@[simp] theorem sourceShape_nodes (word : BalancedWord) : (sourceShape word).numNodes = (OrderedSolver.toDyck word).semilength := by
+  rw [sourceShape_toTree,DyckWord.numNodes_toTree]
 
 /-- Interpret actual machine pair identities in the independent indexed model. -/
 def model : indexed.IndexedWord → Paper2004.IndexedWord.Word

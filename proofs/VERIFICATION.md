@@ -94,6 +94,16 @@ two-sided Dyck/tree bridge. These exponential reference functions make no
 memoization or running-time claim; original index maps and vertex-pair Python
 conversion remain open.
 
+The original-index LCBE wrapper is verified in `Rust/IndexedOrderedEntrypoint.lean`.
+`maximum_common_embedding_indexed_of_trees` composes the actual memoized optimum,
+checked canonical preorder numbering and total indexed reconstruction. It returns
+an independently maximum tree, exact score and actual deletions from both canonical
+originals. Original edge/pair indices are unique and in bounds, with exactly one
+per scored edge. The input bound is fewer than 2^32 edges per tree. These are pair
+positions, with token/vertex conversion separate. Backtracking reconstruction has
+no optimized cost theorem; the shape memo operation bound does not bound this
+complete wrapper's runtime.
+
 The exact assignment core has reproducible generated semantics and complete
 public entry-point total correctness in `Rust/AssignmentEntrypoint.lean`.
 `min_cost_assignment_total_spec` verifies every represented input, returning

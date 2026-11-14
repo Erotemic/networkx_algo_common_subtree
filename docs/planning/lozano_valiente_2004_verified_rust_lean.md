@@ -6,6 +6,36 @@ Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtr
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Actual public original-index LCBE optimum: 2026-11-14
+
+`Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees` proves
+successful termination of the actual public indexed Rust entry point on every
+pair of independently specified ordered trees with fewer than 2^32 edges each.
+Its result satisfies the independent `Paper2004.IndexedWord.IndexedMaximum`
+contract: actual pair deletions from both exact canonical originals, identical
+surviving shape, independently maximum common contracted tree and exact score.
+`maximum_common_embedding_indexed_indices` additionally states distinct genuine
+input indices in bounds, with one original pair identity on each side for every
+scored output edge. The identities are zero-based opening/preorder *edge/pair*
+positions; token-position and NetworkX vertex conversions remain separate.
+
+`CanonicalIndexedWord` defines numbering on Mathlib binary trees, independently
+of Rust. `number_word_refines` is strengthened to identify the actual numbered
+model exactly with this canonical representation, not just an arbitrary shape
+and valid-looking range. The public proof composes the already verified actual
+memoized optimum, both actual checked numberings and complete reconstruction.
+Every local range and reconstruction-success obligation is derived; no caller
+supplies an optimum, index mapping, path or reconstruction certificate.
+
+The full maintained library builds successfully (3,641 jobs). Independent
+labeled-contraction tests and the pinned extraction comparison passed after
+the final Rust source change. This completes original edge-index
+witness refinement for the LCBE reference API. Reconstruction is backtracking,
+so the memoized shape table-count theorem does not establish a polynomial or
+paper running-time bound for the indexed wrapper. Efficient indexed witness
+reconstruction, ordered-isomorphism indices, token/vertex adapters and complete
+qualified performance evidence remain open.
+
 ## Actual indexed reconstruction total correctness: 2026-11-14
 
 `Rust.IndexedOrderedSolver.reconstruct_embedding_refines` proves every actual

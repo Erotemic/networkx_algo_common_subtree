@@ -52,3 +52,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.feasible_tight_decodes
 #print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.normalize_tight
+
+#print axioms SubtreeProofs.Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees
+#print axioms SubtreeProofs.Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_indices

@@ -22,22 +22,24 @@ theorem number_word_refines (word : BalancedWord) (next : U32)
       indexed.number_word word next = .ok (some result) ∧
       Paper2004.IndexedWord.erase (model result.word) = toDyck word ∧
       Paper2004.IndexedWord.indices (model result.word) = List.range' next.val (toDyck word).semilength ∧
-      result.next.val = next.val + (toDyck word).semilength := by
+      result.next.val = next.val + (toDyck word).semilength ∧
+      model result.word = Paper2004.IndexedWord.numberFrom (sourceShape word) next.val := by
   induction word generalizing next with
   | Empty =>
-    refine ⟨⟨.Empty,next⟩,?_,?_,?_,?_⟩
+    refine ⟨⟨.Empty,next⟩,?_,?_,?_,?_,?_⟩
     · rw [indexed.number_word]
     · rfl
     · rfl
     · simp only [toDyck,DyckWord.semilength_zero,Nat.add_zero]
+    · rfl
   | Pair head tail ihHead ihTail =>
     have hs := hbound
     simp only [toDyck,DyckWord.semilength_add,DyckWord.semilength_nest] at hs
     obtain ⟨following,hFollowing,hFollowingVal⟩ := checked_add_success next 1#u32 (by scalar_tac)
     have hf : following.val = next.val+1 := by simpa using hFollowingVal
-    obtain ⟨inside,hInside,hInsideShape,hInsideIndices,hInsideEnd⟩ := ihHead following (by omega)
-    obtain ⟨outside,hOutside,hOutsideShape,hOutsideIndices,hOutsideEnd⟩ := ihTail inside.next (by omega)
-    refine ⟨⟨.Pair next inside.word outside.word,outside.next⟩,?_,?_,?_,?_⟩
+    obtain ⟨inside,hInside,hInsideShape,hInsideIndices,hInsideEnd,hInsideModel⟩ := ihHead following (by omega)
+    obtain ⟨outside,hOutside,hOutsideShape,hOutsideIndices,hOutsideEnd,hOutsideModel⟩ := ihTail inside.next (by omega)
+    refine ⟨⟨.Pair next inside.word outside.word,outside.next⟩,?_,?_,?_,?_,?_⟩
     · rw [indexed.number_word]
       simp only [lift,hFollowing,bind_ok,hInside,hOutside]
     · simp only [model,Paper2004.IndexedWord.erase,toDyck,hInsideShape,hOutsideShape]
@@ -49,6 +51,7 @@ theorem number_word_refines (word : BalancedWord) (next : U32)
       rw [hc,List.range'_succ]
     · simp only [toDyck,DyckWord.semilength_add,DyckWord.semilength_nest]
       omega
+    · simp only [model,sourceShape,Paper2004.IndexedWord.numberFrom,hInsideModel,hOutsideModel,hInsideEnd,hf,sourceShape_nodes]
 
 end SubtreeProofs.Rust.IndexedOrderedSolver
 

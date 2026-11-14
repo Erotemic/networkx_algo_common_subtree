@@ -134,3 +134,5 @@ public import SubtreeProofs.Rust.IndexedWordRepresentation
 public import SubtreeProofs.Rust.IndexedWordNumbering
 public import SubtreeProofs.Rust.IndexedReconstructionSpecification
 public import SubtreeProofs.Rust.IndexedReconstruction
+public import SubtreeProofs.Paper2004.CanonicalIndexedWord
+public import SubtreeProofs.Rust.IndexedOrderedEntrypoint

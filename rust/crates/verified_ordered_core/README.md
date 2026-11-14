@@ -51,7 +51,13 @@ public optimum witnesses on all 38,809 pairs through six edges. Copying,
 concatenation, checked preorder numbering and total reconstruction now have
 compiled source proofs. Reconstruction rejects exactly independently infeasible
 patterns and otherwise returns a valid indexed contraction of the requested
-shape. Composition into the full public indexed optimum theorem is pending.
+shape. The complete actual public API is proved by
+`Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees`:
+an independently maximum tree, exact score and deletions from both canonical
+original indexed inputs. `maximum_common_embedding_indexed_indices` proves
+unique original edge/pair identities in bounds, one per output edge. These
+are pair preorder indices; token-position and NetworkX vertex conversion are
+separate obligations.
 This is a backtracking reconstruction and makes no optimized cost claim.
 
 The established embedding/isomorphism entry points return tree witnesses;

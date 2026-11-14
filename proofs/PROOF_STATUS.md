@@ -438,6 +438,36 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual public original-index LCBE optimum: 2026-11-14
+
+`Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees` proves
+successful termination of the actual public indexed Rust entry point on every
+pair of independently specified ordered trees with fewer than 2^32 edges each.
+Its result satisfies the independent `Paper2004.IndexedWord.IndexedMaximum`
+contract: actual pair deletions from both exact canonical originals, identical
+surviving shape, independently maximum common contracted tree and exact score.
+`maximum_common_embedding_indexed_indices` additionally states distinct genuine
+input indices in bounds, with one original pair identity on each side for every
+scored output edge. The identities are zero-based opening/preorder *edge/pair*
+positions; token-position and NetworkX vertex conversions remain separate.
+
+`CanonicalIndexedWord` defines numbering on Mathlib binary trees, independently
+of Rust. `number_word_refines` is strengthened to identify the actual numbered
+model exactly with this canonical representation, not just an arbitrary shape
+and valid-looking range. The public proof composes the already verified actual
+memoized optimum, both actual checked numberings and complete reconstruction.
+Every local range and reconstruction-success obligation is derived; no caller
+supplies an optimum, index mapping, path or reconstruction certificate.
+
+The full maintained library builds successfully (3,641 jobs). Independent
+labeled-contraction tests and the pinned extraction comparison passed after
+the final Rust source change. This completes original edge-index
+witness refinement for the LCBE reference API. Reconstruction is backtracking,
+so the memoized shape table-count theorem does not establish a polynomial or
+paper running-time bound for the indexed wrapper. Efficient indexed witness
+reconstruction, ordered-isomorphism indices, token/vertex adapters and complete
+qualified performance evidence remain open.
+
 ## Actual indexed reconstruction total correctness: 2026-11-14
 
 `Rust.IndexedOrderedSolver.reconstruct_embedding_refines` proves every actual
@@ -575,10 +605,10 @@ open for this extension.
 | First remote CI run | Pending; workflow added |
 | Pinned source statement ledgers for all three papers | Added `docs/planning/paper_statement_crosswalk.md`; open source results are explicit |
 | Paper D/R/S and actual tree-parameter state bounds | Proved, including `states_closed` / `states_least` for Definition 4 |
-| Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
+| Lemma 8 recurrence optimum and tree witness | Proved; actual Rust indexed LCBE reference returns exact original edge/pair identities, independently maximum tree and score; efficient reconstruction and token/vertex conversion remain open |
 | LCBS/isomorphism's distinct ordered contract and optimum | Independent root-preserving and arbitrary-root tree contracts, witness DP, separate numeric optima and actual Rust reference APIs proved through two-sided structural/Dyck representation; input-index maps, vertex-pair API conversion and optimization open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
-| Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
+| Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; actual indexed LCBE reference also proved; efficient dictionary/bit cost, isomorphism indices and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 assignment and rectangular optional signed-i64 partial-matching public APIs total correctness proved; graph integration, floating arithmetic equivalence and complexity open |
 | 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and both 2018 boundary recurrences proved; executable rooted 2018 score evaluator proved; optimized algorithms and actual Rust graph refinement open |
 | Verified Python adapters and qualified performance evidence | Open |
