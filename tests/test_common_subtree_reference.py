@@ -60,7 +60,7 @@ def test_reference_embedding_can_skip_inserted_vertex():
     )
 
     assert iso.weight == 3.0
-    assert emb.weight == 4.75
+    assert emb.weight == 3.75
     assert emb.node_pairs == ((0, 0), (1, 2), (2, 3))
 
 
@@ -87,7 +87,7 @@ def test_reference_embedding_zero_penalty_crosses_long_paths():
     )
 
     assert iso.weight == 1.0
-    assert emb.weight == 3.0
+    assert emb.weight == 2.0
     assert emb.node_pairs == ((0, 0), (1, 3))
 
 
@@ -104,3 +104,32 @@ def test_reference_scoring_weights_change_objective():
     result = maximum_common_subtree_isomorphism_reference(left, right, LabelProductScoring())
 
     assert result.weight == 45.0  # 2*6 + 4*8 + edge weight 1
+
+
+@pytest.mark.parametrize("label", [5, 9])
+def test_embedding_paper_skipped_path_discriminator(label):
+    from networkx_algo_common_subtree.common_subtree_reference import score_embedding_witness
+    left = ReferenceLabeledTree([1, 2], [(0, 1, 5)])
+    right = ReferenceLabeledTree([1, 99, 2], [(0, 1, label), (1, 2, label)])
+    result = largest_weight_common_subtree_embedding_with_distance_penalty_reference(
+        left, right, skip_vertex_penalty=0.25)
+    assert result.weight == 1.75
+    assert score_embedding_witness(left, right, result.node_pairs,
+                                   skip_vertex_penalty=0.25) == 1.75
+
+
+def test_embedding_rejects_omitted_branch_point():
+    from networkx_algo_common_subtree.common_subtree_reference import score_embedding_witness
+    star = ReferenceLabeledTree([0, 1, 1, 1], [(0, 1, 5), (0, 2, 5), (0, 3, 5)])
+    with pytest.raises(ValueError, match="overlap"):
+        score_embedding_witness(star, star, [(1, 1), (2, 2), (3, 3)])
+    result = largest_weight_common_subtree_embedding_with_distance_penalty_reference(star, star)
+    assert result.weight == 7.0
+
+
+@pytest.mark.parametrize("penalty", [-1, float("nan"), float("inf")])
+def test_embedding_rejects_invalid_penalty(penalty):
+    tree = ReferenceLabeledTree([0], [])
+    with pytest.raises(ValueError, match="finite and nonnegative"):
+        largest_weight_common_subtree_embedding_with_distance_penalty_reference(
+            tree, tree, skip_vertex_penalty=penalty)

@@ -81,6 +81,24 @@ Rust API and conformance tests should stabilize before exposing it through PyO3
 or a NetworkX conversion layer.
 
 
+## Verified foundations and the 2018 correction
+
+The reference embedding DP implements the separate mapped/skipped states in
+Lemma 5. When either realized path skips a vertex, the path contributes only
+penalties; edge compatibility and rewards apply only when both paths are
+single edges (Definition 4). Both paper discriminator fixtures return 1.75.
+The independent partial-injection test enumerates small mappings and reconstructs
+their paths, rather than using the solver recurrence or production scorer.
+The empty result has weight zero; negative or nonfinite penalties are rejected.
+The floating-weight implementation still uses numerical comparison tolerances.
+
+Lean proves independent exhaustive contraction and partial-matching oracles.
+A separate small Rust crate demonstrates checked Aeneas translation and a
+contraction-budget refinement. Those results do not yet verify this crate's
+Hungarian routine or tree DPs. See
+[`proof evidence`](../../../proofs/PROOF_STATUS.md) and
+[`reproduction`](../../../proofs/VERIFICATION.md).
+
 ## PyTorch-sized benchmarks
 
 The crate includes deterministic ResNet-like module-tree fixtures for performance

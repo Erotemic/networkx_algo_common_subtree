@@ -108,9 +108,10 @@ edge may be realized by a path in either input tree.  The additional obligations
 are:
 
 Path-accounting lemma
-    The weight of a skeleton edge must include the compatible endpoint-edge
-    contribution and subtract the penalty for every skipped internal vertex on
-    both realized paths.
+    If both realized paths have length one, add the compatible edge-pair
+    weight. Otherwise add no edge reward or compatibility restriction and
+    subtract the penalty for every internal vertex on both paths (2018 paper,
+    Definition 4).
 
 Embedding branch-independence lemma
     Once a mapped root pair is fixed, each selected continuation still occupies a
@@ -173,8 +174,9 @@ boundaries.
 Known limitations
 -----------------
 
-The Rust embedding routine is still described as a prototype.  Before treating
-it as a final implementation of the 2018 algorithm, the scoring API and path
-penalty semantics should be checked against paper examples and additional
-fixtures.  In particular, richer edge/path scoring may require more information
-than the current first-step edge compatibility hook exposes.
+The Rust embedding routine is a reference dynamic program using the two
+mapped/skipped state types of Lemma 5. Independent small-tree enumeration and
+witness rescoring check the Definition 4 objective. The faster matching reuse,
+formal optimality proof, and machine-checked Rust refinement remain open.
+Both reference APIs allow an empty result of weight zero and require a finite,
+nonnegative skip penalty; this is an explicit API convention.

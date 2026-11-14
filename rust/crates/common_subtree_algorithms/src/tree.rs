@@ -116,8 +116,13 @@ impl LabeledTree {
 /// Scoring / compatibility hook for labeled tree algorithms.
 pub trait Scoring {
     /// Weight for mapping a node pair. `None` means incompatible.
-    fn node_weight(&self, left: &LabeledTree, u: NodeId, right: &LabeledTree, v: NodeId)
-        -> Option<Weight>;
+    fn node_weight(
+        &self,
+        left: &LabeledTree,
+        u: NodeId,
+        right: &LabeledTree,
+        v: NodeId,
+    ) -> Option<Weight>;
 
     /// Weight for mapping an edge pair. `None` means incompatible.
     fn edge_weight(
@@ -201,6 +206,7 @@ struct RootedSolver<'a, S: Scoring> {
     scoring: &'a S,
     iso_memo: HashMap<State, Option<CommonSubtree>>,
     embedding_memo: HashMap<State, Option<CommonSubtree>>,
+    skipped_memo: HashMap<State, Option<CommonSubtree>>,
     skip_vertex_penalty: Weight,
 }
 
@@ -212,6 +218,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             scoring,
             iso_memo: HashMap::new(),
             embedding_memo: HashMap::new(),
+            skipped_memo: HashMap::new(),
             skip_vertex_penalty: 0.0,
         }
     }
@@ -228,6 +235,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             scoring,
             iso_memo: HashMap::new(),
             embedding_memo: HashMap::new(),
+            skipped_memo: HashMap::new(),
             skip_vertex_penalty,
         }
     }
@@ -303,47 +311,56 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         })
     }
 
+    // Type wedge in Lemma 5: both roots are mapped. In particular this state
+    // must retain negative values: a parent edge reward can make them useful.
     fn rooted_embedding(&mut self, state: State) -> Option<CommonSubtree> {
         if let Some(found) = self.embedding_memo.get(&state) {
             return found.clone();
         }
-
-        let mut best = self.compute_rooted_embedding_with_roots_mapped(state);
-
-        for left_edge in Self::child_edges(self.left, state.u, state.parent_u) {
-            let child_state = State {
-                u: left_edge.to,
-                parent_u: Some(state.u),
-                v: state.v,
-                parent_v: state.parent_v,
-            };
-            if let Some(mut candidate) = self.rooted_embedding(child_state) {
-                candidate.weight -= self.skip_vertex_penalty;
-                Self::keep_better(&mut best, candidate);
-            }
-        }
-
-        for right_edge in Self::child_edges(self.right, state.v, state.parent_v) {
-            let child_state = State {
-                u: state.u,
-                parent_u: state.parent_u,
-                v: right_edge.to,
-                parent_v: Some(state.v),
-            };
-            if let Some(mut candidate) = self.rooted_embedding(child_state) {
-                candidate.weight -= self.skip_vertex_penalty;
-                Self::keep_better(&mut best, candidate);
-            }
-        }
-
-        if best.as_ref().map_or(false, |result| result.weight <= EPS) {
-            best = None;
-        }
+        let best = self.compute_rooted_embedding_with_roots_mapped(state);
         self.embedding_memo.insert(state, best.clone());
         best
     }
 
-    fn compute_rooted_embedding_with_roots_mapped(&mut self, state: State) -> Option<CommonSubtree> {
+    // Type diamond in Lemma 5: at least one root is an interior vertex on a
+    // topological path. No edge reward is added when using this state.
+    fn skipped_embedding(&mut self, state: State) -> Option<CommonSubtree> {
+        if let Some(found) = self.skipped_memo.get(&state) {
+            return found.clone();
+        }
+        let mut best = None;
+        let mut continuations = Vec::new();
+        for edge in Self::child_edges(self.left, state.u, state.parent_u) {
+            continuations.push(State {
+                u: edge.to,
+                parent_u: Some(state.u),
+                ..state
+            });
+        }
+        for edge in Self::child_edges(self.right, state.v, state.parent_v) {
+            continuations.push(State {
+                v: edge.to,
+                parent_v: Some(state.v),
+                ..state
+            });
+        }
+        for next in continuations {
+            for mut candidate in [self.rooted_embedding(next), self.skipped_embedding(next)]
+                .into_iter()
+                .flatten()
+            {
+                candidate.weight -= self.skip_vertex_penalty;
+                Self::keep_candidate(&mut best, candidate);
+            }
+        }
+        self.skipped_memo.insert(state, best.clone());
+        best
+    }
+
+    fn compute_rooted_embedding_with_roots_mapped(
+        &mut self,
+        state: State,
+    ) -> Option<CommonSubtree> {
         let root_weight = self
             .scoring
             .node_weight(self.left, state.u, self.right, state.v)?;
@@ -355,6 +372,13 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
 
         for (i, left_edge) in left_children.iter().enumerate() {
             for (j, right_edge) in right_children.iter().enumerate() {
+                let child_state = State {
+                    u: left_edge.to,
+                    parent_u: Some(state.u),
+                    v: right_edge.to,
+                    parent_v: Some(state.v),
+                };
+                let mut continuation = self.skipped_embedding(child_state);
                 if let Some(edge_weight) = self.scoring.edge_weight(
                     self.left,
                     state.u,
@@ -363,18 +387,15 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     state.v,
                     right_edge.to,
                 ) {
-                    let child_state = State {
-                        u: left_edge.to,
-                        parent_u: Some(state.u),
-                        v: right_edge.to,
-                        parent_v: Some(state.v),
-                    };
-                    if let Some(child) = self.rooted_embedding(child_state) {
-                        let value = edge_weight + child.weight;
-                        if value > EPS {
-                            matrix[i][j] = Some(value);
-                            child_results[i][j] = Some(child);
-                        }
+                    if let Some(mut direct) = self.rooted_embedding(child_state) {
+                        direct.weight += edge_weight;
+                        Self::keep_candidate(&mut continuation, direct);
+                    }
+                }
+                if let Some(child) = continuation {
+                    if child.weight > EPS {
+                        matrix[i][j] = Some(child.weight);
+                        child_results[i][j] = Some(child);
                     }
                 }
             }
@@ -400,6 +421,10 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         if candidate.weight <= EPS {
             return;
         }
+        Self::keep_candidate(best, candidate);
+    }
+
+    fn keep_candidate(best: &mut Option<CommonSubtree>, candidate: CommonSubtree) {
         match best {
             None => *best = Some(candidate),
             Some(current) => {
@@ -451,17 +476,24 @@ pub fn maximum_common_subtree_isomorphism<S: Scoring>(
 /// Experimental distance-penalized common subtree embedding between two labeled
 /// trees.
 ///
-/// This prototype is intentionally conservative and test-driven. It uses the
-/// same rooted child-matching core as [`maximum_common_subtree_isomorphism`], but
-/// each rooted state may skip a vertex in either input at `skip_vertex_penalty`
-/// cost before mapping another compatible root pair. This captures the core
-/// distance-penalized tree-embedding recurrence described in the 2018 paper.
+/// Implements the two state types of the 2018 paper's Lemma 5. A direct
+/// edge pair contributes its edge weight only when neither path skips a vertex.
+/// Otherwise the contribution is just the penalty for every skipped vertex.
+/// The empty mapping is permitted with score zero. This reference DP does not
+/// implement the paper's faster reuse of related matching instances.
+///
+/// # Panics
+/// Panics if the penalty is negative or nonfinite.
 pub fn largest_weight_common_subtree_embedding_with_distance_penalty<S: Scoring>(
     left: &LabeledTree,
     right: &LabeledTree,
     scoring: &S,
     skip_vertex_penalty: Weight,
 ) -> CommonSubtree {
+    assert!(
+        skip_vertex_penalty.is_finite() && skip_vertex_penalty >= 0.0,
+        "skip vertex penalty must be finite and nonnegative"
+    );
     if left.is_empty() || right.is_empty() {
         return CommonSubtree::default();
     }
@@ -496,11 +528,10 @@ mod tests {
 
     #[test]
     fn exact_common_subtree_finds_common_path() {
-        let left = LabeledTree::new(vec![1, 2, 3, 9], &[(0, 1, 7), (1, 2, 7), (1, 3, 8)])
-            .unwrap();
-        let right = LabeledTree::new(vec![5, 1, 2, 3], &[(0, 1, 8), (1, 2, 7), (2, 3, 7)])
-            .unwrap();
-        let result = maximum_common_subtree_isomorphism(&left, &right, &ExactLabelScoring::default());
+        let left = LabeledTree::new(vec![1, 2, 3, 9], &[(0, 1, 7), (1, 2, 7), (1, 3, 8)]).unwrap();
+        let right = LabeledTree::new(vec![5, 1, 2, 3], &[(0, 1, 8), (1, 2, 7), (2, 3, 7)]).unwrap();
+        let result =
+            maximum_common_subtree_isomorphism(&left, &right, &ExactLabelScoring::default());
         assert_eq!(result.weight, 5.0);
         assert_eq!(result.node_pairs, vec![(0, 1), (1, 2), (2, 3)]);
     }

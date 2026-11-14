@@ -210,21 +210,27 @@ def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
     no other selected vertex.  A bijection is accepted when it is an isomorphism
     between the two embedding skeletons.
 
-    The objective is the sum of compatible mapped-node weights and compatible
-    skeleton-edge weights, minus ``skip_vertex_penalty`` for every internal path
-    vertex skipped by the two skeleton-edge embeddings.
+    Direct skeleton edges contribute their compatible edge-pair weight only
+    when both paths have length one. Otherwise only the penalty for every
+    skipped internal vertex is applied (2018 paper, Definition 4). The empty
+    mapping is allowed and has score zero; penalties must be finite and nonnegative.
 
     This is exponential and intended only for small correctness tests.
     """
 
+    _validate_skip_penalty(skip_vertex_penalty)
     scoring = ExactLabelScoring() if scoring is None else scoring
     best = ReferenceCommonSubtree(0.0, ())
     for left_subset in _nonempty_subsets(left.n):
         left_skeleton = _embedding_skeleton_edges(left, left_subset)
+        if left_skeleton is None:
+            continue
         for right_subset in _nonempty_subsets(right.n):
             if len(left_subset) != len(right_subset):
                 continue
             right_skeleton = _embedding_skeleton_edges(right, right_subset)
+            if right_skeleton is None:
+                continue
             right_skeleton_set = frozenset(_normalized_edge(u, v) for u, v in right_skeleton)
             for right_perm in permutations(right_subset):
                 node_map = dict(zip(left_subset, right_perm))
@@ -309,16 +315,18 @@ def score_embedding_witness(
     """Validate and rescore a distance-penalized embedding witness.
 
     The selected vertices on each side define an embedding skeleton.  The
-    witness is valid when the node mapping is a skeleton isomorphism and each
-    mapped skeleton edge has compatible first-step edge labels.  The returned
-    value is the node weight plus mapped skeleton-edge weight minus skipped
-    internal vertex penalties.
+    witness must preserve a tree skeleton with disjoint path interiors.
+    Edge compatibility and rewards apply only to pairs of single-edge paths;
+    longer paths contribute only their skipped-vertex penalties.
     """
 
+    _validate_skip_penalty(skip_vertex_penalty)
     scoring = ExactLabelScoring() if scoring is None else scoring
     pairs = _canonical_pairs(node_pairs)
     if not pairs:
         return 0.0
+    if any(not (0 <= u < left.n and 0 <= v < right.n) for u, v in pairs):
+        raise ValueError("embedding witness contains an out of bounds node")
     node_map = dict(pairs)
     left_subset = tuple(sorted(node_map))
     right_subset = tuple(sorted(node_map.values()))
@@ -331,7 +339,10 @@ def score_embedding_witness(
         weight += node_w
 
     left_skeleton = _embedding_skeleton_edges(left, left_subset)
-    right_skeleton = frozenset(_embedding_skeleton_edges(right, right_subset))
+    right_skeleton_edges = _embedding_skeleton_edges(right, right_subset)
+    if left_skeleton is None or right_skeleton_edges is None:
+        raise ValueError("embedding paths overlap at an unselected branch vertex")
+    right_skeleton = frozenset(right_skeleton_edges)
     mapped_skeleton = frozenset(_normalized_edge(node_map[u], node_map[u2]) for u, u2 in left_skeleton)
     if mapped_skeleton != right_skeleton:
         raise ValueError("mapped embedding skeleton does not equal the right embedding skeleton")
@@ -341,12 +352,22 @@ def score_embedding_witness(
         v2 = node_map[u2]
         left_path = left.path(u, u2)
         right_path = right.path(v, v2)
-        edge_w = scoring.edge_weight(left, u, left_path[1], right, v, right_path[1])
-        if edge_w is None:
-            raise ValueError(f"incompatible embedded edge ({u}, {u2}) -> ({v}, {v2})")
-        skipped = (len(left_path) - 2) + (len(right_path) - 2)
-        weight += edge_w - skip_vertex_penalty * skipped
+        if len(left_path) == 2 and len(right_path) == 2:
+            edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
+            if edge_w is None:
+                raise ValueError(f"incompatible embedded edge ({u}, {u2}) -> ({v}, {v2})")
+            weight += edge_w
+        else:
+            skipped = (len(left_path) - 2) + (len(right_path) - 2)
+            weight -= skip_vertex_penalty * skipped
     return weight
+
+
+def _validate_skip_penalty(penalty: Weight) -> None:
+    from math import isfinite
+
+    if not isfinite(penalty) or penalty < 0:
+        raise ValueError("skip vertex penalty must be finite and nonnegative")
 
 
 def _canonical_pairs(node_pairs: Iterable[tuple[NodeId, NodeId]]) -> tuple[tuple[NodeId, NodeId], ...]:
@@ -422,7 +443,9 @@ def _induced_edges(tree: ReferenceLabeledTree, subset: tuple[int, ...]) -> tuple
     return tuple(sorted(out))
 
 
-def _embedding_skeleton_edges(tree: ReferenceLabeledTree, subset: tuple[int, ...]) -> tuple[tuple[int, int], ...]:
+def _embedding_skeleton_edges(
+    tree: ReferenceLabeledTree, subset: tuple[int, ...]
+) -> tuple[tuple[int, int], ...] | None:
     selected = frozenset(subset)
     out = []
     for u, v in combinations(subset, 2):
@@ -430,9 +453,16 @@ def _embedding_skeleton_edges(tree: ReferenceLabeledTree, subset: tuple[int, ...
         interior = path[1:-1]
         if not any(node in selected for node in interior):
             out.append(_normalized_edge(u, v))
-    # Every nonempty selected set in a tree induces a tree-shaped embedding
-    # skeleton, so exactly |subset| - 1 skeleton edges should be present.
-    assert len(out) == len(subset) - 1
+    # An omitted branch point would create a clique among its selected
+    # branches. Such a selection cannot be a topological tree embedding.
+    if len(out) != len(subset) - 1:
+        return None
+    used_interiors: set[int] = set()
+    for u, v in out:
+        interior = set(tree.path(u, v)[1:-1])
+        if interior & used_interiors:
+            return None
+        used_interiors.update(interior)
     return tuple(sorted(out))
 
 
@@ -487,13 +517,14 @@ def _score_embedding_bijection(
             return None
         left_path = left.path(u, u2)
         right_path = right.path(v, v2)
-        left_next = left_path[1]
-        right_next = right_path[1]
-        edge_w = scoring.edge_weight(left, u, left_next, right, v, right_next)
-        if edge_w is None:
-            return None
-        skipped = (len(left_path) - 2) + (len(right_path) - 2)
-        weight += edge_w - skip_vertex_penalty * skipped
+        if len(left_path) == 2 and len(right_path) == 2:
+            edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
+            if edge_w is None:
+                return None
+            weight += edge_w
+        else:
+            skipped = (len(left_path) - 2) + (len(right_path) - 2)
+            weight -= skip_vertex_penalty * skipped
     return ReferenceCommonSubtree(weight, tuple(sorted(node_map.items())))
 
 
