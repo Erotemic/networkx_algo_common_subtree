@@ -14,6 +14,32 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual sparse augmenting-path search verified end to end: 2026-11-14
+
+`Rust/SparseSearchEntrypoint.find_sparse_augmenting_path_spec` proves the
+actual public Rust search succeeds from a represented completed permutation,
+a selected root, feasible sparse potentials, tight completed-permutation edges
+except at that root, the two-sided nonpositive initial-potential invariant,
+exact dual accounting, and existence of a compatible perfect assignment.
+The source matrix has nonpositive allowed i64 costs and u32-bounded dimension.
+No inverse table, cut minimum, path, rank, loop result or arithmetic-success
+certificate is assumed.
+
+`SparseSearchInitialization` derives the complete initial invariant from the
+actual zero-filled vectors and root flag write. `SparseSearchLoop` proves
+termination and the stopped invariant by the decreasing visit measure. The
+returned `PathCertificate` preserves sparse feasibility, all old nonroot edge
+tightness, two-sided numeric bounds/accounting, original-coordinate allowed
+tight predecessor edges, the actual free target, strictly decreasing positive
+predecessor ranks and at most `n` recorded steps.
+
+The entry point returns a ranked predecessor path and updated potentials;
+it does not yet flip that path or return a repaired permutation. Compatibility
+of unchanged old matching edges is needed by that subsequent augmentation
+proof. Executable path flipping, the copied-graph deletion driver and the
+paper's optimized priority-queue/runtime obligations remain open. The current
+full-matrix cut scan remains a reference implementation.
+
 ## Complete sparse search-body invariant preservation: 2026-11-14
 
 `Rust/SparseSearchPreservation.body_preserves_spec` proves that an actual

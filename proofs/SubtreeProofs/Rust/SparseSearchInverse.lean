@@ -140,6 +140,18 @@ theorem inverse_completed_spec (completed : Slice Usize) (n : Usize) (hl : n.val
   subst failure
   exact (WP.spec_ok _).mpr ⟨output,rfl,hLen,hValues⟩
 
+/-- Dimension-indexed form used by a caller whose graph vertices are already
+indexed by the original cost matrix, independently of the slice length scalar. -/
+theorem inverse_completed_dimension_spec (completed : Slice Usize) (dimension : Nat)
+    (hl : completed.length = dimension) (assignment : Equiv.Perm (Fin dimension))
+    (hc : ∀ row : Fin dimension, completed.val[row.val]!.val = (assignment row).val) :
+    sparse_search.inverse_completed completed ⦃ result => ∃ inverse,
+      result = core.result.Result.Ok inverse ∧ inverse.length = dimension ∧
+        ∀ column : Fin dimension, inverse.val[column.val]!.val = (assignment.symm column).val ⦄ := by
+  have he : dimension = (Slice.len completed).val := hl.symm.trans (Slice.len_val completed).symm
+  subst dimension
+  exact inverse_completed_spec completed (Slice.len completed) (Slice.len_val completed) assignment hc
+
 end SubtreeProofs.Rust.SparseSearch
 
 end

@@ -188,3 +188,6 @@ public import SubtreeProofs.Rust.SparseSearchTightness
 public import SubtreeProofs.Rust.SparseSearchGrowth
 public import SubtreeProofs.Rust.SparseSearchRanks
 public import SubtreeProofs.Rust.SparseSearchPreservation
+public import SubtreeProofs.Rust.SparseSearchLoop
+public import SubtreeProofs.Rust.SparseSearchInitialization
+public import SubtreeProofs.Rust.SparseSearchEntrypoint
