@@ -69,8 +69,18 @@ affinity cases per algorithm use unique token indices mapped to distinct
 original objects; original witness feasibility and rescoring are checked.
 These tests exposed and fixed Cython embedding's string-only token locals and
 f32 affinity/score storage. Tuple integer tokens and valid f64 precision/range
-now work. The expanded strict source suite passes **138 tests, one skip**;
+now work. The expanded strict source suite passes **138 tests, zero skips**;
 all required compiled backend tests execute.
+
+Rectangular matching removes dummy rows/columns, temporary cost/profit matrices
+and per-augmentation buffer allocations in the f64 graph core. The fresh
+installed wheel passes **139 tests, zero skips**, including arbitrary signed
+and forbidden callback-table parity. All **41 graph Rust tests** pass, including
+31,250 exhaustive rectangular matrices. The same 32/32 star workload improves
+to 0.110 s (2016, **2.68x**) and 0.163 s (2018, **2.20x**); other measured shapes
+improve 1.18–1.72x. See [the report](../../dev/benchmarks/2026-11-14-unordered-rectangular.md).
+The exact integer verified cores are unchanged. Specialized paper matching,
+optimized graph schedules and their production source proofs remain open.
 
 ## Immediate implementation queue
 

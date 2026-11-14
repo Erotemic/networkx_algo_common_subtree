@@ -132,6 +132,35 @@ fn matching_keeps_positive_weights_below_old_absolute_threshold() {
 }
 
 #[test]
+fn matching_keeps_tiny_profitable_pairs_beside_large_weights() {
+    let result = max_weight_bipartite_matching(&[
+        vec![Some(1.0e150), None, None],
+        vec![None, None, Some(5.0e-200)],
+    ]);
+    assert_eq!(result.pairs, vec![(0, 0), (1, 2)]);
+    assert_eq!(result.weight, 1.0e150); // The total itself rounds in f64.
+}
+
+#[test]
+fn rectangular_matching_exhaustive_two_by_three_and_transpose() {
+    let values = [None, Some(-0.5), Some(0.0), Some(0.125), Some(2.0)];
+    for mut code in 0..5usize.pow(6) {
+        let mut weights = vec![vec![None; 3]; 2];
+        for row in &mut weights {
+            for value in row {
+                *value = values[code % 5];
+                code /= 5;
+            }
+        }
+        let transpose = (0..3)
+            .map(|j| (0..2).map(|i| weights[i][j]).collect())
+            .collect();
+        check_against_bruteforce(weights);
+        check_against_bruteforce(transpose);
+    }
+}
+
+#[test]
 fn matching_handles_large_signed_weights_without_forbidden_sentinels() {
     let weights = vec![
         vec![Some(8.0e150), None, Some(-1.0e250)],

@@ -30,10 +30,11 @@ inventory and evidence are in [capabilities.md](capabilities.md).
 
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
-wheel passes all 130 tests with native backends mandatory. Independent graph
+wheel passes all 139 tests with native backends mandatory. Independent graph
 witness rescoring and exhaustive optimum comparisons are included. Installed
 API measurements identify high-degree matching as the next graph performance
-bottleneck; these reference DPs do not yet reproduce the published optimized
+bottleneck. Rectangular matching already improves 32-vertex stars by
+2.68x/2.20x for the two families; these DPs do not yet reproduce the published optimized
 schedules. See the capability matrix and benchmark evidence before continuing
 the remaining ordered coverage, correctness and optimization tasks.
 

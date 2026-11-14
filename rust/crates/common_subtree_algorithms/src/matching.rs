@@ -32,9 +32,14 @@ pub struct WeightedMatching {
 /// arithmetic. Floating-point rounding remains part of this reference API;
 /// it is not an exact-real solver.
 ///
-/// The implementation builds a square assignment instance with dummy rows and
-/// columns and solves it with the Hungarian algorithm for minimum cost. The
-/// dummy assignments are what make unmatched vertices possible.
+/// The implementation assigns the smaller side into the larger side, replacing
+/// forbidden/nonpositive profits by zero and discarding zero assignments.
+/// Every partial matching extends to such an injection without decreasing its
+/// profit, and every injection decodes to a feasible partial matching. Thus
+/// the optima agree without dummy rows/columns. The rectangular Hungarian
+/// algorithm uses O(min(left,right)^2 * max(left,right)) arithmetic operations
+/// and linear auxiliary space, excluding the input and returned pairs.
+/// This bound does not establish the faster paper-level tree algorithms.
 pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> WeightedMatching {
     let left = weights.len();
     let right = weights.first().map_or(0, Vec::len);
@@ -52,83 +57,84 @@ pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> Weighte
         return WeightedMatching::default();
     }
 
-    let size = left
-        .checked_add(right)
-        .expect("matching matrix size overflow");
-    let mut profit = vec![vec![0.0; size]; size];
-
-    let mut max_real_profit: Weight = 0.0;
-    for i in 0..left {
-        for j in 0..right {
-            // Dummy assignments permit every nonpositive or forbidden pair
-            // to have zero profit. Reconstruction drops these pairs, exactly
-            // as in the independent Lean dummy-assignment reduction.
-            let w = weights[i][j].unwrap_or(0.0).max(0.0);
-            profit[i][j] = w;
-            max_real_profit = max_real_profit.max(w);
-        }
-    }
-
-    let mut cost = vec![vec![0.0; size]; size];
-    for i in 0..size {
-        for j in 0..size {
-            cost[i][j] = max_real_profit - profit[i][j];
-        }
-    }
-
-    let assignment = min_cost_assignment_square(&cost);
-    let mut pairs = Vec::new();
-    let mut weight = 0.0;
-    for i in 0..left {
-        let j = assignment[i];
-        if j < right {
-            if let Some(w) = weights[i][j] {
-                if w > 0.0 {
-                    pairs.push((i, j));
-                    weight += w;
-                    assert!(weight.is_finite(), "matching total weight overflow");
+    // Common leaf/chain subproblems need only a scan, not augmentation.
+    if left == 1 || right == 1 {
+        let mut best = 0.0;
+        let mut pair = None;
+        for (i, row) in weights.iter().enumerate() {
+            for (j, value) in row.iter().enumerate() {
+                if let Some(w) = value {
+                    if *w > best {
+                        best = *w;
+                        pair = Some((i, j));
+                    }
                 }
             }
         }
+        return WeightedMatching {
+            pairs: pair.into_iter().collect(),
+            weight: best,
+        };
+    }
+
+    let transposed = left > right;
+    let (rows, columns) = (left.min(right), left.max(right));
+    let assignment = min_cost_assignment_rectangular(rows, columns, |i, j| {
+        let value = if transposed {
+            weights[j][i]
+        } else {
+            weights[i][j]
+        };
+        // Negate directly: a max-profit shift can erase tiny positive weights
+        // when another entry is much larger. No cost/profit matrices are built.
+        -value.unwrap_or(0.0).max(0.0)
+    });
+    let mut pairs = Vec::with_capacity(rows);
+    for (i, j) in assignment.into_iter().enumerate() {
+        let pair = if transposed { (j, i) } else { (i, j) };
+        if weights[pair.0][pair.1].is_some_and(|w| w > 0.0) {
+            pairs.push(pair);
+        }
     }
     pairs.sort_unstable();
+    let mut weight = 0.0;
+    for &(i, j) in &pairs {
+        weight += weights[i][j].unwrap();
+        assert!(weight.is_finite(), "matching total weight overflow");
+    }
     WeightedMatching { pairs, weight }
 }
 
-/// Hungarian algorithm for a square minimum-cost assignment problem.
-///
-/// Returns `assignment[row] = col`. This is the classic 1-indexed potential
-/// implementation adapted to Rust vectors.
-fn min_cost_assignment_square(cost: &[Vec<Weight>]) -> Vec<usize> {
-    let n = cost.len();
-    if n == 0 {
-        return Vec::new();
-    }
-    for row in cost {
-        assert_eq!(row.len(), n, "assignment matrix must be square");
-    }
+/// Rectangular Hungarian assignment: rows <= columns, row -> column.
+/// Costs are read on demand; scratch buffers are reused between augmentations.
+fn min_cost_assignment_rectangular(
+    rows: usize,
+    columns: usize,
+    cost: impl Fn(usize, usize) -> Weight,
+) -> Vec<usize> {
+    let row_extent = rows.checked_add(1).expect("matching dimension overflow");
+    let column_extent = columns.checked_add(1).expect("matching dimension overflow");
+    let mut u = vec![0.0; row_extent];
+    let mut v = vec![0.0; column_extent];
+    let mut p = vec![0usize; column_extent];
+    let mut way = vec![0usize; column_extent];
+    let mut minv = vec![f64::INFINITY; column_extent];
+    let mut used = vec![false; column_extent];
 
-    let mut u = vec![0.0; n + 1];
-    let mut v = vec![0.0; n + 1];
-    let mut p = vec![0usize; n + 1];
-    let mut way = vec![0usize; n + 1];
-
-    for i in 1..=n {
+    for i in 1..=rows {
         p[0] = i;
         let mut j0 = 0usize;
-        let mut minv = vec![f64::INFINITY; n + 1];
-        let mut used = vec![false; n + 1];
+        minv.fill(f64::INFINITY);
+        used.fill(false);
         way.fill(0);
-
         loop {
             used[j0] = true;
             let i0 = p[j0];
             let mut delta = f64::INFINITY;
             let mut j1 = 0usize;
-
-            for j in 1..=n {
+            for j in 1..=columns {
                 if !used[j] {
-                    let cur = cost[i0 - 1][j - 1] - u[i0] - v[j];
+                    let cur = cost(i0 - 1, j - 1) - u[i0] - v[j];
                     assert!(cur.is_finite(), "matching reduced-cost arithmetic overflow");
                     if cur < minv[j] {
                         minv[j] = cur;
@@ -140,15 +146,23 @@ fn min_cost_assignment_square(cost: &[Vec<Weight>]) -> Vec<usize> {
                     }
                 }
             }
-
             assert!(
                 delta.is_finite(),
                 "matching augmentation requires a finite cost"
             );
-            for j in 0..=n {
+            for j in 0..=columns {
                 if used[j] {
                     u[p[j]] += delta;
-                    v[j] -= delta;
+                    // Column zero is only a path sentinel. Its unused dual
+                    // objective can overflow even if every real potential is
+                    // finite; the actual selected total is checked separately.
+                    if j != 0 {
+                        v[j] -= delta;
+                    }
+                    assert!(
+                        u[p[j]].is_finite() && v[j].is_finite(),
+                        "matching potential arithmetic overflow"
+                    );
                 } else {
                     minv[j] -= delta;
                 }
@@ -158,7 +172,6 @@ fn min_cost_assignment_square(cost: &[Vec<Weight>]) -> Vec<usize> {
                 break;
             }
         }
-
         loop {
             let j1 = way[j0];
             p[j0] = p[j1];
@@ -168,9 +181,8 @@ fn min_cost_assignment_square(cost: &[Vec<Weight>]) -> Vec<usize> {
             }
         }
     }
-
-    let mut assignment = vec![0usize; n];
-    for j in 1..=n {
+    let mut assignment = vec![0usize; rows];
+    for j in 1..=columns {
         if p[j] != 0 {
             assignment[p[j] - 1] = j - 1;
         }

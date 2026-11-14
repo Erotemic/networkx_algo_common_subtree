@@ -173,3 +173,35 @@ def test_native_low_level_validation_and_exact_matching():
     assert all(u[i] + v[j] <= [[3, -2], [0, 4]][i][j] for i in range(2) for j in range(2))
     pairs, weight = _rust.max_weight_partial_matching([[None, 5], [-2, 3]])
     assert pairs == [(0, 1)] and weight == 5
+
+
+def test_signed_optional_callback_tables_against_exhaustive_objectives():
+    if "rust" not in common.available_unordered_backends():
+        if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
+            pytest.fail("required weighted graph Rust bindings are missing")
+        pytest.skip("optional weighted graph Rust bindings are missing")
+    rng = random.Random(180500821)
+    for case in range(32):
+        left, right = nx.Graph(), nx.Graph()
+        for tree, side in [(left, "left"), (right, "right")]:
+            n = rng.randrange(1, 5)
+            tree.add_nodes_from((side, i) for i in range(n))
+            tree.add_edges_from(((side, i), (side, rng.randrange(i))) for i in range(1, n))
+        nodes = {(u, v): rng.choice([None, -.5, 0, .125, 1.25]) for u in left for v in right}
+        edges = {(u, v): rng.choice([None, -1, 0, .25, 2.5]) for u in left.edges for v in right.edges}
+        kwargs = dict(node_weight=lambda u, v: nodes[u, v], edge_weight=lambda u, v: edges[u, v],
+                      allow_empty=bool(case % 2))
+        for solver, scorer, extra in [
+            (common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism, {}),
+            (common.largest_weight_common_subtree_embedding_with_distance_penalty, common.score_common_subtree_embedding,
+             {"skip_vertex_penalty": rng.choice([0, .125, 1.0])}),
+        ]:
+            result = solver(left, right, impl="rust", **kwargs, **extra)
+            oracle = solver(left, right, impl="python", **kwargs, **extra)
+            if oracle is None:
+                assert result is None
+            else:
+                # Dyadic weights and these sizes make equality exact in f64.
+                assert result.weight == oracle.weight
+                scoring = {k: v for k, v in kwargs.items() if k != "allow_empty"}
+                assert scorer(left, right, result, **scoring, **extra) == result.weight
