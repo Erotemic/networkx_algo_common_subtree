@@ -19,10 +19,14 @@ Modules in dependency order:
   contractions; the two-way equivalence `embeds_iff_dyckEmbeds`.
 - `Paper2004/PaperContainment.lean`: literal recursive Definition 2,
   soundness relative to `DyckEmbeds`, concatenation and length lemmas.
+- `Paper2004/PrintedContainmentCounterexample.lean`: a general one-pair
+  characterization, the minimal counterexample to the reverse containment,
+  and a concrete difference between the two optimization objectives.
 
 The maintainer reported successful builds of the contraction correspondence
-and accepted the module-system migration. The new `PaperContainment.lean`
-module is proposed work awaiting its first local build; see
+and accepted the module-system migration. The `PaperContainment.lean`
+module also compiled locally. The new counterexample module awaits its
+first local build; see
 `PROOF_STATUS.md` for declaration-level status.
 
 The contraction equivalence covers the explicitly defined `DyckEmbeds`
@@ -32,7 +36,9 @@ that it implies `DyckEmbeds`. An independent checker detects a disagreement
 in the reverse direction already at three edges. The paper's own Example 2
 agrees with the operational deletion results. See
 `docs/planning/lozano_valiente_2004_containment_definition_audit.md`.
-The DP, complexity bound and Rust refinement remain future work. See `PROOF_STATUS.md` and `docs/planning`.
+The general DP optimality theorem, complexity bound and Rust refinement
+remain future work. A separate Python checker now tests Lemma 8 on all
+word pairs through six edges. See `PROOF_STATUS.md` and `docs/planning`.
 This workspace does not import the historical v3-v6 proofs.
 
 ```bash
@@ -62,3 +68,13 @@ forests, contracts edges by splicing children, and compares only the resulting
 encodings with independent balanced-word pair deletion. All trees up to six
 edges agree in the shipped executable check; the comparison has not been
 formalized in Lean yet.
+
+Recurrence/oracle comparison:
+
+```bash
+python3 proofs/checks/check_paper_dp_recurrence.py
+```
+
+The checker compares the exact printed recurrence, operational contraction
+closures, and the literal Definition 2 as distinct functions. It is not a Lean
+proof. The new smoke test is `PaperContainmentCounterexampleSmoke.lean`.
