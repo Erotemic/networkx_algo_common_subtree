@@ -94,3 +94,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SparseCut.adjust_sparse_cut_bi_safe_spec
 
 #print axioms SubtreeProofs.Rust.SparseCut.advance_sparse_cut_spec
+
+#print axioms SubtreeProofs.Assignment.exists_search_adjustment

@@ -14,6 +14,24 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Alternating sparse-cut growth and old-edge tightness: 2026-11-14
+
+`Shared/AssignmentSparseSearch` describes a deficient matching by completing
+its free row/root to its free target column. Until the target is reached,
+selected rows are exactly the root plus inverse images of selected columns.
+The module proves this is a one-excess-row cut, that every nonterminal new
+column adds a fresh matched row and preserves the deficit, and that the
+finite complement of selected columns strictly decreases. The component cut
+update preserves every old real matching edge's tightness because both
+endpoints lie in the cut together; the temporary completion edge is excluded.
+
+`exists_search_adjustment` derives an attained allowed sparse adjustment
+from feasibility and a compatible perfect assignment. It preserves sparse
+feasibility and all actual old tight matching edges, creates a new tight cut
+edge, and either reaches the free target or supplies a fresh matched row.
+These are independent search lemmas, not yet a refinement or runtime theorem
+for the complete Rust alternating-search loop.
+
 ## Actual composed sparse search step: 2026-11-14
 
 The Rust `sparse::advance_sparse_cut` now selects an actual minimum allowed
