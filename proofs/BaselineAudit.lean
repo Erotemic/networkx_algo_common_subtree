@@ -11,3 +11,6 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Paper2004.OrderedTree.maximumCommonContraction_correct
 #print axioms SubtreeProofs.Rust.contractionBudget_refines_tree
 #print axioms SubtreeProofs.WeightedMatching.solveMatrix_correct
+#print axioms SubtreeProofs.Paper2004.OrderedTree.longestCommonBalanced_decodes_maximum
+#print axioms SubtreeProofs.Paper2004.OrderedTree.decomposition_card_bound
+#print axioms SubtreeProofs.Paper2004.OrderedTree.paperCommon_tree_correct

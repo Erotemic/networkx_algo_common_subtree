@@ -38,6 +38,38 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## 2004 algorithm and state bounds: 2026-11-14
+
+New compiled endpoints (same ordered-tree prefix):
+
+- `OptimalEncoding.longestCommonBalanced_decodes_maximum` (declaration
+  `longestCommonBalanced_decodes_maximum`) proves Theorem 2 using operational
+  containment and the independent tree optimum.
+- `BalancedDecomposition` (namespace `SubtreeProofs.Paper2004.BalancedDecomposition`)
+  proves Lemmas 1--6 and Fact 2, including `states_front_append`,
+  `states_eq_front_union_head` and `headContractions_card_depth`.
+- `card_true_leaf_bounds` supplies a corrected proof using the actual-leaf
+  recurrence: D has at most `(n+1)*leaves` states and S has at most
+  `n*leaves+1`. Its empty-tail branch avoids the printed recurrence error.
+- `TreeStateBounds.trueLeafMeasure_encodeDyck` and
+  `sequenceDepth_encodeDyck` identify the sequence measures with the
+  independently defined tree measures. `decomposition_card_bound` proves
+  Theorem 1 in actual tree depth and leaves, without a state-size assumption.
+- `DynamicProgram.dyckEmbeds_first_pair` proves the structural completeness
+  split of operational contraction. `paperCommon_sound`, `paperCommon_upper`
+  and `paperCommon_correct` prove Lemma 8 with an explicit balanced-word
+  witness; `paperCommon_tree_correct` proves the returned decoded tree is
+  `IsMaximumCommon` for every pair of input trees. The separate numeric
+  computation is certified by `paperLcs_optimum`.
+- `LinearEncoding.encodeAccum_linear` proves Fact 1 for an accumulator encoder
+  using only output list constructors. `encodeAccum_cost` counts exactly
+  `5*edgeCount+2` constructor visits and output allocations.
+
+The recursive DP computes an optimum and witness but does not memoize.
+The polynomial state bound alone does not establish its running time.
+The distinct ordered-isomorphism contract, memoized cost model, index mapping
+witnesses, actual Rust solver refinement and integration remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
@@ -60,10 +92,11 @@ tree, rather than an empty forest. The Rust spike does not verify a solver.
 
 | Target | State |
 | --- | --- |
-| Fresh-checkout local reproduction and first remote CI run | Pending; workflow added |
-| Full source statement ledgers for all three papers | Open |
-| Paper D/R/S decomposition, depth and actual-leaf state bounds | Open |
-| Lemma 8 general recurrence optimality and DP witnesses | Open; exhaustive oracle correctness is proved separately |
+| Fresh-checkout local reproduction | Passed from `git archive 9cfe149` on local disk with a fresh `.lake`; `lake exe cache get && lake build` fetched pinned dependencies and built 3,473 jobs |
+| First remote CI run | Pending; workflow added |
+| Pinned source statement ledgers for all three papers | Added `docs/planning/paper_statement_crosswalk.md`; open source results are explicit |
+| Paper D/R/S and actual tree-parameter state bounds | Proved, including `states_closed` / `states_least` for Definition 4 |
+| Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
 | Computation-specific paper complexity | Open |
 | Verified translated Rust ordered solver and witness reconstruction | Open; W6 extraction feasibility completed |

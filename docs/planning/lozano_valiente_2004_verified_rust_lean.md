@@ -6,6 +6,21 @@ Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtr
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## 2004 proof tranche accepted: 2026-11-14
+
+The operational Lemma 8 recurrence now has a general constructive correctness
+proof (`paperCommon_correct`, `paperCommon_tree_correct`), plus a separate
+numeric recurrence theorem (`paperLcs_optimum`). Definition 4's least state
+family, Lemmas 1--6, Fact 2, corrected actual-leaf bounds and Theorem 1 in
+independent tree parameters compile. Theorem 2 is proved for operational
+containment. Exact endpoints and all remaining obligations are in the
+[paper statement crosswalk](paper_statement_crosswalk.md).
+
+This closes the ordered LCBE mathematical optimum and state-bound chain.
+Memoization/cost semantics, input-index witness reconstruction, the distinct
+ordered-isomorphism contract and actual Rust solver refinement remain open.
+A fresh source-only checkout reproduced the previous full library build.
+
 ## Accepted increment: 2026-11-14
 
 The complete existing library and new `ContractionOracle.lean` compile in

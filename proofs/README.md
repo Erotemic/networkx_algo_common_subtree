@@ -1,80 +1,59 @@
-# Lozano-Valiente (2004): modern Lean development
+# Common-subtree mathematics and Rust verification
 
-The development formalizes finite rooted ordered trees, edge contractions and
-maximum common embedded subtrees independently of any algorithm. Its proofs
-build on Lean 4.35.0 and Mathlib.
+The development uses Lean 4.35.0, pinned Mathlib, and a compatible pinned
+Aeneas backend. [PROOF_STATUS.md](PROOF_STATUS.md) records accepted theorem
+names, hypotheses and open obligations; [VERIFICATION.md](VERIFICATION.md)
+has exact build, extraction and VM cache instructions. The
+[paper crosswalk](../docs/planning/paper_statement_crosswalk.md) pins source
+editions and distinguishes original claims from corrections.
 
-Modules in dependency order:
+The independent ordered-tree problem specification lives in
+`Paper2004/OrderedTree.lean`: arbitrary-depth ordered edge contractions,
+true leaves/depth and the maximum-common-tree objective. Encoding and decoding
+are inverse, and `ContractionSoundness` / `ContractionCompleteness` prove the
+two-way correspondence with matched-pair deletions. The printed containment
+clauses are preserved separately in `PaperContainment`; the compiled
+`PrintedContainmentCounterexample` refutes their completeness.
 
-- `Paper2004/OrderedTree.lean`: ordered-tree and contraction-based problem specification.
-- `Paper2004/BalancedSequence.lean`: recursive Dyck encoding and edge-count equation.
-- `Paper2004/EncodingEquivalence.lean`: first-child/next-sibling binary-tree
-  encoding, inverse decoding and two round-trip theorems. Reuses Mathlib's
-  `DyckWord.ofTree_toTree` and `DyckWord.toTree_ofTree`.
-- `Paper2004/ContractionSoundness.lean`: independent Dyck matching-pair deletion
-  contexts and the forward map from operational tree contractions to sequence
-  contractions.
-- `Paper2004/ContractionCompleteness.lean`: forest decoding and its
-  concatenation/nesting lemmas; lifting of Dyck-context deletions to tree-edge
-  contractions; the two-way equivalence `embeds_iff_dyckEmbeds`.
-- `Paper2004/PaperContainment.lean`: literal recursive Definition 2,
-  soundness relative to `DyckEmbeds`, concatenation and length lemmas.
-- `Paper2004/PrintedContainmentCounterexample.lean`: a general one-pair
-  characterization, the minimal counterexample to the reverse containment,
-  and a concrete difference between the two optimization objectives.
+`ContractionOracle` proves a deliberately slow independent tree enumerator
+complete and its chosen tree globally optimal. `OptimalEncoding` transports
+optimality between trees and balanced words. `Decomposition` formalizes the
+paper's D/R/S families and proves their inclusions, cardinality of R, depth
+bound, and a corrected actual-leaf bound. `TreeStateBounds` connects those
+measures to the independent tree parameters. `DynamicProgram` proves the
+constructive Lemma 8 recurrence optimal by a structural first-pair argument;
+its decoded witness satisfies the independent `IsMaximumCommon` predicate.
+`LinearEncoding` provides a constructor-only accumulator encoder with an exact
+linear cost count (Fact 1). This recursive algorithm is not yet memoized, so its polynomial state domain
+does not by itself prove a polynomial running time.
 
-The maintainer reported successful builds of the contraction correspondence
-and accepted the module-system migration. The `PaperContainment.lean`
-module also compiled locally. The new counterexample module awaits its
-first local build; see
-`PROOF_STATUS.md` for declaration-level status.
+`Shared/WeightedMatching` specifies compatible partial matchings with integer
+weights, forbidden pairs and unmatched endpoints. Its executable exhaustive
+matrix optimizer is proved globally optimal. The graph-paper recurrences and
+an efficient verified matching algorithm remain open.
 
-The contraction equivalence covers the explicitly defined `DyckEmbeds`
-relation. `PaperContainment.lean` now also records the literal recursive
-relation printed in Definition 2 and proves (subject to kernel verification)
-that it implies `DyckEmbeds`. An independent checker detects a disagreement
-in the reverse direction already at three edges. The paper's own Example 2
-agrees with the operational deletion results. See
-`docs/planning/lozano_valiente_2004_containment_definition_audit.md`.
-The general DP optimality theorem, complexity bound and Rust refinement
-remain future work. A separate Python checker now tests Lemma 8 on all
-word pairs through six edges. See `PROOF_STATUS.md` and `docs/planning`.
-This workspace does not import the historical v3-v6 proofs.
+`Rust/Generated` contains unedited Charon/Aeneas output from the maintained
+`verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first
+operation refines a genuine tree contraction's edge count. This is a completed
+translation feasibility spike, not verification of a Rust solver.
+
+Build the full maintained proof chain with:
 
 ```bash
 cd proofs
+lake exe cache get
 lake build
-lake env lean ModuleImportSmoke.lean
 ```
 
-The smoke test imports only the umbrella `SubtreeProofs` module and checks
-that key declarations remain accessible to downstream code. Report new module
-errors or warnings before marking the migration complete. No binary
-assets or generated build products belong in the documentation overlay.
-
-Independent finite comparison (Python 3 standard library only):
+Run independent finite mathematical diagnostics from the repository root:
 
 ```bash
-python3 proofs/checks/check_printed_containment.py
-python3 proofs/checks/check_tree_contraction_oracle.py
+python proofs/checks/check_printed_containment.py
+python proofs/checks/check_tree_contraction_oracle.py
+python proofs/checks/check_paper_dp_recurrence.py
 ```
 
-This checker tests the printed recursive definition and the closure of
-matched-pair deletions separately; it is not used to define either Lean
-relation.
-
-The second checker enumerates rooted ordered trees directly from child
-forests, contracts edges by splicing children, and compares only the resulting
-encodings with independent balanced-word pair deletion. All trees up to six
-edges agree in the shipped executable check; the comparison has not been
-formalized in Lean yet.
-
-Recurrence/oracle comparison:
-
-```bash
-python3 proofs/checks/check_paper_dp_recurrence.py
-```
-
-The checker compares the exact printed recurrence, operational contraction
-closures, and the literal Definition 2 as distinct functions. It is not a Lean
-proof. The new smoke test is `PaperContainmentCounterexampleSmoke.lean`.
+These diagnostics enumerate tiny instances independently. Their results are
+finite test evidence; the general claims above are Lean theorems. Endpoint
+dependency review is opt-in through `BaselineAudit.lean` and is kept out of
+routine compilation and CI.

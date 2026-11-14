@@ -129,17 +129,6 @@ theorem branching_example_not_printed :
     decide
   exact hNe hEq
 
-/-- Dyck contraction closure cannot increase the number of pairs. -/
-theorem dyckEmbeds_semilength_le {small large : DyckWord}
-    (h : DyckEmbeds small large) :
-    small.semilength ≤ large.semilength := by
-  unfold DyckEmbeds at h
-  induction h with
-  | refl => exact Nat.le_refl _
-  | tail hprefix hstep ih =>
-      have hStrict := dyckContractStep_semilength hstep
-      omega
-
 /-- On the smallest counterexample, every common word for the literal
 printed relation has at most one pair, although the operational relation
 admits the entire two-pair smaller tree. -/

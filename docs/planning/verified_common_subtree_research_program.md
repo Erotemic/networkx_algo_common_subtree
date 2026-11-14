@@ -12,6 +12,21 @@ Detailed work packages live in:
 - [Droschinsky, Kriege, Mutzel (2016 and 2018) plan](droschinsky_2016_2018_verified_rust_lean.md)
 - [Planning index and evidence map](README.md)
 
+## 2004 proof tranche accepted: 2026-11-14
+
+The operational Lemma 8 recurrence now has a general constructive correctness
+proof (`paperCommon_correct`, `paperCommon_tree_correct`), plus a separate
+numeric recurrence theorem (`paperLcs_optimum`). Definition 4's least state
+family, Lemmas 1--6, Fact 2, corrected actual-leaf bounds and Theorem 1 in
+independent tree parameters compile. Theorem 2 is proved for operational
+containment. Exact endpoints and all remaining obligations are in the
+[paper statement crosswalk](paper_statement_crosswalk.md).
+
+This closes the ordered LCBE mathematical optimum and state-bound chain.
+Memoization/cost semantics, input-index witness reconstruction, the distinct
+ordered-isomorphism contract and actual Rust solver refinement remain open.
+A fresh source-only checkout reproduced the previous full library build.
+
 ## Accepted increment: 2026-11-14
 
 The current library compiles under pinned Lean/Mathlib 4.35.0 and has a

@@ -11,10 +11,27 @@ program. Read these in order:
    ordered rooted trees, contractions, Dyck words, decomposition bounds,
    recurrence/optimality proofs, true leaf counts, runtime model, and Rust
    refinement.
-3. **[Droschinsky (2016 and 2018): verified Rust and Lean](droschinsky_2016_2018_verified_rust_lean.md)**:
+3. **[Pinned source statement crosswalk](paper_statement_crosswalk.md)**: exact
+   source editions, mathematical corrections and result-by-result status.
+4. **[Droschinsky (2016 and 2018): verified Rust and Lean](droschinsky_2016_2018_verified_rust_lean.md)**:
    weighted unordered isomorphism, weighted partial matching, topological
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
+
+## 2004 proof tranche accepted: 2026-11-14
+
+The operational Lemma 8 recurrence now has a general constructive correctness
+proof (`paperCommon_correct`, `paperCommon_tree_correct`), plus a separate
+numeric recurrence theorem (`paperLcs_optimum`). Definition 4's least state
+family, Lemmas 1--6, Fact 2, corrected actual-leaf bounds and Theorem 1 in
+independent tree parameters compile. Theorem 2 is proved for operational
+containment. Exact endpoints and all remaining obligations are in the
+[paper statement crosswalk](paper_statement_crosswalk.md).
+
+This closes the ordered LCBE mathematical optimum and state-bound chain.
+Memoization/cost semantics, input-index witness reconstruction, the distinct
+ordered-isomorphism contract and actual Rust solver refinement remain open.
+A fresh source-only checkout reproduced the previous full library build.
 
 ## Executed progress: 2026-11-14
 

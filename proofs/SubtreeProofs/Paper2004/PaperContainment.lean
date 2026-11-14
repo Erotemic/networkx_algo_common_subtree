@@ -184,6 +184,17 @@ theorem dyckContractStep_semilength {before after : DyckWord}
   simp only [DyckContext.semilength_plug, DyckWord.semilength_nest]
   omega
 
+/-- Dyck contraction closure cannot increase the number of pairs. -/
+theorem dyckEmbeds_semilength_le {small large : DyckWord}
+    (h : DyckEmbeds small large) :
+    small.semilength ≤ large.semilength := by
+  unfold DyckEmbeds at h
+  induction h with
+  | refl => exact Nat.le_refl _
+  | tail hprefix hstep ih =>
+      have hStrict := dyckContractStep_semilength hstep
+      omega
+
 /-- A concrete operational contraction used by the finite counterexample:
 the root's only child loses one of its two outgoing leaf edges. -/
 theorem branching_example_contractStep :

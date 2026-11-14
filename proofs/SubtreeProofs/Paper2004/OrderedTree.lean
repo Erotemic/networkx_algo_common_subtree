@@ -63,6 +63,17 @@ mutual
     | t :: ts => leafCount t + forestLeafCount ts
 end
 
+mutual
+  /-- Root-to-leaf vertex depth; the singleton has depth one. -/
+  def treeDepth : OrderedTree → Nat
+    | .node forest => forestDepth forest + 1
+
+  /-- Maximum vertex depth among members of a forest; zero for the empty forest. -/
+  def forestDepth : List OrderedTree → Nat
+    | [] => 0
+    | tree :: rest => max tree.treeDepth (forestDepth rest)
+end
+
 @[simp] theorem edgeCount_node (ts : List OrderedTree) :
     edgeCount (.node ts) = forestEdgeCount ts := rfl
 
