@@ -58,3 +58,7 @@ public import SubtreeProofs.Rust.AssignmentColumnScan
 public import SubtreeProofs.Rust.AssignmentScanInvariant
 public import SubtreeProofs.Rust.AssignmentArithmetic
 public import SubtreeProofs.Rust.AssignmentAdjustment
+public import SubtreeProofs.Rust.AssignmentAdjustmentInvariant
+public import SubtreeProofs.Rust.AssignmentAdjustmentLoop
+public import SubtreeProofs.Rust.AssignmentAdjustmentFeasibility
+public import SubtreeProofs.Rust.AssignmentAdjustmentProgress

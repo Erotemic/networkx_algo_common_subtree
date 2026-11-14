@@ -25,6 +25,12 @@ Current assurance is deliberately narrower than the crate's eventual target:
   slacks. `Rust.AssignmentScanInvariant` proves the complete scan terminates
   with exact table updates and an attaining global minimum among unused columns,
   under explicit representation and arithmetic bounds.
+  `Rust.AssignmentAdjustmentLoop` proves the complete actual adjustment loop
+  safely terminates with exact row, column and slack updates, using injectivity
+  of used column pointers. `Rust.AssignmentAdjustmentFeasibility` connects those
+  actual returned potentials to independent feasibility and tightness proofs.
+  `Rust.AssignmentAdjustmentProgress` derives the cut cardinality, exact dual
+  progress and reserved-column accumulator update.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.

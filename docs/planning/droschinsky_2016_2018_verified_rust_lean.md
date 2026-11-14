@@ -1,6 +1,6 @@
 # Droschinsky, Kriege, Mutzel (2016 and 2018): verified Rust and Lean plan
 
-Status: independent graph/path specifications and finite optima proved; reference semantics tested; paper DP/optimization proofs open
+Status: independent graph/path specifications, finite optima and rooted recurrences proved; executable Lean DP baselines and actual Rust scan/adjustment proofs accepted; full Rust driver and paper optimizations open
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
@@ -13,6 +13,31 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Complete actual Rust potential adjustment: 2026-11-14
+
+`Rust.AssignmentAdjustmentLoop.adjust_potentials_spec` proves terminating,
+successful execution of the entire generated adjustment loop. Exact vector
+frames specify every row, column and slack slot, including untouched slots
+and absent slacks. Injectivity of the actually used column pointers proves
+each selected row is adjusted once. Premises are concrete representation,
+injectivity and signed arithmetic bounds; no output correctness certificate
+is supplied.
+
+`Rust.AssignmentAdjustmentFeasibility` identifies the returned real potentials
+with the independent cut update, proves feasibility and preservation of tight
+edges, and proves that an edge attaining the cut slack becomes tight.
+`Rust.AssignmentAdjustmentProgress.selected_cardinality` derives the cut's
+one-extra-row property from actual used pointers and the reserved column zero.
+`complete_dual_progress` and `complete_reserved_column` show that the actual
+dual objective increases by the adjustment while reserved column slot zero
+decreases by the same amount.
+
+The full library compiles with these maintained modules. Establishing the
+cut, pointer and numeric premises from the alternating-tree driver remains
+open, as do path augmentation, reconstruction, entry-point correctness and
+complexity refinement. No claim of a complete verified Hungarian solver is
+made by this increment.
 
 ## Actual Rust potential-adjustment branches: 2026-11-14
 
