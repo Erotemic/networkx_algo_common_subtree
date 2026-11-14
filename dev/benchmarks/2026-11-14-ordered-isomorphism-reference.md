@@ -28,6 +28,8 @@ proved**. The existing structural theorem does not prove this new boundary.
   required. The identical final Rust-only CP310 ABI3 wheel passes 219 on each
   CPython 3.10–3.14; strict ABI auditing is clean. CI requires the new entry
   point and executes the exhaustive cases, including in its portable profile.
+  The later source-only `d858a55` portable rebuild passes 228 tests on its
+  glibc 2.28 floor and all five CPython runtimes, including this reference API.
 - Independent adjacency/parent subset enumeration checks both root policies
   over **1,058 exhaustive pairs** through four pairs per input. Another **160
   unique-token cases** validate exact original-index feasibility, topology,

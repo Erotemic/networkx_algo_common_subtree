@@ -22,7 +22,7 @@ milestones; full verification remains a final verified-release requirement.
 
 A fresh normal Rust+Cython wheel passes **228 tests, zero skips**, outside the
 checkout with compiled parity mandatory. The identical Rust-only CP310 ABI3
-wheel passes **219 tests on each CPython 3.10–3.14**, with strict ABI auditing
+wheel passes **228 tests on each CPython 3.10–3.14**, with strict ABI auditing
 clean. Independent oracles cover subset/pair deletions, graph bijections/paths,
 assignment permutations/injections, original indices, signed/forbidden scores,
 root-preserving variants, invalid inputs, overflow and malformed witnesses.

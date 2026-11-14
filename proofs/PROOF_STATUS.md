@@ -24,8 +24,9 @@ matrices and constructs cardinality-optimal base/deletion witnesses directly.
 Nonuniform, missing or nonpositive entries retain the existing general path.
 All 50 graph Rust tests and 228 normal installed tests pass, including the
 exhaustive injection/deletion suite and independent star vertex/edge bounds.
-The previous host ABI3 runtime matrix passes 219 tests; this graph update's
-portable artifact is validated separately after committing the implementation.
+A source-only `d858a55` portable ABI3 rebuild also passes all 228 tests on
+glibc 2.28 and every CPython 3.10–3.14, with strict auditing clean. It includes
+the structural reference API and its explicitly open indexed proof boundary.
 
 `Shared/UniformMatching.lean` proves uniform scores depend on cardinality,
 full smaller-side matchings are optimal, and a concrete diagonal finite set

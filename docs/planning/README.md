@@ -57,7 +57,7 @@ required proof work.
 
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
-wheel passes all 219 tests with native backends mandatory. Independent graph
+wheel passes all 228 tests with native backends mandatory. Independent graph
 witness rescoring and exhaustive optimum comparisons are included. Installed
 API measurements cover both optimized schedules, matching deletion families,
 conversion overhead and independent witness rescoring. See the capability
@@ -68,7 +68,7 @@ The ordered isomorphism APIs now expose the existing root-preserving level
 state with `rooted=True`, alongside the default general state. Independent
 parent-preserving subset enumeration validates both contracts and fractional
 affinities. Normal and genuine Rust-only ABI3 wheels are tested; the latter
-passes the complete 219-test API suite on each CPython 3.10–3.14.
+passes the complete 228-test API suite on each CPython 3.10–3.14.
 
 2018 now uses the fixed-left mapped/skipped schedule and includes the skipped
 highest-vertex path case. Independent high-degree/path oracles pass; installed

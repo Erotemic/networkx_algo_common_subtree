@@ -139,3 +139,9 @@ source-only archive through the pinned portable profile. Its wheel passes all
 209 tests on glibc 2.28 and each host CPython 3.10–3.14, with strict ABI
 auditing clean. This is a separate artifact from the rooted 199-test milestone;
 its exact source, wheel and native hashes are recorded in the packaging ledger.
+
+The later source-only `d858a55` artifact includes the structural isomorphism
+reference API and uniform child-matching optimization. All 228 tests pass on
+glibc 2.28 and each CPython 3.10–3.14; all eight native entry points are
+mandatory, Cython is absent, and strict ABI auditing passes. The implementation
+was committed before this validation. See the portable ledger for exact hashes.

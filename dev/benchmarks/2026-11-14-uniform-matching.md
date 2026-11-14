@@ -29,8 +29,9 @@ vertex/edge reward upper bounds and passing both witness validators.
 concrete diagonal over exact ordered-ring weights. The full Lean build passes
 3,714 jobs. This is mathematical justification, not a source-refinement or
 runtime theorem for the f64 implementation. IEEE-754 correctness remains
-outside the initial proof scope. The preceding ABI3 artifact passes 219 tests
-on five runtimes; this update's portable artifact is checked after its commit.
+outside the initial proof scope. After the implementation commit, a source-only `d858a55` portable ABI3 build
+passes all 228 tests on glibc 2.28 and every CPython 3.10–3.14, with strict
+auditing clean. Exact source/binary hashes are in the packaging ledger.
 
 ## Measurements already collected
 
