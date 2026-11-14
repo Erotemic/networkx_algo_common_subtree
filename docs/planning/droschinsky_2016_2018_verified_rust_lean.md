@@ -10,7 +10,7 @@ Both graph families are now public NetworkX/PyO3 APIs, with optional labels,
 signed scalar/callback weights, empty/nonempty objectives, original-node/path
 witnesses and independent exhaustive references/rescorers. Exact source-proved
 integer assignment/partial matching are also public Python APIs. The installed
-Release wheel passes all 199 tests with compiled backends required. Python
+Release wheel passes all 228 tests with compiled backends required. Python
 conversion and f64 graph DPs remain tested, not source proved.
 
 Both APIs also accept original-vertex ambient roots and the distinct forced
@@ -68,12 +68,17 @@ represented scalars and its exact correspondence with this equivalence.
 The actual Rust `sparse_deletion::repair_deleted_sparse_vertex` now projects
 the graph/potentials, bypass-completes the surviving assignment, reuses fixed
 deletions or calls one verified sparse augmentation, and exports original row
-and column indices. It translates, and all fifteen exact-core tests pass,
+and column indices. It translates, and all 17 exact-core tests pass,
 including 546 deletions of certified old optima through dimension six against
 exhaustive induced-graph optima, both reuse/repair branches, feasible/tight
-returned duals and malformed inputs. Its complete projection/caller source
-refinement, original partial-matching family integration and optimized runtime
-remain open; tests do not replace those Lean obligations.
+returned duals and malformed inputs. Actual source projection, bypass completion
+and original-index export are now proved in `Rust/SparseDeletionProjection`,
+`SparseDeletionSeed`, `SparseDeletionReadback`, `SparseDeletionWarmStart` and
+`SparseDeletionData`. Independent finite permutation/matrix and optimum
+correspondence closes the helpers' input premises. All 3,722 main Lean jobs and
+both example suites pass. The complete caller's source numeric-state setup and
+branch composition, original partial-matching family integration and optimized
+runtime remain open; these helper proofs do not verify the f64 graph kernel.
 
 ## Actual single-path sparse augmentation verified end to end: 2026-11-14
 

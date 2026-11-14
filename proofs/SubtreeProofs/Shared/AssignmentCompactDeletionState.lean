@@ -74,6 +74,36 @@ theorem compact_seed (edges : Fin (n+1) → Fin (n+1) → Prop) (matrix : Fin (n
   rw [compactAssignment_away assignment removed hn row hr]
   exact ⟨hAllowed _,hTight _⟩
 
+/-- Deleting a fixed assignment vertex needs no repair. The canonical compact
+permutation retains every old allowed tight edge and is independently minimum
+under the surviving feasible dual. No identity-edge hypothesis is needed. -/
+theorem compact_paired_optimum (edges : Fin (n+1) → Fin (n+1) → Prop)
+    (matrix : Fin (n+1) → Fin (n+1) → K) (rows columns : Fin (n+1) → K)
+    (assignment : Equiv.Perm (Fin (n+1))) (removed : Fin (n+1))
+    (hPaired : assignment removed = removed)
+    (hFeasible : Assignment.FeasibleOn edges matrix rows columns)
+    (hAllowed : Assignment.Compatible edges assignment)
+    (hTight : Assignment.Tight matrix rows columns assignment) :
+    Assignment.IsMinimumOn (fun row column => edges (removed.succAbove row) (removed.succAbove column))
+      (fun row column => matrix (removed.succAbove row) (removed.succAbove column)) (compactAssignment assignment removed) ∧
+    Assignment.Tight (fun row column => matrix (removed.succAbove row) (removed.succAbove column))
+      (fun row => rows (removed.succAbove row)) (fun column => columns (removed.succAbove column))
+      (compactAssignment assignment removed) := by
+  have ha : Assignment.Compatible (fun row column => edges (removed.succAbove row) (removed.succAbove column))
+      (compactAssignment assignment removed) := by
+    intro row
+    rw [compactAssignment_paired assignment removed hPaired row]
+    exact hAllowed _
+  have ht : Assignment.Tight (fun row column => matrix (removed.succAbove row) (removed.succAbove column))
+      (fun row => rows (removed.succAbove row)) (fun column => columns (removed.succAbove column))
+      (compactAssignment assignment removed) := by
+    intro row
+    dsimp only
+    rw [compactAssignment_paired assignment removed hPaired row]
+    exact hTight _
+  exact ⟨Assignment.isMinimumOn_of_feasible_tight
+    (fun row column he => hFeasible (removed.succAbove row) (removed.succAbove column) he) ha ht,ht⟩
+
 end SubtreeProofs.AssignmentVertexDeletion
 
 end

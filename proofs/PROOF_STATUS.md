@@ -17,6 +17,36 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Actual sparse-deletion projection, seed and readback: 2026-11-14
+
+The actual Rust row/matrix/potential projection loops now have total source
+contracts in `Rust/SparseDeletionProjection`: exact selected contents, safe
+reads/increments, termination and projected square shape. Forbidden entries
+and signed integer values are preserved, including empty/repeated selections.
+`SparseDeletionSeed` and `SparseDeletionReadback` verify the actual checked
+bypass-completion and original-column export loops.
+
+`SparseDeletionWarmStart.complete_surviving_permutation_spec` closes the
+loop's no-deleted-column premise from the independently defined finite
+permutation. It proves exact source correspondence to `compactAssignment`.
+`original_columns_permutation_spec` derives all exporter bounds and original
+labels from the represented permutation and canonical survivor vector.
+`SparseDeletionData` proves exact original finite-coordinate cell/potential
+correspondence and transports independent projected minima. The mathematical
+`compact_paired_optimum` proves fixed deletions need no repair.
+
+All **3,722 main Lean jobs** and both existing Lean example suites pass.
+Production Rust/Python sources and measured targets are unchanged. The last
+software validation remains 228 required-native Python, 50 graph Rust and 17
+exact-core tests; no new performance run is needed for this proof-only step.
+
+The complete public sparse-deletion caller still needs its source numeric-state
+setup and branch composition closed, followed by original partial-matching
+family integration and the optimized queue/runtime. This is the exact integer
+reference caller; it does not verify the distinct production f64 matching
+families or graph schedules. Capacity/OOM/resource traces remain outside these
+functional helper contracts. IEEE-754 stays intentionally outside initial scope.
+
 ## Resource backend reconnaissance: 2026-11-14
 
 The optional arlib model now proves that an extra result-preserving lookup

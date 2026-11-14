@@ -213,3 +213,5 @@ public import SubtreeProofs.Shared.AssignmentSurvivingIndices
 public import SubtreeProofs.Rust.SparseDeletionVertices
 
 public import SubtreeProofs.Rust.UniformPairs
+
+public import SubtreeProofs.Rust.SparseDeletionData

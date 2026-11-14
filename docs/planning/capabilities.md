@@ -16,7 +16,7 @@ milestones; full verification remains a final verified-release requirement.
 | Rooted graph objectives, both families | Both APIs accept `roots=(u,v)` for ambient orientations and `root_to_root=True` to require the supplied pair | Rust `RootConstraint`, independent subset/bijection/path root predicates, direct NetworkX witness checks, original-node rescorers; signed and forbidden weights retained | All 50 native and 228 installed tests pass, including high-degree repair under each policy. Rooted specs/recurrences exist in Lean; production algorithm/root/Python refinement remains open; IEEE-754 correctness is outside the initial proof scope. Rooted/forced module API and callback costs are measured separately |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching` and all-right-deletion families, exhaustive injection tests | Used internally by graph DP. Signed optional weights; f64 arithmetic, not an exact-integer proof |
 | Exact assignment / partial matching | Public `min_cost_assignment` / `max_weight_partial_matching`, Rust required | `verified_assignment_core`; signed i64, checked i128, forbidden edges, public dual certificates; independent permutation/injection tests and integer-boundary cases | Actual total-correctness Lean endpoints prove optimum and exact indices/weight. PyO3/Python conversion remains tested, not source proved |
-| Exact sparse augmentation / deletion repair | Standalone Rust only | Actual one-path augmentation verified; compact deletion caller implemented, 546 induced-instance tests | Caller projection/refinement still open. Full-matrix cut scans; published optimized sparse queue/runtime not implemented |
+| Exact sparse augmentation / deletion repair | Standalone Rust only | Actual one-path augmentation verified; compact deletion caller implemented, 546 induced-instance tests | Actual projections, bypass seed and original-index readback proved; numeric caller setup/branch composition and family integration open. Full-matrix cut scans; published optimized sparse queue/runtime not implemented |
 
 ## Current executed validation
 
@@ -29,8 +29,8 @@ root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.
 
 The last executed native suites pass **50 graph**, **10 ordered-core** and
-**17 exact-assignment** tests. The last full Lean build passes **3,717 jobs**.
-Both existing example suites passed before this integer-helper-only change. Existing mathematical and source proofs
+**17 exact-assignment** tests. The last full Lean build passes **3,722 jobs**.
+Both existing Lean example suites also pass. Existing mathematical and source proofs
 survive regenerated semantics for the new indexed-isomorphism functions, whose
 own refinement remains open. The production f64 graph crate remains outside the
 current extraction boundary; its integer-only uniform-index constructor is now
