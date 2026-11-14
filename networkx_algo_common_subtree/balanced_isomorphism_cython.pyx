@@ -81,7 +81,7 @@ Benchmark
 >>> print(ti.summary())
 """
 cimport cython
-
+from libc.math cimport isfinite
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
@@ -202,7 +202,13 @@ def _lcsi_iter_cython(full_seq1, full_seq2, open_to_close, node_affinity, open_t
                 best_lvl = cand_lvl_t1s2
 
             # Case 1: The LCS involves this edge
-            affinity = float(node_affinity(t1, t2))
+            affinity_value = node_affinity(t1, t2)
+            try:
+                affinity = float(affinity_value)
+            except (TypeError, ValueError, OverflowError) as ex:
+                raise ValueError("node affinities must be finite nonnegative numbers") from ex
+            if not isfinite(affinity) or affinity < 0:
+                raise ValueError("node affinities must be finite nonnegative numbers")
             if affinity:
                 try_key = (head1, head2)
                 if try_key in _results:

@@ -11,6 +11,14 @@ tables and PyO3 wrappers are tested boundaries, not Lean-proved boundaries.
 The floating-point graph algorithms are not covered by those exact integer
 source proofs, and their optimized schedules/runtime proofs remain open.
 
+Ordered PyO3 integration now also validates typed tokens, propagates missing
+original-node mapping errors, accepts unhashable mapped affinity values and
+rejects invalid/overflowing f64 affinities. These legacy production extensions
+are independently tested, not newly covered by the unweighted Boolean-core
+Lean theorem. The existing verified token parser/solver and its proof boundary
+are unchanged. The latest installed wheel passes 149 tests with all required
+compiled backends executing.
+
 Substantial remaining formalization is deferred until public functionality,
 independent correctness and measured efficiency are established. All existing
 proofs are preserved; full mathematical, production-source and applicable

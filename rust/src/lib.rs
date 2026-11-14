@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple};
+use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple, PyType};
 use rustc_hash::FxHashMap as HashMap;
 use std::sync::Arc;
 
@@ -97,8 +97,6 @@ struct Solver<'py> {
     seq2_py: Vec<Py<PyAny>>,
     seq1_aff_py: Vec<Py<PyAny>>,
     seq2_aff_py: Vec<Py<PyAny>>,
-    seq1_aff_id: Vec<u32>,
-    seq2_aff_id: Vec<u32>,
     seq1_tok_id: Vec<u32>,
     seq2_tok_id: Vec<u32>,
     seq1_is_open: Vec<bool>,
@@ -118,6 +116,18 @@ struct Solver<'py> {
 }
 
 impl<'py> Solver<'py> {
+    fn balanced_tokens(tokens: &[u32], brackets: &HashMap<u32, u32>) -> bool {
+        let mut closes = Vec::new();
+        for token in tokens {
+            if let Some(close) = brackets.get(token) {
+                closes.push(*close);
+            } else if closes.pop() != Some(*token) {
+                return false;
+            }
+        }
+        closes.is_empty()
+    }
+
     fn new(
         py: Python<'py>,
         seq1_obj: Bound<'py, PyAny>,
@@ -149,23 +159,37 @@ impl<'py> Solver<'py> {
             open_to_close_id.insert(ok, cv);
         }
 
-        let (seq1_tok_id, seq1_aff_id, seq1_aff_py) = Self::encode_sequence(
+        let (seq1_tok_id, seq1_aff_py) = Self::encode_sequence(
             py,
             &mut interner,
             &seq1_py,
             open_to_node.as_ref(),
+            &open_to_close_id,
         )?;
-        let (seq2_tok_id, seq2_aff_id, seq2_aff_py) = Self::encode_sequence(
+        let (seq2_tok_id, seq2_aff_py) = Self::encode_sequence(
             py,
             &mut interner,
             &seq2_py,
             open_to_node.as_ref(),
+            &open_to_close_id,
         )?;
 
         let seq1_is_open = seq1_tok_id
             .iter()
             .map(|tid| open_to_close_id.contains_key(tid))
             .collect::<Vec<_>>();
+        if !Self::balanced_tokens(&seq1_tok_id, &open_to_close_id)
+            || !Self::balanced_tokens(&seq2_tok_id, &open_to_close_id)
+        {
+            let exception = py
+                .import_bound("networkx_algo_common_subtree.balanced_sequence")?
+                .getattr("UnbalancedException")?
+                .downcast_into::<PyType>()?;
+            return Err(PyErr::from_type_bound(
+                exception,
+                ("input sequence is not balanced",),
+            ));
+        }
         let seq2_is_open = seq2_tok_id
             .iter()
             .map(|tid| open_to_close_id.contains_key(tid))
@@ -192,8 +216,6 @@ impl<'py> Solver<'py> {
             seq2_py,
             seq1_aff_py,
             seq2_aff_py,
-            seq1_aff_id,
-            seq2_aff_id,
             seq1_tok_id,
             seq2_tok_id,
             seq1_is_open,
@@ -216,25 +238,26 @@ impl<'py> Solver<'py> {
         interner: &mut Interner<'py>,
         seq: &[Py<PyAny>],
         open_to_node: Option<&Py<PyAny>>,
-    ) -> PyResult<(Vec<u32>, Vec<u32>, Vec<Py<PyAny>>)> {
+        open_to_close_id: &HashMap<u32, u32>,
+    ) -> PyResult<(Vec<u32>, Vec<Py<PyAny>>)> {
         let mut tok_ids = Vec::with_capacity(seq.len());
-        let mut aff_ids = Vec::with_capacity(seq.len());
         let mut aff_py = Vec::with_capacity(seq.len());
         for tok in seq {
             let tokb = tok.bind(py);
-            tok_ids.push(interner.id_for(&tokb)?);
+            let token_id = interner.id_for(&tokb)?;
+            tok_ids.push(token_id);
             let mapped = if let Some(map) = open_to_node {
-                match map.bind(py).get_item(tokb) {
-                    Ok(v) => v,
-                    Err(_) => tokb.clone(),
+                if open_to_close_id.contains_key(&token_id) {
+                    map.bind(py).get_item(tokb)?
+                } else {
+                    tokb.clone()
                 }
             } else {
                 tokb.clone()
             };
-            aff_ids.push(interner.id_for(&mapped)?);
             aff_py.push(mapped.unbind());
         }
-        Ok((tok_ids, aff_ids, aff_py))
+        Ok((tok_ids, aff_py))
     }
 
     #[inline]
@@ -254,18 +277,26 @@ impl<'py> Solver<'py> {
             let n1 = self.seq1_aff_py[i1].bind(self.py);
             let n2 = self.seq2_aff_py[i2].bind(self.py);
             let out = func.bind(self.py).call1((n1, n2))?;
-            if out.is_truthy()? {
-                out.extract::<f64>()?
-            } else {
-                0.0
-            }
+            out.extract::<f64>().map_err(|_| {
+                pyo3::exceptions::PyValueError::new_err(
+                    "node affinities must be finite nonnegative numbers",
+                )
+            })?
         } else {
-            if self.seq1_aff_id[i1] == self.seq2_aff_id[i2] {
+            if self.seq1_aff_py[i1]
+                .bind(self.py)
+                .eq(self.seq2_aff_py[i2].bind(self.py))?
+            {
                 1.0
             } else {
                 0.0
             }
         };
+        if !val.is_finite() || val < 0.0 {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "node affinities must be finite nonnegative numbers",
+            ));
+        }
         self.affinity_cache.insert(key, val);
         Ok(val)
     }
@@ -276,7 +307,9 @@ impl<'py> Solver<'py> {
         }
         let state = self.pool1.get(sid);
         if state.is_empty() {
-            return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Cannot decompose empty state",
+            ));
         }
 
         let mut depth = 0i32;
@@ -293,14 +326,18 @@ impl<'py> Solver<'py> {
                 }
             }
         }
-        let m = match_pos.ok_or_else(|| pyo3::exceptions::PyValueError::new_err("No matching close token found"))?;
+        let m = match_pos.ok_or_else(|| {
+            pyo3::exceptions::PyValueError::new_err("No matching close token found")
+        })?;
 
         let a = state[0];
         let b = state[m];
         let open_id = self.seq1_tok_id[a as usize];
         let close_id = self.seq1_tok_id[b as usize];
         if self.open_to_close_id.get(&open_id) != Some(&close_id) {
-            return Err(pyo3::exceptions::PyValueError::new_err("Mismatched close token"));
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Mismatched close token",
+            ));
         }
 
         let head = state[1..m].to_vec();
@@ -326,7 +363,9 @@ impl<'py> Solver<'py> {
         }
         let state = self.pool2.get(sid);
         if state.is_empty() {
-            return Err(pyo3::exceptions::PyValueError::new_err("Cannot decompose empty state"));
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Cannot decompose empty state",
+            ));
         }
 
         let mut depth = 0i32;
@@ -343,14 +382,18 @@ impl<'py> Solver<'py> {
                 }
             }
         }
-        let m = match_pos.ok_or_else(|| pyo3::exceptions::PyValueError::new_err("No matching close token found"))?;
+        let m = match_pos.ok_or_else(|| {
+            pyo3::exceptions::PyValueError::new_err("No matching close token found")
+        })?;
 
         let a = state[0];
         let b = state[m];
         let open_id = self.seq2_tok_id[a as usize];
         let close_id = self.seq2_tok_id[b as usize];
         if self.open_to_close_id.get(&open_id) != Some(&close_id) {
-            return Err(pyo3::exceptions::PyValueError::new_err("Mismatched close token"));
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Mismatched close token",
+            ));
         }
 
         let head = state[1..m].to_vec();
@@ -551,6 +594,11 @@ fn longest_common_balanced_embedding(
     let s1 = 0u32;
     let s2 = 0u32;
     let out = solver.emb(s1, s2)?;
+    if !out.val.is_finite() {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "ordered affinity total overflow: score must be finite",
+        ));
+    }
     let best1 = solver.indices_to_seq(1, &out.s1)?;
     let best2 = solver.indices_to_seq(2, &out.s2)?;
     Ok((best1, best2, out.val).into_py(py))
@@ -577,6 +625,11 @@ fn longest_common_balanced_isomorphism(
     let s1 = 0u32;
     let s2 = 0u32;
     let out = solver.iso(s1, s2)?.any;
+    if !out.val.is_finite() {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "ordered affinity total overflow: score must be finite",
+        ));
+    }
     let best1 = solver.indices_to_seq(1, &out.s1)?;
     let best2 = solver.indices_to_seq(2, &out.s2)?;
     Ok((best1, best2, out.val).into_py(py))
@@ -624,6 +677,9 @@ fn _rust(_py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
     graph_bindings::register(module)?;
     module.add_function(wrap_pyfunction!(maximum_common_token_embedding, module)?)?;
     module.add_function(wrap_pyfunction!(longest_common_balanced_embedding, module)?)?;
-    module.add_function(wrap_pyfunction!(longest_common_balanced_isomorphism, module)?)?;
+    module.add_function(wrap_pyfunction!(
+        longest_common_balanced_isomorphism,
+        module
+    )?)?;
     Ok(())
 }

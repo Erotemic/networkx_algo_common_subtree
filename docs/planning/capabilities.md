@@ -92,6 +92,18 @@ This does not close the paper's specialized matching or production proof work.
 
 ## Immediate implementation queue
 
+Ordered input/scoring validation now rejects typed unbalanced sequences on
+either side (including against empty input), cycles/disconnected cyclic
+components and multiple-parent graph inputs. Rust preserves errors from
+missing original-node mappings and accepts unhashable mapped affinity values.
+All public ordered backends reject nonfinite/negative affinities and total
+overflow, with f64 scoring semantics. Existing nonempty ordered graph input
+contracts are preserved; balanced-sequence APIs accept empty words. A fresh
+wheel passes **149 tests, zero skips**; the full source run also passes 149
+with one unrelated optional skip. Validation stays in native Rust/Cython
+where possible. [Repeated installed measurements](../../dev/benchmarks/2026-11-14-ordered-validated-weighted.md)
+record the remaining small-case overhead rather than omitting it.
+
 Installed ordered balanced-API comparisons now cover both algorithms, equality,
 fractional affinity, and unweighted modes over chains, stars, balanced/random,
 asymmetric and adversarial shapes. Seven-repeat measurements and required

@@ -25,11 +25,13 @@ def maximum_common_ordered_subtree_isomorphism(
     Parameters
     ----------
     tree1, tree2 : OrderedDiGraph
-        Trees to find the maximum subtree isomorphism between
+        Nonempty directed simple forests; children follow input iteration
+        order. Cycles and vertices with multiple parents are rejected.
 
     node_affinity : None | str | callable
         Function for to determine if two nodes can be matched. The return is
-        interpreted as a weight that is used to break ties. If None then any
+        a finite nonnegative weight, summed as the objective; zero forbids a
+        pair. If None then any
         node can match any other node and only the topology is important.
         The default is "eq", which is the same as ``operator.eq``.
 

@@ -93,6 +93,7 @@ python -c "from networkx_algo_common_subtree import balanced_embedding_cython; p
 
 """
 cimport cython
+from libc.math cimport isfinite
 
 from cpython.ref cimport PyObject
 from cpython.ref cimport Py_XINCREF, Py_XDECREF
@@ -197,7 +198,13 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
                 continue
 
             # Case 1: The LCS involves this edge
-            affinity = float(node_affinity(t1, t2))
+            affinity_value = node_affinity(t1, t2)
+            try:
+                affinity = float(affinity_value)
+            except (TypeError, ValueError, OverflowError) as ex:
+                raise ValueError("node affinities must be finite nonnegative numbers") from ex
+            if not isfinite(affinity) or affinity < 0:
+                raise ValueError("node affinities must be finite nonnegative numbers")
             if affinity:
                 try_key = (head1, head2)
                 if try_key in _results:

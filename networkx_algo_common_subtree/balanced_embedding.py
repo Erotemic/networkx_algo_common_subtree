@@ -2,11 +2,13 @@
 Core python implementations for the longest common balanced sequence
 subproblem, which is used by :mod:`tree_embedding`.
 """
-import operator
+from math import isfinite
 from .balanced_sequence import (
     IdentityDict,
     generate_all_decomp,
     balanced_decomp_unsafe,
+    generate_balance,
+    _normalize_node_affinity,
 )
 
 __all__ = [
@@ -44,13 +46,17 @@ def longest_common_balanced_embedding(
 
     node_affinity : None | str | callable
         Function for to determine if two nodes can be matched. The function
-        should take two arguments `node1` and `node2` and return a non-negative
+        should take two arguments `node1` and `node2` and return a finite non-negative
         affinity score that is zero if the nodes are not allowed to match and
         some positive value indicating the strength of the match.  The return
-        is interpreted as a weight that is used to break ties. If
+        is a weight added for each matched node pair. If
         ``node_affinity=None`` then any node can match any other node and only
         the topology is important.  The default is "auto", which will use
         ``operator.eq`` to do a simple equality test on the nodes.
+        Custom affinities use f64 precision across backends and are summed as
+        the optimization objective. Nonfinite/negative affinities and total
+        overflow raise ``ValueError``. Malformed typed sequences raise
+        ``UnbalancedException``, even when the other input is empty.
 
     impl : str
         Determines the backend implementation. Available choices are given by
@@ -196,18 +202,6 @@ def longest_common_balanced_embedding(
 
         return _lcse_verified_rust(seq1, seq2, open_to_close)
 
-    if node_affinity == "auto" or node_affinity == "eq":
-        node_affinity = operator.eq
-    if node_affinity is None:
-
-        def _matchany(a, b):
-            return True
-
-        node_affinity = _matchany
-    if open_to_node is None:
-        open_to_node = IdentityDict()
-    full_seq1 = seq1
-    full_seq2 = seq2
     if impl == "auto":
         if _rust_lcse_backend(error="ignore"):
             impl = "iter-rust"
@@ -215,6 +209,16 @@ def longest_common_balanced_embedding(
             impl = "iter-cython"
         else:
             impl = "iter"
+
+    if impl != "iter-rust":
+        for sequence in (seq1, seq2):
+            for _ in generate_balance(sequence, open_to_close):
+                pass
+    node_affinity = _normalize_node_affinity(node_affinity, check_weights=impl not in {"iter-rust", "iter-cython"})
+    if open_to_node is None:
+        open_to_node = IdentityDict()
+    full_seq1 = seq1
+    full_seq2 = seq2
 
     if impl == "iter":
         value, best = _lcse_iter(
@@ -243,6 +247,8 @@ def longest_common_balanced_embedding(
         )
     else:
         raise KeyError(impl)
+    if not isfinite(value):
+        raise ValueError("ordered affinity total overflow: score must be finite")
     return best, value
 
 
