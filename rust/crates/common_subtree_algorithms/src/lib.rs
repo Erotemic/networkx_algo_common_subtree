@@ -1,4 +1,4 @@
-//! Graph-only Rust reference implementations for weighted common subtree algorithms.
+//! Graph-only Rust implementations for weighted common subtree algorithms.
 //!
 //! The algorithms in this crate are based on the public descriptions in:
 //!
@@ -11,8 +11,9 @@
 //!
 //! This crate is independent of PyO3. Its typed APIs are consumed by the Python
 //! extension in `rust/` and by native benchmarks. Independent exhaustive tests
-//! validate its witnesses/objectives; the f64 graph source refinement and the
-//! published optimized schedules remain separate open obligations.
+//! validate its witnesses/objectives. Related matching families and fixed-left
+//! orientations improve both solvers; f64 source refinement and formal published
+//! runtime proofs remain open, including the 2018 constant-time view lookup.
 
 pub mod matching;
 pub mod model_trees;

@@ -69,6 +69,16 @@ installed Python tests pass. This argument and measured scaling to 512-node
 inputs are not a Lean complexity theorem or actual-source refinement; those
 remain open alongside f64 arithmetic correspondence and the 2018 schedule.
 
+The production 2018 schedule is now implemented: fixed-left postorder mapped
+matching families, two-pass right skip messages, and the two structural
+highest-vertex cases including a cardinality-two join from distinct branches.
+Independent exhaustive path/callback tests pass (44 native, 172 installed
+Python tests, all five ABI3 runtimes). This is implementation/test evidence,
+not a new Lean structural dichotomy, evaluation-order, witness or actual-source
+proof. Logarithmic view/edge lookup also remains an implementation gap to the
+precise 2018 bound. Existing recurrence and reference evaluator proofs remain
+preserved; full verification is still required for the final verified release.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

@@ -108,13 +108,13 @@ bound; do not promote that assumption into an unconditional theorem.
 | Theorem 6 | Rooted real-weight time and space; bounded-integer time improvement | Open; integer space qualification above |
 | Lemma 7 | Prior rectangular matching time/space bound | Externally attributed prerequisite; reusable matching proof remains required for implementation verification |
 | Lemma 8 | Bounded-integer matching reduction and time bound | Open |
-| Lemma 9 | Unrooted embedding structural dichotomy | Open |
-| Lemma 10 | Fixed-root max of the two structural families | Open |
+| Lemma 9 | Unrooted embedding structural dichotomy | Lean proof open; production Rust now evaluates both retained/skipped highest-left-vertex cases, checked by independent path oracles |
+| Lemma 10 | Fixed-root max of the two structural families | Lean proof open; production mapped whole views plus distinct-branch cardinality-two path joins implemented and independently tested |
 | Lemma 11 | Basic unrooted algorithm and memory bound | Open |
-| Lemma 12 | Reused maxima computation, conditional on valid evaluation order | Open; order discharged for Theorem 15 |
-| Lemma 13 | Total matching work, conditional on valid evaluation order | Open; order discharged for Theorem 15 |
+| Lemma 12 | Reused maxima computation, conditional on valid evaluation order | Lean proof open; production left postorder and two-pass right skip messages use best-two exclusions, avoiding circular recursive dependencies |
+| Lemma 13 | Total matching work, conditional on valid evaluation order | Lean proof open; dense right-deletion families integrated with completed left-child tables, with a written operation-count argument |
 | Lemma 14 | All vertex-deleted matchings in O(s^4+s^2*t), s<=t | Open |
-| Theorem 15 | Unrooted optimized time O(|T|*|T'|*Delta) and space O(|T|*|T'|) | Open |
+| Theorem 15 | Unrooted optimized time O(|T|*|T'|*Delta) and space O(|T|*|T'|) | Lean proof open; production schedule implemented/tested, but sorted parent-view and edge lookup retain a logarithmic implementation cost |
 
 Default Rust and Python APIs permit an empty result with score zero; explicit
 nonempty entry points now preserve negative optima and return `None` for

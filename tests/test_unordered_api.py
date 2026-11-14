@@ -208,7 +208,8 @@ def test_signed_optional_callback_tables_against_exhaustive_objectives():
 
 
 @pytest.mark.parametrize("leaves", [2, 5])
-def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves):
+@pytest.mark.parametrize("kind", ["iso", "embedding"])
+def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves, kind):
     if "rust" not in common.available_unordered_backends():
         if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
             pytest.fail("required weighted graph Rust bindings are missing")
@@ -225,7 +226,14 @@ def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves)
         if (u, v) == (0, 0) or (2 <= u < 2 + leaves and v > 0):
             return 1
         return None
-    result = common.maximum_common_subtree_isomorphism(left, right, node_weight=weight, impl="rust")
+    if kind == "iso":
+        solver, scorer = common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism
+        kwargs = {}
+    else:
+        solver, scorer = (common.largest_weight_common_subtree_embedding_with_distance_penalty,
+                          common.score_common_subtree_embedding)
+        kwargs = {"skip_vertex_penalty": 100}
+    result = solver(left, right, node_weight=weight, impl="rust", **kwargs)
     # At most one vertex pair weighs 10; every other vertex/edge weighs at
     # most one. Injectivity bounds the retained count, giving this independent
     # upper bound, attained by the returned connected witness.
@@ -234,10 +242,51 @@ def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves)
     assert result.weight == optimum
     assert len(result.node_pairs) == retained
     assert result.mapping[1] == 1
-    assert common.score_common_subtree_isomorphism(left, right, result, node_weight=weight) == optimum
+    assert scorer(left, right, result, node_weight=weight, **kwargs) == optimum
     if leaves == 2:
-        exhaustive = common.maximum_common_subtree_isomorphism(left, right, node_weight=weight, impl="python")
+        exhaustive = solver(left, right, node_weight=weight, impl="python", **kwargs)
         assert exhaustive.weight == optimum
+
+
+@pytest.mark.parametrize("active_leaves", [1, 3])
+def test_embedding_crosses_skipped_highest_vertex_in_distinct_branches(impl, active_leaves):
+    left, right = nx.star_graph(4), nx.path_graph(2)
+    kwargs = dict(node_weight=lambda u, v: 1 if 1 <= u <= active_leaves else None,
+                  edge_weight=100, skip_vertex_penalty=.25)
+    result = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+        left, right, impl=impl, **kwargs)
+    # The fixed highest left vertex is forbidden. Two distinct leaf branches
+    # can cross it, paying one skip and earning no direct-edge reward.
+    count = min(active_leaves, 2)
+    assert result.weight == (1 if count == 1 else 1.75)
+    assert len(result.node_pairs) == count
+    assert len(set(result.mapping)) == count
+    assert common.score_common_subtree_embedding(left, right, result, **kwargs) == result.weight
+
+
+def test_embedding_matching_families_against_signed_high_degree_oracle():
+    if "rust" not in common.available_unordered_backends():
+        if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
+            pytest.fail("required weighted graph Rust bindings are missing")
+        pytest.skip("optional weighted graph Rust bindings are missing")
+    rng = random.Random(180500821)
+    left, right = nx.star_graph(5), nx.star_graph(4)
+    for case in range(12):
+        nodes = {(u, v): rng.choice([None, -.5, 0, .125, 1.5]) for u in left for v in right}
+        edges = {(frozenset(a), frozenset(b)): rng.choice([None, -1, 0, .25, 2.5])
+                 for a in left.edges for b in right.edges}
+        kwargs = dict(node_weight=lambda u, v: nodes[u, v],
+                      edge_weight=lambda a, b: edges[frozenset(a), frozenset(b)],
+                      skip_vertex_penalty=rng.choice([0, .125, 2.0]))
+        native = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+            left, right, impl="rust", allow_empty=bool(case % 2), **kwargs)
+        oracle = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+            left, right, impl="python", allow_empty=bool(case % 2), **kwargs)
+        if oracle is None:
+            assert native is None
+        else:
+            assert native.weight == oracle.weight
+            assert common.score_common_subtree_embedding(left, right, native, **kwargs) == native.weight
 
 
 @pytest.mark.parametrize("kind", ["iso", "embedding"])

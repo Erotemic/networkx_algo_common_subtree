@@ -2,11 +2,11 @@
 //!
 //! This module implements graph-only tree recurrences for maximum common subtree
 //! isomorphism, abbreviated **MCSI** in the 2016 paper context, and an
-//! experimental reference version of the 2018 distance-penalized common subtree
-//! embedding recurrence. The algorithms operate on ordinary labeled trees and
+//! the 2018 distance-penalized common subtree embedding recurrence. The algorithms
+//! operate on ordinary labeled trees and
 //! compose maximum-weight child matchings.
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 use std::num::NonZeroUsize;
 
 use crate::matching::{
@@ -228,18 +228,51 @@ struct SolverResult {
 
 impl SolverResult {
     fn into_public(self, choices: &[WitnessNode]) -> CommonSubtree {
-        let mut node_pairs = Vec::new();
-        let mut pending = vec![self.witness];
-        while let Some(id) = pending.pop() {
-            let choice = &choices[id.get() - 1];
-            node_pairs.push(choice.pair);
-            pending.extend_from_slice(&choice.children);
-        }
-        node_pairs.sort_unstable();
         CommonSubtree {
             weight: self.weight,
-            node_pairs,
+            node_pairs: reconstruct_mapping(choices, vec![self.witness]),
         }
+    }
+}
+
+fn reconstruct_mapping(
+    choices: &[WitnessNode],
+    mut pending: Vec<WitnessId>,
+) -> Vec<(NodeId, NodeId)> {
+    let mut pairs = Vec::new();
+    while let Some(id) = pending.pop() {
+        let choice = &choices[id.get() - 1];
+        pairs.push(choice.pair);
+        pending.extend_from_slice(&choice.children);
+    }
+    pairs.sort_unstable();
+    pairs
+}
+
+fn fixed_orientation(tree: &LabeledTree) -> (Vec<Option<NodeId>>, Vec<NodeId>) {
+    let mut parents = vec![None; tree.len()];
+    let mut order = Vec::with_capacity(tree.len());
+    if let Some(root) = (0..tree.len()).max_by_key(|&u| tree.neighbors(u).len()) {
+        let mut stack = vec![root];
+        while let Some(u) = stack.pop() {
+            order.push(u);
+            for edge in tree.neighbors(u) {
+                if Some(edge.to) != parents[u] {
+                    parents[edge.to] = Some(u);
+                    stack.push(edge.to);
+                }
+            }
+        }
+    }
+    (parents, order)
+}
+
+fn keep_two(best: &mut [Option<(usize, SolverResult)>; 2], branch: usize, candidate: SolverResult) {
+    if best[0].is_none_or(|(_, current)| candidate.weight > current.weight) {
+        best[1] = best[0];
+        best[0] = Some((branch, candidate));
+    } else if best[1].is_none_or(|(_, current)| candidate.weight > current.weight) {
+        best[1] = Some((branch, candidate));
     }
 }
 
@@ -251,44 +284,29 @@ struct State {
     parent_v: Option<NodeId>,
 }
 
-type StateKey = (NodeId, NodeId, NodeId, NodeId);
-
-impl State {
-    fn key(self) -> StateKey {
-        // No valid Vec index is usize::MAX. Keep optional parents explicit in
-        // the recurrence but avoid Option<usize>'s extra words in every key.
-        (
-            self.u,
-            self.parent_u.unwrap_or(usize::MAX),
-            self.v,
-            self.parent_v.unwrap_or(usize::MAX),
-        )
-    }
-}
-
-// The 2016 left tree has one fixed orientation. Each right vertex has a whole
+// The left tree has one fixed orientation. Each right vertex has a whole
 // view and one view per excluded parent: 3*m-2 views in a nonempty tree. A
 // binary search in sorted neighbors locates the parent in O(log degree).
 // None is uncomputed; Some(None) is a computed incompatible state.
 #[derive(Default)]
-struct IsomorphismTable {
+struct OrientedTable {
     offsets: Vec<usize>,
     entries: Vec<Option<Option<SolverResult>>>,
 }
 
-impl IsomorphismTable {
+impl OrientedTable {
     fn new(left_size: usize, right: &LabeledTree) -> Self {
         let mut offsets = Vec::with_capacity(right.len() + 1);
         offsets.push(0usize);
         for v in 0..right.len() {
             let next = offsets[v]
                 .checked_add(right.neighbors(v).len() + 1)
-                .expect("isomorphism view count overflow");
+                .expect("oriented view count overflow");
             offsets.push(next);
         }
         let length = left_size
             .checked_mul(offsets[right.len()])
-            .expect("isomorphism table dimension overflow");
+            .expect("oriented table dimension overflow");
         Self {
             offsets,
             entries: vec![None; length],
@@ -312,15 +330,19 @@ impl IsomorphismTable {
         let index = self.index(right, state);
         self.entries[index] = Some(value);
     }
+
+    fn get(&self, right: &LabeledTree, state: State) -> Option<SolverResult> {
+        self.entries[self.index(right, state)].expect("oriented dependency was computed")
+    }
 }
 
 struct RootedSolver<'a, S: Scoring> {
     left: &'a LabeledTree,
     right: &'a LabeledTree,
     scoring: &'a S,
-    iso_memo: IsomorphismTable,
-    embedding_memo: HashMap<StateKey, Option<SolverResult>>,
-    skipped_memo: HashMap<StateKey, Option<SolverResult>>,
+    iso_memo: OrientedTable,
+    embedding_memo: OrientedTable,
+    skipped_memo: OrientedTable,
     choices: Vec<WitnessNode>,
     skip_vertex_penalty: Weight,
 }
@@ -331,9 +353,9 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             left,
             right,
             scoring,
-            iso_memo: IsomorphismTable::new(left.len(), right),
-            embedding_memo: HashMap::new(),
-            skipped_memo: HashMap::new(),
+            iso_memo: OrientedTable::new(left.len(), right),
+            embedding_memo: OrientedTable::default(),
+            skipped_memo: OrientedTable::default(),
             choices: Vec::new(),
             skip_vertex_penalty: 0.0,
         }
@@ -349,9 +371,9 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             left,
             right,
             scoring,
-            iso_memo: IsomorphismTable::default(),
-            embedding_memo: HashMap::new(),
-            skipped_memo: HashMap::new(),
+            iso_memo: OrientedTable::default(),
+            embedding_memo: OrientedTable::new(left.len(), right),
+            skipped_memo: OrientedTable::new(left.len(), right),
             choices: Vec::new(),
             skip_vertex_penalty,
         }
@@ -505,81 +527,54 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         )
     }
 
-    // Type wedge in Lemma 5: both roots are mapped. In particular this state
-    // must retain negative values: a parent edge reward can make them useful.
-    fn rooted_embedding(&mut self, state: State) -> Option<SolverResult> {
-        if let Some(found) = self.embedding_memo.get(&state.key()) {
-            return *found;
+    fn continuation(&self, state: State) -> Option<SolverResult> {
+        let mut best = self.embedding_memo.get(self.right, state);
+        if let Some(candidate) = self.skipped_memo.get(self.right, state) {
+            Self::keep_candidate(&mut best, candidate);
         }
-        let best = self.compute_rooted_embedding_with_roots_mapped(state);
-        self.embedding_memo.insert(state.key(), best);
         best
     }
 
-    // Type diamond in Lemma 5: at least one root is an interior vertex on a
-    // topological path. No edge reward is added when using this state.
-    fn skipped_embedding(&mut self, state: State) -> Option<SolverResult> {
-        if let Some(found) = self.skipped_memo.get(&state.key()) {
-            return *found;
-        }
-        let mut best = None;
-        let left = self.left;
-        let right = self.right;
-        let left_steps = left
-            .neighbors(state.u)
-            .iter()
-            .filter(|edge| Some(edge.to) != state.parent_u)
-            .map(|edge| State {
-                u: edge.to,
-                parent_u: Some(state.u),
-                ..state
-            });
-        let right_steps = right
-            .neighbors(state.v)
-            .iter()
-            .filter(|edge| Some(edge.to) != state.parent_v)
-            .map(|edge| State {
-                v: edge.to,
-                parent_v: Some(state.v),
-                ..state
-            });
-        for next in left_steps.chain(right_steps) {
-            for mut candidate in [self.rooted_embedding(next), self.skipped_embedding(next)]
-                .into_iter()
-                .flatten()
-            {
-                candidate.weight = finite_weight(candidate.weight - self.skip_vertex_penalty);
-                Self::keep_candidate(&mut best, candidate);
-            }
-        }
-        self.skipped_memo.insert(state.key(), best);
-        best
-    }
-
-    fn compute_rooted_embedding_with_roots_mapped(&mut self, state: State) -> Option<SolverResult> {
+    // All mapped states at u use only left children, so their tables are
+    // complete before processing u. This separates matching from the same-u
+    // right-skip dependencies and avoids recursive rerooting cycles.
+    fn embedding_matching_family(&mut self, state: State, left_children: &[EdgeRef]) {
+        let right_children = self.right.neighbors(state.v);
         let root_weight = self
             .scoring
-            .node_weight(self.left, state.u, self.right, state.v)?;
+            .node_weight(self.left, state.u, self.right, state.v);
+        let Some(root_weight) = root_weight else {
+            self.embedding_memo.insert(self.right, state, None);
+            for edge in right_children {
+                self.embedding_memo.insert(
+                    self.right,
+                    State {
+                        parent_v: Some(edge.to),
+                        ..state
+                    },
+                    None,
+                );
+            }
+            return;
+        };
         let root_weight = finite_weight(root_weight);
-        if !self
-            .left
-            .neighbors(state.u)
-            .iter()
-            .any(|e| Some(e.to) != state.parent_u)
-            || !self
-                .right
-                .neighbors(state.v)
-                .iter()
-                .any(|e| Some(e.to) != state.parent_v)
-        {
-            return Some(self.retain_root(state, root_weight, Vec::new()));
+        if left_children.is_empty() || right_children.is_empty() {
+            let leaf = self.retain_root(state, root_weight, Vec::new());
+            self.embedding_memo.insert(self.right, state, Some(leaf));
+            for edge in self.right.neighbors(state.v) {
+                self.embedding_memo.insert(
+                    self.right,
+                    State {
+                        parent_v: Some(edge.to),
+                        ..state
+                    },
+                    Some(leaf),
+                );
+            }
+            return;
         }
-        let left_children = Self::child_edges(self.left, state.u, state.parent_u);
-        let right_children = Self::child_edges(self.right, state.v, state.parent_v);
-
         let mut matrix = vec![vec![None; right_children.len()]; left_children.len()];
         let mut child_results = vec![vec![None; right_children.len()]; left_children.len()];
-
         for (i, left_edge) in left_children.iter().enumerate() {
             for (j, right_edge) in right_children.iter().enumerate() {
                 let child_state = State {
@@ -588,7 +583,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     v: right_edge.to,
                     parent_v: Some(state.v),
                 };
-                let mut continuation = self.skipped_embedding(child_state);
+                let mut continuation = self.skipped_memo.get(self.right, child_state);
                 if let Some(edge_weight) = self.scoring.edge_weight(
                     self.left,
                     state.u,
@@ -598,22 +593,140 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     right_edge.to,
                 ) {
                     let edge_weight = finite_weight(edge_weight);
-                    if let Some(mut direct) = self.rooted_embedding(child_state) {
+                    if let Some(mut direct) = self.embedding_memo.get(self.right, child_state) {
                         direct.weight = finite_weight(direct.weight + edge_weight);
                         Self::keep_candidate(&mut continuation, direct);
                     }
                 }
-                if let Some(child) = continuation {
-                    if child.weight > 0.0 {
-                        matrix[i][j] = Some(child.weight);
-                        child_results[i][j] = Some(child);
-                    }
+                if let Some(child) = continuation.filter(|child| child.weight > 0.0) {
+                    matrix[i][j] = Some(child.weight);
+                    child_results[i][j] = Some(child);
                 }
             }
         }
+        let matchings = max_weight_bipartite_matching_with_right_deletions(&matrix);
+        let full = self.combine_rooted_matches(state, root_weight, &matchings.base, &child_results);
+        self.embedding_memo.insert(self.right, state, Some(full));
+        for j in 0..self.right.neighbors(state.v).len() {
+            let partial = State {
+                parent_v: Some(self.right.neighbors(state.v)[j].to),
+                ..state
+            };
+            let result = match &matchings.deletions[j] {
+                None => full,
+                Some(matching) => {
+                    self.combine_rooted_matches(partial, root_weight, matching, &child_results)
+                }
+            };
+            self.embedding_memo
+                .insert(self.right, partial, Some(result));
+        }
+    }
 
-        let matching = max_weight_bipartite_matching(&matrix);
-        Some(self.combine_rooted_matches(state, root_weight, &matching, &child_results))
+    fn store_skipped(&mut self, state: State, mut best: Option<SolverResult>) {
+        if let Some(candidate) = &mut best {
+            candidate.weight = finite_weight(candidate.weight - self.skip_vertex_penalty);
+        }
+        self.skipped_memo.insert(self.right, state, best);
+    }
+
+    fn compute_embeddings(&mut self, parents: &[Option<NodeId>], order: &[NodeId]) {
+        let (right_parents, right_order) = fixed_orientation(self.right);
+        let stride = self.embedding_memo.offsets[self.right.len()];
+        for &u in order.iter().rev() {
+            let left_children = Self::child_edges(self.left, u, parents[u]);
+            for v in 0..self.right.len() {
+                self.embedding_matching_family(
+                    State {
+                        u,
+                        parent_u: parents[u],
+                        v,
+                        parent_v: None,
+                    },
+                    &left_children,
+                );
+            }
+            // Maxima from skipping u to one left child, for every right view.
+            let mut left_best = vec![None; stride];
+            for child in &left_children {
+                let base = child.to * stride;
+                for (view, best) in left_best.iter_mut().enumerate() {
+                    for candidate in [
+                        self.embedding_memo.entries[base + view],
+                        self.skipped_memo.entries[base + view],
+                    ] {
+                        if let Some(candidate) = candidate.expect("left child tables are complete")
+                        {
+                            Self::keep_candidate(best, candidate);
+                        }
+                    }
+                }
+            }
+            // Downward right messages first, then a rerooting pass. At each
+            // vertex, the best two incoming branches supply all exclusions.
+            for &v in right_order.iter().rev() {
+                let state = State {
+                    u,
+                    parent_u: parents[u],
+                    v,
+                    parent_v: right_parents[v],
+                };
+                let view = self.skipped_memo.index(self.right, state) - u * stride;
+                let mut best = left_best[view];
+                for edge in self.right.neighbors(v) {
+                    if Some(edge.to) != right_parents[v] {
+                        if let Some(candidate) = self.continuation(State {
+                            v: edge.to,
+                            parent_v: Some(v),
+                            ..state
+                        }) {
+                            Self::keep_candidate(&mut best, candidate);
+                        }
+                    }
+                }
+                self.store_skipped(state, best);
+            }
+            for &v in &right_order {
+                let whole = State {
+                    u,
+                    parent_u: parents[u],
+                    v,
+                    parent_v: None,
+                };
+                let mut incoming = [None; 2];
+                for (j, edge) in self.right.neighbors(v).iter().enumerate() {
+                    if let Some(candidate) = self.continuation(State {
+                        v: edge.to,
+                        parent_v: Some(v),
+                        ..whole
+                    }) {
+                        keep_two(&mut incoming, j, candidate);
+                    }
+                }
+                let offset = self.embedding_memo.offsets[v];
+                let mut best = left_best[offset];
+                if let Some((_, candidate)) = incoming[0] {
+                    Self::keep_candidate(&mut best, candidate);
+                }
+                self.store_skipped(whole, best);
+                for j in 0..self.right.neighbors(v).len() {
+                    let state = State {
+                        parent_v: Some(self.right.neighbors(v)[j].to),
+                        ..whole
+                    };
+                    let mut best = left_best[offset + j + 1];
+                    let from_right = if incoming[0].is_some_and(|(chosen, _)| chosen == j) {
+                        incoming[1]
+                    } else {
+                        incoming[0]
+                    };
+                    if let Some((_, candidate)) = from_right {
+                        Self::keep_candidate(&mut best, candidate);
+                    }
+                    self.store_skipped(state, best);
+                }
+            }
+        }
     }
 
     fn keep_candidate(best: &mut Option<SolverResult>, candidate: SolverResult) {
@@ -662,21 +775,7 @@ pub fn maximum_nonempty_common_subtree_isomorphism<S: Scoring>(
     }
 
     let mut solver = RootedSolver::new(left, right, scoring);
-    // Any root is correct. A maximum-degree root avoids repeatedly excluding
-    // one spoke at a high-degree hub, particularly on star-shaped inputs.
-    let root = (0..left.len())
-        .max_by_key(|&u| left.neighbors(u).len())
-        .unwrap();
-    let mut parents = vec![None; left.len()];
-    let mut stack = vec![root];
-    while let Some(u) = stack.pop() {
-        for edge in left.neighbors(u) {
-            if Some(edge.to) != parents[u] {
-                parents[edge.to] = Some(u);
-                stack.push(edge.to);
-            }
-        }
-    }
+    let (parents, _) = fixed_orientation(left);
     let mut best = None;
     for u in 0..left.len() {
         for v in 0..right.len() {
@@ -694,14 +793,16 @@ pub fn maximum_nonempty_common_subtree_isomorphism<S: Scoring>(
     best.map(|result| result.into_public(&solver.choices))
 }
 
-/// Experimental distance-penalized common subtree embedding between two labeled
+/// Distance-penalized common subtree embedding between two labeled
 /// trees.
 ///
 /// Implements the two state types of the 2018 paper's Lemma 5. A direct
 /// edge pair contributes its edge weight only when neither path skips a vertex.
 /// Otherwise the contribution is just the penalty for every skipped vertex.
-/// The empty mapping is permitted with score zero. This reference DP does not
-/// implement the paper's faster reuse of related matching instances.
+/// The empty mapping is permitted with score zero. A fixed left orientation,
+/// matching deletion families, rerooted skip messages and the skipped-highest
+/// path case implement the paper's unrooted decomposition. Sorted view lookups
+/// still add a logarithmic factor; no source-proved runtime claim is made.
 ///
 /// # Panics
 /// Panics if the penalty is negative or nonfinite.
@@ -740,22 +841,82 @@ pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S:
         return None;
     }
 
+    let (parents, order) = fixed_orientation(left);
     let mut solver = RootedSolver::with_skip_penalty(left, right, scoring, skip_vertex_penalty);
+    solver.compute_embeddings(&parents, &order);
     let mut best = None;
     for u in 0..left.len() {
         for v in 0..right.len() {
-            let state = State {
-                u,
-                parent_u: None,
-                v,
-                parent_v: None,
-            };
-            if let Some(candidate) = solver.rooted_embedding(state) {
+            if let Some(candidate) = solver.embedding_memo.get(
+                right,
+                State {
+                    u,
+                    parent_u: parents[u],
+                    v,
+                    parent_v: None,
+                },
+            ) {
                 RootedSolver::<S>::keep_candidate(&mut best, candidate);
             }
         }
     }
-    best.map(|result| result.into_public(&solver.choices))
+    // Lemma 10, M2: the highest left vertex is skipped inside one path.
+    // Split that path across a right edge and two distinct left child branches.
+    let mut joined = None;
+    let mut best_weight = best.map(|candidate| candidate.weight);
+    for u in 0..left.len() {
+        let children = RootedSolver::<S>::child_edges(left, u, parents[u]);
+        if children.len() < 2 {
+            continue;
+        }
+        for v in 0..right.len() {
+            for edge in right.neighbors(v).iter().filter(|edge| v < edge.to) {
+                let w = edge.to;
+                let mut first = [None; 2];
+                let mut second = [None; 2];
+                for child in &children {
+                    let state = State {
+                        u: child.to,
+                        parent_u: Some(u),
+                        v,
+                        parent_v: Some(w),
+                    };
+                    if let Some(candidate) = solver.continuation(state) {
+                        keep_two(&mut first, child.to, candidate);
+                    }
+                    if let Some(candidate) = solver.continuation(State {
+                        v: w,
+                        parent_v: Some(v),
+                        ..state
+                    }) {
+                        keep_two(&mut second, child.to, candidate);
+                    }
+                }
+                for (a, left_part) in first.into_iter().flatten() {
+                    for (b, right_part) in second.into_iter().flatten() {
+                        if a == b {
+                            continue;
+                        }
+                        let weight = finite_weight(
+                            finite_weight(left_part.weight + right_part.weight)
+                                - skip_vertex_penalty,
+                        );
+                        if best_weight.is_none_or(|current| weight > current) {
+                            best_weight = Some(weight);
+                            joined = Some((weight, left_part.witness, right_part.witness));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    match joined {
+        None => best.map(|result| result.into_public(&solver.choices)),
+        Some((weight, left, right)) => Some(CommonSubtree {
+            weight,
+            node_pairs: reconstruct_mapping(&solver.choices, vec![left, right]),
+        }),
+    }
 }
 
 #[cfg(test)]
