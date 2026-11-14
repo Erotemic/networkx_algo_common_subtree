@@ -38,6 +38,23 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## Actual search flags and combined invariant: 2026-11-14
+
+`Rust/SparseSearchFlags` proves that zero-based Boolean-vector writes
+represent the independent selected sets exactly. The root initialization is
+a singleton; a nonterminal column/inverse-row pair of writes implements the
+inverse-image alternating-cut extension, adds exactly one selected column,
+and strictly decreases the remaining-column measure.
+
+`Rust/SparseSearchInvariant` combines physical vector lengths, exact selected
+sets, the free target, visit accounting, sparse dual feasibility, two-sided
+envelopes and objective accounting, old matching tightness, and original-index
+predecessor/discovery-rank conditions. The compiled `Invariant.visit_guard`
+derives the actual source's visit limit; `Invariant.advance_spec` discharges
+all inputs of the actual selector/update composition from that state. The
+complete loop's preservation of this invariant, initialization-to-output
+refinement and the executable path flip remain open.
+
 ## Sparse alternating-search reference and verified inverse initializer: 2026-11-14
 
 The maintained Rust `sparse_search::find_sparse_augmenting_path` now performs

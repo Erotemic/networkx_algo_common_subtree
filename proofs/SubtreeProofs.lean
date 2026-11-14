@@ -181,3 +181,5 @@ public import SubtreeProofs.Rust.SparseCutBiInput
 public import SubtreeProofs.Rust.SparseCutStep
 public import SubtreeProofs.Shared.AssignmentSparseSearch
 public import SubtreeProofs.Rust.SparseSearchInverse
+public import SubtreeProofs.Rust.SparseSearchFlags
+public import SubtreeProofs.Rust.SparseSearchInvariant
