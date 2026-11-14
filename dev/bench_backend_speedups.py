@@ -68,6 +68,7 @@ def make_cases(
     cases_per_size: int,
     seed: int,
     labels: int,
+    shapes: tuple[str, ...] = ("random", "chain", "star", "balanced", "asymmetric", "chain-star"),
 ) -> list[Case]:
     rng = random.Random(seed)
     cases: list[Case] = []
@@ -84,7 +85,7 @@ def make_cases(
     )
 
     for n_pairs in sizes:
-        for idx in range(cases_per_size):
+        for idx in range(cases_per_size if "random" in shapes else 0):
             seq1 = random_balanced_sequence(rng, n_pairs, labels=labels)
             seq2 = random_balanced_sequence(rng, n_pairs, labels=labels)
             cases.append(
@@ -95,6 +96,29 @@ def make_cases(
                     open_to_close=dict(list(OPEN_TO_CLOSE.items())[:labels]),
                 )
             )
+        def balanced(n):
+            if not n:
+                return ""
+            head = (n - 1) // 2
+            return "(" + balanced(head) + ")" + balanced(n - 1 - head)
+        chain, star = "(" * n_pairs + ")" * n_pairs, "()" * n_pairs
+        for shape in shapes:
+            if shape == "random":
+                continue
+            if shape == "chain":
+                seq1 = seq2 = chain
+            elif shape == "star":
+                seq1 = seq2 = star
+            elif shape == "balanced":
+                seq1 = seq2 = balanced(n_pairs)
+            elif shape == "chain-star":
+                seq1, seq2 = chain, star
+            elif shape == "asymmetric":
+                seq1 = random_balanced_sequence(rng, n_pairs, labels=labels)
+                seq2 = random_balanced_sequence(rng, n_pairs // 2, labels=labels)
+            else:
+                raise ValueError(f"unknown benchmark shape: {shape!r}")
+            cases.append(Case(f"{shape}_pairs={n_pairs:04d}", seq1, seq2, OPEN_TO_CLOSE))
     return cases
 
 
@@ -155,6 +179,7 @@ def main(argv=None) -> int:
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--labels", type=int, default=3, choices=[1, 2, 3])
+    parser.add_argument("--shapes", default="random,chain,star,balanced,asymmetric,chain-star")
     parser.add_argument(
         "--functions",
         default="embedding,isomorphism",
@@ -169,8 +194,8 @@ def main(argv=None) -> int:
         ),
     )
     parser.add_argument(
-        "--node-affinity", choices=("eq", "none"), default="eq",
-        help="Use equality matching or topology-only matching (required for verified-rust).",
+        "--node-affinity", choices=("eq", "none", "weighted"), default="eq",
+        help="Equality, topology-only (required for verified-rust), or fractional label affinity.",
     )
     parser.add_argument(
         "--reference",
@@ -188,6 +213,8 @@ def main(argv=None) -> int:
     parser.add_argument("--csv", type=Path, default=None)
     parser.add_argument("--json", type=Path, default=None)
     args = parser.parse_args(argv)
+    if args.repeat < 1 or args.warmup < 0 or args.cases < 0:
+        parser.error("repeat must be positive; warmup and cases must be nonnegative")
 
     sizes = [int(p) for p in args.sizes.split(",") if p]
     kinds = [p.strip() for p in args.functions.split(",") if p.strip()]
@@ -196,10 +223,17 @@ def main(argv=None) -> int:
         cases_per_size=args.cases,
         seed=args.seed,
         labels=args.labels,
+        shapes=tuple(args.shapes.split(",")),
     )
 
     rows = []
     failures = []
+    affinity = args.node_affinity
+    if affinity == "none":
+        affinity = None
+    elif affinity == "weighted":
+        def affinity(a, b):
+            return .125 + (ord(a) % 5 + ord(b) % 3) / 8 if a == b else 0
 
     for kind in kinds:
         detected = available_impls(kind, include_restricted=args.node_affinity == "none")
@@ -238,7 +272,7 @@ def main(argv=None) -> int:
                 def _run(impl=impl, case=case, kind=kind):
                     return call_backend(
                         kind, case, impl,
-                        node_affinity=None if args.node_affinity == "none" else "eq",
+                        node_affinity=affinity,
                     )
 
                 try:
