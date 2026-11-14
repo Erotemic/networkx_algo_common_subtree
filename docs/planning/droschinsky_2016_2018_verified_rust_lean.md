@@ -4,6 +4,17 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Full two-state recurrence accepted: 2026-11-14
+
+`Droschinsky2018.mapped_recurrence` and `skipped_recurrence_two_state` now
+prove both halves of Lemma 5 against independent concrete witness maxima.
+The proof includes exact source correspondence, pointed witness construction,
+matching assembly, arbitrary common-tree decomposition and complete vertex/path
+score identities. Signed and negative-infinity weights and infinite penalties
+are preserved. The matcher is a certified exhaustive oracle; executable DP
+evaluation, the optimized matching algorithms, cost bounds and actual graph
+Rust refinement remain open.
+
 ## Skipped-root recurrence accepted: 2026-11-14
 
 `Droschinsky2018.skipped_recurrence_two_state` proves the diamond half of

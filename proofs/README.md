@@ -41,8 +41,11 @@ evaluation, Hungarian correctness, cost bounds and Rust refinement remain open.
 `Witness` constructs source-style rooted embeddings at corresponding chosen
 roots. `Reconstruction` proves the exact unrooted source correspondence and
 abstract-tree score equality. Shared path lifting and `RootedEmbedding` prove
-ancestry in both directions from both witness formats. Fixed ambient-root
-admissibility and the mapped/skipped recurrence remain open.
+ancestry in both directions from both witness formats. `Rooted` proves fixed
+ambient-root and root-to-root source equivalences. `MappedDecomposition` and
+`SkippedRecurrence` prove both halves of Lemma 5 against independent boundary
+witness maxima, using concrete assembly and exact score decomposition. Efficient
+executable evaluation, matching/cost and graph Rust refinement remain open.
 
 `Rust/Generated` contains unedited Charon/Aeneas output from the maintained
 `verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first

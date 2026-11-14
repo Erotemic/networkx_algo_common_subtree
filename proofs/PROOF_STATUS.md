@@ -374,6 +374,36 @@ the independent mapped-state optimum. This is the constructive lower-bound
 direction of the mapped recurrence. Decomposition of arbitrary mapped-root
 witnesses is still needed for the reverse inequality.
 
+## Arbitrary common-tree score decomposition accepted: 2026-11-14
+
+`RootedDecomposition.iso` gives an explicit graph isomorphism from the graft
+of a finite tree's child-descendant regions back to that tree. Flattening is
+bijective and preserves/reflects actual adjacency. `pairedImage_precomposeIso`
+and `realizationScore_precomposeIso` preserve vertex pairs and scores under
+this reindexing. `ScoreDecomposition.score_decomposition` therefore proves
+the complete root/branch score partition for every independent explicit
+common-tree realization, rather than only for assembled witnesses.
+
+The remaining mapped-recurrence direction must assign these common-child
+branches injectively to immediate input-child pairs and bound their rewards
+by the certified child matching optimum.
+
+## Full 2018 two-state recurrence accepted: 2026-11-14
+
+`RootedTopologicalEmbedding.branchChild_injective` assigns distinct common
+children to distinct immediate input-child regions. Restricting the actual
+common-child regions produces valid independent boundary witnesses.
+`MappedDecomposition.source_score_upper` bounds every source-style witness
+by the certified child matching optimum, using the exact arbitrary-tree score
+partition. `mappedValue_le_matchingValue` proves the reverse mapped inequality.
+
+`mapped_recurrence` together with `skipped_recurrence_two_state` proves both
+halves of 2018 Lemma 5 against independently optimized concrete witnesses,
+with signed/negative-infinity weights and finite/infinite penalties. These
+are Bellman identities; continuation values remain finite witness optima and
+the matching oracle remains exhaustive. Executable recursive evaluation,
+optimized matching, cost bounds and actual graph Rust refinement remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

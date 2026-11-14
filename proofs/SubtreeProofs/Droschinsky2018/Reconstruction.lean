@@ -244,6 +244,35 @@ theorem score_pairedImage (first : TopologicalEmbedding common left)
     rfl
   · exact fun a _ b _ he => Sym2.map.injective hinj he
 
+/-- Reindexing the common tree by an isomorphism leaves the concrete pair
+relation unchanged. -/
+theorem pairedImage_precomposeIso {B : Type*} [Fintype B] (other : FiniteTree B)
+    (iso : other.graph ≃g common.graph) (first : TopologicalEmbedding common left)
+    (second : TopologicalEmbedding common right) :
+    pairedImage (first.precompose iso) (second.precompose iso) = pairedImage first second := by
+  ext p
+  constructor
+  · intro hp
+    obtain ⟨b, hb, hc⟩ := (mem_pairedImage _ _ p.1 p.2).mp hp
+    exact (mem_pairedImage _ _ p.1 p.2).mpr ⟨iso b, hb, hc⟩
+  · intro hp
+    obtain ⟨a, ha, hb⟩ := (mem_pairedImage _ _ p.1 p.2).mp hp
+    obtain ⟨b, rfl⟩ := iso.surjective a
+    exact (mem_pairedImage _ _ p.1 p.2).mpr ⟨b, ha, hb⟩
+
+/-- The abstract common-tree score is invariant under common-tree isomorphism. -/
+theorem realizationScore_precomposeIso {B : Type*} [Fintype B] (other : FiniteTree B)
+    (iso : other.graph ≃g common.graph) (first : TopologicalEmbedding common left)
+    (second : TopologicalEmbedding common right) (weights : Scoring V W) (penalty : WithTop ℝ) :
+    realizationScore (first.precompose iso) (second.precompose iso) weights penalty =
+      realizationScore first second weights penalty := by
+  calc
+    _ = score left right weights penalty (pairedImage (first.precompose iso) (second.precompose iso)) :=
+      (score_pairedImage _ _ _ _).symm
+    _ = score left right weights penalty (pairedImage first second) :=
+      congrArg (score left right weights penalty) (pairedImage_precomposeIso other iso first second)
+    _ = _ := score_pairedImage _ _ _ _
+
 /-- Source Definition 1 embeddings in both input trees induce exactly the
 independent finite-pair witness and its vertex/path score. Root-to-root is
 optional, as in Definition 2's general CSE. -/

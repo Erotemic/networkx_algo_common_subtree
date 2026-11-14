@@ -39,3 +39,5 @@ public import SubtreeProofs.Droschinsky2018.BranchReward
 public import SubtreeProofs.Droschinsky2018.MappedAssembly
 public import SubtreeProofs.Droschinsky2018.BranchOptimum
 public import SubtreeProofs.Droschinsky2018.MatchingAssembly
+public import SubtreeProofs.Droschinsky2018.ScoreDecomposition
+public import SubtreeProofs.Droschinsky2018.MappedDecomposition

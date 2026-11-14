@@ -119,6 +119,30 @@ theorem child_descendant_ne_parent {root u c x : V} (hc : tree.Child root u c)
   subst x
   exact hc.1.ne (tree.ancestor_antisymm hc.2 hx)
 
+/-- The path of an actual edge has no interior vertices. -/
+theorem pathInterior_adj_empty [DecidableEq V] {a b : V} (ha : tree.graph.Adj a b) :
+    tree.pathInterior a b = ∅ := by
+  have he := congrArg Subtype.val (tree.path_unique (tree.path a b) (SimpleGraph.Path.singleton ha))
+  unfold pathInterior pathVertices
+  rw [he]
+  simp [SimpleGraph.Path.singleton]
+  rw [Finset.erase_right_comm]
+  simp
+
+/-- An injective graph map between trees automatically reflects adjacency:
+a chord between mapped endpoints would contradict uniqueness of paths. -/
+theorem adj_map_iff {W : Type*} (other : FiniteTree W) (f : tree.graph →g other.graph)
+    (hinj : Function.Injective f) (a b : V) : other.graph.Adj (f a) (f b) ↔ tree.graph.Adj a b := by
+  constructor
+  · intro ha
+    have he := congrArg (fun p : other.graph.Path (f a) (f b) => p.val.length) (tree.path_map other f hinj a b)
+    have hl : tree.pathLength a b = other.pathLength (f a) (f b) := by
+      change (tree.path a b).val.length = (other.path (f a) (f b)).val.length
+      simpa only [SimpleGraph.Path.map, SimpleGraph.Walk.length_map] using he
+    rw [other.pathLength_adj ha] at hl
+    exact SimpleGraph.Walk.adj_of_length_eq_one hl
+  · exact f.map_rel
+
 /-- Every two vertices have a greatest common ancestor, proved from their
 finite paths rather than assumed as a rooted-tree operation. -/
 theorem exists_greatest_common_ancestor (root a b : V) :

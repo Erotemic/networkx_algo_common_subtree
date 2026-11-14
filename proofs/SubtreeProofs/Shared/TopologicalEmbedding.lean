@@ -1,6 +1,6 @@
 module
 
-public import SubtreeProofs.Shared.RootedTree
+public import SubtreeProofs.Shared.RootedFork
 public import Mathlib.Data.Sym.Sym2
 
 /-!
@@ -36,6 +36,20 @@ variable {A B V : Type*} [DecidableEq V]
   cases two
   cases he
   rfl
+
+/-- Actual edge-preserving injections are topological realizations with empty
+edge interiors. -/
+def ofHom (f : first.graph →g target.graph) (hinj : Function.Injective f) : TopologicalEmbedding first target where
+  map := f
+  injective := hinj
+  avoids_vertices := by
+    intro a b hab c
+    rw [target.pathInterior_adj_empty (f.map_rel hab)]
+    simp
+  interior_disjoint := by
+    intro a b hab c d hcd _
+    rw [target.pathInterior_adj_empty (f.map_rel hab)]
+    exact Finset.disjoint_empty_left _
 
 /-- Restriction along any injective graph map between common trees. -/
 def precomposeHom (embedding : TopologicalEmbedding second target) (f : first.graph →g second.graph)
