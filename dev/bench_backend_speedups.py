@@ -179,7 +179,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--sizes", default="4,8,12,16,20")
     parser.add_argument("--cases", type=int, default=5, help="random cases per size")
-    parser.add_argument("--repeat", type=int, default=5)
+    parser.add_argument("--repeat", type=int, default=3)
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--skip-examples", action="store_true",

@@ -17,6 +17,24 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Uniform complete matching fast path: 2026-11-14
+
+The production graph matcher now recognizes complete equal-positive-weight
+matrices and constructs cardinality-optimal base/deletion witnesses directly.
+Nonuniform, missing or nonpositive entries retain the existing general path.
+All 50 graph Rust tests and 228 normal installed tests pass, including the
+exhaustive injection/deletion suite and independent star vertex/edge bounds.
+The previous host ABI3 runtime matrix passes 219 tests; this graph update's
+portable artifact is validated separately after committing the implementation.
+
+`Shared/UniformMatching.lean` proves uniform scores depend on cardinality,
+full smaller-side matchings are optimal, and a concrete diagonal finite set
+is feasible, has the required cardinality and is independently maximum. This
+uses exact ordered-ring arithmetic, with no IEEE-754 identification or new
+axioms. It is a mathematical fast-path justification, not a Rust control-flow,
+index conversion, deletion-family or runtime-refinement proof. Those production
+obligations remain open. The full Lean build passes 3,714 jobs.
+
 ## Structural isomorphism reference Python access: 2026-11-14
 
 The existing actual structural Rust solvers are now accessible through both

@@ -56,6 +56,16 @@ fn matching_from_pairs(
     WeightedMatching { pairs, weight }
 }
 
+// Complete equal-profit instances occur at high-degree uniform tree vertices.
+// Their optimum is a full matching of the smaller side. This check deliberately
+// requires every entry: missing, nonpositive and unequal profits use the solver.
+fn uniform_positive_complete(weights: &[Vec<Option<Weight>>]) -> bool {
+    let Some(weight) = weights[0][0] else {
+        return false;
+    };
+    weight > 0.0 && weights.iter().flatten().all(|&value| value == Some(weight))
+}
+
 /// Compute a related family without independently solving each deleted matrix.
 ///
 /// The smaller side is covered using zero-profit dummy columns. Unmatched
@@ -83,6 +93,30 @@ pub fn max_weight_bipartite_matching_with_right_deletions(
             base: WeightedMatching::default(),
             deletions: vec![None; right],
         };
+    }
+    if uniform_positive_complete(weights) {
+        let size = left.min(right);
+        let base = matching_from_pairs(weights, (0..size).map(|i| (i, i)));
+        let deletions = (0..right)
+            .map(|deleted| {
+                if deleted >= size {
+                    None
+                } else if right > left {
+                    // An unused original right vertex replaces the deleted
+                    // column; all smaller-side vertices remain covered.
+                    Some(matching_from_pairs(
+                        weights,
+                        (0..size).map(|i| (i, if i == deleted { size } else { i })),
+                    ))
+                } else {
+                    Some(matching_from_pairs(
+                        weights,
+                        (0..size).filter(|&i| i != deleted).map(|i| (i, i)),
+                    ))
+                }
+            })
+            .collect();
+        return WeightedMatchingFamily { base, deletions };
     }
     let transposed = left > right;
     let rows = left.min(right);
@@ -220,6 +254,10 @@ pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> Weighte
             pairs: pair.into_iter().collect(),
             weight: best,
         };
+    }
+
+    if uniform_positive_complete(weights) {
+        return matching_from_pairs(weights, (0..left.min(right)).map(|i| (i, i)));
     }
 
     let transposed = left > right;

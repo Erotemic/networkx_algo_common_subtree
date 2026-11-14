@@ -574,3 +574,30 @@ def test_raw_infinite_penalty_and_invalid_penalties(impl):
     for invalid in [math.nan, -math.inf, -1]:
         with pytest.raises(ValueError, match="nonnegative"):
             solve([1], [], [1], [], invalid)
+
+
+@pytest.mark.parametrize("kind", ["isomorphism", "embedding", "embedding-infinite"])
+@pytest.mark.parametrize("root_mode", ["unrooted", "rooted", "root-to-root"])
+def test_uniform_native_stars_attain_independent_vertex_edge_upper_bound(kind, root_mode):
+    if "rust" not in common.available_unordered_backends():
+        if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
+            pytest.fail("required Rust graph bindings are missing")
+        pytest.skip("optional Rust graph bindings are missing")
+    solver, scorer = common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism
+    kwargs = dict(node_weight=1.25, edge_weight=.375)
+    if root_mode != "unrooted":
+        kwargs.update(roots=(0, 0), root_to_root=root_mode == "root-to-root")
+    if kind != "isomorphism":
+        solver, scorer = (common.largest_weight_common_subtree_embedding_with_distance_penalty,
+                          common.score_common_subtree_embedding)
+        kwargs["skip_vertex_penalty"] = math.inf if kind == "embedding-infinite" else .25
+    for n, m in [(3, 5), (5, 3), (9, 9)]:
+        left, right = nx.star_graph(n - 1), nx.star_graph(m - 1)
+        result = solver(left, right, impl="rust", **kwargs)
+        # At most k mapped vertices and k-1 common edges. The entire smaller
+        # star attains both bounds; skipping cannot increase either reward.
+        k = min(n, m)
+        assert result.weight == 1.25 * k + .375 * (k - 1)
+        assert len(result.node_pairs) == k and len(result.edge_paths) == k - 1
+        assert scorer(left, right, result, **kwargs) == result.weight
+        assert scorer(left, right, result.node_pairs, **kwargs) == result.weight

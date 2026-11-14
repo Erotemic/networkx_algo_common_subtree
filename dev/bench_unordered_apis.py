@@ -50,7 +50,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sizes", default="4,8,16,32")
     parser.add_argument("--shapes", default="chain,star,balanced,random,double-star,chain-star")
-    parser.add_argument("--repeat", type=int, default=5)
+    parser.add_argument("--repeat", type=int, default=3)
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--oracle-max-size", type=int, default=4)
     parser.add_argument("--seed", type=int, default=2018)

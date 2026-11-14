@@ -13,14 +13,14 @@ milestones; full verification remains a final verified-release requirement.
 | Root-preserving ordered isomorphism | Both isomorphism APIs accept `rooted=True`; same backends/default | Exposes the already-computed level state; 529 exhaustive small pairs, 80 fractional original-index cases, graph root retention and independent rescoring | Installed Rust median 2.16x/1.57x faster than Python/Cython on the rooted weighted suite. Existing unweighted root-pruning math/source reference is distinct from this weighted legacy production implementation; its refinement remains open |
 | Droschinsky 2016 weighted unordered isomorphism | Public `maximum_common_subtree_isomorphism`; `auto` selects Rust, Python exhaustive fallback | Dense oriented-state Rust DP through PyO3; signed/fractional scalar or callback weights, optional label equality, empty/nonempty objectives, original-node/path witnesses and independent rescorer | Dense oriented-state DP, fixed-left rooting and matching deletion families have independent checks and a written operation-count argument for the 2016 target. Graph Rust refinement and formal optimized runtime remain open |
 | Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Fixed-left matching families and rerooted skip DP; finite nonnegative or infinite penalty; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Fixed-left matching families, rerooted skips and distinct-branch joins are implemented/tested. Installed module cases improve 19–36×; Constant-time view/branch lookup is implemented; formal runtime and graph Rust refinement remain open |
-| Rooted graph objectives, both families | Both APIs accept `roots=(u,v)` for ambient orientations and `root_to_root=True` to require the supplied pair | Rust `RootConstraint`, independent subset/bijection/path root predicates, direct NetworkX witness checks, original-node rescorers; signed and forbidden weights retained | All 48 native and 219 installed tests pass, including high-degree repair under each policy. Rooted specs/recurrences exist in Lean; production algorithm/root/Python refinement remains open; IEEE-754 correctness is outside the initial proof scope. Rooted/forced module API and callback costs are measured separately |
+| Rooted graph objectives, both families | Both APIs accept `roots=(u,v)` for ambient orientations and `root_to_root=True` to require the supplied pair | Rust `RootConstraint`, independent subset/bijection/path root predicates, direct NetworkX witness checks, original-node rescorers; signed and forbidden weights retained | All 50 native and 228 installed tests pass, including high-degree repair under each policy. Rooted specs/recurrences exist in Lean; production algorithm/root/Python refinement remains open; IEEE-754 correctness is outside the initial proof scope. Rooted/forced module API and callback costs are measured separately |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching` and all-right-deletion families, exhaustive injection tests | Used internally by graph DP. Signed optional weights; f64 arithmetic, not an exact-integer proof |
 | Exact assignment / partial matching | Public `min_cost_assignment` / `max_weight_partial_matching`, Rust required | `verified_assignment_core`; signed i64, checked i128, forbidden edges, public dual certificates; independent permutation/injection tests and integer-boundary cases | Actual total-correctness Lean endpoints prove optimum and exact indices/weight. PyO3/Python conversion remains tested, not source proved |
 | Exact sparse augmentation / deletion repair | Standalone Rust only | Actual one-path augmentation verified; compact deletion caller implemented, 546 induced-instance tests | Caller projection/refinement still open. Full-matrix cut scans; published optimized sparse queue/runtime not implemented |
 
 ## Current executed validation
 
-A fresh normal Rust+Cython wheel passes **219 tests, zero skips**, outside the
+A fresh normal Rust+Cython wheel passes **228 tests, zero skips**, outside the
 checkout with compiled parity mandatory. The identical Rust-only CP310 ABI3
 wheel passes **219 tests on each CPython 3.10–3.14**, with strict ABI auditing
 clean. Independent oracles cover subset/pair deletions, graph bijections/paths,
@@ -28,8 +28,8 @@ assignment permutations/injections, original indices, signed/forbidden scores,
 root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.
 
-The last executed native suites pass **48 graph**, **10 ordered-core** and
-**15 exact-assignment** tests. The last full Lean build passes **3,713 jobs**
+The last executed native suites pass **50 graph**, **10 ordered-core** and
+**15 exact-assignment** tests. The last full Lean build passes **3,714 jobs**
 and both existing example suites. Existing mathematical and source proofs
 survive regenerated semantics for the new indexed-isomorphism functions, whose
 own refinement remains open. The production f64 graph crate is outside the
@@ -37,6 +37,13 @@ current extraction boundary. No new end audit was run. IEEE-754 correctness
 is deliberately excluded from the initial proof scope; [arithmetic boundary](README.md#initial-proof-scope-arithmetic-boundary).
 
 ## Measured implementation evidence
+
+- **Uniform complete child matchings** use direct cardinality-optimal witnesses,
+  including all right deletions; other matrices retain Hungarian matching.
+  Native uniform32 families improve 23.4×; installed star512 APIs improve
+  3.30×/3.90× for 2016/2018. All 50 native and 228 normal-wheel tests pass.
+  Exact ordered-ring diagonal optimality is proved separately; the f64 source
+  refinement is still open. [Evidence](../../dev/benchmarks/2026-11-14-uniform-matching.md).
 
 - **Structural isomorphism reference** now runs from both Python interfaces,
   with original token/vertex witnesses and rooted/general modes. Independent
@@ -53,7 +60,7 @@ is deliberately excluded from the initial proof scope; [arithmetic boundary](REA
 
 - **Rooted graph APIs** now expose ambient and forced-root objectives for both
   Droschinsky families, with original vertices and all existing scoring modes.
-  Independent root/path oracles pass; the current suite has 48/219 native/installed tests. Default
+  Independent root/path oracles pass; the current suite has 50/228 native/installed tests. Default
   unrooted median runtime ratios remain 1.006/0.999 against the prior build.
   [Contracts, tests and measurements](../../dev/benchmarks/2026-11-14-graph-root-modes.md).
 

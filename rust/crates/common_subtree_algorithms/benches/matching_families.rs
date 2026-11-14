@@ -29,11 +29,11 @@ fn main() {
     let repeat = std::env::var("COMMON_SUBTREE_BENCH_REPEAT")
         .ok()
         .and_then(|s| s.parse().ok())
-        .unwrap_or(7);
+        .unwrap_or(3);
     let warmup = std::env::var("COMMON_SUBTREE_BENCH_WARMUP")
         .ok()
         .and_then(|s| s.parse().ok())
-        .unwrap_or(2);
+        .unwrap_or(1);
     assert!(repeat > 0);
     for (left, right) in [
         (8, 8),

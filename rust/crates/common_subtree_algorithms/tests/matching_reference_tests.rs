@@ -305,3 +305,49 @@ fn matching_deletion_family_rejects_invalid_input() {
         );
     }
 }
+
+#[test]
+fn complete_uniform_matchings_attain_cardinality_bounds_with_original_indices() {
+    // A complete uniform positive matrix has optimum min(rows, columns) edges.
+    // After deletion the bound is min(rows, columns - 1), independently of
+    // which optimum the solver chooses. Nonpositive weights select no edges.
+    for (left, right) in [(1, 5), (5, 1), (3, 5), (5, 3), (5, 5), (32, 64), (64, 32)] {
+        for weight in [-1.0, 0.0, 0.125, 1.0 + 2_f64.powi(-40), 1e-200, 1e150] {
+            let matrix = vec![vec![Some(weight); right]; left];
+            let check = |matching: &common_subtree_algorithms::WeightedMatching,
+                         deleted: Option<usize>| {
+                let size = if weight > 0.0 {
+                    left.min(right - usize::from(deleted.is_some()))
+                } else {
+                    0
+                };
+                assert_eq!(matching.pairs.len(), size);
+                assert_eq!(matching.weight, (0..size).fold(0.0, |sum, _| sum + weight));
+                let mut seen_left = vec![false; left];
+                let mut seen_right = vec![false; right];
+                for &(i, j) in &matching.pairs {
+                    assert!(i < left && j < right && Some(j) != deleted);
+                    assert!(!seen_left[i] && !seen_right[j]);
+                    seen_left[i] = true;
+                    seen_right[j] = true;
+                }
+            };
+            check(&max_weight_bipartite_matching(&matrix), None);
+            let family = max_weight_bipartite_matching_with_right_deletions(&matrix);
+            check(&family.base, None);
+            for deleted in 0..right {
+                check(family.without_right(deleted).unwrap(), Some(deleted));
+            }
+        }
+    }
+}
+
+#[test]
+fn complete_uniform_matchings_reject_total_overflow() {
+    let matrix = vec![vec![Some(f64::MAX); 2]; 2];
+    assert!(std::panic::catch_unwind(|| max_weight_bipartite_matching(&matrix)).is_err());
+    assert!(
+        std::panic::catch_unwind(|| max_weight_bipartite_matching_with_right_deletions(&matrix))
+            .is_err()
+    );
+}
