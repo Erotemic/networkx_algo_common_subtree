@@ -308,6 +308,19 @@ proves the diamond half of 2018 Lemma 5 against those independent optima,
 including empty child families. The mapped-root matching half, executable DP,
 optimized matching/cost and actual graph Rust refinement remain open.
 
+## Common-tree graft foundation accepted: 2026-11-14
+
+`Shared.TreeGraft.tree` constructs a common tree by attaching a fresh root
+to the specified roots of any finite family of finite trees. Its carrier is
+`Option (Sigma A)`, keeping branch vertices distinct. `edges_card` proves the
+exact edge count, and `isTree` derives the tree invariant from Mathlib's
+connectivity/cardinality criterion. `root_path` and `child_cases` prove the
+actual canonical root paths and complete rooted-child classification.
+
+This supplies the common-tree constructor for 2018 mapped-state witness
+assembly. Admissible ambient realization gluing and the mapped-state matching
+recurrence remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
