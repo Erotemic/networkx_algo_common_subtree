@@ -38,6 +38,31 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## Actual zero-based sparse potential updates: 2026-11-14
+
+The maintained Rust `sparse::adjust_sparse_cut` now applies a nonnegative cut
+increment directly to zero-based potential slices, matching the coordinate
+convention of `minimum_sparse_cut`. Selected rows increase and selected
+columns decrease; inputs are borrowed and unchanged. Shape, size, negative
+increment and checked overflow produce explicit errors. Two single-vector
+passes keep this implementation within the pinned Aeneas translation subset.
+
+`Rust/SparseCutUpdate` proves exact full-vector coordinate readback for the
+actual loops. `SparseCutUpdateSafety.adjust_sparse_cut_bi_safe_spec` derives
+all checked ranges from sparse feasibility, an actual compatible perfect
+assignment, a one-excess-row minimum-cut condition, and the two-sided
+nonpositive initial-potential envelope. The returned physical vectors equal
+the independent ideal adjustment at every original coordinate, preserve sparse
+feasibility and the envelope, and satisfy exact dual accounting and the next
+cumulative bound. No arithmetic-success premise is supplied to that endpoint.
+
+The exact-core native suite adds cut/update composition tests over sparse
+matrices, every one-excess-row mask through dimension four, nonzero potentials
+on both sides, feasibility, newly tight selected edges and exact objective
+progress. Error cases cover dimensions, negative increments and both overflow
+directions. This is a verified update primitive; the sparse augmenting-search
+caller, repair driver and optimized runtime are still open.
+
 ## Original-index decoding after single-cycle deletion repair: 2026-11-14
 
 `Shared/CopiedMatchingDeletionDecode.surviving_minimum_decodes` proves that

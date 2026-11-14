@@ -1715,4 +1715,130 @@ def sparse.minimum_sparse_cut
                 selected_columns n none 0#usize
           else ok (core.result.Result.Err AssignmentError.NonSquare)
 
+/-- [verified_assignment_core::sparse::increase_selected]:
+    Source: 'src/sparse.rs', lines 116:0-125:1 -/
+def sparse.increase_selected
+  (value : Std.I128) (selected : Bool) (delta : Std.I128) :
+  Result (core.result.Result Std.I128 AssignmentError)
+  := do
+  if selected
+  then
+    let o ← lift (I128.checked_add value delta)
+    match o with
+    | none => ok (core.result.Result.Err AssignmentError.ArithmeticOverflow)
+    | some value1 => ok (core.result.Result.Ok value1)
+  else ok (core.result.Result.Ok value)
+
+/-- [verified_assignment_core::sparse::decrease_selected]:
+    Source: 'src/sparse.rs', lines 127:0-136:1 -/
+def sparse.decrease_selected
+  (value : Std.I128) (selected : Bool) (delta : Std.I128) :
+  Result (core.result.Result Std.I128 AssignmentError)
+  := do
+  if selected
+  then
+    let o ← lift (I128.checked_sub value delta)
+    match o with
+    | none => ok (core.result.Result.Err AssignmentError.ArithmeticOverflow)
+    | some value1 => ok (core.result.Result.Ok value1)
+  else ok (core.result.Result.Ok value)
+
+/-- [verified_assignment_core::sparse::adjust_selected]: loop body 0:
+    Source: 'src/sparse.rs', lines 146:4-160:1 -/
+@[rust_loop_body]
+def sparse.adjust_selected_loop.body
+  (values : Slice Std.I128) (selected : Slice Bool) (delta : Std.I128)
+  (increasing : Bool) (updated : alloc.vec.Vec Std.I128) (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize)
+    (core.result.Result (alloc.vec.Vec Std.I128) AssignmentError))
+  := do
+  let i := Slice.len values
+  if index < i
+  then
+    let value ←
+      if increasing
+      then
+        do
+        let i1 ← Slice.index_usize values index
+        let b ← Slice.index_usize selected index
+        sparse.increase_selected i1 b delta
+      else
+        do
+        let i1 ← Slice.index_usize values index
+        let b ← Slice.index_usize selected index
+        sparse.decrease_selected i1 b delta
+    match value with
+    | core.result.Result.Ok value1 =>
+      let updated1 ← alloc.vec.Vec.push updated value1
+      let index1 ← index + 1#usize
+      ok (cont (updated1, index1))
+    | core.result.Result.Err error => ok (done (core.result.Result.Err error))
+  else ok (done (core.result.Result.Ok updated))
+
+/-- [verified_assignment_core::sparse::adjust_selected]: loop 0:
+    Source: 'src/sparse.rs', lines 146:4-160:1 -/
+@[rust_loop]
+def sparse.adjust_selected_loop
+  (values : Slice Std.I128) (selected : Slice Bool) (delta : Std.I128)
+  (increasing : Bool) (updated : alloc.vec.Vec Std.I128) (index : Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.I128) AssignmentError)
+  := do
+  loop
+    (fun (updated1, index1) => sparse.adjust_selected_loop.body values selected
+      delta increasing updated1 index1)
+    (updated, index)
+
+/-- [verified_assignment_core::sparse::adjust_selected]:
+    Source: 'src/sparse.rs', lines 138:0-160:1 -/
+@[reducible]
+def sparse.adjust_selected
+  (values : Slice Std.I128) (selected : Slice Bool) (delta : Std.I128)
+  (increasing : Bool) :
+  Result (core.result.Result (alloc.vec.Vec Std.I128) AssignmentError)
+  := do
+  sparse.adjust_selected_loop values selected delta increasing
+    (alloc.vec.Vec.new Std.I128) 0#usize
+
+/-- [verified_assignment_core::sparse::adjust_sparse_cut]:
+    Source: 'src/sparse.rs', lines 168:0-194:1
+    Visibility: public -/
+def sparse.adjust_sparse_cut
+  (rows : Slice Std.I128) (columns : Slice Std.I128)
+  (selected_rows : Slice Bool) (selected_columns : Slice Bool)
+  (delta : Std.I128) :
+  Result (core.result.Result ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec
+    Std.I128)) AssignmentError)
+  := do
+  let n := Slice.len rows
+  let i := Slice.len columns
+  if i != n
+  then ok (core.result.Result.Err AssignmentError.NonSquare)
+  else
+    let i1 := Slice.len selected_rows
+    if i1 != n
+    then ok (core.result.Result.Err AssignmentError.NonSquare)
+    else
+      let i2 := Slice.len selected_columns
+      if i2 != n
+      then ok (core.result.Result.Err AssignmentError.NonSquare)
+      else
+        let i3 ← lift (UScalar.cast .Usize core.num.U32.MAX)
+        if n > i3
+        then ok (core.result.Result.Err AssignmentError.TooLarge)
+        else
+          if delta < 0#i128
+          then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+          else
+            let r ← sparse.adjust_selected rows selected_rows delta true
+            match r with
+            | core.result.Result.Ok value =>
+              let r1 ←
+                sparse.adjust_selected columns selected_columns delta false
+              match r1 with
+              | core.result.Result.Ok value1 =>
+                ok (core.result.Result.Ok (value, value1))
+              | core.result.Result.Err error =>
+                ok (core.result.Result.Err error)
+            | core.result.Result.Err error => ok (core.result.Result.Err error)
+
 end verified_assignment_core

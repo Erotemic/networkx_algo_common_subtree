@@ -90,3 +90,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SparseBiAdjustment.adjust_potentials_bi_safe_spec
 
 #print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.matched_single_cycle_decodes
+
+#print axioms SubtreeProofs.Rust.SparseCut.adjust_sparse_cut_bi_safe_spec

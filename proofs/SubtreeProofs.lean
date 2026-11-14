@@ -175,3 +175,5 @@ public import SubtreeProofs.Shared.AssignmentBiEnvelope
 public import SubtreeProofs.Shared.CopiedMatchingEnvelope
 public import SubtreeProofs.Rust.SparseBiAdjustment
 public import SubtreeProofs.Shared.CopiedMatchingDeletionDecode
+public import SubtreeProofs.Rust.SparseCutUpdate
+public import SubtreeProofs.Rust.SparseCutUpdateSafety
