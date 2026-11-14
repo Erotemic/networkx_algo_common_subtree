@@ -13,6 +13,12 @@ __submodules__ = {
     'balanced_isomorphism': [],
     'tree_embedding': ['maximum_common_ordered_subtree_embedding'],
     'tree_isomorphism': ['maximum_common_ordered_subtree_isomorphism'],
+    'unordered': ['CommonSubtreeResult', 'available_unordered_backends',
+                  'maximum_common_subtree_isomorphism',
+                  'largest_weight_common_subtree_embedding_with_distance_penalty',
+                  'score_common_subtree_isomorphism', 'score_common_subtree_embedding'],
+    'matching': ['AssignmentResult', 'PartialMatchingResult',
+                 'min_cost_assignment', 'max_weight_partial_matching'],
 }
 
 from networkx_algo_common_subtree import balanced_embedding

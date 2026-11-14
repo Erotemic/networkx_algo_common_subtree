@@ -124,6 +124,8 @@ impl LabeledTree {
 /// Queries must be deterministic and return finite weights or `None` for
 /// incompatibility. Signed weights are supported. Solvers panic when a queried
 /// weight or accumulated score is nonfinite; IEEE rounding still applies.
+/// Edge scores describe undirected mapped edges: reversing both endpoint
+/// orders must preserve compatibility and weight.
 pub trait Scoring {
     /// Weight for mapping a node pair. `None` means incompatible.
     fn node_weight(
@@ -452,7 +454,10 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
 /// This is the tree-level dynamic-programming core: choose a root pair, solve
 /// child subproblems recursively, and combine child choices with a maximum-weight
 /// bipartite matching. Unmatched children are allowed, so the result can be a
-/// proper connected subtree of either input.
+/// proper connected subtree of either input. The left tree is rooted once;
+/// every connected selected subtree has a unique highest retained vertex in
+/// this orientation. Enumerating that vertex and its arbitrary right image
+/// covers all solutions without rerooting the left tree in every state.
 pub fn maximum_common_subtree_isomorphism<S: Scoring>(
     left: &LabeledTree,
     right: &LabeledTree,
@@ -475,12 +480,27 @@ pub fn maximum_nonempty_common_subtree_isomorphism<S: Scoring>(
     }
 
     let mut solver = RootedSolver::new(left, right, scoring);
+    // Any root is correct. A maximum-degree root avoids repeatedly excluding
+    // one spoke at a high-degree hub, particularly on star-shaped inputs.
+    let root = (0..left.len())
+        .max_by_key(|&u| left.neighbors(u).len())
+        .unwrap();
+    let mut parents = vec![None; left.len()];
+    let mut stack = vec![root];
+    while let Some(u) = stack.pop() {
+        for edge in left.neighbors(u) {
+            if Some(edge.to) != parents[u] {
+                parents[edge.to] = Some(u);
+                stack.push(edge.to);
+            }
+        }
+    }
     let mut best = None;
     for u in 0..left.len() {
         for v in 0..right.len() {
             let state = State {
                 u,
-                parent_u: None,
+                parent_u: parents[u],
                 v,
                 parent_v: None,
             };

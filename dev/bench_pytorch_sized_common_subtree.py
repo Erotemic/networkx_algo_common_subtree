@@ -2,9 +2,10 @@
 """
 Inspect, run, and report PyTorch-sized common-subtree benchmarks.
 
-The optimized large-input benchmark currently lives on the Rust side because the
-new paper-derived algorithms are still sequestered in the
-``common_subtree_algorithms`` crate.  This Python helper keeps the benchmark
+This helper runs the native Rust benchmark directly. Both graph families are
+also available through the installed Python/PyO3 APIs; use
+``dev/bench_unordered_apis.py --module-trees`` to measure those interfaces.
+This Python helper keeps the benchmark
 inputs easy to inspect, runs the Rust benchmark in a machine-readable mode, and
 renders human-friendly tables for communicating score / match / runtime tradeoffs.
 

@@ -82,6 +82,14 @@ improve 1.18–1.72x. See [the report](../../dev/benchmarks/2026-11-14-unordered
 The exact integer verified cores are unchanged. Specialized paper matching,
 optimized graph schedules and their production source proofs remain open.
 
+The 2016 solver now roots the left tree once and enumerates each highest
+retained vertex and arbitrary right image. All existing exhaustive/native and
+139 installed-wheel tests pass. The same 32/32 star drops from 0.110 s to
+0.000879 s (**125x**); ResNet-sized public APIs improve **3.63–6.04x**.
+The 2018 solver is unchanged by this rooting optimization. API/raw/native
+measurements and process-wide RSS are in [the report](../../dev/benchmarks/2026-11-14-unordered-fixed-root.md).
+This does not close the paper's specialized matching or production proof work.
+
 ## Immediate implementation queue
 
 Installed ordered balanced-API comparisons now cover both algorithms, equality,

@@ -1,0 +1,213 @@
+{
+  "python": "3.13.2 (main, Mar 17 2025, 21:02:54) [Clang 20.1.0 ]",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "package_path": "/tmp/common-subtree-rectangular-install/networkx_algo_common_subtree/__init__.py",
+  "extension_path": "/tmp/common-subtree-rectangular-install/networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-gnu.so",
+  "extension_sha256": "6734880e896a51c253ae0fc7101c3d568c04e54a115c5c4211fdc2e618b5b48c",
+  "configuration": {
+    "sizes": "",
+    "shapes": "chain,star,balanced,random",
+    "repeat": 5,
+    "warmup": 1,
+    "oracle_max_size": 4,
+    "seed": 2018,
+    "module_trees": true,
+    "json": "/home/joncrall/code/networkx_algo_common_subtree/dev/benchmarks/2026-11-14-unordered-module-baseline.json"
+  },
+  "rows": [
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "rust",
+      "samples_seconds": [
+        0.06193542,
+        0.051189528,
+        0.048807405,
+        0.048477577,
+        0.048945983
+      ],
+      "median_seconds": 0.048945983,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.049545699,
+        0.050235385,
+        0.048698381,
+        0.048703703,
+        0.04872473
+      ],
+      "median_seconds": 0.04872473,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "rust",
+      "samples_seconds": [
+        0.281416802,
+        0.281316239,
+        0.280271493,
+        0.268811296,
+        0.2702648
+      ],
+      "median_seconds": 0.280271493,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.273042361,
+        0.270087172,
+        0.271264492,
+        0.272268218,
+        0.271415696
+      ],
+      "median_seconds": 0.271415696,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "rust",
+      "samples_seconds": [
+        0.039186184,
+        0.038711023,
+        0.038324776,
+        0.037815567,
+        0.038455691
+      ],
+      "median_seconds": 0.038455691,
+      "weight": 235.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.037961107,
+        0.037992851,
+        0.037474001,
+        0.038735467,
+        0.038506248
+      ],
+      "median_seconds": 0.037992851,
+      "weight": 235.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "rust",
+      "samples_seconds": [
+        0.313885972,
+        0.311832583,
+        0.310360278,
+        0.301914883,
+        0.298792255
+      ],
+      "median_seconds": 0.310360278,
+      "weight": 271.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.299991889,
+        0.302983424,
+        0.315714101,
+        0.306866057,
+        0.303682486
+      ],
+      "median_seconds": 0.303682486,
+      "weight": 271.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "rust",
+      "samples_seconds": [
+        0.109648095,
+        0.110183869,
+        0.110210456,
+        0.110242492,
+        0.110661417
+      ],
+      "median_seconds": 0.110210456,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.108562977,
+        0.110958766,
+        0.110557678,
+        0.109067098,
+        0.107479272
+      ],
+      "median_seconds": 0.109067098,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "rust",
+      "samples_seconds": [
+        0.620193585,
+        0.609384503,
+        0.611280451,
+        0.618844891,
+        0.61407192
+      ],
+      "median_seconds": 0.61407192,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.613625604,
+        0.604590629,
+        0.681515593,
+        0.652205875,
+        0.641942211
+      ],
+      "median_seconds": 0.641942211,
+      "weight": 331.0
+    }
+  ],
+  "process_peak_rss_bytes": 282329088
+}

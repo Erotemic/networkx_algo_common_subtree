@@ -9,9 +9,10 @@
 //! - A. Droschinsky, N. M. Kriege, and P. Mutzel, "Largest Weight Common
 //!   Subtree Embeddings with Distance Penalties" (arXiv:1805.00821).
 //!
-//! This crate is intentionally independent from the existing PyO3 extension in
-//! `rust/`. It provides small, typed Rust APIs and tests that can be hardened
-//! before a Python or NetworkX-facing wrapper is added.
+//! This crate is independent of PyO3. Its typed APIs are consumed by the Python
+//! extension in `rust/` and by native benchmarks. Independent exhaustive tests
+//! validate its witnesses/objectives; the f64 graph source refinement and the
+//! published optimized schedules remain separate open obligations.
 
 pub mod matching;
 pub mod model_trees;

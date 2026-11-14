@@ -50,46 +50,69 @@ def main():
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--oracle-max-size", type=int, default=4)
     parser.add_argument("--seed", type=int, default=2018)
+    parser.add_argument("--module-trees", action="store_true", help="Also measure three existing ResNet-sized fixtures")
     parser.add_argument("--json", type=Path, required=True)
     args = parser.parse_args()
     if args.repeat < 1 or args.warmup < 0:
         parser.error("repeat must be positive and warmup nonnegative")
-    rows = []
-    for n in map(int, args.sizes.split(",")):
+    workloads = []
+    for n in map(int, filter(None, args.sizes.split(","))):
         for shape in args.shapes.split(","):
             for asymmetric in [False, True]:
                 m = max(1, n // 2) if asymmetric else n
-                left, right = tree(shape, n, args.seed), tree(shape, m, args.seed + 1)
-                le = [(u, v, 0) for u, v in left.edges]
-                re = [(u, v, 0) for u, v in right.edges]
-                for name, scorer, extra in [
-                    ("maximum_common_subtree_isomorphism", common.score_common_subtree_isomorphism, {}),
-                    ("largest_weight_common_subtree_embedding_with_distance_penalty", common.score_common_subtree_embedding,
-                     {"skip_vertex_penalty": .25}),
-                ]:
-                    values = []
-                    for backend in ["rust", "raw-pyo3"] + (["python"] if max(n, m) <= args.oracle_max_size else []):
-                        if backend == "raw-pyo3":
-                            def call():
-                                return getattr(_rust, name)([0] * n, le, [0] * m, re, **extra)
-                        else:
-                            def call():
-                                return getattr(common, name)(left, right, impl=backend, **extra)
-                        samples, result = measure(call, args.repeat, args.warmup)
-                        weight = result[0] if backend == "raw-pyo3" else result.weight
-                        if backend != "raw-pyo3":
-                            assert scorer(left, right, result, **extra) == weight
-                        values.append(weight)
-                        row = dict(algorithm=name, shape=shape, left_size=n, right_size=m, backend=backend,
-                                   samples_seconds=samples, median_seconds=statistics.median(samples), weight=weight)
-                        rows.append(row)
-                        print(json.dumps(row), flush=True)
-                    assert len(set(values)) == 1, (name, shape, n, m, values)
+                workloads.append((shape, tree(shape, n, args.seed), tree(shape, m, args.seed + 1), {}))
+    if args.module_trees:
+        from networkx_algo_common_subtree.pytorch_sized_trees import make_benchmark_tree_pairs
+        def graph(module):
+            result = nx.Graph()
+            result.add_nodes_from((u, {"label": label}) for u, label in enumerate(module.node_labels))
+            result.add_edges_from((u, v, {"label": label}) for u, v, label in module.edges)
+            return result
+        fixtures = make_benchmark_tree_pairs()
+        for case in [fixtures[0], fixtures[2], fixtures[6]]:
+            workloads.append((case.name, graph(case.left), graph(case.right), {"node_label": "label", "edge_label": "label"}))
+    rows = []
+    for shape, left, right, labels in workloads:
+        n, m = len(left), len(right)
+        ll = [data.get("label", 0) for _, data in left.nodes(data=True)]
+        rl = [data.get("label", 0) for _, data in right.nodes(data=True)]
+        le = [(u, v, data.get("label", 0)) for u, v, data in left.edges(data=True)]
+        re = [(u, v, data.get("label", 0)) for u, v, data in right.edges(data=True)]
+        for name, scorer, extra in [
+            ("maximum_common_subtree_isomorphism", common.score_common_subtree_isomorphism, {}),
+            ("largest_weight_common_subtree_embedding_with_distance_penalty", common.score_common_subtree_embedding,
+             {"skip_vertex_penalty": .25}),
+        ]:
+            values = []
+            for backend in ["rust", "raw-pyo3"] + (["python"] if max(n, m) <= args.oracle_max_size else []):
+                if backend == "raw-pyo3":
+                    def call():
+                        return getattr(_rust, name)(ll, le, rl, re, **extra)
+                else:
+                    def call():
+                        return getattr(common, name)(left, right, impl=backend, **labels, **extra)
+                samples, result = measure(call, args.repeat, args.warmup)
+                weight = result[0] if backend == "raw-pyo3" else result.weight
+                if backend != "raw-pyo3":
+                    assert scorer(left, right, result, **labels, **extra) == weight
+                values.append(weight)
+                row = dict(algorithm=name, shape=shape, left_size=n, right_size=m, backend=backend,
+                           samples_seconds=samples, median_seconds=statistics.median(samples), weight=weight)
+                rows.append(row)
+                print(json.dumps(row), flush=True)
+            assert len(set(values)) == 1, (name, shape, n, m, values)
     binary = Path(_rust.__file__)
     result = dict(python=sys.version, platform=platform.platform(), processor=platform.processor(),
                   package_path=common.__file__, extension_path=str(binary),
                   extension_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
                   configuration=vars(args) | {"json": str(args.json)}, rows=rows)
+    try:
+        import resource
+        # Whole-process high-water mark, including Python, all solvers and any
+        # oracle runs. It is not a per-solver allocation/peak measurement.
+        result["process_peak_rss_bytes"] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * (1 if sys.platform == "darwin" else 1024)
+    except ImportError:
+        result["process_peak_rss_bytes"] = None
     args.json.parent.mkdir(parents=True, exist_ok=True)
     args.json.write_text(json.dumps(result, indent=2) + "\n")
 
