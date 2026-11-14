@@ -18,7 +18,9 @@ Current assurance is deliberately narrower than the crate's eventual target:
   contents of all four actual constant-fill initialization loops.
   `Rust.AssignmentRowMinimum` proves the actual row scan terminates and returns
   exactly the independent finite minimum, including membership and lower bounds
-  for nonempty rows.
+  for nonempty rows. `Rust.AssignmentPotentialInitialization` proves the actual
+  vector initializer safely returns exact row minima and a feasible dual state
+  for represented square matrices.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.

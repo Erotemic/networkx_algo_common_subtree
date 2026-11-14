@@ -8,6 +8,22 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Actual Rust feasible initial potentials: 2026-11-14
+
+`Rust.AssignmentPotentialInitialization.initial_potentials_spec` proves the
+actual generated Rust vector initializer safely terminates with exact row
+minima in all real slots and zero in the reserved slot. Its prefix invariant
+preserves previous writes and excludes the error branch on nonempty rows.
+`initial_potentials_feasible_spec` proves that a represented square input and
+representable `n+1` extent suffice to obtain a dual-feasible row vector with
+zero column potentials, using the independent `Assignment.Feasible` matrix
+contract. It derives row nonemptiness from square shape, and covers the empty
+matrix. Integer widening, scalar increments, vector size checks and indexing
+are discharged for the actual initializer. The full library builds (3,558
+jobs). Subsequent scan/adjust/augment invariants, complete assignment entry
+point correctness, total arithmetic bounds and runtime remain open.
+
 ## Actual Rust row-minimum scan: 2026-11-14
 
 The integer Hungarian core now initializes each row potential from its row
