@@ -12,6 +12,25 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Complete actual Rust column scan: 2026-11-14
+
+`Rust.AssignmentScanInvariant.scan_columns_spec` proves successful terminating
+execution of the complete generated Rust scan, not just its individual
+branches. The invariant tracks every processed/unprocessed slack and
+predecessor slot and identifies minimum selection with Mathlib's stable finite
+argmin. `scan_columns_minimum_spec` proves the returned column is positive,
+unused, inside the matrix dimension, globally minimal over every unused
+column's independent relaxed weight, and physically holds the returned minimum
+in the updated slack table. The exact table-prefix identities are retained.
+
+Premises describe finite vector/index representation, an available unused
+column, and explicit range bounds on the two reduced-cost subtractions. They
+supply no optimum or algorithm-correctness certificate. Deriving those numeric
+bounds and availability from the full Hungarian state remains open, alongside
+the adjust/augment phases and entry-point theorem. The full library builds
+(3,561 jobs).
+
 ## Actual Rust column-scan branches: 2026-11-14
 
 `Rust.AssignmentColumnScan.body_unused_spec` now proves the complete active

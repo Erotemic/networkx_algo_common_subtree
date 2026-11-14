@@ -22,7 +22,9 @@ Current assurance is deliberately narrower than the crate's eventual target:
   vector initializer safely returns exact row minima and a feasible dual state
   for represented square matrices. `Rust.AssignmentColumnScan` proves exact
   slack relaxation and strict predecessor updates, including ties and absent
-  slacks. The complete scan invariant remains open.
+  slacks. `Rust.AssignmentScanInvariant` proves the complete scan terminates
+  with exact table updates and an attaining global minimum among unused columns,
+  under explicit representation and arithmetic bounds.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.
