@@ -61,8 +61,8 @@ attention; full per-state witnesses and 2018's optimized schedule remain open.
 Both graph families additionally expose fixed ambient roots and the separate
 root-to-root restriction, with original-node witnesses and all existing signed
 scoring modes. Independent rooted oracles and 47 native / 199 installed tests
-pass, including every host ABI3 runtime. The portable 176-test source snapshot
-is recorded separately until rebuilt. [Root contracts and measurements](../../dev/benchmarks/2026-11-14-graph-root-modes.md).
+pass, including every host ABI3 runtime. A source-only portable rebuild at
+`e272d36` also passes 199 tests on the glibc floor and all five runtimes. [Root contracts and measurements](../../dev/benchmarks/2026-11-14-graph-root-modes.md).
 
 ## Verified actual one-path sparse augmentation: 2026-11-14
 

@@ -75,7 +75,9 @@ crate is outside the current extraction boundary. No new end audit was run.
   parity. Source-only → sdist → both wheel modes was executed at `3d68c00`.
   Source-only `5e42f17` also produces a genuine manylinux_2_28 x86_64 wheel:
   176 tests on its glibc floor and each CPython 3.10–3.14, clean Linux/ABI audits,
-  and two byte-identical fresh builds with the same source timestamp.
+  and two byte-identical fresh builds with the same source timestamp. The later
+  `e272d36` rooted-API source-only rebuild passes 199 tests on the glibc floor
+  and all five CPython runtimes.
   [Commands/evidence](../packaging.md). CI uses this profile and requires native
   backends; remote execution and macOS/Windows/other architectures remain open.
 

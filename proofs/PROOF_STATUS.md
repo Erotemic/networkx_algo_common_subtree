@@ -2140,3 +2140,8 @@ removed index. The deletion caller's remaining projection/refinement work is
 open. Substantial further proof development is deferred under the updated
 software-first development sequence; complete verification remains a final
 verified-release requirement.
+
+The source-only portable rebuild at `e272d36` now also passes all 199 tests on
+glibc 2.28 and each CPython 3.10–3.14, with strict Linux/ABI auditing. This
+updates the packaging evidence for the rooted graph APIs without changing
+any mathematical, source-refinement or complexity assurance claim.

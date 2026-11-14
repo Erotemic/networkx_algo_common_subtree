@@ -26,9 +26,9 @@ boundary; scoring and matching remain native, with the GIL released.
 All **47 graph Rust tests** and **199 installed Python tests pass**, with
 compiled parity mandatory in the normal wheel. The identical Rust-only ABI3
 wheel passes 199 tests on each CPython 3.10–3.14; strict ABI auditing is clean.
-Strict Sphinx HTML generation passes. The existing portable manylinux profile
-will run the expanded suite when rebuilt; its preceding 176-test artifact is
-recorded separately in the packaging ledger.
+Strict Sphinx HTML generation passes. The portable manylinux profile also passes 199 tests on glibc 2.28 and on each
+CPython 3.10–3.14 after a source-only rebuild at `e272d36`; the packaging ledger
+records its separate source/wheel hashes.
 
 Independent subset/bijection/path enumeration now filters by the source root
 predicate, using actual root-to-vertex paths rather than DP states. Thirty-two

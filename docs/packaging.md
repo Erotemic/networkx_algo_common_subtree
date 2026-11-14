@@ -83,6 +83,13 @@ and **1.012** (2018); raw binding ratios are **1.013** and **1.009**. Shared-VM
 noise affects individual rows. The artifact's native code is partially verified;
 portable packaging adds no mathematical or Rust refinement claim.
 
+The rooted graph API update is also validated from a source-only archive of
+`e272d36`: **199 tests, zero skips**, on the glibc floor and each CPython
+3.10–3.14, with Linux repair and strict ABI auditing clean. Its wheel SHA256 is
+`77c449c1c6683b54c8db0bf8ad4f28cac0c135293e01b509971d624000b2d18f`.
+The `rooted_graph_api_update` ledger entry records this later source/artifact;
+the byte-reproducibility experiment above remains its separate 176-test baseline.
+
 ## Executed Linux validation, 2026-11-14
 
 The genuine stable wheel contains exactly one native library. `abi3audit
