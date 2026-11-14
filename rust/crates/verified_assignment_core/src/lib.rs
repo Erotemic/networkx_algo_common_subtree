@@ -122,6 +122,25 @@ fn relax_column(
     }
 }
 
+/// Keep an attaining column, retaining the earlier one when costs tie.
+fn select_delta(
+    delta: Option<i128>,
+    next_column: usize,
+    best: i128,
+    candidate: usize,
+) -> (Option<i128>, usize) {
+    match delta {
+        None => (Some(best), candidate),
+        Some(old) => {
+            if best < old {
+                (Some(best), candidate)
+            } else {
+                (delta, next_column)
+            }
+        }
+    }
+}
+
 /// Scan the unused columns and update the exact minimum slacks.
 fn scan_columns(
     cost: &[Vec<i64>],
@@ -149,14 +168,9 @@ fn scan_columns(
                 None => return Err(AssignmentError::ArithmeticOverflow),
             };
             let best = relax_column(slack, predecessor, candidate, column, reduced);
-            let improve_delta = match delta {
-                None => true,
-                Some(old) => best < old,
-            };
-            if improve_delta {
-                delta = Some(best);
-                next_column = candidate;
-            }
+            let (new_delta, new_column) = select_delta(delta, next_column, best, candidate);
+            delta = new_delta;
+            next_column = new_column;
         }
         candidate += 1;
     }

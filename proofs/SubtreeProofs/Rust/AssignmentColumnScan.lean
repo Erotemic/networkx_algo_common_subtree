@@ -126,6 +126,51 @@ theorem relax_column_minimum_spec (slack : alloc.vec.Vec (Option I128)) (predece
   rw [houtput.1]
   exact relaxed_value _ _
 
+def chooseDelta (delta : Option I128) (nextColumn : Usize) (best : I128) (candidate : Usize) : Option I128 × Usize :=
+  match delta with
+  | none => (some best, candidate)
+  | some old => if best < old then (some best, candidate) else (delta,nextColumn)
+
+theorem select_delta_correct (delta : Option I128) (nextColumn : Usize) (best : I128) (candidate : Usize) :
+    select_delta delta nextColumn best candidate = .ok (chooseDelta delta nextColumn best candidate) := by
+  cases delta with
+  | none => rfl
+  | some old => by_cases h : best < old <;> simp [select_delta, chooseDelta, h]
+
+theorem chooseDelta_value (delta : Option I128) (nextColumn : Usize) (best : I128) (candidate : Usize) :
+    slackValue (chooseDelta delta nextColumn best candidate).1 = min (slackValue delta) (best.val : WithTop ℤ) := by
+  calc
+    _ = ((relaxed delta best).val : WithTop ℤ) := by
+      cases delta with
+      | none => rfl
+      | some old => by_cases h : best < old <;> simp [chooseDelta, relaxed, slackValue, h]
+    _ = _ := relaxed_value delta best
+
+/-- Representation and index bounds for one active row of a scan. -/
+structure ScanBounds (cost : Slice (alloc.vec.Vec I64)) (u v : Slice I128) (used : Slice Bool)
+    (slack : alloc.vec.Vec (Option I128)) (predecessor : alloc.vec.Vec Usize) (n activeRow : Usize) : Prop where
+  n_max : n.val < Usize.max
+  cost_rows : n.val ≤ cost.length
+  row_pos : 0 < activeRow.val
+  row_le : activeRow.val ≤ n.val
+  row_cols : n.val ≤ (cost.val[activeRow.val-1]!).length
+  u_len : n.val < u.length
+  v_len : n.val < v.length
+  used_len : n.val < used.length
+  slack_len : n.val < slack.length
+  predecessor_len : n.val < predecessor.length
+
+def inputCost (cost : Slice (alloc.vec.Vec I64)) (activeRow candidate : Usize) : ℤ :=
+  (cost.val[activeRow.val-1]!).val[candidate.val-1]!.val
+
+def firstReduced (cost : Slice (alloc.vec.Vec I64)) (u : Slice I128) (activeRow candidate : Usize) : ℤ :=
+  inputCost cost activeRow candidate - u.val[activeRow.val]!.val
+
+def reducedCost (cost : Slice (alloc.vec.Vec I64)) (u v : Slice I128) (activeRow candidate : Usize) : ℤ :=
+  firstReduced cost u activeRow candidate - v.val[candidate.val]!.val
+
+def Fits128 (value : ℤ) : Prop := I128.min ≤ value ∧ value ≤ I128.max
+
 /-- Used columns are skipped by the actual source without changing any table
 or minimum; the scan cursor advances safely. -/
 theorem body_used_spec
@@ -150,6 +195,108 @@ theorem body_used_spec
   intro next hnext
   simp only [WP.spec_ok]
   exact ⟨next, by simpa using hnext, rfl⟩
+
+/-- The unused-column branch performs the exact integer reduced-cost
+calculation, relaxes one entry and chooses an attaining minimum. Range bounds
+are explicit premises here and will be derived for the complete driver. -/
+theorem body_unused_spec
+    (cost : Slice (alloc.vec.Vec I64)) (u v : Slice I128) (used : Slice Bool)
+    (column activeRow n candidate : Usize) (slack : alloc.vec.Vec (Option I128))
+    (predecessor : alloc.vec.Vec Usize) (delta : Option I128) (nextColumn : Usize)
+    (bounds : ScanBounds cost u v used slack predecessor n activeRow)
+    (hpositive : 0 < candidate.val) (hcandidate : candidate.val ≤ n.val)
+    (hunused : used.val[candidate.val]! = false)
+    (hfirst : Fits128 (firstReduced cost u activeRow candidate))
+    (hreduced : Fits128 (reducedCost cost u v activeRow candidate)) :
+    scan_columns_loop.body cost u v used column activeRow n slack predecessor delta nextColumn candidate
+      ⦃ output => ∃ fresh : I128, ∃ next : Usize,
+        fresh.val = reducedCost cost u v activeRow candidate ∧ next.val = candidate.val+1 ∧
+        let best := relaxed slack.val[candidate.val]! fresh
+        let choice := chooseDelta delta nextColumn best candidate
+        output = .cont (slack.set candidate (some best),
+          predecessorAfter slack predecessor candidate column fresh, choice.1, choice.2, next) ⦄ := by
+  rcases bounds with ⟨hn,hcost,hactivePos,hactive,hcols,hu,hv,hused,hslack,hpred⟩
+  unfold scan_columns_loop.body
+  have hc : candidate ≤ n := hcandidate
+  rw [ite_eq_left hc]
+  have husedIndex : candidate.val < used.length := lt_of_le_of_lt hcandidate hused
+  apply WP.spec_bind (Slice.index_usize_spec used candidate husedIndex)
+  intro usedValue hUsedValue
+  have heUsed : usedValue = false := by
+    rw [hUsedValue]
+    simpa only [getElem!_pos used.val candidate.val husedIndex] using hunused
+  simp only [heUsed, Bool.false_eq_true, ↓reduceIte]
+  apply WP.spec_bind (Usize.sub_spec (x := activeRow) (y := 1#usize) (by scalar_tac))
+  intro rowIndex hRowIndex
+  have hrowIndex : rowIndex.val = activeRow.val-1 := by simpa using hRowIndex.1
+  have hrowBound : rowIndex.val < cost.length := by scalar_tac
+  apply WP.spec_bind (Slice.index_usize_spec cost rowIndex hrowBound)
+  intro costRow hCostRow
+  have hinput : costRow = cost.val[activeRow.val-1]! := by
+    rw [← hrowIndex, getElem!_pos cost.val rowIndex.val hrowBound]
+    exact hCostRow
+  apply WP.spec_bind (Usize.sub_spec (x := candidate) (y := 1#usize) (by scalar_tac))
+  intro colIndex hColIndex
+  have hcolIndex : colIndex.val = candidate.val-1 := by simpa using hColIndex.1
+  have hcostCols : n.val ≤ costRow.length := by simpa only [hinput] using hcols
+  have hcolBound : colIndex.val < costRow.length := by scalar_tac
+  simp only [alloc.vec.Vec.index_slice_index]
+  apply WP.spec_bind (alloc.vec.Vec.index_usize_spec costRow colIndex hcolBound)
+  intro costValue hCostValue
+  have hcostValue : costValue.val = inputCost cost activeRow candidate := by
+    unfold inputCost
+    rw [← hinput, ← hcolIndex, getElem!_pos costRow.val colIndex.val hcolBound]
+    exact congrArg IScalar.val hCostValue
+  apply WP.spec_bind (IScalar.cast_inBounds_spec .I128 costValue (by scalar_tac))
+  intro widened hWidened
+  have huIndex : activeRow.val < u.length := lt_of_le_of_lt hactive hu
+  apply WP.spec_bind (Slice.index_usize_spec u activeRow huIndex)
+  intro uValue hUValue
+  have huValue : uValue.val = u.val[activeRow.val]!.val := by
+    simpa only [getElem!_pos u.val activeRow.val huIndex] using congrArg IScalar.val hUValue
+  have hlowFirst : I128.min ≤ widened.val - uValue.val := by
+    rw [hWidened, hcostValue, huValue]
+    exact hfirst.1
+  have hhighFirst : widened.val - uValue.val ≤ I128.max := by
+    rw [hWidened, hcostValue, huValue]
+    exact hfirst.2
+  apply WP.spec_bind (checked_sub_spec widened uValue hlowFirst hhighFirst)
+  rintro firstOption ⟨first, hFirstOption, hFirst⟩
+  subst firstOption
+  simp only
+  have hvIndex : candidate.val < v.length := lt_of_le_of_lt hcandidate hv
+  apply WP.spec_bind (Slice.index_usize_spec v candidate hvIndex)
+  intro vValue hVValue
+  have hvValue : vValue.val = v.val[candidate.val]!.val := by
+    simpa only [getElem!_pos v.val candidate.val hvIndex] using congrArg IScalar.val hVValue
+  have hfirstValue : first.val = firstReduced cost u activeRow candidate := by
+    simp only [hFirst, hWidened, hcostValue, huValue, firstReduced]
+  have hlowReduced : I128.min ≤ first.val - vValue.val := by
+    rw [hfirstValue, hvValue]
+    exact hreduced.1
+  have hhighReduced : first.val - vValue.val ≤ I128.max := by
+    rw [hfirstValue, hvValue]
+    exact hreduced.2
+  apply WP.spec_bind (checked_sub_spec first vValue hlowReduced hhighReduced)
+  rintro reducedOption ⟨fresh, hReducedOption, hFresh⟩
+  subst reducedOption
+  simp only
+  apply WP.spec_bind (relax_column_spec slack predecessor candidate column fresh
+    (lt_of_le_of_lt hcandidate hslack) (lt_of_le_of_lt hcandidate hpred))
+  rintro ⟨best,newSlack,newPred⟩ ⟨hBest,hSlack,hPred⟩
+  dsimp only at hBest hSlack hPred ⊢
+  simp only [uncurry_apply_pair]
+  rcases hChoice : chooseDelta delta nextColumn best candidate with ⟨newDelta,newColumn⟩
+  rw [select_delta_correct, hChoice, bind_ok]
+  simp only [uncurry_apply_pair]
+  apply WP.spec_bind (Usize.add_spec (x := candidate) (y := 1#usize) (by have h := hn; scalar_tac))
+  intro next hNext
+  simp only [WP.spec_ok]
+  refine ⟨fresh, next, ?_, by simpa using hNext, ?_⟩
+  · simp only [hFresh, hfirstValue, hvValue, reducedCost]
+  · have hChoiceCanonical := hChoice
+    rw [hBest] at hChoiceCanonical
+    simp only [hSlack, hPred, hBest, hChoiceCanonical]
 
 /-- Once the cursor passes n, a present minimum is returned unchanged. -/
 theorem body_done_spec

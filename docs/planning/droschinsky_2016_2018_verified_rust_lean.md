@@ -11,6 +11,25 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Actual Rust column-scan branches: 2026-11-14
+
+`Rust.AssignmentColumnScan.body_unused_spec` now proves the complete active
+branch of the generated scan: safe index subtraction and reads, exact integer
+widening and reduced-cost subtraction, correct slack/predecessor relaxation,
+minimum selection and cursor advance. Its premises are finite representation
+bounds and explicit intermediate `i128` range inequalities; these still need
+to be derived for the complete Hungarian driver. `body_used_spec` and
+`body_done_spec` cover the remaining two branches. The actual factored Rust
+`select_delta` operation is proved to preserve the earlier column on ties and
+realize the independent minimum (`select_delta_correct`, `chooseDelta_value`).
+
+All three Rust oracle/certificate tests pass after the source refactoring,
+pinned regeneration compares exactly, and the full library builds (3,560
+jobs). These branch proofs are prerequisites for the full scan loop invariant;
+that invariant, the outer Hungarian phases and entry-point total correctness
+remain open.
+
 ## Actual Rust slack relaxation: 2026-11-14
 
 The Rust column scan now calls a factored `relax_column` helper.
