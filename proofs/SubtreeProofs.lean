@@ -170,3 +170,4 @@ public import SubtreeProofs.Rust.SparseCutRow
 public import SubtreeProofs.Rust.SparseCutEntrypoint
 public import SubtreeProofs.Rust.SparseCutCandidates
 public import SubtreeProofs.Rust.SparseCutAdjustment
+public import SubtreeProofs.Rust.SparseAssignmentAdjustment

@@ -83,3 +83,5 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.SparseCut.minimum_sparse_cut_edges_spec
 #print axioms SubtreeProofs.Rust.SparseCut.minimum_sparse_cut_adjustment_spec
+
+#print axioms SubtreeProofs.Rust.SparseAssignmentAdjustment.adjust_potentials_sparse_safe_spec

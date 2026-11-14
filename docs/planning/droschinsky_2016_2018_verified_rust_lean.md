@@ -14,6 +14,26 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual shared potential updates with sparse feasibility: 2026-11-14
+
+`Rust.SparseAssignmentAdjustment.adjust_potentials_sparse_safe_spec` extends
+the existing actual Rust `adjust_potentials` routine to sparse allowed-edge
+feasibility. Its physical vector writes, resulting feasible dual, component
+envelope, objective accounting and reserved-zero value are proved. Every
+checked addition/subtraction bound is derived from the sparse cut minimum,
+allowed-edge cost bounds, compatible perfect-assignment existence and the
+independent search/envelope invariants. Machine-operation success or an arbitrary
+per-operation fit certificate is not a premise.
+
+The proof reuses the actual complete array-update refinement and replaces the
+dense weak-duality budget by the independently proved sparse budget. No Rust
+code change or second unverified potential updater is needed. This presently
+uses the exact reference's envelope relative to zero initial column potentials;
+the paper's larger-side initialization has nonzero copy-column potentials and
+still needs the corresponding two-sided baseline envelope. The full sparse
+search/caller, initialization/deletion state construction and fast costs remain
+open. This is a source component theorem, not a complete sparse solver claim.
+
 ## Actual Rust allowed-cut minimum and sparse dual bridge: 2026-11-14
 
 The exact assignment crate now has `sparse::minimum_sparse_cut`, a checked
