@@ -289,6 +289,24 @@ theorem child_cases (trees : ∀ i, FiniteTree (A i)) (roots : ∀ i, A i)
       exact Or.inr ⟨i, a, b, rfl, rfl,
         (branch_adj_iff trees roots i a b).mp h.1, (branch_ancestor_iff trees roots i a b).mp h.2⟩
 
+theorem child_from_root (trees : ∀ i, FiniteTree (A i)) (roots : ∀ i, A i)
+    (q : Vertex A) (h : (tree trees roots).Child none none q) :
+    ∃ i, q = branchVertex i (roots i) := by
+  rcases child_cases trees roots none q h with ⟨i, _, hq⟩ | ⟨i, a, b, hp, _, _⟩
+  · exact ⟨i,hq⟩
+  · cases hp
+
+theorem child_from_branch (trees : ∀ i, FiniteTree (A i)) (roots : ∀ i, A i)
+    (i : I) (a : A i) (q : Vertex A) (h : (tree trees roots).Child none (branchVertex i a) q) :
+    ∃ b, q = branchVertex i b ∧ (trees i).Child (roots i) a b := by
+  rcases child_cases trees roots (branchVertex i a) q h with ⟨j, hp, _⟩ | ⟨j, c, d, hp, hq, hcd⟩
+  · cases hp
+  · have hij : i = j := congrArg Sigma.fst (Option.some.inj hp)
+    subst j
+    have he := branchVertex_injective i hp
+    subst c
+    exact ⟨d, hq, hcd⟩
+
 end SubtreeProofs.TreeGraft
 
 end

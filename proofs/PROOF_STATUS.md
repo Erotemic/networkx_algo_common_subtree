@@ -321,6 +321,18 @@ This supplies the common-tree constructor for 2018 mapped-state witness
 assembly. Admissible ambient realization gluing and the mapped-state matching
 recurrence remain open.
 
+## Ambient embedding assembly accepted: 2026-11-14
+
+`Shared.GraftedEmbedding.embedding` constructs a source-style rooted embedding
+of the grafted common tree from independently valid branch embeddings placed
+in distinct immediate input-child regions. Injectivity, parent-to-child ancestry,
+and exact branch-path intersections are derived from those concrete hypotheses.
+`TreeGraft.child_from_root` / `child_from_branch` provide the actual child cases;
+`RootedFork.child_paths_intersection` proves distinct input regions meet only
+at their parent. This supplies the structural assembly direction for a mapped
+2018 state. The score identity, matching optimum and full mapped recurrence
+remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

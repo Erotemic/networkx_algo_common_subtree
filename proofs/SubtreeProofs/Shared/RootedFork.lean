@@ -75,6 +75,44 @@ theorem pathLength_child_step {root u c v : V} (hc : tree.Child root u c)
   rw [tree.pathLength_adj hc.1] at he
   omega
 
+/-- A path starting at a parent stays in its chosen child branch after leaving
+that parent. -/
+theorem path_in_child_branch [DecidableEq V] {root u c v x : V} (hc : tree.Child root u c)
+    (hv : tree.Ancestor root c v) (hx : x ∈ tree.pathVertices u v) :
+    x = u ∨ tree.Ancestor u c x := by
+  have hlocal : tree.Ancestor u c v := tree.ancestor_interval hc.2 hv
+  have hm := List.mem_toFinset.mp hx
+  rw [← tree.path_append_of_ancestor hlocal] at hm
+  rcases (SimpleGraph.Walk.mem_support_append_iff _ _).mp hm with hfirst | htail
+  · rcases (tree.mem_path_of_adj hc.1).mp hfirst with he | he
+    · exact Or.inl he
+    · exact Or.inr (he ▸ tree.ancestor_refl u c)
+  · exact Or.inr (tree.ancestor_of_mem_suffix hlocal htail)
+
+/-- Different child branches give paths whose only common vertex is the parent. -/
+theorem child_paths_intersection [DecidableEq V] {root u c d v w : V}
+    (hc : tree.Child root u c) (hd : tree.Child root u d) (hn : c ≠ d)
+    (hv : tree.Ancestor root c v) (hw : tree.Ancestor root d w) (x : V) :
+    (x ∈ tree.pathVertices u v ∧ x ∈ tree.pathVertices u w) ↔ x = u := by
+  constructor
+  · rintro ⟨hx, hy⟩
+    rcases tree.path_in_child_branch hc hv hx with he | hcx
+    · exact he
+    rcases tree.path_in_child_branch hd hw hy with he | hdx
+    · exact he
+    · exact False.elim (hn (tree.child_branches_disjoint hc.1 hd.1 hcx hdx))
+  · intro he
+    subst x
+    exact ⟨List.mem_toFinset.mpr (tree.path u v).val.start_mem_support,
+      List.mem_toFinset.mpr (tree.path u w).val.start_mem_support⟩
+
+/-- No descendant of a child is its parent. -/
+theorem child_descendant_ne_parent {root u c x : V} (hc : tree.Child root u c)
+    (hx : tree.Ancestor root c x) : x ≠ u := by
+  intro he
+  subst x
+  exact hc.1.ne (tree.ancestor_antisymm hc.2 hx)
+
 /-- Every two vertices have a greatest common ancestor, proved from their
 finite paths rather than assumed as a rooted-tree operation. -/
 theorem exists_greatest_common_ancestor (root a b : V) :
