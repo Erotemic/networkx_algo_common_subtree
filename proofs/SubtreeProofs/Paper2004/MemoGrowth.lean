@@ -133,6 +133,26 @@ theorem MemoDomain.guided_right {left right pattern : DyckWord} {key : MemoKey} 
   simp only [guidedDomain,Finset.product_eq_sprod,Finset.mem_union,Finset.mem_product]
   exact Or.inr h
 
+/-- Every key in the complete guided family has a total original-input length
+budget and a minimum-side budget. A genuine common pattern is bounded by both
+original inputs, even when its decomposition states are new query shapes. -/
+theorem guidedDomain_lengths {left right pattern : DyckWord}
+    (hpl : pattern.semilength ≤ left.semilength) (hpr : pattern.semilength ≤ right.semilength)
+    (key : MemoKey) (hk : key ∈ guidedDomain left right pattern) :
+    key.1.semilength+key.2.semilength ≤ left.semilength+right.semilength ∧
+      min key.1.semilength key.2.semilength ≤ min left.semilength right.semilength := by
+  simp only [guidedDomain,Finset.product_eq_sprod,Finset.mem_union,Finset.mem_product] at hk
+  rcases hk with (hk | hk) | hk
+  · have hl := BalancedDecomposition.states_semilength_le hk.1
+    have hr := BalancedDecomposition.states_semilength_le hk.2
+    constructor <;> omega
+  · have hl := BalancedDecomposition.states_semilength_le hk.1
+    have hr := BalancedDecomposition.states_semilength_le hk.2
+    constructor <;> omega
+  · have hl := BalancedDecomposition.states_semilength_le hk.1
+    have hr := BalancedDecomposition.states_semilength_le hk.2
+    constructor <;> omega
+
 end SubtreeProofs.Paper2004.OrderedTree
 
 end

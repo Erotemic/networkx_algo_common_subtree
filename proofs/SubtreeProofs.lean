@@ -159,3 +159,4 @@ public import SubtreeProofs.Paper2004.MemoGrowth
 public import SubtreeProofs.Rust.GuidedCacheGrowth
 public import SubtreeProofs.Paper2004.ContractionMeasures
 public import SubtreeProofs.Rust.GuidedTreeCacheBound
+public import SubtreeProofs.Rust.GuidedOwnedPayload

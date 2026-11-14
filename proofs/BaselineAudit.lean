@@ -72,3 +72,5 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Paper2004.OrderedTree.embeds_leafCount_le
 #print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_cache_of_trees
+
+#print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_payload_of_trees

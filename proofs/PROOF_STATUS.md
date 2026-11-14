@@ -438,6 +438,28 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual final-cache owned word payload: 2026-11-14
+
+`Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_payload_of_trees`
+proves a bound on the actual returned guided cache's complete owned key/result
+word payload for every admitted original tree pair. `wordNodes` counts both
+Pair and Empty constructors in a source word, exactly `2*pairs+1`.
+`memoWordNodes` adds all three owned words in every actual cache record,
+including repeated values across records.
+
+For original edge/pair counts nL/nR, the final cache contains at most
+`(2*(nL+nR+min(nL,nR))+3)*records` word constructors. Combining this with the
+proved complete record bound gives the same coefficient times
+`3*B(left)*B(right)`. The proof bounds every key in the full three-product query
+family and uses actual cache soundness to bound each stored result by both
+key words. It does not assume that equal word values share memory.
+
+This is a structural size metric of the actual returned value. Table links,
+record structs, allocator bytes, intermediate allocations and peak live memory
+are excluded. Complete execution/copy/comparison costs and an efficient
+representation remain open. The structural payload factor explains why a
+record-count theorem alone is not a complete memory claim for this owned table.
+
 ## Actual guided-cache bound in original tree parameters: 2026-11-14
 
 `ContractionMeasures` proves that independent edge contractions cannot increase
