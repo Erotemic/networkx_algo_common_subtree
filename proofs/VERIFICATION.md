@@ -104,6 +104,15 @@ positions, with token/vertex conversion separate. Backtracking reconstruction ha
 no optimized cost theorem; the shape memo operation bound does not bound this
 complete wrapper's runtime.
 
+`Rust/TokenParserEntrypoint.parse_balanced_tokens_total_spec` verifies the
+actual flat Boolean parser on every represented input: exact independent
+acceptance/rejection, complete original shape and original opening/closing
+coordinate table. The admitted domain is the independent Dyck encoding with
+fewer than 2^32 pairs. Universal source safety/termination and accepted-input
+coordinate contents are proved separately and composed. Token emission and
+Python/NetworkX conversion remain open; the same operation/allocation model
+boundary applies.
+
 The exact assignment core has reproducible generated semantics and complete
 public entry-point total correctness in `Rust/AssignmentEntrypoint.lean`.
 `min_cost_assignment_total_spec` verifies every represented input, returning

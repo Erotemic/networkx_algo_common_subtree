@@ -138,3 +138,8 @@ public import SubtreeProofs.Paper2004.CanonicalIndexedWord
 public import SubtreeProofs.Rust.IndexedOrderedEntrypoint
 public import SubtreeProofs.Paper2004.IndexedTokenPositions
 public import SubtreeProofs.Paper2004.TokenEncoding
+public import SubtreeProofs.Rust.TokenParserRepresentation
+public import SubtreeProofs.Rust.TokenParserSpecification
+public import SubtreeProofs.Rust.TokenParserAccepted
+public import SubtreeProofs.Rust.TokenParserTotal
+public import SubtreeProofs.Rust.TokenParserEntrypoint

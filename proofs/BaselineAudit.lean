@@ -55,3 +55,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees
 #print axioms SubtreeProofs.Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_indices
+
+#print axioms SubtreeProofs.Rust.TokenParser.parse_balanced_tokens_total_spec
+#print axioms SubtreeProofs.Rust.TokenParser.parse_balanced_tokens_spec

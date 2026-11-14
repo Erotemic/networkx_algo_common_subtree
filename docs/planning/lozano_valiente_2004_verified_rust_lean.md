@@ -6,6 +6,35 @@ Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtr
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Actual flat-token parser total correctness: 2026-11-14
+
+`Rust.TokenParser.parse_balanced_tokens_total_spec` proves the actual public
+Rust parser safely terminates on every represented Boolean token array.
+Acceptance is exactly the independent Dyck encoding with fewer than 2^32 pairs.
+Success returns the whole original shape, a counter exactly at input end and
+precisely the independent original opening/closing coordinates in preorder.
+Every returned source error excludes that independent admitted domain; no
+out-of-bounds read/write, arithmetic failure or divergence is admitted by the
+contract. `parse_balanced_tokens_spec` gives admitted-input success directly.
+
+`parse_forest_accepted_spec` proves exact contents against independent encoded
+segments and `positionPairs`, including preservation of previous coordinates.
+Actual pushes and the mutable closing-position read/backward update are
+verified. A separate `parse_forest_total_spec` proves safety, consumed-substring
+soundness and bounded coordinate counts for arbitrary malformed segments using
+strict advancement of the actual token counter. The public proof combines
+universal shape soundness with exact accepted-input contents, ruling out false
+acceptance and erroneous rejection without assuming a parsed tree or table.
+All machine bounds and threshold casts are derived, including both supported
+pointer widths and empty input.
+
+The full maintained library builds successfully (3,648 jobs). The Rust source
+is unchanged from the exhaustive stack-oracle tests and pinned extraction
+comparison. This completes the flat Boolean parser refinement under
+the existing supported-operation/allocation model. Actual retained-token
+emission, composition with indexed optimization, typed token/NetworkX conversion
+and optional backend dispatch remain open.
+
 ## Original token coordinates and flat-input parser prototype: 2026-11-14
 
 `Paper2004.IndexedWord.tokenIndices` emits each retained pair's actual opening

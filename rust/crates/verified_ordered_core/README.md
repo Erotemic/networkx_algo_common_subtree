@@ -64,9 +64,12 @@ This is a backtracking reconstruction and makes no optimized cost claim.
 `false` opens and `true` closes, and each pair records both original token
 positions in preorder. Unmatched tokens and an excluded u32 pair count have
 explicit errors. An independent stack oracle checks all 32,767 Boolean words
-through length fourteen, including every returned coordinate. Mathematical
-Boolean encoding and indexed token-deletion specifications are compiled;
-actual parser refinement and token/Python adapter composition remain pending.
+through length fourteen, including every returned coordinate. The actual public parser is now proved by
+`Rust.TokenParser.parse_balanced_tokens_total_spec`: every represented input
+terminates, accepts exactly the independently balanced/bounded domain, and
+returns exact shape and original opening/closing coordinates on success.
+All accesses, mutable updates and arithmetic ranges are derived. Token emission
+and composition with the indexed solver and Python adapter remain pending.
 
 The established embedding/isomorphism entry points return tree witnesses;
 the new indexed reference additionally retains original input pair identities.
