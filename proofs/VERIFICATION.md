@@ -15,6 +15,10 @@ cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
 cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.toml
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 python -m pytest tests
+# Build the opt-in proved-core extension through the actual package build:
+python -m pip wheel . --no-deps --wheel-dir /tmp/common-subtree-wheels \
+  --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF \
+  --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
 ```
 
 A source-only `git archive 6dbf81e` was unpacked at
@@ -24,7 +28,17 @@ A source-only `git archive 6dbf81e` was unpacked at
 
 The GitHub workflow `.github/workflows/verification.yml` builds the library,
 checks regeneration, executes all three standalone Rust crates, and runs the
-independent finite oracles. Its first remote execution is still pending.
+independent finite oracles. Its Python extension job installs a built package
+and exercises the backend tests outside the checkout. Its first remote execution
+is still pending.
+
+Local extension evidence: the CMake/scikit-build wheel with Rust required and
+Cython disabled builds under Python 3.13.2. It was installed using `pip --target`
+into `/tmp/common-subtree-verified-wheel-install`; from `/tmp`, both
+`test_verified_rust_backend.py` and `test_rust_backend.py` pass (23 tests) with
+that installation on `PYTHONPATH`. With the locally built source-tree extension,
+the full Python suite passes (86 tests). Python/PyO3 token conversion is tested
+integration, while the source-refinement theorem covers the Rust Boolean core.
 
 ## VM caches
 

@@ -11,6 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.22", features = ["extension-module"] }
 rustc-hash = "2"
+verified_ordered_core = { path = "crates/verified_ordered_core" }
 
 [build-dependencies]
 pyo3-build-config = "0.22"

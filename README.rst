@@ -178,3 +178,13 @@ Rust backend notes:
 
 * The Rust extension module is ``networkx_algo_common_subtree._rust``.
 * If built, ``impl="auto"`` prefers Rust, then Cython, then pure Python.
+
+* ``impl="verified-rust", node_affinity=None`` opts into the proved unweighted
+  Boolean contraction core. Typed bracket pairs are validated and original
+  string/list/tuple values are preserved. It is a reference implementation with
+  backtracking reconstruction; automatic dispatch continues to use the existing
+  general affinity backend. Include restricted implementations in discovery with
+  ``available_impls_longest_common_balanced_embedding(include_restricted=True)``.
+  The Lean theorem covers the Rust Boolean core and original token indices;
+  Python token conversion, PyO3 and NetworkX graph conversion are tested
+  integration boundaries. See ``proofs/PROOF_STATUS.md`` for exact coverage.

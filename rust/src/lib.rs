@@ -580,8 +580,46 @@ fn longest_common_balanced_isomorphism(
     Ok((best1, best2, out.val).into_py(py))
 }
 
+/// Thin Python boundary around the extracted, proved unweighted Boolean API.
+#[pyfunction]
+fn maximum_common_token_embedding(
+    left: Vec<bool>,
+    right: Vec<bool>,
+) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
+    use pyo3::exceptions::{PyOverflowError, PyRuntimeError, PyValueError};
+    use verified_ordered_core::token_matching::{self, TokenMatchingError};
+    use verified_ordered_core::tokens::TokenError;
+
+    fn input_error(side: &str, error: TokenError) -> PyErr {
+        match error {
+            TokenError::UnexpectedClose => {
+                PyValueError::new_err(format!("{side} input: unexpected closing token"))
+            }
+            TokenError::MissingClose => {
+                PyValueError::new_err(format!("{side} input: missing closing token"))
+            }
+            TokenError::TooLarge => {
+                PyOverflowError::new_err(format!("{side} input: pair count exceeds u32 capacity"))
+            }
+        }
+    }
+
+    match token_matching::maximum_common_token_embedding(&left, &right) {
+        Ok(result) => Ok((result.left, result.right, result.edges)),
+        Err(TokenMatchingError::LeftInput(error)) => Err(input_error("left", error)),
+        Err(TokenMatchingError::RightInput(error)) => Err(input_error("right", error)),
+        Err(TokenMatchingError::SolverFailure) => {
+            Err(PyRuntimeError::new_err("verified core solver failure"))
+        }
+        Err(TokenMatchingError::InvalidIndex) => {
+            Err(PyRuntimeError::new_err("verified core invalid token index"))
+        }
+    }
+}
+
 #[pymodule]
 fn _rust(_py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
+    module.add_function(wrap_pyfunction!(maximum_common_token_embedding, module)?)?;
     module.add_function(wrap_pyfunction!(longest_common_balanced_embedding, module)?)?;
     module.add_function(wrap_pyfunction!(longest_common_balanced_isomorphism, module)?)?;
     Ok(())

@@ -56,6 +56,10 @@ def longest_common_balanced_embedding(
         Determines the backend implementation. Available choices are given by
         :func:`available_impls_longest_common_balanced_embedding`. The default
         is "auto", which chooses "iter-rust" if available, then "iter-cython", otherwise "iter".
+        "verified-rust" explicitly selects the proved unweighted Boolean core
+        and requires ``node_affinity=None``. It preserves original typed tokens
+        and uses reference backtracking reconstruction; it is not selected by
+        "auto". Python token conversion is outside the Lean theorem.
 
     Returns
     -------
@@ -185,6 +189,13 @@ def longest_common_balanced_embedding(
     subseq1 = '{{}[][]()(({()})){}}'
     >>> assert value == 10
     """
+    if impl == "verified-rust":
+        if node_affinity is not None:
+            raise ValueError("verified-rust requires node_affinity=None (unweighted matching)")
+        from .balanced_embedding_rust import _lcse_verified_rust
+
+        return _lcse_verified_rust(seq1, seq2, open_to_close)
+
     if node_affinity == "auto" or node_affinity == "eq":
         node_affinity = operator.eq
     if node_affinity is None:
@@ -235,10 +246,15 @@ def longest_common_balanced_embedding(
     return best, value
 
 
-def available_impls_longest_common_balanced_embedding():
+def available_impls_longest_common_balanced_embedding(include_restricted=False):
     """
-    Returns all available implementations for
+    Returns available implementations for
     :func:`longest_common_balanced_embedding`.
+
+    Args:
+        include_restricted (bool): Include "verified-rust" when its extension
+            entry point is present. It requires ``node_affinity=None``;
+            the default list contains implementations supporting affinities.
 
     Returns
     -------
@@ -246,7 +262,10 @@ def available_impls_longest_common_balanced_embedding():
         the string code for each available implementation
     """
     impls = []
-    if _rust_lcse_backend():
+    backend = _rust_lcse_backend()
+    if include_restricted and backend and hasattr(backend, "maximum_common_token_embedding"):
+        impls.append("verified-rust")
+    if backend:
         impls += [
             "iter-rust",
         ]

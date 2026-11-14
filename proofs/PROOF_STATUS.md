@@ -438,6 +438,32 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Opt-in Python integration of the proved Boolean core: 2026-11-14
+
+`longest_common_balanced_embedding(..., node_affinity=None, impl="verified-rust")`
+now calls the proved `verified_ordered_core` through a thin PyO3 index-list API.
+The Python shim fully validates original typed bracket pairs before Boolean
+erasure and reads the returned positions from the original strings, tuples or
+lists. Non-unweighted affinities are explicitly rejected. Automatic dispatch
+and ordinary affinity-capable discovery are preserved; opt-in discovery uses
+`include_restricted=True`. Absent or older optional extensions are handled
+without registering an unavailable implementation.
+
+All 86 Python tests pass with the locally built extension. Nineteen new boundary
+tests include empty inputs, typed mismatches, integer tokens, original container
+values, explicit affinity rejection, raw FFI errors/indices and exhaustive
+comparison over all balanced words through four pairs. The CMake/scikit-build
+wheel builds with Rust required and Cython disabled; its 23 new/existing Rust
+backend tests pass from `/tmp` against a separate target installation. CI now
+includes that installed-package path. The extension lockfile adds only the
+local core dependency, preserving existing registry pins, and CMake tracks its
+Rust source dependencies.
+
+This is tested Python/PyO3 integration of the formally proved Boolean API.
+Python token conversion, extension marshaling and NetworkX vertex/root encoding
+are outside the existing Lean source theorem. General affinities, efficient
+witness reconstruction and the paper runtime remain open for this new backend.
+
 ## Actual flat-token optimum and retained-token witnesses: 2026-11-14
 
 `Rust.TokenMatching.maximum_common_token_embedding_total_spec` proves total

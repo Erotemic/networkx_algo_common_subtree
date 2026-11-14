@@ -84,6 +84,9 @@ if(BUILD_RUST_EXTENSIONS)
     set(_cargo_lib_path "${_cargo_target_dir}/${_cargo_profile_dir}/${_cargo_lib_name}")
     set(_rust_ext_path "${CMAKE_CURRENT_BINARY_DIR}/_rust${PYTHON_EXT_SUFFIX}")
 
+    file(GLOB _verified_ordered_sources CONFIGURE_DEPENDS
+      "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_ordered_core/src/*.rs")
+
     add_custom_command(
       OUTPUT "${_rust_ext_path}"
       COMMAND "${CMAKE_COMMAND}" -E env
@@ -100,6 +103,8 @@ if(BUILD_RUST_EXTENSIONS)
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/src/lib.rs"
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/build.rs"
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.lock"
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_ordered_core/Cargo.toml"
+        ${_verified_ordered_sources}
       COMMENT "Building Rust extension module with cargo"
       VERBATIM
     )
