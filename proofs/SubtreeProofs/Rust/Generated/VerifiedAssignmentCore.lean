@@ -1133,8 +1133,34 @@ def matching.cost_matrix
   matching.cost_matrix_loop weights left dimension (alloc.vec.Vec.new
     (alloc.vec.Vec Std.I64)) 0#usize
 
+/-- [verified_assignment_core::matching::decode_pair]:
+    Source: 'src/matching.rs', lines 79:0-109:1 -/
+def matching.decode_pair
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
+  (right : Std.Usize) (columns : Slice Std.Usize) (row : Std.Usize) :
+  Result (Option matching.MatchedPair)
+  := do
+  let column ← Slice.index_usize columns row
+  if column >= left
+  then
+    let target ← column - left
+    if target < right
+    then
+      let v ← Slice.index_usize weights row
+      let o ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
+          Std.I64)) v target
+      match o with
+      | none => ok none
+      | some weight =>
+        if weight > 0#i64
+        then ok (some { left := row, right := target })
+        else ok none
+    else ok none
+  else ok none
+
 /-- [verified_assignment_core::matching::decode_pairs]: loop body 0:
-    Source: 'src/matching.rs', lines 87:4-106:5 -/
+    Source: 'src/matching.rs', lines 119:4-125:5 -/
 @[rust_loop_body]
 def matching.decode_pairs_loop.body
   (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
@@ -1145,34 +1171,17 @@ def matching.decode_pairs_loop.body
   := do
   if row < left
   then
-    let column ← Slice.index_usize columns row
+    let o ← matching.decode_pair weights left right columns row
     let pairs1 ←
-      if column >= left
-      then
-        do
-        let target ← column - left
-        if target < right
-        then
-          let v ← Slice.index_usize weights row
-          let o ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
-              Std.I64)) v target
-          match o with
-          | none => ok pairs
-          | some weight =>
-            if weight > 0#i64
-            then
-              alloc.vec.Vec.push pairs ({ left := row, right := target } :
-                matching.MatchedPair)
-            else ok pairs
-        else ok pairs
-      else ok pairs
+      match o with
+      | none => ok pairs
+      | some pair => alloc.vec.Vec.push pairs pair
     let row1 ← row + 1#usize
     ok (cont (pairs1, row1))
   else ok (done pairs)
 
 /-- [verified_assignment_core::matching::decode_pairs]: loop 0:
-    Source: 'src/matching.rs', lines 87:4-106:5 -/
+    Source: 'src/matching.rs', lines 119:4-125:5 -/
 @[rust_loop]
 def matching.decode_pairs_loop
   (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
@@ -1186,7 +1195,7 @@ def matching.decode_pairs_loop
     (pairs, row)
 
 /-- [verified_assignment_core::matching::decode_pairs]:
-    Source: 'src/matching.rs', lines 79:0-108:1 -/
+    Source: 'src/matching.rs', lines 111:0-127:1 -/
 @[reducible]
 def matching.decode_pairs
   (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
@@ -1197,7 +1206,7 @@ def matching.decode_pairs
     matching.MatchedPair) 0#usize
 
 /-- [verified_assignment_core::matching::solve_built_matrix]:
-    Source: 'src/matching.rs', lines 110:0-126:1 -/
+    Source: 'src/matching.rs', lines 129:0-145:1 -/
 def matching.solve_built_matrix
   (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
   (right : Std.Usize) (cost : Slice (alloc.vec.Vec Std.I64)) :
@@ -1217,7 +1226,7 @@ def matching.solve_built_matrix
     ok (core.result.Result.Err matching.MatchingError.AssignmentFailure)
 
 /-- [verified_assignment_core::matching::max_weight_partial_matching]:
-    Source: 'src/matching.rs', lines 134:0-151:1
+    Source: 'src/matching.rs', lines 153:0-170:1
     Visibility: public -/
 def matching.max_weight_partial_matching
   (weights : Slice (alloc.vec.Vec (Option Std.I64))) :

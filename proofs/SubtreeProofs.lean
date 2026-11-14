@@ -103,3 +103,7 @@ public import SubtreeProofs.Rust.AssignmentEntrypoint
 public import SubtreeProofs.Rust.MatchingCostSpecification
 public import SubtreeProofs.Rust.MatchingCostConstruction
 public import SubtreeProofs.Rust.MatchingMatrixRepresentation
+public import SubtreeProofs.Rust.MatchingValidation
+public import SubtreeProofs.Rust.MatchingDecoding
+public import SubtreeProofs.Rust.MatchingDecodedWitness
+public import SubtreeProofs.Shared.AssignmentReindex

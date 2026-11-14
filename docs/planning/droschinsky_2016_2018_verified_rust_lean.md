@@ -14,6 +14,31 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual partial-matching validation and indexed decoding: 2026-11-14
+
+The actual decoder now separates a borrowed single-pair helper from its owned
+output-vector loop. `Rust.MatchingDecoding.decode_pair_spec` and
+`decode_pairs_spec` prove safe successful execution and exact indexed-list
+contents against an independent coordinate predicate: real left row, real
+right column, actual assignment coordinate and strictly positive compatible
+original weight. `MatchingDecodedWitness.mem_decodedPrefix` gives the exact
+input-index membership relation, and `decodedPrefix_nodup` proves uniqueness
+as a list property, so finite-set conversion cannot hide duplicate output.
+
+`MatchingValidation.is_rectangular_spec` proves the actual shape validator
+safely decides the independent width predicate, including empty sides and
+early false returns. The existing Rust tests still pass after the helper
+refactoring, and pinned source regeneration succeeds.
+
+`Shared.AssignmentReindex.reindexed_assignment_decodes` uses Mathlib's index
+and permutation equivalences to transport an independently feasible/tight
+assignment into a globally maximum compatible partial matching, retaining
+its exact negated-cost weight. This abstract bridge is now compiled; the
+remaining concrete bridge must identify the actual decoder list and returned
+score with that mathematical matching, then verify the public wrapper.
+All four new maintained modules compile in the full library. No optimized
+rectangular/reused matching runtime claim follows from this increment.
+
 ## Exact partial-matching adapter and actual cost construction: 2026-11-14
 
 The exact Rust crate now provides `matching::max_weight_partial_matching` for

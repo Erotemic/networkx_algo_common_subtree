@@ -76,6 +76,38 @@ fn cost_matrix(weights: &[Vec<Option<i64>>], left: usize, dimension: usize) -> V
     result
 }
 
+fn decode_pair(
+    weights: &[Vec<Option<i64>>],
+    left: usize,
+    right: usize,
+    columns: &[usize],
+    row: usize,
+) -> Option<MatchedPair> {
+    let column = columns[row];
+    if column >= left {
+        let target = column - left;
+        if target < right {
+            match weights[row][target] {
+                Some(weight) => {
+                    if weight > 0 {
+                        Some(MatchedPair {
+                            left: row,
+                            right: target,
+                        })
+                    } else {
+                        None
+                    }
+                }
+                None => None,
+            }
+        } else {
+            None
+        }
+    } else {
+        None
+    }
+}
+
 fn decode_pairs(
     weights: &[Vec<Option<i64>>],
     left: usize,
@@ -85,22 +117,9 @@ fn decode_pairs(
     let mut pairs = Vec::new();
     let mut row = 0;
     while row < left {
-        let column = columns[row];
-        if column >= left {
-            let target = column - left;
-            if target < right {
-                match weights[row][target] {
-                    Some(weight) => {
-                        if weight > 0 {
-                            pairs.push(MatchedPair {
-                                left: row,
-                                right: target,
-                            });
-                        }
-                    }
-                    None => {}
-                }
-            }
+        match decode_pair(weights, left, right, columns, row) {
+            Some(pair) => pairs.push(pair),
+            None => {}
         }
         row += 1;
     }
