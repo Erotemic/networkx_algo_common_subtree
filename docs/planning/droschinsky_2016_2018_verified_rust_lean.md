@@ -4,6 +4,16 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Source correspondence accepted: 2026-11-14
+
+`Droschinsky2018.valid_iff_source_embeddings` now proves the exact unrooted
+witness correspondence with Definition 1's two local rooted clauses. The
+source clauses imply global path disjointness and mapped-vertex avoidance;
+finite skeleton witnesses yield explicit common trees and root-to-root source
+embeddings at corresponding chosen roots. Abstract-tree and finite-pair scores
+agree exactly. Fixed ambient-root admissibility, the two-state recurrence,
+optimized algorithms and Rust refinement remain open.
+
 ## Topological witness direction accepted: 2026-11-14
 
 `Droschinsky2018.Valid.rooted_realizations` now constructs an explicit common

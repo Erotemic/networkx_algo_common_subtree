@@ -162,8 +162,8 @@ The source problem preserves negative and negative-infinity optima. The default
 reference APIs permit empty results; explicit nonempty Rust/Python entry points
 retain negative scores and distinguish infeasibility with `None`.
 
-Rooted ancestry, full source-witness correspondence, graph DP soundness/
-completeness, optimized matching and Rust refinements remain open. The new
+Fixed ambient-root admissibility, graph DP evaluation/optimization and Rust
+refinements remain open. The new
 specifications and finite-existence results are not proofs of those algorithms.
 
 ## Fixed-root reduction accepted: 2026-11-14
@@ -226,9 +226,9 @@ for corresponding chosen roots, with the root-to-root property explicit.
 `Droschinsky2018.Valid.skeletonIso` constructs an actual isomorphism between
 the selected skeleton trees. `Valid.rooted_realizations` constructs the common
 tree and both source-style rooted embeddings, with their images recovering
-exactly the original finite pair relation. Fixed ambient-root admissibility,
-the converse from arbitrary source embeddings, score equivalence and the
-mapped/skipped recurrence remain open. The chosen-root result does not justify
+exactly the original finite pair relation. Fixed ambient-root admissibility and the mapped/skipped recurrence remain
+open; the subsequent reconstruction and local-source tranches prove the
+converse source direction and exact score correspondence. The chosen-root result does not justify
 the 2016 fixed-root shortcut for topological embeddings.
 
 ## Explicit-realization reconstruction accepted: 2026-11-14
@@ -244,9 +244,9 @@ sum over the abstract common tree's vertices and unordered edges, for every
 finite or infinite penalty and signed/bottom scores.
 
 The finite skeleton and explicit unrooted path-realization formats now agree
-in both directions with exact scores. The converse from the source's two local
-rooted clauses to the global path-realization invariant, admissibility for fixed
-ambient roots, and the two-state algorithm are still open.
+in both directions with exact scores. The local-source tranche below proves the converse from the source's two
+rooted clauses to the global path invariant. Fixed ambient-root admissibility
+and the two-state algorithm remain open.
 
 ## Finite floating-score behavior corrected: 2026-11-14
 
@@ -259,6 +259,22 @@ child gains of 5e-12, alternatives differing by 5e-10, NaN/infinite values and
 overflow. The full graph crate passes 39 tests; Python passes 65 with 3 skipped.
 IEEE rounding and the actual Hungarian numerical refinement remain
 open; these tests do not establish exact arbitrary-real implementation behavior.
+
+## Full local-source correspondence accepted: 2026-11-14
+
+`Shared.RootedFork` derives greatest common ancestors and distinct child
+branches for incomparable vertices using finite canonical paths.
+`RootedTopologicalEmbedding.ancestor_iff` proves both ancestry directions from
+Definition 1's local conditions. `toUnrooted` derives global mapped-vertex
+avoidance and distinct-edge interior disjointness; these are not assumed in
+the source-style structure. No root-to-root assumption is needed for this
+converse.
+
+`Droschinsky2018.valid_iff_source_embeddings` gives an explicit equivalence
+between the independent unrooted finite-pair witness and source-style rooted
+embeddings for existential corresponding roots. `rooted_source_witness` and
+`score_pairedImage` preserve the independent abstract-tree score. Fixed
+ambient-root admissibility and the mapped/skipped recurrence remain open.
 
 ## Executed independent evidence
 
@@ -291,7 +307,7 @@ open; these tests do not establish exact arbitrary-real implementation behavior.
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed-real dummy reduction proved; Hungarian loop, numeric refinement and complexity open |
-| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; rooted recurrence/source completeness and DP/optimization proofs open |
+| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and algorithm/optimization proofs open |
 | Verified Python adapters and qualified performance evidence | Open |
 
 The overall program remains active. These results do not complete the paper

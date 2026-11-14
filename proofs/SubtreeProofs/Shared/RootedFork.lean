@@ -1,0 +1,103 @@
+module
+
+public import SubtreeProofs.Shared.RootedTree
+import Mathlib.Tactic
+
+/-!
+# Common ancestors and distinct rooted branches
+
+Finite canonical paths suffice; the vertex type need not be finite. These
+lemmas support the converse from local rooted embedding clauses to global
+path realizations.
+-/
+
+@[expose] public section
+
+namespace SubtreeProofs.FiniteTree
+
+variable {V : Type*} (tree : FiniteTree V)
+
+/-- Ancestors of a single vertex are linearly ordered along its root path. -/
+theorem ancestors_comparable {root a b vertex : V}
+    (ha : tree.Ancestor root a vertex) (hb : tree.Ancestor root b vertex) :
+    tree.Ancestor root a b ∨ tree.Ancestor root b a := by
+  unfold Ancestor at ha
+  rw [← tree.path_append_of_ancestor hb] at ha
+  rcases (SimpleGraph.Walk.mem_support_append_iff _ _).mp ha with hp | hq
+  · exact Or.inl hp
+  · exact Or.inr (tree.ancestor_of_mem_suffix hb hq)
+
+/-- The interval between comparable vertices is the canonical suffix path. -/
+theorem ancestor_interval {root a b c : V}
+    (hac : tree.Ancestor root a c) (hcb : tree.Ancestor root c b) :
+    c ∈ (tree.path a b).val.support := by
+  have hab := tree.ancestor_trans hac hcb
+  unfold Ancestor at hcb
+  rw [← tree.path_append_of_ancestor hab] at hcb
+  rcases (SimpleGraph.Walk.mem_support_append_iff _ _).mp hcb with hca | hpath
+  · have he := tree.ancestor_antisymm hca hac
+    exact he ▸ (tree.path a b).val.start_mem_support
+  · exact hpath
+
+/-- Points on an ancestor suffix are ancestors of the suffix's endpoint. -/
+theorem suffix_ancestor {root a b c : V} (hab : tree.Ancestor root a b)
+    (hc : c ∈ (tree.path a b).val.support) : tree.Ancestor root c b := by
+  unfold Ancestor
+  rw [← tree.path_append_of_ancestor hab]
+  exact SimpleGraph.Walk.support_subset_support_append_right _ _ hc
+
+/-- A canonical path across one actual edge has just its two endpoints. -/
+theorem mem_path_of_adj {a b c : V} (ha : tree.graph.Adj a b) :
+    c ∈ (tree.path a b).val.support ↔ c = a ∨ c = b := by
+  have he := congrArg Subtype.val (tree.path_unique (tree.path a b) (SimpleGraph.Path.singleton ha))
+  rw [he]
+  simp [SimpleGraph.Path.singleton]
+
+/-- Every two vertices have a greatest common ancestor, proved from their
+finite paths rather than assumed as a rooted-tree operation. -/
+theorem exists_greatest_common_ancestor (root a b : V) :
+    ∃ u, tree.Ancestor root u a ∧ tree.Ancestor root u b ∧
+      ∀ v, tree.Ancestor root v a → tree.Ancestor root v b → tree.Ancestor root v u := by
+  classical
+  let shared := tree.pathVertices root a ∩ tree.pathVertices root b
+  have hs : shared.Nonempty := ⟨root, Finset.mem_inter.mpr
+    ⟨List.mem_toFinset.mpr (tree.path root a).val.start_mem_support,
+      List.mem_toFinset.mpr (tree.path root b).val.start_mem_support⟩⟩
+  obtain ⟨u, hu, hmax⟩ := Finset.exists_max_image shared (tree.pathLength root) hs
+  have hua : tree.Ancestor root u a := List.mem_toFinset.mp (Finset.mem_inter.mp hu).1
+  have hub : tree.Ancestor root u b := List.mem_toFinset.mp (Finset.mem_inter.mp hu).2
+  refine ⟨u, hua, hub, ?_⟩
+  intro v hva hvb
+  rcases tree.ancestors_comparable hva hua with h | h
+  · exact h
+  · by_cases he : v = u
+    · subst v; exact tree.ancestor_refl _ _
+    · have hlt := tree.ancestor_length_lt h (fun heq => he heq.symm)
+      have hle := hmax v (Finset.mem_inter.mpr
+        ⟨List.mem_toFinset.mpr hva, List.mem_toFinset.mpr hvb⟩)
+      omega
+
+/-- Incomparable vertices lie below different children of a common ancestor. -/
+theorem incomparable_fork {root a b : V}
+    (hab : ¬ tree.Ancestor root a b) (hba : ¬ tree.Ancestor root b a) :
+    ∃ u c d, tree.Child root u c ∧ tree.Child root u d ∧ c ≠ d ∧
+      tree.Ancestor root c a ∧ tree.Ancestor root d b := by
+  obtain ⟨u, hua, hub, hgreatest⟩ := tree.exists_greatest_common_ancestor root a b
+  have hua' : u ≠ a := by intro he; exact hab (he ▸ hub)
+  have hub' : u ≠ b := by intro he; exact hba (he ▸ hua)
+  let c := tree.firstChild u a
+  let d := tree.firstChild u b
+  have hc : tree.Child root u c := ⟨tree.firstChild_adj hua',
+    tree.ancestor_of_mem_suffix hua tree.firstChild_ancestor⟩
+  have hd : tree.Child root u d := ⟨tree.firstChild_adj hub',
+    tree.ancestor_of_mem_suffix hub tree.firstChild_ancestor⟩
+  have hca : tree.Ancestor root c a := tree.suffix_ancestor hua tree.firstChild_ancestor
+  have hdb : tree.Ancestor root d b := tree.suffix_ancestor hub tree.firstChild_ancestor
+  refine ⟨u, c, d, hc, hd, ?_, hca, hdb⟩
+  intro he
+  have hcu := hgreatest c hca (he ▸ hdb)
+  exact hc.1.ne (tree.ancestor_antisymm hc.2 hcu)
+
+end SubtreeProofs.FiniteTree
+
+end

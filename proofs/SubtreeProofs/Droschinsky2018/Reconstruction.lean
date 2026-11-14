@@ -1,6 +1,7 @@
 module
 
 public import SubtreeProofs.Droschinsky2018.Witness
+public import SubtreeProofs.Shared.RootedEmbedding
 
 /-!
 # Recovering a skeleton from explicit topological realizations
@@ -243,12 +244,47 @@ theorem score_pairedImage (first : TopologicalEmbedding common left)
     rfl
   · exact fun a _ b _ he => Sym2.map.injective hinj he
 
+/-- Source Definition 1 embeddings in both input trees induce exactly the
+independent finite-pair witness and its vertex/path score. Root-to-root is
+optional, as in Definition 2's general CSE. -/
+theorem rooted_source_witness {commonRoot : A} {leftRoot : V} {rightRoot : W}
+    (first : RootedTopologicalEmbedding common left commonRoot leftRoot)
+    (second : RootedTopologicalEmbedding common right commonRoot rightRoot)
+    (weights : Scoring V W) (penalty : WithTop ℝ) :
+    Valid left right (pairedImage first.toUnrooted second.toUnrooted) ∧
+      score left right weights penalty (pairedImage first.toUnrooted second.toUnrooted) =
+        realizationScore first.toUnrooted second.toUnrooted weights penalty :=
+  ⟨pairedImage_valid _ _, score_pairedImage _ _ _ _⟩
+
 /-- Extracting the two realizations and recombining them preserves every pair. -/
 theorem Valid.realizations_roundtrip [Fintype V] [Fintype W]
     {pairs : Mapping V W} (h : Valid left right pairs) :
     pairedImage h.leftEmbedding h.rightEmbedding = pairs := by
   ext p
   exact (mem_pairedImage _ _ p.1 p.2).trans (h.embedding_pairs p.1 p.2).symm
+
+/-- Exact unrooted correspondence with the two local clauses of source
+Definitions 1--2. The finite common carrier is canonically reindexed by the
+selected left vertices. Corresponding roots are existential here; fixed
+ambient-root admissibility remains a distinct restriction. -/
+theorem valid_iff_source_embeddings [Fintype V] [Fintype W] (pairs : Mapping V W) :
+    Valid left right pairs ↔
+      ∃ (source : FiniteTree (LeftVertices pairs)) (sourceRoot : LeftVertices pairs)
+        (leftRoot : V) (rightRoot : W)
+        (first : RootedTopologicalEmbedding source left sourceRoot leftRoot)
+        (second : RootedTopologicalEmbedding source right sourceRoot rightRoot),
+        pairedImage first.toUnrooted second.toUnrooted = pairs := by
+  constructor
+  · intro h
+    obtain ⟨p, hp⟩ := h.1
+    let root : LeftVertices pairs := ⟨p.1, Finset.mem_image.mpr ⟨p, hp, rfl⟩⟩
+    refine ⟨h.commonTree, root, h.leftEmbedding.map root, h.rightEmbedding.map root,
+      h.leftEmbedding.toRooted root, h.rightEmbedding.toRooted root, ?_⟩
+    change pairedImage h.leftEmbedding h.rightEmbedding = pairs
+    exact h.realizations_roundtrip
+  · rintro ⟨source, root, leftRoot, rightRoot, first, second, he⟩
+    rw [← he]
+    exact pairedImage_valid _ _
 
 end SubtreeProofs.Droschinsky2018
 

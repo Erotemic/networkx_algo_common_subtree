@@ -39,8 +39,10 @@ with exact score decomposition and concrete branch assembly. Efficient recursive
 evaluation, Hungarian correctness, cost bounds and Rust refinement remain open.
 `Droschinsky2018/Specification` defines skeletons and exact path penalties;
 `Witness` constructs source-style rooted embeddings at corresponding chosen
-roots. Shared path lifting proves ancestry preservation. Converse source
-correspondence, fixed ambient roots and the mapped/skipped recurrence remain open.
+roots. `Reconstruction` proves the exact unrooted source correspondence and
+abstract-tree score equality. Shared path lifting and `RootedEmbedding` prove
+ancestry in both directions from both witness formats. Fixed ambient-root
+admissibility and the mapped/skipped recurrence remain open.
 
 `Rust/Generated` contains unedited Charon/Aeneas output from the maintained
 `verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first
