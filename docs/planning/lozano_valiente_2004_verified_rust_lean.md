@@ -1,6 +1,6 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: tree/Dyck encoding and forward contraction direction compile locally; converse authored, pending local build; algorithmic proofs pending
+Status: LCBE optimum, corrected state bound, memo counts and actual translated Rust reference solver proved; optimization/integration open
 Last revised: 2026-11-13 (after successful local Lean build was reported)
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`

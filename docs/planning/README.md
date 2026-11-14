@@ -18,6 +18,16 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Verified Rust ordered reference: 2026-11-14
+
+The maintained Rust core now returns a structural maximum common tree and
+exact score. Its Charon/Aeneas-translated entry point is proved correct for
+all independent input trees below 2^32 edges each, with representation,
+termination and arithmetic safety proofs. The exhaustive Rust oracle checks
+all 38,809 pairs through six edges. This core is an exponential reference;
+Rust memoization, index mapping, efficient representation costs, Python
+conversion and the unordered paper proof chains remain open.
+
 ## 2004 proof tranche accepted: 2026-11-14
 
 The operational Lemma 8 recurrence now has a general constructive correctness

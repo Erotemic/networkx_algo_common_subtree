@@ -24,12 +24,12 @@ if [[ ! -x $binary_dir/aeneas || ! -x $binary_dir/charon ]]; then
     rm "$archive"
 fi
 "$binary_dir/aeneas" -version | grep -Fx "aeneas $release" > /dev/null
-rustup toolchain install nightly-2026-09-17 --profile minimal --component rustc-dev --component rust-src
+rustup toolchain install nightly-2026-09-17 --profile minimal --component rustc-dev --component rust-src --component miri
 output_dir=$(mktemp -d)
 trap 'rm -rf "$output_dir"' EXIT
 cd "$repo_root/rust/crates/verified_ordered_core"
 RUSTUP_TOOLCHAIN=nightly-2026-09-17 "$binary_dir/charon" cargo --preset=aeneas
-"$binary_dir/aeneas" -backend lean -no-progress-bar \
+"$binary_dir/aeneas" -backend lean -abort-on-error -warnings-as-errors -no-progress-bar \
     -dest "$output_dir" -namespace verified_ordered_core verified_ordered_core.llbc
 maintained="$repo_root/proofs/SubtreeProofs/Rust/Generated/VerifiedOrderedCore.lean"
 if [[ $check == 1 ]]; then

@@ -1,6 +1,6 @@
 # Verified common-subtree algorithms: research program and engineering charter
 
-Status: active planning; formalization underway; no end-to-end verified solver yet  
+Status: active; ordered reference Rust solver verified; optimized and unordered work open  
 Updated: 2026-11-13 (after the successful local Lean 4.35.0 build was reported)  
 Project: `networkx_algo_common_subtree`
 

@@ -30,4 +30,106 @@ def remaining_edges_after_contraction
   else let i ← edges - 1#u32
        ok (some i)
 
+/-- [verified_ordered_core::BalancedWord]
+    Source: 'src/lib.rs', lines 18:0-21:1
+    Visibility: public -/
+@[discriminant isize]
+inductive BalancedWord where
+| Empty : BalancedWord
+| Pair : BalancedWord → BalancedWord → BalancedWord
+
+/-- [verified_ordered_core::copy_word]:
+    Source: 'src/lib.rs', lines 24:0-31:1
+    Visibility: public -/
+def copy_word (word : BalancedWord) : Result BalancedWord := do
+  match word with
+  | BalancedWord.Empty => ok BalancedWord.Empty
+  | BalancedWord.Pair head tail =>
+    let bw ← copy_word head
+    let bw1 ← copy_word tail
+    ok (BalancedWord.Pair bw bw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::concatenate]:
+    Source: 'src/lib.rs', lines 34:0-42:1
+    Visibility: public -/
+def concatenate
+  (left : BalancedWord) (right : BalancedWord) : Result BalancedWord := do
+  match left with
+  | BalancedWord.Empty => copy_word right
+  | BalancedWord.Pair head tail =>
+    let bw ← copy_word head
+    let bw1 ← concatenate tail right
+    ok (BalancedWord.Pair bw bw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::CommonEmbedding]
+    Source: 'src/lib.rs', lines 45:0-48:1
+    Visibility: public -/
+structure CommonEmbedding where
+  word : BalancedWord
+  edges : Std.U32
+
+/-- [verified_ordered_core::choose_longer]:
+    Source: 'src/lib.rs', lines 51:0-57:1
+    Visibility: public -/
+def choose_longer
+  (first : CommonEmbedding) (second : CommonEmbedding) :
+  Result CommonEmbedding
+  := do
+  if first.edges < second.edges
+  then ok second
+  else ok first
+
+/-- [verified_ordered_core::largest_common_embedding]:
+    Source: 'src/lib.rs', lines 63:0-106:1
+    Visibility: public -/
+def largest_common_embedding
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  match left with
+  | BalancedWord.Empty =>
+    ok (some { word := BalancedWord.Empty, edges := 0#u32 })
+  | BalancedWord.Pair lh lt =>
+    match right with
+    | BalancedWord.Empty =>
+      ok (some { word := BalancedWord.Empty, edges := 0#u32 })
+    | BalancedWord.Pair rh rt =>
+      let o ← largest_common_embedding lh rh
+      match o with
+      | none => ok none
+      | some value =>
+        let o1 ← largest_common_embedding lt rt
+        match o1 with
+        | none => ok none
+        | some value1 =>
+          let o2 ← lift (U32.checked_add value.edges value1.edges)
+          match o2 with
+          | none => ok none
+          | some value2 =>
+            let o3 ← lift (U32.checked_add value2 1#u32)
+            match o3 with
+            | none => ok none
+            | some value3 =>
+              let contracted_left ← concatenate lh lt
+              let o4 ← largest_common_embedding contracted_left right
+              match o4 with
+              | none => ok none
+              | some value4 =>
+                let contracted_right ← concatenate rh rt
+                let o5 ← largest_common_embedding left contracted_right
+                match o5 with
+                | none => ok none
+                | some value5 =>
+                  let ce ←
+                    choose_longer
+                      {
+                        word := (BalancedWord.Pair value.word value1.word),
+                        edges := value3
+                      } value4
+                  let ce1 ← choose_longer ce value5
+                  ok (some ce1)
+partial_fixpoint
+
 end verified_ordered_core

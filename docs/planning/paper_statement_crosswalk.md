@@ -107,3 +107,19 @@ floating weights with comparison tolerances, and require finite nonnegative
 penalties. These API conventions must be reconciled explicitly with the real
 weight mathematical statements during refinement. No existing test run is a
 substitute for the source-level graph, matching, or complexity proofs.
+
+## Dependency evaluation evidence
+
+CLRS-Lean commit `9352a92ba9b1d44ad1349f9e57ac31c858ec81b8` was cloned
+on local disk and its targeted Hungarian module built successfully using
+its own pinned Lean/Mathlib 4.32.0-rc1 environment (8,586 jobs). Its
+`CLRS.AssignmentProblem.Problem.hungarian_constructs_optimal` proves
+existence of an optimal perfect assignment over equally sized complete
+real-weight bipartite instances. It is not a theorem about our Rust matching
+implementation. A forbidden/partial/negative maximum-weight reduction is
+still required, and compatibility with the maintained 4.35.0 toolchain has
+not been established. It is therefore not a mandatory dependency.
+
+The Aeneas/Charon evaluation succeeded on the maintained 4.35.0 toolchain,
+including a real ordered-tree solver refinement. Its exact pin and
+regeneration command are recorded in `proofs/VERIFICATION.md`.

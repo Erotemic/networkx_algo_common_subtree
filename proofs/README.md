@@ -36,8 +36,10 @@ an efficient verified matching algorithm remain open.
 
 `Rust/Generated` contains unedited Charon/Aeneas output from the maintained
 `verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first
-operation refines a genuine tree contraction's edge count. This is a completed
-translation feasibility spike, not verification of a Rust solver.
+operation refines a genuine tree contraction's edge count. `Rust/OrderedSolver` further verifies the real structural-witness solver
+against the independent maximum for inputs below 2^32 edges per tree. This
+reference Rust recursion is exponential; efficient Rust memoization, index
+witnesses and API conversion remain open.
 
 Build the full maintained proof chain with:
 

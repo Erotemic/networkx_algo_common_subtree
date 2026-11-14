@@ -102,6 +102,19 @@ decreasing_by
 @[simp] theorem paperCommon_zero_right (left : DyckWord) : paperCommon left 0 = 0 := by
   rw [paperCommon]; split <;> simp
 
+
+/-- Structural form of the witness recurrence, useful for representation refinement. -/
+theorem paperCommon_nest_add (lh lt rh rt : DyckWord) :
+    paperCommon (lh.nest + lt) (rh.nest + rt) =
+      longer (longer ((paperCommon lh rh).nest + paperCommon lt rt)
+        (paperCommon (lh + lt) (rh.nest + rt)))
+        (paperCommon (lh.nest + lt) (rh + rt)) := by
+  rw [paperCommon]
+  simp only [BalancedDecomposition.nest_add_ne_zero, ↓reduceDIte,
+    DyckWord.insidePart_add DyckWord.nest_ne_zero,
+    DyckWord.outsidePart_add DyckWord.nest_ne_zero,
+    DyckWord.insidePart_nest, DyckWord.outsidePart_nest, zero_add]
+
 /-- Empty is operationally contained in every balanced word. -/
 theorem zero_dyckEmbeds (word : DyckWord) : DyckEmbeds 0 word := by
   have h := embeds_encodeDyck (singleton_embeds (decodeDyck word))

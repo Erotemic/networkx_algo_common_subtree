@@ -93,6 +93,24 @@ commutative monoid, including integers and reals. Integer instantiations remain
 executable. No compatibility with the CLRS-Lean Hungarian implementation is
 assumed; its inspected source pin uses Lean/Mathlib 4.32.0-rc1.
 
+## Actual Rust solver accepted: 2026-11-14
+
+`Rust.OrderedSolver.largest_common_embedding_of_trees` proves successful
+execution of the real translated `verified_ordered_core::largest_common_embedding`
+for every independent ordered-tree pair below 2^32 edges per input. Its result
+is an `IsMaximumCommon` tree with an exact reported edge count. The supporting
+proofs cover representation round trips, real Rust copying and concatenation,
+score-based tie selection, termination and checked-addition safety.
+
+This is an initial exponential reference solver with a structural tree witness.
+It is not the memoized/optimized Rust implementation, an input-index embedding
+map, or an integrated Python backend. The generated definitions come from the
+maintained safe Rust source and the pinned extraction script. Its compiled endpoint adds
+no dependencies outside the reviewed baseline. An independent Rust oracle
+checks all 38,809 ordered pairs of the 197 trees through six edges, including
+returned-witness feasibility and exact scores. The OS-level
+allocator/stack budget is outside the Aeneas functional semantics.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
@@ -109,7 +127,7 @@ assumed; its inspected source pin uses Lean/Mathlib 4.32.0-rc1.
 - Charon/Aeneas generated the maintained Lean operation from Rust; the
   regeneration comparison passes and the generated module and refinement
   theorem compile. The standalone Rust extraction crate compiles and its
-  Cargo test command succeeds.
+  Cargo test command succeeds, including the six-edge contraction oracle.
 
 ## Outstanding obligations
 
@@ -122,7 +140,7 @@ assumed; its inspected source pin uses Lean/Mathlib 4.32.0-rc1.
 | Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
-| Verified translated Rust ordered solver and witness reconstruction | Open; W6 extraction feasibility completed |
+| Translated Rust ordered reference solver | Proved for structural tree witnesses and u32 input bounds; memoized optimization, input-index witness maps and API conversion still open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Open; finite exhaustive matching is proved |
 | 2016/2018 graph/path Lean specifications and DP/optimization proofs | Open |
 | Verified Python adapters and qualified performance evidence | Open |

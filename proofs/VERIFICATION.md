@@ -52,7 +52,7 @@ already use local disk and need no bind mount.
 `54982f0f6bb8ec7080ef9d2a23932aebe6e3c032f32015963bbccc43103f723a`,
 and invokes its bundled Charon and Aeneas. The compatible Charon revision is
 `454586e9b770231e66d2062993e632dfc06463e2`; extraction uses Rust
-`nightly-2026-09-17` with `rustc-dev` and `rust-src`. Set `AENEAS_BIN_DIR`
+`nightly-2026-09-17` with `rustc-dev`, `rust-src`, and `miri`. Set `AENEAS_BIN_DIR`
 to an existing copy of this exact release to reuse an installation. The
 release archive includes its Lean backend sources, but Lake fetches those
 sources independently at the pinned revision.
@@ -66,7 +66,15 @@ must never be edited to make a proof pass.
 contraction agrees with the generated `remaining_edges_after_contraction`
 operation whenever a `u32` represents the input edge count. The positive
 case cannot underflow, and zero returns `None`. This establishes the W6
-feasibility spike; it verifies neither a Rust solver nor witness reconstruction.
+feasibility spike. The later `Rust/OrderedSolver.lean` module verifies the
+actual structural-witness solver: `largest_common_embedding_of_trees`
+proves successful execution, an independent maximum tree, and the exact
+edge score whenever both input trees have fewer than 2^32 edges. Rust
+representation/Dyck-word round trips are proved. Its reference recursion
+is exponential; Rust memoization, index witnesses, adapter verification
+and performance refinement remain open. The Aeneas model abstracts
+allocation and recursive stack resources, so the theorem is a functional
+correctness result rather than a platform memory-budget guarantee.
 Rust compilation, Charon/Aeneas translation, and the models of supported Rust
 operations are explicit translation trust boundaries. Lean checks the resulting
 refinement proof. The mathematical tree relation remains independent of them.

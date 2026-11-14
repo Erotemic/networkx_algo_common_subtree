@@ -18,3 +18,4 @@ public import SubtreeProofs.Paper2004.TreeStateBounds
 public import SubtreeProofs.Paper2004.DynamicProgram
 public import SubtreeProofs.Paper2004.LinearEncoding
 public import SubtreeProofs.Paper2004.MemoizedDynamicProgram
+public import SubtreeProofs.Rust.OrderedSolver
