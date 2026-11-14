@@ -1,3 +1,4 @@
-# Rendering and slide playback; the mathematical tests need no third-party packages.
+# Render source and native Reveal.js/PDF slide export.
 manim>=0.19,<0.21
-# Optional: manim-slides>=5 for click-advanced interactive playback.
+manim-slides>=5.6,<6
+PyMuPDF>=1.24,<2

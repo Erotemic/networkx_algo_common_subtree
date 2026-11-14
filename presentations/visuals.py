@@ -32,8 +32,13 @@ def panel(width: float, height: float) -> RoundedRectangle:
 
 def card(title: str, subtitle: str, color: str, width=3.8, height=2.4) -> VGroup:
     rect = panel(width, height)
-    header = t(title, 30, color).move_to(rect.get_center() + UP * .48)
-    body = t(subtitle, 19, MUTED, line_spacing=1.05).move_to(rect.get_center() - UP * .30)
+    header = t(title, 30, color)
+    body = t(subtitle, 19, MUTED, line_spacing=1.05)
+    for item in (header, body):
+        if item.width > width - .35:
+            item.scale_to_fit_width(width - .35)
+    header.move_to(rect.get_center() + UP * .48)
+    body.move_to(rect.get_center() - UP * .30)
     return VGroup(rect, header, body)
 
 

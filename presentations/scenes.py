@@ -6,22 +6,23 @@ No binary assets or repository implementations are required to render.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from manim import (
-    Scene, VGroup, Text, MathTex as ManimMathTex, TexTemplate, FadeIn, FadeOut, Create, Write,
+    VGroup, Text, MathTex as ManimMathTex, TexTemplate, FadeIn, FadeOut, Create, Write,
     Transform, TransformMatchingTex, ReplacementTransform, GrowArrow,
     Arrow, Line, Rectangle, RoundedRectangle, SurroundingRectangle, Circle,
     DashedLine, RIGHT, LEFT, UP, DOWN, ORIGIN, WHITE, config,
 )
 
-try:
-    from manim_slides import Slide as _SlideBase
-except ImportError:
-    _SlideBase = Scene
+from manim_slides import Slide
+
+from narration import notes_for
 
 from math_examples import (
-    EXAMPLE_BRANCHING, EXAMPLE_REDUCED, EXAMPLE_MATCHING,
+    EXAMPLE_BRANCHING, EXAMPLE_REDUCED, EXAMPLE_SPLICED, EXAMPLE_MATCHING,
     node, encode_tree, lozano_dp_word, max_weight_partial_matching,
-    path_contribution,
+    path_contribution, lozano_recurrence_candidate_scores,
 )
 from visuals import (
     BG, FG, MUTED, TEAL, AMBER, ROSE, BLUE, PANEL, PANEL_BORDER,
@@ -43,28 +44,91 @@ def MathTex(*expressions, **kwargs):
     return ManimMathTex(*expressions, **kwargs)
 
 
-# Video-oriented scenes also work as click-advanced manim-slides if installed.
+# All scenes are native click-advanced Manim Slides.
 # All page layouts target the default Manim 16:9 frame (14.222 x 8 units).
 
 
-class MathPresentation(_SlideBase):
+class MathPresentation(Slide):
+    """Each chapter is a real Manim Slides scene, with notes and build pauses.
+
+    This mirrors the DKPS DeckSlide pattern: start the first build with
+    next_slide(notes=...), advance *before* each following build, and finish
+    with a short hold so the last animation's terminal frame is captured.
+    """
+    wait_time_between_slides = .12
+    skip_reversing = True
+
+    def __init__(self, *args, **kwargs):
+        # Equivalent to the DKPS per-deck output_folder: scene metadata is
+        # separate from ordinary Manim videos and from any older HTML viewer.
+        kwargs.setdefault("output_folder", Path("slides-common-subtree-mathematics"))
+        super().__init__(*args, **kwargs)
+
+    def finish(self):
+        # Reject off-screen labels before a broken build is published to HTML.
+        # We inspect whole text objects rather than their individual SVG glyphs.
+        limit_x = config.frame_width / 2 - .28
+        limit_y = config.frame_height / 2 - .10
+        def check(mob):
+            if isinstance(mob, (Text, ManimMathTex)):
+                if (mob.get_left()[0] < -limit_x or mob.get_right()[0] > limit_x
+                        or mob.get_bottom()[1] < -limit_y
+                        or mob.get_top()[1] > limit_y):
+                    raise ValueError(
+                        f"Text extends outside slide ({type(self).__name__}): "
+                        f"{mob!r}. Reduce or reposition the label."
+                    )
+                return
+            for sub in mob.submobjects:
+                check(sub)
+        for mob in self.mobjects:
+            check(mob)
+        self.wait(self.wait_time_between_slides)
+
     def setup_page(self, title, tag, source=""):
         config.background_color = BG
-        heading = t(title, 41, FG).to_edge(UP, buff=.45).align_to(LEFT * 6.40, LEFT)
-        section = t(tag.upper(), 18, TEAL).next_to(heading, DOWN, buff=.16).align_to(heading, LEFT)
+        # Keep the header on a single legible line: long chapter titles such as
+        # "From mathematics to executable guarantees" used to extend beyond
+        # the right edge. A fixed lower font size would shrink every title.
+        heading = t(title, 41, FG)
+        if heading.width > 12.20:
+            heading.scale_to_fit_width(12.20)
+        heading.to_edge(UP, buff=.45).align_to(LEFT * 6.40, LEFT)
+        if heading.get_right()[0] > 6.41:
+            raise ValueError(f"Heading crosses slide margin: {title!r}")
+        section = t(tag.upper(), 18, TEAL)
+        if section.width > 12.20:
+            section.scale_to_fit_width(12.20)
+        section.next_to(heading, DOWN, buff=.16).align_to(heading, LEFT)
         line = Line([-6.40, 2.42, 0], [6.40, 2.42, 0], color=PANEL_BORDER, stroke_width=2)
+        if section.get_bottom()[1] <= line.get_y() + .08:
+            raise ValueError(f"Header overlaps the content divider: {title!r}")
         source_line = t(source, 13, MUTED) if source else t("Common subtree mathematics", 13, MUTED)
-        source_line.move_to([0, -3.72, 0])
+        # Reserve the lower-right area for the PDF's page numbering.
+        if source_line.width > 10.50:
+            source_line.scale_to_fit_width(10.50)
+        source_line.move_to([-.40, -3.72, 0])
         self.add(heading, section, line, source_line)
+        # Follow the DKPS convention: the first build starts before drawing,
+        # and carries the authored chapter narration as presenter notes.
+        self.next_slide(notes=notes_for(type(self).__name__))
 
-    def beat(self, seconds=1.0):
-        if hasattr(self, "next_slide"):
-            self.next_slide()
-        else:
-            self.wait(seconds)
+    def beat(self, seconds=1.0, *, notes=""):
+        """Advance to the next mathematical step with optional presenter notes.
+
+        The old numeric argument is retained for other scenes; slide advancement
+        is manual, not time-driven. Presenter notes are never shown on the slide.
+        """
+        self.next_slide(notes=notes)
 
     def text_at(self, value, x, y, size=25, color=FG):
-        return t(value, size=size, color=color).move_to([x, y, 0])
+        text = t(value, size=size, color=color)
+        # Text labels are positioned by center coordinates. Limit their width
+        # to the space remaining inside the presentation frame.
+        available = min(12.25, 2 * (6.45 - abs(x)))
+        if text.width > available:
+            text.scale_to_fit_width(available)
+        return text.move_to([x, y, 0])
 
 
 class AllProblems(MathPresentation):
@@ -80,34 +144,32 @@ class AllProblems(MathPresentation):
         self.play(FadeIn(left), FadeIn(mid), FadeIn(right), run_time=1.7)
         core = self.text_at("Different feasible mappings  ->  different objective functions", 0, -2.15, 25)
         self.play(Write(core))
-        self.beat()
+        self.finish()
 
 
 class OrderedContraction(MathPresentation):
-    """Operational semantics: remove an edge, splice the child's children."""
+    """Click through a genuine internal-vertex contraction and child splicing."""
     def construct(self):
         self.setup_page("Ordered edge contraction", "Lozano-Valiente / semantics",
                         "proofs/SubtreeProofs/Paper2004/OrderedTree.lean")
-        before, _ = tree_drawing(EXAMPLE_BRANCHING, anchor=(-3.8, 1.30), width=3.7, highlights=((0, 0),))
-        after, _ = tree_drawing(EXAMPLE_REDUCED, anchor=(3.8, 1.30), width=3.7, highlights=((0, 0),))
-        before_label = self.text_at("BEFORE", -3.8, 1.95, 21, MUTED)
-        after_label = self.text_at("AFTER", 3.8, 1.95, 21, MUTED)
-        arrow = Arrow([-1.35, .15, 0], [1.35, .15, 0], color=TEAL, buff=.05, stroke_width=5)
-        self.play(FadeIn(before), FadeIn(before_label))
-        self.beat()
-        self.play(GrowArrow(arrow), FadeIn(after), FadeIn(after_label))
-        # Render the relation as mathematics and its explanation as native text.
-        # This also avoids \text in the formula that failed for one TeX setup.
-        eq = MathTex(r"T'\preceq T", color=FG).scale(1.02)
-        meaning = t("if and only if T' is reachable by edge contractions", 22, FG)
-        description = VGroup(eq, meaning).arrange(DOWN, buff=.22).move_to([0, -1.77, 0])
-        note = self.text_at("The root is retained; sibling order is preserved.", 0, -2.75, 22, MUTED)
-        self.play(Write(eq), FadeIn(meaning), FadeIn(note))
-        self.beat()
-
+        before, positions = tree_drawing(EXAMPLE_BRANCHING, anchor=(-3.8, 1.20), width=3.7)
+        after, _ = tree_drawing(EXAMPLE_SPLICED, anchor=(3.8, 1.20), width=3.7)
+        self.play(FadeIn(before), FadeIn(self.text_at("BEFORE", -3.8, 1.95, 21, MUTED)))
+        self.beat(notes="The marked edge connects r to internal vertex a. Edge contraction removes a and retains its ordered descendants.")
+        contracted = Line(positions[()], positions[(0,)], color=AMBER, stroke_width=10)
+        chosen = self.text_at("Contract edge (r,a)", 0, 1.68, 24, AMBER)
+        self.play(Create(contracted), FadeIn(chosen))
+        self.beat(notes="The children b and c are spliced into the parent at the removed vertex position, preserving left-to-right order.")
+        arrow = Arrow([-1.25, .18, 0], [1.25, .18, 0], color=TEAL, buff=.06, stroke_width=5)
+        self.play(GrowArrow(arrow), FadeIn(after), FadeIn(self.text_at("AFTER", 3.8, 1.95, 21, MUTED)))
+        self.beat(notes="This contraction deletes the pair enclosing the subtree a: 001011 becomes 0101. The number of edges drops from three to two.")
+        relation = MathTex(r"001011\;\longrightarrow\;0101", color=FG).scale(1.08).move_to([0, -1.72, 0])
+        explanation = self.text_at("Remove a; its ordered children b,c become children of r.", 0, -2.62, 22, FG)
+        self.play(Write(relation), FadeIn(explanation))
+        self.finish()
 
 class BalancedWords(MathPresentation):
-    """One matched pair per non-root vertex, exact round-trip encoding."""
+    """Every click advances one DFS edge event, then reveals the invariant."""
     def construct(self):
         self.setup_page("A rooted tree is a balanced word", "Lozano-Valiente / encoding",
                         "Mathlib DyckWord; Paper2004/EncodingEquivalence.lean")
@@ -120,17 +182,18 @@ class BalancedWords(MathPresentation):
         braces = self.text_at("0 = descend        1 = return", 2.35, -.62, 23, MUTED)
         cursor = Circle(radius=.36, color=AMBER, stroke_width=4).move_to(positions[()])
         self.play(Create(tree), FadeIn(title), FadeIn(braces), FadeIn(cursor))
-        # Exact DFS edge events: descending writes 0, returning writes 1.
+        # One press per traversal event. All glyphs are accurate to the
+        # checked depth-first encoder (001011).
         events = ((0,), (0, 0), (0,), (0, 1), (0,), ())
         for target, glyph in zip(events, symbols):
-            self.play(cursor.animate.move_to(positions[target]), FadeIn(glyph), run_time=.48)
+            self.beat(notes="A depth-first edge traversal emits 0 when descending and 1 when returning. Each click reveals one symbol.")
+            self.play(cursor.animate.move_to(positions[target]), FadeIn(glyph), run_time=.46)
+        self.beat(notes="Every descent has a matching return. A tree with three non-root edges therefore has three matched pairs.")
         self.play(FadeOut(cursor))
-        self.beat()
-        split = MathTex(r"001011 = 0\,(01)(01)\,1", color=FG).scale(1.02).move_to([0, -1.66, 0])
-        size = MathTex(r"\mathrm{semilength}(w)=|E(T)|=3", color=AMBER).scale(.86).move_to([0, -2.55, 0])
-        self.play(Write(split), Write(size))
-        self.beat()
-
+        decomposition = MathTex(r"001011=0\,(01)(01)\,1", color=FG).scale(1.03).move_to([0, -1.62, 0])
+        size = MathTex(r"\operatorname{semilength}(w)=|E(T)|=3", color=AMBER).scale(.83).move_to([0, -2.50, 0])
+        self.play(Write(decomposition), Write(size))
+        self.finish()
 
 class DeletionIsContraction(MathPresentation):
     def construct(self):
@@ -147,34 +210,39 @@ class DeletionIsContraction(MathPresentation):
         self.play(Write(iff))
         caveat = self.text_at("The paper's literal printed containment relation differs.", 0, -2.85, 21, ROSE)
         self.play(FadeIn(caveat))
-        self.beat()
+        self.finish()
 
 
 class OrderedRecurrence(MathPresentation):
-    """This is exactly the operational three-branch recurrence in DynamicProgram.lean."""
+    """Show the mathematical choices and compute an exact small instance."""
     def construct(self):
         self.setup_page("The three-way dynamic program", "Lozano-Valiente / Lemma 8",
                         "proofs/SubtreeProofs/Paper2004/DynamicProgram.lean")
-        decomposition = MathTex(r"a=0x1y,\qquad b=0u1v", color=FG).scale(.95).move_to([0, 1.77, 0])
-        self.play(Write(decomposition))
-        self.beat()
+        decomposition = MathTex(r"a=0x1y,\qquad b=0u1v", color=FG).scale(.97).move_to([0, 1.85, 0])
+        inputs = MathTex(r"a=001011,\quad b=0011", color=TEAL).scale(.86).move_to([0, 1.19, 0])
+        self.play(Write(decomposition), Write(inputs))
+        self.beat(notes="For a=001011 and b=0011, the first pair decompositions give x=0101, y empty, u=01, and v empty. We evaluate three candidates.")
+        scores = lozano_recurrence_candidate_scores("001011", "0011")
         cases = [
-            (TEAL, r"1 + L(x,u) + L(y,v)", "keep the first matched pairs"),
-            (AMBER, r"L(x+y,b)", "contract the first edge in a"),
-            (ROSE, r"L(a,u+v)", "contract the first edge in b"),
+            (TEAL, r"1+L(x,u)+L(y,v)", "keep matched pairs"),
+            (AMBER, r"L(x+y,b)", "contract first edge of a"),
+            (ROSE, r"L(a,u+v)", "contract first edge of b"),
         ]
-        for i, (color, formula, explain) in enumerate(cases):
-            y = .85 - i * 1.18
-            bg = panel(11.5, .99).move_to([0, y, 0])
-            f = MathTex(formula, color=color).scale(.82).move_to([-2.65, y, 0])
-            note = t(explain, 23, MUTED).move_to([2.4, y, 0])
-            self.play(FadeIn(bg), Write(f), FadeIn(note), run_time=.8)
-            self.beat(.25)
-        bottom = MathTex(r"L(a,b)=\max\{\text{these three candidates}\}", color=FG)
-        bottom.scale(.85).move_to([0, -2.93, 0])
-        self.play(Write(bottom))
-        self.beat()
-
+        for i, ((color, formula, explain), value) in enumerate(zip(cases, scores)):
+            y = .41 - i * .89
+            backing = panel(11.8, .79).move_to([0, y, 0])
+            f = MathTex(formula, color=color).scale(.74).move_to([-3.15, y, 0])
+            note = t(explain, 19, MUTED).move_to([1.22, y, 0])
+            value_mob = MathTex("="+str(value), color=color).scale(.94).move_to([5.08, y, 0])
+            if i:
+                self.beat(notes="Consider the next recurrence branch, obtained by contracting a first-edge alternative. Compare its score against the current best.")
+            self.play(FadeIn(backing), Write(f), FadeIn(note), Write(value_mob))
+        self.beat(notes="The matched-first-pair branch wins with score two; both contraction alternatives score one on this instance.")
+        best = max(scores)
+        conclusion = MathTex(r"L(001011,0011)=\max\{" + ",".join(map(str, scores)) + r"\}=" + str(best), color=FG)
+        conclusion.scale(.83).move_to([0, -2.92, 0])
+        self.play(Write(conclusion))
+        self.finish()
 
 class CorrectnessAndComplexity(MathPresentation):
     def construct(self):
@@ -201,7 +269,7 @@ class CorrectnessAndComplexity(MathPresentation):
             r"O\!\left(n_1n_2\min(d_1,\ell_1)\min(d_2,\ell_2)\right)",
             color=AMBER).scale(.74).move_to([0, -3.04, 0])
         self.play(Write(target_bound))
-        self.beat()
+        self.finish()
 
 
 class AffinityExtensions(MathPresentation):
@@ -221,32 +289,32 @@ class AffinityExtensions(MathPresentation):
             line = t(item, 24, FG if i < 3 else AMBER)
             line.move_to([0, .40 - .72*i, 0])
             self.play(FadeIn(line, shift=LEFT*.2), run_time=.55)
-        self.beat()
+        self.finish()
 
 
 class WeightedUnorderedMatching(MathPresentation):
+    """A specific 2-by-3 matching and its chosen disjoint edges."""
     def construct(self):
         self.setup_page("Unordered children become a matching problem", "Droschinsky 2016",
                         "MFCS 2016, Eq. (1); Droschinsky2016/RootedRecurrence.lean")
         formula = MathTex(
             r"F(u,v)=w_V(u,v)+\max_{M\;\mathrm{matching}}"
-            r"\sum_{(a,b)\in M}\big(w_E(ua,vb)+F(a,b)\big)", color=FG)
+            r"\sum_{(a,b)\in M}\left(w_E(ua,vb)+F(a,b)\right)", color=FG)
         formula.scale(.70).move_to([0, 1.83, 0])
-        matrix = weight_matrix(EXAMPLE_MATCHING, selected=(), x=0, y=.45, size=1.15)
-        left = t("2 children", 25, BLUE).move_to([-3.5, .15, 0])
-        right = t("3 children", 25, AMBER).move_to([3.5, .15, 0])
-        self.play(Write(formula), FadeIn(matrix), FadeIn(left), FadeIn(right))
-        self.beat()
+        matrix = weight_matrix(EXAMPLE_MATCHING, selected=(), x=0, y=.42, size=1.15)
+        self.play(Write(formula), FadeIn(matrix))
+        self.beat(notes="The first matched child pair contributes weight eight. A matching cannot reuse either selected endpoint.")
         score, pairs = max_weight_partial_matching(EXAMPLE_MATCHING)
-        selected_boxes = VGroup(*(SurroundingRectangle(matrix[r * 3 + c], color=TEAL, buff=.07)
-                                  for r, c in pairs))
-        self.play(*(Create(frame) for frame in selected_boxes), run_time=.9)
-        result = MathTex(r"8 + 7 = " + str(score), color=TEAL).scale(1.12)
-        result.move_to([0, -2.23, 0])
-        note = self.text_at("Unmatched children are allowed. Reordering is allowed.", 0, -2.95, 21, MUTED)
+        for i, (row, col) in enumerate(pairs):
+            if i:
+                self.beat(notes="The second disjoint pair contributes seven. The remaining child on the right may stay unmatched.")
+            frame = SurroundingRectangle(matrix[row * 3 + col], color=TEAL, buff=.07)
+            self.play(Create(frame))
+        self.beat(notes="The selected partial matching has weight fifteen, the maximum across disjoint child pairs.")
+        result = MathTex(r"8+7=" + str(score), color=TEAL).scale(1.18).move_to([0, -2.23, 0])
+        note = self.text_at("Each child is used at most once; the third is unmatched.", 0, -2.96, 20, MUTED)
         self.play(Write(result), FadeIn(note))
-        self.beat()
-
+        self.finish()
 
 class SparseMatchingOptimization(MathPresentation):
     def construct(self):
@@ -267,29 +335,34 @@ class SparseMatchingOptimization(MathPresentation):
         explain = self.text_at("Published 2016 bound; not implied by calling Hungarian repeatedly.",
                                0, -2.76, 21, MUTED)
         self.play(Write(rate), FadeIn(explain))
-        self.beat()
+        self.finish()
 
 
 class TopologicalDistancePenalties(MathPresentation):
+    """Contrast direct-edge reward with an extended-path penalty."""
     def construct(self):
         self.setup_page("Skip vertices, but score paths correctly", "Droschinsky 2018 / Definition 4",
                         "MFCS 2018; Droschinsky2018/Specification.lean")
-        one = node("A", node("B"))
-        two = node("A", node("X", node("B")))
-        l, _ = tree_drawing(one, anchor=(-3.7, 1.12), width=2.5, highlights=((0,),))
-        r, _ = tree_drawing(two, anchor=(3.7, 1.32), width=2.5, dim=((0,),))
-        self.play(FadeIn(l), FadeIn(r))
-        direct = self.text_at("length 1", -3.7, 1.85, 22, TEAL)
-        skipped = self.text_at("length 2; skip X", 3.7, 1.85, 22, AMBER)
-        self.play(FadeIn(direct), FadeIn(skipped))
-        self.beat()
-        equation = MathTex(r"2\,\mathrm{node\ rewards}-0.25\,\mathrm{skip\ penalty}=1.75",
-                           color=FG).scale(.83).move_to([0, -1.90, 0])
-        warning = self.text_at("No direct-edge reward when either mapped path is longer than one edge.",
-                               0, -2.76, 20, ROSE)
-        self.play(Write(equation), FadeIn(warning))
-        self.beat()
-
+        direct_tree = node("A", node("B"))
+        extended_tree = node("A", node("X", node("B")))
+        left, _ = tree_drawing(direct_tree, anchor=(-3.65, 1.12), width=2.5)
+        right, _ = tree_drawing(extended_tree, anchor=(3.65, 1.32), width=2.5, dim=((0,),))
+        self.play(FadeIn(left), FadeIn(right), FadeIn(self.text_at("One edge", -3.65, 1.93, 22, TEAL)),
+                  FadeIn(self.text_at("Two-edge path via X", 3.65, 1.93, 22, AMBER)))
+        self.beat(notes="When both mapped paths are direct edges, the edge reward of one point five is earned in addition to two node rewards.")
+        edge_reward = path_contribution(1.5, 1, 1, .25)
+        direct_score = MathTex(r"2\;\mathrm{(vertices)}+1.5\;\mathrm{(edge)}=" + f"{2+edge_reward:g}",
+                               color=TEAL).scale(.82).move_to([0, -1.06, 0])
+        self.play(Write(direct_score))
+        self.beat(notes="If one endpoint path traverses an unmatched vertex, the direct-edge reward is absent. The skip penalty applies instead.")
+        skipped_reward = path_contribution(1.5, 2, 1, .25)
+        skipped_score = MathTex(r"2\;\mathrm{(vertices)}-0.25\;\mathrm{(skip)}=" + f"{2+skipped_reward:g}",
+                                color=AMBER).scale(.82).move_to([0, -1.91, 0])
+        self.play(Write(skipped_score))
+        self.beat(notes="This is the 2018 scoring distinction that must be preserved in reference, optimized, and verified implementations.")
+        warning = self.text_at("An extended path does not earn the direct-edge reward.", 0, -2.80, 21, ROSE)
+        self.play(FadeIn(warning))
+        self.finish()
 
 class MappedAndSkippedStates(MathPresentation):
     """The actual two-state rooted reference recurrence from the Lean development."""
@@ -315,7 +388,7 @@ class MappedAndSkippedStates(MathPresentation):
         note = self.text_at("The displayed evaluator is correct but uses exhaustive child matching.",
                             0, -3.08, 19, MUTED)
         self.play(FadeIn(note))
-        self.beat()
+        self.finish()
 
 
 class ProofBoundary(MathPresentation):
@@ -332,15 +405,21 @@ class ProofBoundary(MathPresentation):
         for i, (heading, description, color) in enumerate(stages):
             x = -4.7 + i*3.12
             box = panel(2.9, 2.2).move_to([x, .4, 0])
-            main = t(heading, 19, color).move_to([x, .91, 0])
-            lines = t(description, 18, FG).move_to([x, .07, 0])
+            main = t(heading, 19, color)
+            lines = t(description, 18, FG)
+            if main.width > 2.65:
+                main.scale_to_fit_width(2.65)
+            if lines.width > 2.65:
+                lines.scale_to_fit_width(2.65)
+            main.move_to([x, .91, 0])
+            lines.move_to([x, .07, 0])
             objects.append(VGroup(box, main, lines))
         self.play(*(FadeIn(o) for o in objects), run_time=1.5)
         self.beat()
         note = self.text_at("Proving a reference recurrence does not prove an optimized Python wheel.",
                             0, -1.90, 23, AMBER)
         self.play(FadeIn(note))
-        self.beat()
+        self.finish()
 
 
 class ApplicationExperiment(MathPresentation):
@@ -362,7 +441,7 @@ class ApplicationExperiment(MathPresentation):
         bottom = self.text_at("Hypothesis to test, not an established empirical advantage.",
                               0, -2.75, 20, MUTED)
         self.play(FadeIn(bottom))
-        self.beat()
+        self.finish()
 
 
 class PaperContribution(MathPresentation):
@@ -384,7 +463,7 @@ class PaperContribution(MathPresentation):
         foot = self.text_at("New theorem, implementation, or empirical evidence must be clearly separated.",
                             0, -2.65, 19, MUTED)
         self.play(FadeIn(foot))
-        self.beat()
+        self.finish()
 
 
 SCENES = [

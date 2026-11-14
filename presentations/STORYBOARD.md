@@ -46,7 +46,10 @@ of edges by one. Its reflexive-transitive closure includes the original tree
 and the one-vertex tree.
 
 In the scene the three-edge tree has root `r`, child `a`, and grandchildren
-`b,c`. Contracting the edge `a-c` leaves the two-edge chain `r-a-b`. Labels in this
+`b,c`. Contracting the *internal* edge `r-a` removes `a` and splices its two children
+`b,c` into the root, yielding the sibling forest encoded by `0101`. The scene
+reveals the selected edge, the resulting tree, and the balanced-word change
+with separate clicks. Labels in this
 chapter are visual IDs, *not* semantic compatibility constraints. The proof language
 should speak of structural positions, not depend on these arbitrary names.
 
@@ -122,7 +125,10 @@ If the first edge of `a` does not survive, contract it and solve the reduced
 instance `L(x+y,b)`. Symmetrically, if the first edge of `b` does not survive,
 contract it and solve `L(a,u+v)`. Taking the maximum of these three values is
 the recurrence in Lemma 8, using the operational semantics of the problem.
-The base case is zero if either word is empty.
+The base case is zero if either word is empty. The scene computes a small
+example explicitly: for `a=001011` and `b=0011`, the three candidate scores
+are `2`, `1`, and `1`. The first branch wins, and the common embedding
+score is two edges.
 
 It is important to explain that the recurrence is not a stand-in for the
 mathematical specification. The independent specification is the maximum
@@ -262,12 +268,14 @@ prohibited interior vertices.
 
 Use the smallest example: one tree has two selected vertices connected by
 one edge; the other has the same selected endpoints connected by two edges
-through one skipped interior vertex. Suppose each matched endpoint contributes
-1 and the skipped vertex penalty is 0.25. The path contribution is -0.25,
-so the total is `1 + 1 - 0.25 = 1.75`. The 2018 published Definition 4 awards
-an edge similarity only when **both** corresponding paths are direct edges.
-A previous repository implementation accidentally counted a direct edge
-reward even for longer paths, yielding 2.75 on a discriminating fixture.
+through one skipped interior vertex. Suppose each matched endpoint contributes 1, the direct-edge reward is
+1.5, and the skipped vertex penalty is 0.25. When both mapped paths have one
+edge, the example scores `1 + 1 + 1.5 = 3.5`. When one path has length two,
+the edge reward disappears, and the score is `1 + 1 - 0.25 = 1.75`.
+The 2018 published Definition 4 awards edge similarity only when **both**
+corresponding paths are direct edges. A previous repository implementation
+incorrectly credited this reward on a longer path; the new example shows why
+that would change the objective.
 
 Clarify that the equal-weight example isolates the rule; it is not a general
 optimality proof. The real mathematical specification must also ensure that

@@ -1,101 +1,128 @@
-# Animated mathematical presentation: common subtree algorithms
+# Common subtree mathematics: click-through Manim presentation
 
-This is a **source-first Manim presentation**. It teaches the three related
-mathematical problems and how the repository's Lean formalization and Rust
-implementations relate to them. All tree drawings, matrices and formulae are
-programmatically generated. No binary media belongs in the source overlay.
+This deck deliberately uses the **original, pre-narration DKPS presentation workflow**:
+Manim scenes inherit `manim_slides.Slide`; each `next_slide()` separates
+one mathematical animation build; `manim_slides convert` creates a native
+Reveal.js HTML presentation. Reference:
+[the first DKPS slide builder](https://github.com/AIQ-Kitware/aiq-dkps-formalization/blob/6f3d23d7d4dab5e36e0cb738d2eb5d91958fdaf0/visualizations/dkvis/build_slides.py).
 
-The scene implementation is in [`scenes.py`](scenes.py), with reusable graphics
-in [`visuals.py`](visuals.py). [`math_examples.py`](math_examples.py) provides
-tiny **independent** executable examples; the slides never depend on running the
-production Rust/Cython solver.
+## What opens in the browser
+
+The **native presentation** fills the page. Click anywhere to advance one
+build, or use right/left arrows to move forward/back. It has no navigation
+shell, embedded video player or progress bar. A small **slide number at the
+bottom right** makes it possible to report layout issues by build. The native
+PDF numbers all its pages as well. MP4 fragments are used internally by
+Reveal.js as animated slide backgrounds.
+
+The **classic presentation** is an optional separate HTML gallery (static
+slides, chapter picker, narration, and optional embedded MP4 player). The
+classic storyboard PDF remains available. Neither export replaces the other.
 
 ## Build
 
-From the repository root:
+From the repository root, using the Manim Python environment:
 
 ```bash
-cd /home/joncrall/code/networkx_algo_common_subtree
-python3 -m venv .venv-manim
-. .venv-manim/bin/activate
-python -m pip install -r presentations/requirements.txt
-
-# Verify examples and (when Manim is installed) compile all scene mathematics:
+python3 -m pip install -r presentations/requirements.txt
 python3 presentations/render.py --check
-
-# Recheck only the LaTeX formulas without rendering videos:
 python3 presentations/render.py --check-tex
+python3 presentations/render.py --html --pdf --quality l
+xdg-open presentations/renders/common-subtree-mathematics.html
 
-# Render a quick scene to inspect typography and layout:
-python3 presentations/render.py --scene OrderedRecurrence --quality l
-
-# Render all independent chapters; generated media are Git-ignored:
-python3 presentations/render.py --all --quality h --stitch
+# Optional old chapter/notes viewer and its static PDF
+python3 presentations/render.py --classic-html --classic-pdf
+xdg-open presentations/media/common-subtree-mathematics.html
 ```
 
-All scene equations use an explicit `amsmath`/`amssymb` TeX template.
-`--check-tex` extracts formulas from the scene source and compiles them with
-the installed Manim version. If a mathematical expression fails, it reports
-its source line before rendering begins. Prose uses Manim `Text` where possible.
+Render at 1080p when the draft is reviewed:
 
-Manim requires a working LaTeX toolchain and the native dependencies appropriate
-to your platform. The optional `manim-slides` package supports interactive
-playback; absent it, the classes render as ordinary timed Manim scenes.
+```bash
+python3 presentations/render.py --html --pdf --quality h
+```
 
-To use interactive slides, install `manim-slides` separately and render with its
-CLI, e.g. `manim-slides render presentations/scenes.py OrderedRecurrence`.
-Each scene has several beats and a companion narration in
-[`STORYBOARD.md`](STORYBOARD.md). Keep the scene source modular; do not combine
-the entire lecture into one giant scene.
+The default HTML follows the **original pre-narration DKPS export**: a
+full-viewport Reveal.js presentation with linked video assets and CDN-hosted
+Reveal.js scripts. The browser must be online to load the JavaScript when
+using this default mode. Use `--offline` to download the JavaScript/CSS and
+videos into the presentation's neighboring assets directory, which must travel
+with the HTML file. Use `--one-file` only if a standalone HTML with embedded
+videos is specifically needed; in this mode JavaScript is still CDN-hosted.
+Do not combine `--one-file` and `--offline`: inline minified JavaScript has
+previously produced malformed HTML that displayed library source as slide text.
+The native PDF uses the same Manim Slides fragments, with one numbered page
+per build. The smaller slide numbers in the native HTML come from Reveal.js.
+Long Manim scene headings are fitted to the slide width; a header-divider
+assertion rejects content that would collide with the diagram area.
 
-**Optional static PowerPoint storyboard:** `npm install --prefix presentations &&
-npm run --prefix presentations preview` generates a review deck under
-`presentations/media/`. This is not a substitute for the animated Manim
-lecture. The preview generator uses PptxGenJS and has no Manim dependency.
+Both HTML formats are intentional, but **open the right one**:
 
-## Chapter order
+- `presentations/renders/common-subtree-mathematics.html`: native, full-page,
+  click-to-advance (default `--html`).
+- `presentations/media/common-subtree-mathematics.html`: earlier classic
+  chapter/notes viewer (generated only with `--classic-html`).
 
-`AllProblems`, `OrderedContraction`, `BalancedWords`,
-`DeletionIsContraction`, `OrderedRecurrence`, `CorrectnessAndComplexity`,
-`AffinityExtensions`, `WeightedUnorderedMatching`,
-`SparseMatchingOptimization`, `TopologicalDistancePenalties`,
-`MappedAndSkippedStates`, `ProofBoundary`,
-`ApplicationExperiment`, `PaperContribution`.
+`--classic-html` rebuilds the old static PDF first, using the PptxGenJS
+storyboard and LibreOffice, then embeds its page images into HTML. This needs
+Node.js (`npm install --prefix presentations` once), LibreOffice and either
+PyMuPDF or Poppler. It does **not** need Manim. `--classic-pdf` exports only
+that earlier storyboard PDF. You can combine `--html --pdf --classic-html
+--classic-pdf` to produce all four outputs.
 
-Run `python3 presentations/render.py --list` for the machine-readable list.
+To preview just the recurrence chapter:
 
-## Mathematical and historical precision
+```bash
+python3 presentations/render.py --scene OrderedRecurrence --html --quality l
+```
 
-- Lozano–Valiente concerns **ordered rooted tree embedding via edge
-  contraction**. The slides use the *operational* containment relation, not the
-  literal printed recursive Definition 2, whose discrepancy is documented in
-  `docs/planning/lozano_valiente_2004_containment_definition_audit.md`.
-- Droschinsky 2016 concerns **weighted, unordered, possibly unrooted subtree
-  isomorphism**; the displayed matching formula is the fixed-root subproblem,
-  not a claim that the unrooted problem has a single root.
-- Droschinsky 2018 concerns **topological embeddings with distance penalties**.
-  A direct edge reward applies only when *both* corresponding paths have
-  length one. Longer paths incur skip penalties instead.
-- Node affinities, token mappings and witness readback are extensions and
-  implementation interfaces; they are not being attributed to the 2004 paper.
-- A Lean proof of a mathematical recurrence and a source-level refinement of
-  a Rust function are separate assurance statements. Consult
-  `proofs/PROOF_STATUS.md` at the actual checkout before changing proof badges.
+Once a full deck exists, update selected chapters without recomputing the rest:
 
-## Paper investigation
+```bash
+python3 presentations/render.py --scenes OrderedContraction BalancedWords --html --pdf --quality h
+```
 
-[`RESEARCH_AGENDA.md`](RESEARCH_AGENDA.md) proposes an application pilot,
-baselines, metrics, threats to validity, and a conservative path toward a
-research contribution. The deck intentionally makes **no unsupported SOTA or
-performance-win claim**.
+Only re-export existing fragments:
 
-[`REFERENCES.md`](REFERENCES.md) ties the lecture to the original papers,
-Lean modules, and candidate application baselines.
+```bash
+python3 presentations/render.py --no-render --html --pdf
+```
 
-## Test status of this overlay
+The native builder directly calls `manim_slides render` then
+`manim_slides convert`. A small HTML post-processing step hides Reveal
+controls and maps a plain left mouse click to `Reveal.next()`, while keeping
+Reveal's slide number. Native PDF pages are numbered by PyMuPDF immediately
+after conversion. The classic outputs use the preserved `export.py`.
 
-The dependency-free examples and their 529-pair recurrence/oracle comparison
-run without Manim. The generated scene source is syntax-checked, but **Manim
-itself was not available in the authoring environment**, so video rendering and
-visual acceptance must be run locally before presenting publicly. Do not treat
-an unrendered scene as visually verified.
+## Mathematical content
+
+The 14 chapters cover ordered edge contraction, Dyck encoding, the 2004
+recurrence, node affinities and witnesses, 2016 weighted unordered child
+matching, 2018 topological-path penalties, and formal verification. The
+central examples now advance one relevant operation per click. The numerical
+examples live in `math_examples.py`, independent of presentation rendering,
+and have an exhaustive small-tree oracle in `tests/test_examples.py`.
+
+`STORYBOARD.md` records extended mathematical explanation; `RESEARCH_AGENDA.md`
+records application-study hypotheses; `REFERENCES.md` records paper references.
+These are supplementary source materials rather than a second lecture viewer.
+
+## Validation
+
+`python3 presentations/render.py --check` verifies the source-level examples,
+export commands, page-numbering logic, and minimal HTML adaptation. `--check-tex` checks TeX with
+Manim installed. Inspect actual HTML slide transitions and the PDF on a local
+Manim installation before sharing; this source overlay cannot contain a
+verified video render from the present environment.
+
+### Quick repair of an already-rendered native deck
+
+If the HTML displays minified JavaScript source as text, skip the expensive
+Manim rendering and re-export the slide fragments:
+
+```bash
+python3 presentations/render.py --no-render --html
+xdg-open presentations/renders/common-subtree-mathematics.html
+```
+
+To view offline, instead run `python3 presentations/render.py --no-render --html --offline`
+and keep the generated HTML and sibling asset directory together.

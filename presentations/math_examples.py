@@ -188,3 +188,18 @@ def path_contribution(
 EXAMPLE_BRANCHING = node("r", node("a", node("b"), node("c")))
 EXAMPLE_REDUCED = node("r", node("a", node("b")))
 EXAMPLE_MATCHING = ((8, 1, 4), (3, 7, 2))
+
+
+# Source-derived, checked examples used in the click-by-click lecture.
+EXAMPLE_SPLICED = contract_edge(EXAMPLE_BRANCHING, (0,))
+
+
+def lozano_recurrence_candidate_scores(a: str, b: str) -> tuple[int, int, int]:
+    """Scores of the three operational branches for nonempty Dyck words."""
+    x, y = split_first_pair(a)
+    u, v = split_first_pair(b)
+    return (
+        1 + len(lozano_dp_word(x, u)) // 2 + len(lozano_dp_word(y, v)) // 2,
+        len(lozano_dp_word(x + y, b)) // 2,
+        len(lozano_dp_word(a, u + v)) // 2,
+    )

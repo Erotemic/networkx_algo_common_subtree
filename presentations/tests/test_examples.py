@@ -5,10 +5,10 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from math_examples import (  # noqa: E402
-    EXAMPLE_BRANCHING, EXAMPLE_MATCHING, EXAMPLE_REDUCED,
+    EXAMPLE_BRANCHING, EXAMPLE_MATCHING, EXAMPLE_REDUCED, EXAMPLE_SPLICED,
     all_contractions, all_dyck_words, common_embedding_oracle,
     contract_once, decode_tree, encode_tree, lozano_dp_word,
-    max_weight_partial_matching, path_contribution,
+    max_weight_partial_matching, path_contribution, lozano_recurrence_candidate_scores,
 )
 
 
@@ -28,6 +28,11 @@ class AnimatedExampleTests(unittest.TestCase):
             for b in words:
                 optimum, _ = common_embedding_oracle(decode_tree(a), decode_tree(b))
                 self.assertEqual(len(lozano_dp_word(a, b)) // 2, optimum, (a, b))
+
+    def test_internal_vertex_splicing_and_candidate_values(self):
+        self.assertEqual(encode_tree(EXAMPLE_SPLICED), "0101")
+        self.assertIn(EXAMPLE_SPLICED, contract_once(EXAMPLE_BRANCHING))
+        self.assertEqual(lozano_recurrence_candidate_scores("001011", "0011"), (2, 1, 1))
 
     def test_matching_example(self):
         score, pairs = max_weight_partial_matching(EXAMPLE_MATCHING)
