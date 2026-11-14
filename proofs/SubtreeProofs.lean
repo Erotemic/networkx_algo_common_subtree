@@ -86,3 +86,9 @@ public import SubtreeProofs.Rust.AssignmentDiscoveryRanks
 public import SubtreeProofs.Rust.AssignmentAdjustmentTightness
 public import SubtreeProofs.Rust.AssignmentVisitColumn
 public import SubtreeProofs.Rust.AssignmentPredecessorTightness
+public import SubtreeProofs.Rust.AssignmentSearchInvariant
+public import SubtreeProofs.Rust.AssignmentSearchScan
+public import SubtreeProofs.Rust.AssignmentSearchAdjustment
+public import SubtreeProofs.Rust.AssignmentSearchTransition
+public import SubtreeProofs.Rust.AssignmentSearchBody
+public import SubtreeProofs.Rust.AssignmentSearchLoop

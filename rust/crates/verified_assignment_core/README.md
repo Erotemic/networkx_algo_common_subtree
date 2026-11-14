@@ -67,7 +67,13 @@ Current assurance is deliberately narrower than the crate's eventual target:
   selected attaining predecessor edge tight. Boolean marking preserves the
   candidate and visit-count invariants.
 
-The combined Hungarian search/driver invariants, entry-point total
+- `Rust.AssignmentSearchLoop.find_augmenting_column_spec` proves the entire
+  actual augmenting-column search safely terminates, including local vector
+  initialization, every source guard and derived arithmetic safety. It returns
+  a positive free column, preserves numeric and old matching tightness
+  invariants, and constructs the ranked tight forest required by augmentation.
+
+The full Hungarian driver, entry-point total
 correctness, partial-matching adapter and complexity refinement remain open.
 This crate is not yet a verified replacement for the graph crate's floating
 matching API.

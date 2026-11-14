@@ -14,6 +14,34 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Complete actual Rust augmenting-column search: 2026-11-14
+
+`Rust.AssignmentSearchLoop.find_augmenting_column_spec` proves successful,
+terminating execution of the complete actual source search, including both
+local vector initializers. It returns a positive real unmatched column,
+preserves represented vector bounds, feasible numeric/objective invariants
+and every old matching edge's tightness, and constructs a finite ranked tight
+predecessor forest containing the returned column. Those forest properties
+are exactly the input needed by the previously verified augmentation walk.
+
+`AssignmentSearchInvariant` combines the independent partial-matching, cut,
+numeric, discovery and edge invariants. `AssignmentSearchScan` derives all
+actual scan ranges and availability and proves nonnegative attained cut
+selection. `AssignmentSearchAdjustment` proves the complete actual adjustment
+preserves the numeric, cut, matching and ranked tight-forest properties.
+`AssignmentSearchTransition` establishes both initial and continuing states;
+`AssignmentSearchBody` verifies every operation and guard of the actual running
+branch. The loop terminates by strictly increasing the visit count below its
+independently proved finite capacity. All source error branches are discharged
+from the input/state invariants; no local overflow, selected minimum, path,
+or program-result certificate is supplied to the public search endpoint.
+
+The full library builds with all six new maintained modules. The actual
+outer assignment driver must still connect search, augmentation, row coverage
+and final reconstruction; its public entry point and validation remain open.
+Partial-matching integration, optimized paper algorithms and implementation
+cost goals remain open as recorded in the program plan.
+
 ## Discovery ranks and actual predecessor tightness: 2026-11-14
 
 `Rust.AssignmentDiscoveryRanks` keeps visited discovery ranks below the visit

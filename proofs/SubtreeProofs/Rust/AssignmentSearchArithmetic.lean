@@ -60,7 +60,8 @@ theorem adjust_potentials_from_search_spec (cost : Slice (alloc.vec.Vec I64)) (u
       CompleteAdjustment u v matched used slack amount n output ∧
         PotentialInvariant cost n initialRows output.2.1 output.2.2.1 ∧
         SlackInvariant cost (alloc.vec.Vec.deref output.2.1) (alloc.vec.Vec.deref output.2.2.1) matched used
-          (usedIndices used (n.val+1)) output.2.2.2 predecessor n ⦄ := by
+          (usedIndices used (n.val+1)) output.2.2.2 predecessor n ∧
+          Bounds u v matched used slack amount n ⦄ := by
   have hcurrentBound := hpotential.increment_bound cost n initialRows u v hinitial
   have hcut := candidate_lower_cut cost u v matched used amount n hminimum
   have hslackBounds : ∀ col, col ≤ n.val → used.val[col]! = false → ∀ value : I128,
@@ -94,7 +95,7 @@ theorem adjust_potentials_from_search_spec (cost : Slice (alloc.vec.Vec I64)) (u
   have hnumeric := complete_numeric_invariants u v matched used slack amount n output representation.u_len representation.v_len
     hcomplete initialRows (-v.val[0]!.val) hpotential.envelope hpotential.account hreserved hdelta hinjective hzero hrows
   have hnextIncrement : -output.2.2.1.val[0]!.val = -v.val[0]!.val+amount.val := by rw [hnumeric.2.2]; ring
-  refine ⟨hcomplete,?_,?_⟩
+  refine ⟨hcomplete,?_,?_,hb.1⟩
   · refine ⟨?_,?_,?_⟩
     · rw [hnextIncrement]
       exact hnumeric.1
