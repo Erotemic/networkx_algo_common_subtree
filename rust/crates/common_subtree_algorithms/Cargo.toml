@@ -15,3 +15,7 @@ path = "src/lib.rs"
 [[bench]]
 name = "pytorch_sized_trees"
 harness = false
+
+[[bench]]
+name = "graph_allocations"
+harness = false

@@ -90,6 +90,16 @@ The 2018 solver is unchanged by this rooting optimization. API/raw/native
 measurements and process-wide RSS are in [the report](../../dev/benchmarks/2026-11-14-unordered-fixed-root.md).
 This does not close the paper's specialized matching or production proof work.
 
+Immutable shared witnesses, compact memo keys, exact output reservation and
+allocation-free skip iteration further improve both graph families. On 166/319
+vertices, 2018 allocation/reallocation requests fall **3.32M → 0.79M**, cumulative
+requested heap **819 → 210 MB**, and peak extra requested heap **193 → 106 MB**.
+Installed API improves **0.618 → 0.458 s (1.35x)**. Across measured 32/32 shapes,
+2018 improves 1.33–1.56x and 2016 1.15–1.32x over the fixed-root milestone.
+All 41 graph Rust and 149 installed-wheel tests pass. Allocation instrumentation
+exists only in a separate benchmark executable; the math/production-source
+proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-14-graph-shared-witness.md).
+
 ## Immediate implementation queue
 
 Ordered input/scoring validation now rejects typed unbalanced sequences on

@@ -7,6 +7,7 @@
 //! compose maximum-weight child matchings.
 
 use std::collections::{HashMap, VecDeque};
+use std::rc::Rc;
 
 use crate::matching::max_weight_bipartite_matching;
 use crate::Weight;
@@ -204,7 +205,31 @@ pub struct CommonSubtree {
     pub node_pairs: Vec<(NodeId, NodeId)>,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+// Memo/skip states adjust scores while sharing the same immutable witness.
+// Only newly combined rooted states construct a new mapping vector.
+#[derive(Clone)]
+struct SolverResult {
+    weight: Weight,
+    node_pairs: Rc<Vec<(NodeId, NodeId)>>,
+}
+
+impl SolverResult {
+    fn singleton(weight: Weight, u: NodeId, v: NodeId) -> Self {
+        Self {
+            weight,
+            node_pairs: Rc::new(vec![(u, v)]),
+        }
+    }
+
+    fn into_public(self) -> CommonSubtree {
+        CommonSubtree {
+            weight: self.weight,
+            node_pairs: Rc::unwrap_or_clone(self.node_pairs),
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
 struct State {
     u: NodeId,
     parent_u: Option<NodeId>,
@@ -212,13 +237,28 @@ struct State {
     parent_v: Option<NodeId>,
 }
 
+type StateKey = (NodeId, NodeId, NodeId, NodeId);
+
+impl State {
+    fn key(self) -> StateKey {
+        // No valid Vec index is usize::MAX. Keep optional parents explicit in
+        // the recurrence but avoid Option<usize>'s extra words in every key.
+        (
+            self.u,
+            self.parent_u.unwrap_or(usize::MAX),
+            self.v,
+            self.parent_v.unwrap_or(usize::MAX),
+        )
+    }
+}
+
 struct RootedSolver<'a, S: Scoring> {
     left: &'a LabeledTree,
     right: &'a LabeledTree,
     scoring: &'a S,
-    iso_memo: HashMap<State, Option<CommonSubtree>>,
-    embedding_memo: HashMap<State, Option<CommonSubtree>>,
-    skipped_memo: HashMap<State, Option<CommonSubtree>>,
+    iso_memo: HashMap<StateKey, Option<SolverResult>>,
+    embedding_memo: HashMap<StateKey, Option<SolverResult>>,
+    skipped_memo: HashMap<StateKey, Option<SolverResult>>,
     skip_vertex_penalty: Weight,
 }
 
@@ -260,21 +300,34 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             .collect()
     }
 
-    fn rooted_isomorphism(&mut self, state: State) -> Option<CommonSubtree> {
-        if let Some(found) = self.iso_memo.get(&state) {
+    fn rooted_isomorphism(&mut self, state: State) -> Option<SolverResult> {
+        if let Some(found) = self.iso_memo.get(&state.key()) {
             return found.clone();
         }
 
         let result = self.compute_rooted_isomorphism(state);
-        self.iso_memo.insert(state, result.clone());
+        self.iso_memo.insert(state.key(), result.clone());
         result
     }
 
-    fn compute_rooted_isomorphism(&mut self, state: State) -> Option<CommonSubtree> {
+    fn compute_rooted_isomorphism(&mut self, state: State) -> Option<SolverResult> {
         let root_weight = self
             .scoring
             .node_weight(self.left, state.u, self.right, state.v)?;
         let root_weight = finite_weight(root_weight);
+        if !self
+            .left
+            .neighbors(state.u)
+            .iter()
+            .any(|e| Some(e.to) != state.parent_u)
+            || !self
+                .right
+                .neighbors(state.v)
+                .iter()
+                .any(|e| Some(e.to) != state.parent_v)
+        {
+            return Some(SolverResult::singleton(root_weight, state.u, state.v));
+        }
         let left_children = Self::child_edges(self.left, state.u, state.parent_u);
         let right_children = Self::child_edges(self.right, state.v, state.parent_v);
 
@@ -310,55 +363,70 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         }
 
         let matching = max_weight_bipartite_matching(&matrix);
-        let mut node_pairs = vec![(state.u, state.v)];
+        let pairs_needed = 1 + matching
+            .pairs
+            .iter()
+            .map(|&(i, j)| {
+                child_results[i][j]
+                    .as_ref()
+                    .map_or(0, |child| child.node_pairs.len())
+            })
+            .sum::<usize>();
+        let mut node_pairs = Vec::with_capacity(pairs_needed);
+        node_pairs.push((state.u, state.v));
         for (i, j) in matching.pairs {
             if let Some(child) = child_results[i][j].take() {
-                node_pairs.extend(child.node_pairs);
+                node_pairs.extend(child.node_pairs.iter().copied());
             }
         }
         node_pairs.sort_unstable();
         node_pairs.dedup();
 
-        Some(CommonSubtree {
+        Some(SolverResult {
             weight: finite_weight(root_weight + matching.weight),
-            node_pairs,
+            node_pairs: Rc::new(node_pairs),
         })
     }
 
     // Type wedge in Lemma 5: both roots are mapped. In particular this state
     // must retain negative values: a parent edge reward can make them useful.
-    fn rooted_embedding(&mut self, state: State) -> Option<CommonSubtree> {
-        if let Some(found) = self.embedding_memo.get(&state) {
+    fn rooted_embedding(&mut self, state: State) -> Option<SolverResult> {
+        if let Some(found) = self.embedding_memo.get(&state.key()) {
             return found.clone();
         }
         let best = self.compute_rooted_embedding_with_roots_mapped(state);
-        self.embedding_memo.insert(state, best.clone());
+        self.embedding_memo.insert(state.key(), best.clone());
         best
     }
 
     // Type diamond in Lemma 5: at least one root is an interior vertex on a
     // topological path. No edge reward is added when using this state.
-    fn skipped_embedding(&mut self, state: State) -> Option<CommonSubtree> {
-        if let Some(found) = self.skipped_memo.get(&state) {
+    fn skipped_embedding(&mut self, state: State) -> Option<SolverResult> {
+        if let Some(found) = self.skipped_memo.get(&state.key()) {
             return found.clone();
         }
         let mut best = None;
-        let mut continuations = Vec::new();
-        for edge in Self::child_edges(self.left, state.u, state.parent_u) {
-            continuations.push(State {
+        let left = self.left;
+        let right = self.right;
+        let left_steps = left
+            .neighbors(state.u)
+            .iter()
+            .filter(|edge| Some(edge.to) != state.parent_u)
+            .map(|edge| State {
                 u: edge.to,
                 parent_u: Some(state.u),
                 ..state
             });
-        }
-        for edge in Self::child_edges(self.right, state.v, state.parent_v) {
-            continuations.push(State {
+        let right_steps = right
+            .neighbors(state.v)
+            .iter()
+            .filter(|edge| Some(edge.to) != state.parent_v)
+            .map(|edge| State {
                 v: edge.to,
                 parent_v: Some(state.v),
                 ..state
             });
-        }
-        for next in continuations {
+        for next in left_steps.chain(right_steps) {
             for mut candidate in [self.rooted_embedding(next), self.skipped_embedding(next)]
                 .into_iter()
                 .flatten()
@@ -367,18 +435,28 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                 Self::keep_candidate(&mut best, candidate);
             }
         }
-        self.skipped_memo.insert(state, best.clone());
+        self.skipped_memo.insert(state.key(), best.clone());
         best
     }
 
-    fn compute_rooted_embedding_with_roots_mapped(
-        &mut self,
-        state: State,
-    ) -> Option<CommonSubtree> {
+    fn compute_rooted_embedding_with_roots_mapped(&mut self, state: State) -> Option<SolverResult> {
         let root_weight = self
             .scoring
             .node_weight(self.left, state.u, self.right, state.v)?;
         let root_weight = finite_weight(root_weight);
+        if !self
+            .left
+            .neighbors(state.u)
+            .iter()
+            .any(|e| Some(e.to) != state.parent_u)
+            || !self
+                .right
+                .neighbors(state.v)
+                .iter()
+                .any(|e| Some(e.to) != state.parent_v)
+        {
+            return Some(SolverResult::singleton(root_weight, state.u, state.v));
+        }
         let left_children = Self::child_edges(self.left, state.u, state.parent_u);
         let right_children = Self::child_edges(self.right, state.v, state.parent_v);
 
@@ -418,22 +496,32 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         }
 
         let matching = max_weight_bipartite_matching(&matrix);
-        let mut node_pairs = vec![(state.u, state.v)];
+        let pairs_needed = 1 + matching
+            .pairs
+            .iter()
+            .map(|&(i, j)| {
+                child_results[i][j]
+                    .as_ref()
+                    .map_or(0, |child| child.node_pairs.len())
+            })
+            .sum::<usize>();
+        let mut node_pairs = Vec::with_capacity(pairs_needed);
+        node_pairs.push((state.u, state.v));
         for (i, j) in matching.pairs {
             if let Some(child) = child_results[i][j].take() {
-                node_pairs.extend(child.node_pairs);
+                node_pairs.extend(child.node_pairs.iter().copied());
             }
         }
         node_pairs.sort_unstable();
         node_pairs.dedup();
 
-        Some(CommonSubtree {
+        Some(SolverResult {
             weight: finite_weight(root_weight + matching.weight),
-            node_pairs,
+            node_pairs: Rc::new(node_pairs),
         })
     }
 
-    fn keep_candidate(best: &mut Option<CommonSubtree>, candidate: CommonSubtree) {
+    fn keep_candidate(best: &mut Option<SolverResult>, candidate: SolverResult) {
         match best {
             None => *best = Some(candidate),
             Some(current) => {
@@ -509,7 +597,8 @@ pub fn maximum_nonempty_common_subtree_isomorphism<S: Scoring>(
             }
         }
     }
-    best
+    drop(solver);
+    best.map(SolverResult::into_public)
 }
 
 /// Experimental distance-penalized common subtree embedding between two labeled
@@ -573,7 +662,8 @@ pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S:
             }
         }
     }
-    best
+    drop(solver);
+    best.map(SolverResult::into_public)
 }
 
 #[cfg(test)]
