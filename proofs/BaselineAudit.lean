@@ -36,3 +36,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.AssignmentEntrypoint.min_cost_assignment_total_spec
 #print axioms SubtreeProofs.Rust.AssignmentEntrypoint.min_cost_assignment_spec
+
+#print axioms SubtreeProofs.Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec
+#print axioms SubtreeProofs.Rust.MatchingEntrypoint.max_weight_partial_matching_spec

@@ -450,7 +450,7 @@ published cost theorems remain open.
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
-| Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 public assignment API total correctness proved; partial-matching adapter, floating arithmetic equivalence and complexity open |
+| Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 assignment and rectangular optional signed-i64 partial-matching public APIs total correctness proved; graph integration, floating arithmetic equivalence and complexity open |
 | 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and both 2018 boundary recurrences proved; executable rooted 2018 score evaluator proved; optimized algorithms and actual Rust graph refinement open |
 | Verified Python adapters and qualified performance evidence | Open |
 
@@ -466,6 +466,39 @@ formalizations, published optimized algorithms, or end-to-end Rust graph verific
 
 
 
+
+## Actual public partial-matching API total correctness: 2026-11-14
+
+`Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec` proves the
+actual public optional signed-i64 matrix API safely terminates on every
+represented input. Rectangular matrices with dimension sum at most `u32::MAX`
+and strictly below `usize::MAX` return an independently maximum compatible
+partial matching. `MatchingSolveBuiltMatrix.CorrectPartial` identifies every
+actual returned pair with its original input indices, proves list uniqueness,
+and identifies the actual i128 weight with the independent matching weight.
+Empty sides, forbidden edges, nonpositive weights, ties and extreme i64
+weights are covered. The total contract gives precise `NonRectangular` and
+`TooLarge` rejection conditions, including shape-before-size precedence;
+assignment and arithmetic errors cannot occur on admitted inputs.
+`max_weight_partial_matching_spec` states admitted-input success directly.
+
+`MatchingAssignmentBridge` connects the actual square assignment and decoded
+coordinates to the independent dummy reduction through Mathlib's finite sum
+and permutation equivalences. `MatchingSolveBuiltMatrix.solve_built_matrix_spec`
+composes the already verified public assignment with actual pair decoding and
+a derived safe cost negation. The final wrapper proof verifies actual width
+selection, shape validation, checked dimension sum, size checks and matrix
+construction. No optimum, permutation, path or arithmetic certificate is an
+endpoint premise. The proof has the same pinned translation, supported-operation
+and allocation-model boundary as the square assignment core.
+
+The full maintained library builds successfully (3,615 jobs), and pinned
+source regeneration matches both committed generated modules. The existing
+five Rust crate tests passed after the final source change.
+
+This completes functional correctness of the exact partial-matching adapter.
+Graph/Python integration, floating arithmetic equivalence, rectangular/reused
+matching optimizations and their source running-time bounds remain open.
 
 ## Actual partial-matching validation and indexed decoding: 2026-11-14
 

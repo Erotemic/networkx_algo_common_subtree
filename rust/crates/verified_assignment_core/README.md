@@ -33,15 +33,18 @@ Independent Rust tests compare 320 signed matrices through dimension seven
 against permutation enumeration and check bijectivity, dual feasibility,
 tightness, extreme costs, empty inputs, malformed inputs and ties.
 
-`matching::max_weight_partial_matching` adds a rectangular signed-i64 adapter
-with forbidden edges and unmatched vertices. Two independent-injection tests
-cover 588 generated cases and explicit edge cases. Its actual cost cell, row
-and matrix construction are proved safe and exact against the mathematical
-dummy reduction. Actual rectangular validation and both pair-decoding helpers
-are proved safe, with exact indexed membership and no duplicate list entries.
-The abstract reindexing bridge preserves maximum matching and negated-cost
-weight; its concrete decoder/score connection and the public partial-matching
-optimum refinement remain open.
+`matching::max_weight_partial_matching` solves rectangular optional signed-i64
+weights with forbidden edges and unmatched vertices. Its public total-correctness
+theorem, `Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec`, proves
+an independently maximum matching with exact input-index pairs, no duplicate
+list entries and exact i128 weight. It covers empty sides, nonpositive weights,
+ties and extreme signed weights. Shape is checked before size; malformed shape
+returns `NonRectangular`, and excluded dimension sums return `TooLarge`.
+Admitted inputs have dimension sum at most `u32::MAX` and strictly below
+`usize::MAX`; assignment and arithmetic errors are ruled out for these inputs.
+The proof verifies actual dummy cost construction, assignment, decoding and
+checked weight conversion. Two independent-injection tests cover 588 generated
+rectangular cases and explicit edge cases.
 
 Graph/Python integration, rectangular and reused matching optimizations, and
 implementation complexity proofs remain open.

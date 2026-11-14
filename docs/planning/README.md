@@ -25,8 +25,12 @@ correctness theorem (`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec`)
 Admitted matrices return a minimum-cost permutation with exact cost and
 feasible/tight exported potentials; other represented inputs return the
 specified size/shape rejection. Arithmetic safety and termination are derived
-for every actual phase, including empty input. Partial-matching and graph
-integration and published optimized costs remain open. See
+for every actual phase, including empty input. The actual rectangular optional
+signed-i64 partial-matching API is also proved by
+`Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec`: exact input
+indices, unique pair list, independently maximum compatible matching and exact
+weight, or prescribed shape/size rejection. Graph/Python integration and
+published optimized costs remain open. See
 [proof status](../../proofs/PROOF_STATUS.md).
 
 ## Verified Rust memoization: 2026-11-14

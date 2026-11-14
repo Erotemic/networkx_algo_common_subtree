@@ -133,7 +133,11 @@ assignment API now has its own total-correctness theorem,
 numeric safety, size/shape rejection and exact optimum output. This proof
 uses the maintained 4.35.0 toolchain and does not depend on CLRS-Lean. A CLRS
 port would still need interface and pin compatibility work; it is optional.
-The actual partial-matching adapter and source running-time bounds remain open.
+The actual rectangular optional signed-i64 adapter is also proved by
+`Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec`, with exact
+input indices and weight, list uniqueness, independent maximum matching and
+precise shape/size errors. Graph integration and source running-time bounds
+remain open.
 
 The Aeneas/Charon evaluation succeeded on the maintained 4.35.0 toolchain,
 including a real ordered-tree solver refinement. Its exact pin and

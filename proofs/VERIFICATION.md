@@ -91,8 +91,13 @@ public entry-point total correctness in `Rust/AssignmentEntrypoint.lean`.
 an independent optimum with exact feasible/tight exported potentials on
 admitted square i64 matrices, or the specified size/shape rejection. Numeric
 ranges, search/augmentation termination and all driver invariants are derived
-inside the proof. Partial-matching integration and implementation costs remain
-open. The same supported-operation and allocation-model boundaries apply. The pinned release
+inside the proof. `Rust/MatchingEntrypoint.lean` proves the actual rectangular
+optional signed-i64 partial-matching public API total contract, including exact
+input-index pair membership, list uniqueness, independent global optimality,
+exact weight and prescribed shape/size rejection. Actual construction,
+assignment, decoding and checked weight conversion are verified. Graph/Python
+integration and implementation costs remain open. The same supported-operation
+and allocation-model boundaries apply. The pinned release
 emits a generic unknown-externals warning in single-file mode for this crate;
 a split-file diagnostic emitted only `Types.lean` and `Funs.lean`, and the
 maintained module compiles against the supplied Aeneas models without a custom
