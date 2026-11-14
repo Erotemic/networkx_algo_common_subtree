@@ -450,12 +450,12 @@ published cost theorems remain open.
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
-| Hungarian/assignment reduction and actual Rust matching correctness | Exact signed-real dummy reduction proved; Hungarian loop, numeric refinement and complexity open |
+| Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 public assignment API total correctness proved; partial-matching adapter, floating arithmetic equivalence and complexity open |
 | 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and both 2018 boundary recurrences proved; executable rooted 2018 score evaluator proved; optimized algorithms and actual Rust graph refinement open |
 | Verified Python adapters and qualified performance evidence | Open |
 
 The overall program remains active. These results do not complete the paper
-formalizations, published optimized algorithms, or end-to-end Rust verification.
+formalizations, published optimized algorithms, or end-to-end Rust graph verification.
 
 
 
@@ -466,6 +466,36 @@ formalizations, published optimized algorithms, or end-to-end Rust verification.
 
 
 
+
+## Actual public exact-assignment API total correctness: 2026-11-14
+
+`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec` proves successful
+termination of the actual public Rust function on every represented matrix.
+`ResultSpec` precisely distinguishes a globally correct assignment from the
+source's size and shape rejections. Accepted input means a square signed-i64
+matrix with dimension at most `u32::MAX` and a representable reserved extent
+`n+1`. All accepted inputs return a result satisfying the independent
+`AssignmentReturnedSpecification.Correct` predicate: a decoded permutation,
+exact cost, exact exported potential lengths, feasible dual inequalities,
+selected-edge tightness, primal/dual equality and minimum cost against every
+competing permutation. `min_cost_assignment_spec` gives this admitted-input
+success contract directly. Arithmetic and invariant errors are ruled out by
+the total contract, including both extreme signed costs and empty input.
+
+`AssignmentValidation.is_square_spec` verifies the actual validator on every
+represented matrix, including early rejection with a real malformed row.
+The public theorem composes actual size/cast/checked-extent validation,
+row-minimum initialization, complete source driver and final decoding. Its
+unsigned extent proof uses the pinned public checked-add alias theorem
+without an additional private-body import. No minimum, path, local arithmetic
+range or program-result certificate is an endpoint premise.
+
+The full library builds with both maintained modules. This completes total
+functional correctness of the square exact-integer assignment core under the
+pinned translation/model boundary. The partial-matching adapter, graph/Python
+integration, floating arithmetic equivalence, rectangular/reused matching
+optimizations and implementation cost proofs remain open. The final opt-in
+endpoint dependency review is still separate from routine compilation.
 
 ## Complete actual Rust assignment driver: 2026-11-14
 

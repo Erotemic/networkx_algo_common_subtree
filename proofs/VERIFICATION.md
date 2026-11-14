@@ -85,9 +85,14 @@ Rust compilation, Charon/Aeneas translation, and the models of supported Rust
 operations are explicit translation trust boundaries. Lean checks the resulting
 refinement proof. The mathematical tree relation remains independent of them.
 
-The exact assignment core has reproducible generated semantics and a compiled
-initialization refinement (`Rust/AssignmentInitialization.lean`). Its full
-Hungarian-loop correctness and numeric bounds remain open. The pinned release
+The exact assignment core has reproducible generated semantics and complete
+public entry-point total correctness in `Rust/AssignmentEntrypoint.lean`.
+`min_cost_assignment_total_spec` verifies every represented input, returning
+an independent optimum with exact feasible/tight exported potentials on
+admitted square i64 matrices, or the specified size/shape rejection. Numeric
+ranges, search/augmentation termination and all driver invariants are derived
+inside the proof. Partial-matching integration and implementation costs remain
+open. The same supported-operation and allocation-model boundaries apply. The pinned release
 emits a generic unknown-externals warning in single-file mode for this crate;
 a split-file diagnostic emitted only `Types.lean` and `Funs.lean`, and the
 maintained module compiles against the supplied Aeneas models without a custom

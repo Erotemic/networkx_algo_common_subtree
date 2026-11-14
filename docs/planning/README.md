@@ -18,6 +18,17 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Verified actual exact assignment API: 2026-11-14
+
+The actual square signed-i64 Rust assignment API now has an end-to-end total
+correctness theorem (`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec`).
+Admitted matrices return a minimum-cost permutation with exact cost and
+feasible/tight exported potentials; other represented inputs return the
+specified size/shape rejection. Arithmetic safety and termination are derived
+for every actual phase, including empty input. Partial-matching and graph
+integration and published optimized costs remain open. See
+[proof status](../../proofs/PROOF_STATUS.md).
+
 ## Verified Rust memoization: 2026-11-14
 
 The actual owned-memo Rust entry point now has a compiled end-to-end optimum

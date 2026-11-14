@@ -73,7 +73,7 @@ algorithm; its repeated matching calls do not establish this bound.
 | Lemma 2 | Fixed-root family suffices for the unrestricted optimum | Proved `Droschinsky2016.fixedRootValue_eq_unrootedValue`, using canonical-path ancestry and the unique top vertex of every connected selected subtree |
 | Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Executable rerooting baseline is correct by `RootedDP.unrootedOptimum_correct`; exact paper schedule and operation bound open |
 | Theorem 4 | Optimized unrestricted-weight MCSI bound above | Open |
-| Lemma 5 | Rectangular matching work O(k*l*(k+log l)), k<=l | Open; exhaustive finite integer matching proved separately by `WeightedMatching.solveMatrix_correct` |
+| Lemma 5 | Rectangular matching work O(k*l*(k+log l)), k<=l | Open cost/rectangular optimization; exhaustive finite matching and actual square signed-i64 assignment total correctness (`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec`) proved separately |
 | Lemma 6 | All one-vertex-deleted matching instances in O(k*l*(min(k,l)+log(max(k,l)))) | Open |
 | Theorem 7 | Total matching work in Algorithm 1 | Open |
 | Proposition 8 | Faster unrestricted-weight MCSI implies subcubic dense assignment | Open reduction |
@@ -126,10 +126,14 @@ its own pinned Lean/Mathlib 4.32.0-rc1 environment (8,586 jobs). Its
 existence of an optimal perfect assignment over equally sized complete
 real-weight bipartite instances. It is not a theorem about our Rust matching
 implementation. The independent exact forbidden/partial/signed-real reduction now compiles as
-`WeightedMatching.AssignmentReduction.minimum_assignment_decodes`. The reduction now also applies to integers; `Assignment.tight_assignment_decodes` supplies a generic feasible/tight certificate bridge. Connecting
-its permutation interface to this CLRS theorem is still required; compatibility
-with the maintained 4.35.0 toolchain has
-not been established. It is therefore not a mandatory dependency.
+`WeightedMatching.AssignmentReduction.minimum_assignment_decodes`. The reduction also applies to integers; `Assignment.tight_assignment_decodes`
+supplies a generic feasible/tight bridge. The actual square signed-i64 Rust
+assignment API now has its own total-correctness theorem,
+`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec`, including derived
+numeric safety, size/shape rejection and exact optimum output. This proof
+uses the maintained 4.35.0 toolchain and does not depend on CLRS-Lean. A CLRS
+port would still need interface and pin compatibility work; it is optional.
+The actual partial-matching adapter and source running-time bounds remain open.
 
 The Aeneas/Charon evaluation succeeded on the maintained 4.35.0 toolchain,
 including a real ordered-tree solver refinement. Its exact pin and

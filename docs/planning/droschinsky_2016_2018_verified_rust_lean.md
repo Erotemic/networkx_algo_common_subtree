@@ -14,6 +14,36 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual public exact-assignment API total correctness: 2026-11-14
+
+`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec` proves successful
+termination of the actual public Rust function on every represented matrix.
+`ResultSpec` precisely distinguishes a globally correct assignment from the
+source's size and shape rejections. Accepted input means a square signed-i64
+matrix with dimension at most `u32::MAX` and a representable reserved extent
+`n+1`. All accepted inputs return a result satisfying the independent
+`AssignmentReturnedSpecification.Correct` predicate: a decoded permutation,
+exact cost, exact exported potential lengths, feasible dual inequalities,
+selected-edge tightness, primal/dual equality and minimum cost against every
+competing permutation. `min_cost_assignment_spec` gives this admitted-input
+success contract directly. Arithmetic and invariant errors are ruled out by
+the total contract, including both extreme signed costs and empty input.
+
+`AssignmentValidation.is_square_spec` verifies the actual validator on every
+represented matrix, including early rejection with a real malformed row.
+The public theorem composes actual size/cast/checked-extent validation,
+row-minimum initialization, complete source driver and final decoding. Its
+unsigned extent proof uses the pinned public checked-add alias theorem
+without an additional private-body import. No minimum, path, local arithmetic
+range or program-result certificate is an endpoint premise.
+
+The full library builds with both maintained modules. This completes total
+functional correctness of the square exact-integer assignment core under the
+pinned translation/model boundary. The partial-matching adapter, graph/Python
+integration, floating arithmetic equivalence, rectangular/reused matching
+optimizations and implementation cost proofs remain open. The final opt-in
+endpoint dependency review is still separate from routine compilation.
+
 ## Complete actual Rust assignment driver: 2026-11-14
 
 `Rust.AssignmentDriverLoop.finish_assignment_spec` proves successful,

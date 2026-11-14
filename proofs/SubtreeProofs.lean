@@ -98,3 +98,5 @@ public import SubtreeProofs.Rust.AssignmentDriverAugmentation
 public import SubtreeProofs.Rust.AssignmentDriverInitialization
 public import SubtreeProofs.Rust.AssignmentDriverBody
 public import SubtreeProofs.Rust.AssignmentDriverLoop
+public import SubtreeProofs.Rust.AssignmentValidation
+public import SubtreeProofs.Rust.AssignmentEntrypoint
