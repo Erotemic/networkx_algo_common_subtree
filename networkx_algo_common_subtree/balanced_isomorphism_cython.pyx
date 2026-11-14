@@ -89,6 +89,10 @@ def _lcsi_iter_cython(full_seq1, full_seq2, open_to_close, node_affinity, open_t
     """
     Cython implementation of :func:`_lcsi_iter`.
     """
+    if not full_seq1 or not full_seq2:
+        empty = (full_seq1[:0], full_seq2[:0])
+        return 0, empty, 0, empty
+
     all_decomp1 = generate_all_decomp_nocat_cython(full_seq1, open_to_close, open_to_node)
     all_decomp2 = generate_all_decomp_nocat_cython(full_seq2, open_to_close, open_to_node)
     key0 = (full_seq1, full_seq2)

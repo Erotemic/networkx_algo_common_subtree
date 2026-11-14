@@ -119,20 +119,21 @@ def median_time_seconds(
     return stats.median(times), result
 
 
-def available_impls(kind: str) -> list[str]:
+def available_impls(kind: str, *, include_restricted: bool = False) -> list[str]:
     if kind == "embedding":
-        return balanced_embedding.available_impls_longest_common_balanced_embedding()
+        return balanced_embedding.available_impls_longest_common_balanced_embedding(include_restricted=include_restricted)
     if kind == "isomorphism":
         return balanced_isomorphism.available_impls_longest_common_balanced_isomorphism()
     raise KeyError(kind)
 
 
-def call_backend(kind: str, case: Case, impl: str):
+def call_backend(kind: str, case: Case, impl: str, *, node_affinity):
     if kind == "embedding":
         return balanced_embedding.longest_common_balanced_embedding(
             case.seq1,
             case.seq2,
             case.open_to_close,
+            node_affinity=node_affinity,
             impl=impl,
         )
     if kind == "isomorphism":
@@ -140,6 +141,7 @@ def call_backend(kind: str, case: Case, impl: str):
             case.seq1,
             case.seq2,
             case.open_to_close,
+            node_affinity=node_affinity,
             impl=impl,
         )
     raise KeyError(kind)
@@ -167,9 +169,21 @@ def main(argv=None) -> int:
         ),
     )
     parser.add_argument(
+        "--node-affinity", choices=("eq", "none"), default="eq",
+        help="Use equality matching or topology-only matching (required for verified-rust).",
+    )
+    parser.add_argument(
         "--reference",
         default="iter",
         help="backend used as denominator for speedup, usually iter or iter-cython",
+    )
+    parser.add_argument(
+        "--require-impls", action="store_true",
+        help="Fail instead of omitting requested implementations that are unavailable.",
+    )
+    parser.add_argument(
+        "--strict-scores", action="store_true",
+        help="Exit with failure if successful backends disagree on an objective value.",
     )
     parser.add_argument("--csv", type=Path, default=None)
     parser.add_argument("--json", type=Path, default=None)
@@ -185,15 +199,25 @@ def main(argv=None) -> int:
     )
 
     rows = []
+    failures = []
 
     for kind in kinds:
-        detected = available_impls(kind)
+        detected = available_impls(kind, include_restricted=args.node_affinity == "none")
         if args.impls == "auto":
             # Avoid recurse by default: it is useful as a correctness backend,
             # but often unsuitable for larger benchmark inputs.
-            impls = [p for p in ["iter-rust", "iter-cython", "iter"] if p in detected]
+            candidates = ["iter-rust", "iter-cython", "iter"]
+            if kind == "embedding" and args.node_affinity == "none":
+                candidates.insert(0, "verified-rust")
+            impls = [p for p in candidates if p in detected]
         else:
             requested = [p.strip() for p in args.impls.split(",") if p.strip()]
+            missing = [p for p in requested if p not in detected]
+            if missing:
+                message = f"{kind}: missing requested implementations: {missing!r}"
+                print(message, file=sys.stderr)
+                if args.require_impls:
+                    failures.append(message)
             impls = [p for p in requested if p in detected]
 
         print(f"\n# {kind}")
@@ -212,7 +236,10 @@ def main(argv=None) -> int:
 
             for impl in impls:
                 def _run(impl=impl, case=case, kind=kind):
-                    return call_backend(kind, case, impl)
+                    return call_backend(
+                        kind, case, impl,
+                        node_affinity=None if args.node_affinity == "none" else "eq",
+                    )
 
                 try:
                     seconds, result = median_time_seconds(
@@ -223,6 +250,7 @@ def main(argv=None) -> int:
                 except Exception as ex:
                     row = {
                         "kind": kind,
+                        "node_affinity": args.node_affinity,
                         "case": case.name,
                         "pairs1": len(case.seq1) // 2,
                         "pairs2": len(case.seq2) // 2,
@@ -234,6 +262,7 @@ def main(argv=None) -> int:
                     }
                     rows.append(row)
                     print(f"{case.name:32s} {impl:12s} ERROR {ex!r}")
+                    failures.append(f"{kind} {case.name} {impl}: {ex!r}")
                     continue
 
                 _best, value = result
@@ -242,6 +271,7 @@ def main(argv=None) -> int:
 
                 row = {
                     "kind": kind,
+                    "node_affinity": args.node_affinity,
                     "case": case.name,
                     "pairs1": len(case.seq1) // 2,
                     "pairs2": len(case.seq2) // 2,
@@ -256,7 +286,10 @@ def main(argv=None) -> int:
             # Correctness sanity check: all measured impls should agree on value.
             values = {impl: val for impl, val in value_by_impl.items()}
             if len(set(values.values())) > 1:
-                print(f"VALUE MISMATCH: {kind} {case.name}: {values}", file=sys.stderr)
+                message = f"VALUE MISMATCH: {kind} {case.name}: {values}"
+                print(message, file=sys.stderr)
+                if args.strict_scores:
+                    failures.append(message)
 
             ref_time = by_impl.get(args.reference)
             for row in rows:
@@ -286,6 +319,9 @@ def main(argv=None) -> int:
         args.json.write_text(json.dumps(rows, indent=2))
         print(f"wrote {args.json}")
 
+    if failures:
+        print(f"\n{len(failures)} benchmark failures", file=sys.stderr)
+        return 1
     return 0
 
 

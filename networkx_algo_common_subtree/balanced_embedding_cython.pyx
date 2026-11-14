@@ -138,6 +138,9 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
     cdef SeqT subseq1, subseq2
     cdef SeqT new_head1, new_head2, new_tail1, new_tail2
 
+    if not full_seq1 or not full_seq2:
+        return 0, (full_seq1[:0], full_seq2[:0])
+
     if open_to_node is None:
         open_to_node = IdentityDictCython()
     all_decomp1 = generate_all_decomp_cython(full_seq1, open_to_close, open_to_node)

@@ -347,6 +347,9 @@ def _lcse_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
     >>> print(embeddings[0])
     [][[]]
     """
+    if not full_seq1 or not full_seq2:
+        return 0, (full_seq1[:0], full_seq2[:0])
+
     all_decomp1 = generate_all_decomp(full_seq1, open_to_close, open_to_node)
     all_decomp2 = generate_all_decomp(full_seq2, open_to_close, open_to_node)
 

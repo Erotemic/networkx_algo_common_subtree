@@ -18,6 +18,16 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Current execution order: usable software first
+
+The 2026-11-14 reprioritization supersedes the earlier proof-first sequencing.
+Finish public Python/PyO3 algorithm coverage, independent correctness/parity,
+and measured performance before substantial remaining proof work. Preserve
+all established proofs. Full mathematical, production Rust correspondence and
+applicable complexity verification remain blockers for the final verified
+release, while development builds and use can proceed. The concise current
+inventory and evidence are in [capabilities.md](capabilities.md).
+
 ## Verified actual one-path sparse augmentation: 2026-11-14
 
 The actual signed-integer sparse search and checked path flip now have an
@@ -178,3 +188,10 @@ The program charter holds decisions shared between papers. The individual
 paper plans hold their detailed proof and algorithm obligations. Avoid
 reintroducing obsolete proof-reset instructions or duplicating an entire
 program history inside new subtask plans.
+
+## Native backend parity and migration
+
+See [`backend_parity_and_cython_retirement.md`](backend_parity_and_cython_retirement.md)
+for the independent oracle and cross-backend test plan, reproducible
+comparative benchmarks, and requirements for replacing Cython as the fallback
+with fully verified Rust implementations.

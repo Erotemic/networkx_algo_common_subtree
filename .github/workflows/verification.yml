@@ -61,9 +61,9 @@ jobs:
         with:
           python-version: '3.13'
       - name: Build and install the Python extension and verified core
-        run: python -m pip install '.[tests]' --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
+        run: python -m pip install '.[tests]' --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=ON --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
       - name: Exercise the installed wheel outside the source tree
         working-directory: ${{ runner.temp }}
         run: |
           python -c 'from networkx_algo_common_subtree import _rust; assert hasattr(_rust, "maximum_common_token_embedding")'
-          python -m pytest "${{ github.workspace }}/tests/test_verified_rust_backend.py" "${{ github.workspace }}/tests/test_rust_backend.py"
+          COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 python -m pytest "${{ github.workspace }}/tests/test_verified_rust_backend.py" "${{ github.workspace }}/tests/test_rust_backend.py" "${{ github.workspace }}/tests/test_backend_differential.py"
