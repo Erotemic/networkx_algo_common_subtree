@@ -1,6 +1,6 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: initial Lean foundation compiles in the user's local `lake build`; semantic correspondence and algorithmic proofs pending
+Status: tree/Dyck encoding and forward contraction direction compile locally; converse authored, pending local build; algorithmic proofs pending
 Last revised: 2026-11-13 (after successful local Lean build was reported)
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
@@ -33,20 +33,25 @@ reported local build result; a fresh-checkout reproducibility run, the exact
 build log, and theorem-axiom audit have not yet been recorded. Prior Mathlib
 module-system import warnings were nonfatal.
 
-**Next authored increment (pending local compilation):**
-`EncodingEquivalence.lean` supplies a first-child/next-sibling binary-tree bridge,
-explicit Dyck decoding, an equivalence with the existing encoding, and both
-round-trip theorems. `ContractionSoundness.lean` independently defines removal
-of a matching pair inside a Dyck-word context and proves that operational tree
-contractions map to that relation, even below the root. The reverse
-sequence-to-tree implication and reconciliation with the exact paper
-containment convention remain open. These new sources have *not* been included
-in the previously reported successful build; run `lake build` and inspect
-`proofs/PROOF_STATUS.md` before promoting their status to checked.
+**Latest Lean build reported by maintainer:** the original ordered-tree
+foundation, `EncodingEquivalence.lean` (including both round trips) and
+`ContractionSoundness.lean` (including `embeds_encodeDyck`) now compile under
+Lean 4.35.0 following the successive parser and constructor fixes. This
+supersedes the earlier statement that these two modules were build-pending.
 
-**Next action:** preserve the working baseline and its dependency lockfile,
-run `#print axioms` on the accepted public theorems, add actual Lean CI and an
-independent tiny contraction oracle. A passing build establishes Lean
+**New converse increment (pending local compilation):**
+`ContractionCompleteness.lean` introduces forest decoding, proves decoding
+respects concatenation and nesting, relates deletions in a `DyckContext` to
+ordinary tree contractions, and states the two-way bridge
+`embeds_iff_dyckEmbeds`. It is included as authored source, not yet reported as
+accepted by Lean. The result concerns our explicit Dyck deletion relation;
+agreement with the paper's exact balanced-containment convention still needs
+independent review.
+
+**Next action:** compile the new converse module and run `#print axioms` on
+the two-way theorem. Then add an independent tiny-tree contraction oracle and
+check the exact containment definition against the 2004 paper. Preserve the
+passing baseline and lockfile, and add focused Lean CI. A passing build establishes Lean
 acceptance of the current declarations; it does not establish the 2004
 paper's contraction/sequence equivalence, recurrence, complexity claim, or any
 Rust refinement.
@@ -235,7 +240,9 @@ Status after the user-reported successful local `lake build` (dependency audit s
 | Target | Status |
 | --- | --- |
 | Independent tree/embedded-subtree specification | compiled in the reported local build; paper-semantics equivalence and axiom audit pending |
-| Tree-to-sequence correspondence and containment/contraction equivalence | open |
+| Tree/Dyck encoding and forward contraction soundness | compiled locally (maintainer-reported) |
+| Converse contraction/completeness and two-way equivalence | authored; local build pending |
+| Equivalence to the paper's exact annotated containment relation | open |
 | Paper combinatorial results and actual-leaf state bound | open |
 | LCBS DP optimality vs. independent optimum | open |
 | Tree witness correctness | open |
@@ -317,8 +324,8 @@ Keep CI proportional to real failures: target core invariants and regressions, a
    integrated optimized baseline; prove its translated entry point correct,
    benchmark on adversarial and practical trees, then integrate deliberately.
 
-The next milestone is **an independent contraction oracle and a checked
-encoding/containment bridge**, with axiom auditing and clean-checkout CI for the
+The next milestone is **a successful local check of the converse theorem,
+then an independent contraction oracle and the paper-containment crosswalk**, with axiom auditing and clean-checkout CI for the
 now-compiling foundation. Build success alone leaves the central mathematical
 correspondence and the paper algorithm unproved.
 

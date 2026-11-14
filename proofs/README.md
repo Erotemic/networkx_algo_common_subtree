@@ -14,13 +14,19 @@ Modules in dependency order:
 - `Paper2004/ContractionSoundness.lean`: independent Dyck matching-pair deletion
   contexts and the forward map from operational tree contractions to sequence
   contractions.
+- `Paper2004/ContractionCompleteness.lean`: forest decoding and its
+  concatenation/nesting lemmas; lifting of Dyck-context deletions to tree-edge
+  contractions; the two-way equivalence `embeds_iff_dyckEmbeds`.
 
-The **reverse** sequence-to-tree contraction theorem is not yet proved.
-The paper's dynamic program, complexity bound and Rust refinement are later
-milestones; see `PROOF_STATUS.md` and the `docs/planning` roadmaps.
+The maintainer reports a successful local `lake build` for the first four
+modules, including the encoding equivalence and forward contraction theorem.
+`ContractionCompleteness.lean` is **authored but not yet compiled** in this
+execution environment. Its new proof claims depend on a successful local build.
 
-The previous two modules compiled in the maintainer's local environment. The
-new round-trip and contraction modules are **authored, awaiting a `lake build`**.
+The contraction equivalence covers the explicitly defined `DyckEmbeds`
+relation. Reconciling that relation with the exact paper containment
+conventions, then proving the dynamic program, complexity bound and Rust
+refinement, remain later milestones. See `PROOF_STATUS.md` and `docs/planning`.
 This workspace does not import the historical v3-v6 proofs.
 
 ```bash

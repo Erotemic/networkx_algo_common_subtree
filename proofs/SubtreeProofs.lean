@@ -2,3 +2,4 @@ import SubtreeProofs.Paper2004.OrderedTree
 import SubtreeProofs.Paper2004.BalancedSequence
 import SubtreeProofs.Paper2004.EncodingEquivalence
 import SubtreeProofs.Paper2004.ContractionSoundness
+import SubtreeProofs.Paper2004.ContractionCompleteness
