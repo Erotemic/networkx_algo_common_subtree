@@ -126,3 +126,4 @@ public import SubtreeProofs.Rust.MatchingDeletionEntrypoint
 public import SubtreeProofs.Shared.CopiedAssignmentReduction
 public import SubtreeProofs.Shared.AssignmentVertexDeletion
 public import SubtreeProofs.Shared.CopiedMatchingDeletion
+public import SubtreeProofs.Shared.CopiedMatchingInitialization

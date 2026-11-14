@@ -14,6 +14,26 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Paper copied-graph dual and initial tight matching: 2026-11-14
+
+`CopiedAssignmentReduction.initial_dual_feasible` proves the exact row-maximum
+source initialization feasible. `rowMaximum` is the least bound on zero and
+all finite row entries; including zero explicitly defines the all-forbidden,
+all-negative and empty-row cases. Original left vertices and their copies
+receive that row maximum, while right vertices and their copies receive zero.
+
+`initialPairs_valid`, `initialPairs_tight` and `initialPairs_card` prove the
+source right-identity edges form a compatible tight matching with exactly
+|R| edges. `initial_edge_deficit` derives the |L| deficit; choosing the smaller
+side as L gives the paper's augmentation count once a correct augmentation
+routine is supplied. `deletion_preserves_dual_feasible` also proves that old
+dual values restrict unchanged to all source-allowed surviving edges.
+
+The row-maximum, compatibility, cardinality, tightness and feasibility claims
+are mathematical proofs for the source construction. Sparse augmentation,
+its source refinement and operation bounds remain open; these results do not
+assert that the reference Rust family already implements the optimized repair.
+
 ## Paper deletion repair's exact single-pair deficit: 2026-11-14
 
 `AssignmentVertexDeletion` independently retains original perfect-assignment
