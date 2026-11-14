@@ -17,6 +17,23 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Matching-family pair-storage bounds: 2026-11-14
+
+`Complexity/MatchingFamilies.lean` counts separately tagged cells for each
+materialized repair, sharing the base on unused deletions. Feasible base/repair
+certificates derive at most `k+k²` retained pair cells per family, and at most
+`2*left*right`. No runtime or optimum oracle is supplied. The concrete uniform
+family closes all feasibility premises using its proved constructions.
+
+Finite-sum factorization and Mathlib's handshaking/tree-edge theorems then give
+`8*(n-1)*(m-1)` pair cells for degree-indexed collections, with a generic theorem
+for arbitrary feasible weighted families and a premise-free uniform instance.
+This establishes a model-level witness-storage component, not the complete DP
+space or source-runtime theorem. Actual vector uniqueness/capacities, aliasing,
+state scheduling, caches, arenas and other buffers still need resource
+correspondence. IEEE-754 is outside the initial proof scope. All 3,716 main
+Lean jobs pass; production Rust/Python code and benchmark target are unchanged.
+
 ## Complete uniform right-deletion family mathematics: 2026-11-14
 
 `Shared/UniformMatchingDeletion.lean` now proves

@@ -75,8 +75,9 @@ Algorithm, witness, production-structure and complexity proofs remain required.
 The precise v4 unrestricted-weight bound is
 `O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))`.
 The `O(n^2 Delta)` abbreviation in the earlier plans needs this qualification
-when the two degree bounds differ. The graph-only Rust DP is a reference
-algorithm; its repeated matching calls do not establish this bound.
+when the two degree bounds differ. Production Rust now uses fixed-left
+orientation, dense right-view tables and related matching families. Implementing
+and measuring these optimizations does not establish their formal source bound.
 
 | Source | Target | State |
 | --- | --- | --- |
@@ -90,6 +91,12 @@ algorithm; its repeated matching calls do not establish this bound.
 | Theorem 7 | Total matching work in Algorithm 1 | Open |
 | Proposition 8 | Faster unrestricted-weight MCSI implies subcubic dense assignment | Open reduction |
 | Theorem 9 | Output-sensitive enumeration with preprocessing as Theorem 4 and per-output min(|G|*DeltaH,DeltaG*|H|) | Open |
+
+A model-level storage component is now proved in `Complexity/MatchingFamilies`:
+materialized repair pairs occupy at most `k+k²` cells per family, and degree-sum
+aggregation gives a quadratic tree-pair bound. The concrete uniform deletion
+family has independent optimality and original-index witness proofs. These do
+not close Lemma 6/Theorem 7 runtime or the production allocation/source bridge.
 
 Section 7's empirical results are reproducibility context; they are not Lean
 theorem obligations. The appendix diagnoses a prior external algorithm's

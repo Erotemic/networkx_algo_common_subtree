@@ -16,6 +16,12 @@ preserved; `results.json` records the subsequent execution. Decision: retain
 the experiment without adding arlib to the main manifest. Existing counters
 remain useful; production resource correspondence is a separate obligation.
 
+The secondary local development has also started at
+`proofs/SubtreeProofs/Complexity/MatchingFamilies.lean`: feasible repair-output
+pair-cell bounds and tree degree-sum aggregation are proved. This counts
+represented witnesses, not actual Rust allocations or total execution time;
+production resource correspondence and matching-work amortization remain open.
+
 ## Decision in brief
 
 1. **Keep Mathlib and Aeneas as the established foundation.** Mathematical cardinality, combinatorial sums and asymptotics stay in Mathlib; source correspondence stays in Aeneas.

@@ -14,6 +14,7 @@ public import SubtreeProofs.Rust.ContractionBudget
 public import SubtreeProofs.Shared.WeightedMatching
 public import SubtreeProofs.Shared.UniformMatching
 public import SubtreeProofs.Shared.UniformMatchingDeletion
+public import SubtreeProofs.Complexity.MatchingFamilies
 public import SubtreeProofs.Shared.AssignmentReduction
 public import SubtreeProofs.Paper2004.OptimalEncoding
 public import SubtreeProofs.Paper2004.Decomposition
