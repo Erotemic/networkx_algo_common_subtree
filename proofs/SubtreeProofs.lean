@@ -110,3 +110,6 @@ public import SubtreeProofs.Shared.AssignmentReindex
 public import SubtreeProofs.Rust.MatchingAssignmentBridge
 public import SubtreeProofs.Rust.MatchingSolveBuiltMatrix
 public import SubtreeProofs.Rust.MatchingEntrypoint
+public import SubtreeProofs.Paper2004.OrderedIsomorphism
+public import SubtreeProofs.Paper2004.IsomorphismDynamicProgram
+public import SubtreeProofs.Paper2004.IsomorphismScores

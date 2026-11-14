@@ -39,3 +39,7 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec
 #print axioms SubtreeProofs.Rust.MatchingEntrypoint.max_weight_partial_matching_spec
+
+#print axioms SubtreeProofs.Paper2004.OrderedTree.OrderedIsoDP.level_correct
+#print axioms SubtreeProofs.Paper2004.OrderedTree.OrderedIsoDP.anywhere_correct
+#print axioms SubtreeProofs.Paper2004.OrderedTree.OrderedIsoDP.anywhereSize_optimum

@@ -50,7 +50,12 @@ the literal source relation and its refutation separately.
 
 Examples, explanatory remarks, and cited historical results are context,
 not additional theorem endpoints. Labeled scoring and ordered isomorphism
-extensions require separate contracts, as stated in the paper plan.
+extensions require separate contracts, as stated in the paper plan. The ordered
+isomorphism tree extension now has independent root-preserving and arbitrary-root
+contracts and constructive optima, `OrderedIsoDP.level_correct` and
+`anywhere_correct`, plus separate numeric optimum theorems. These are project
+extensions, not additional statements attributed to this paper. Sequence/API
+correspondence and actual Rust refinement remain open for the extension.
 
 ## Droschinsky--Kriege--Mutzel 2016 v4
 

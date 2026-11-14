@@ -438,6 +438,32 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Independent ordered-isomorphism optima: 2026-11-14
+
+`OrderedIsomorphism.lean` specifies adjacency-preserving ordered subtree
+selection independently of sequences, contractions and algorithms. `RootPrunes`
+and `ForestPrunes` delete whole child subtrees and independently prune retained
+children in order. `IsomorphicSubtree` permits the selected root to be any
+actual descendant. The root contributes no incoming virtual edge. This is a
+separate project extension; the 2004 paper proves its LCBE contraction
+recurrence and does not state this second isomorphism recurrence.
+
+`OrderedIsoDP.level_correct` proves a constructive root-preserving common
+optimum. `anywhere_correct` proves a constructive maximum common connected
+ordered subtree with freely chosen roots. Soundness and completeness are
+structural proofs against the independent relations, with edge counts bounding
+all recursive calls. Separate numeric computations have independent optimum
+theorems `levelSize_optimum` and `anywhereSize_optimum`, and exact witness-score
+agreement. Neither optimum is defined by its algorithm.
+
+Six kernel-checked cases in `Tests/OrderedIsomorphism.lean` distinguish fixed
+and arbitrary roots and prove a contraction/isomorphism separation: contracting
+an internal edge can produce a three-leaf star, whereas adjacency-preserving
+selection has optimum two on the same inputs. Vertex-pair sequence APIs may
+represent a forest at their outer level; correspondence to those existing APIs,
+actual Rust refinement, index reconstruction and efficient memo costs remain
+open for this extension.
+
 ## Outstanding obligations
 
 | Target | State |
@@ -447,7 +473,7 @@ published cost theorems remain open.
 | Pinned source statement ledgers for all three papers | Added `docs/planning/paper_statement_crosswalk.md`; open source results are explicit |
 | Paper D/R/S and actual tree-parameter state bounds | Proved, including `states_closed` / `states_least` for Definition 4 |
 | Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
-| LCBS/isomorphism's distinct ordered contract and optimum | Open |
+| LCBS/isomorphism's distinct ordered contract and optimum | Independent root-preserving and arbitrary-root tree contracts, witness DP and separate numeric optima proved; balanced-word/API correspondence and actual Rust refinement open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 assignment and rectangular optional signed-i64 partial-matching public APIs total correctness proved; graph integration, floating arithmetic equivalence and complexity open |

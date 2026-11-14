@@ -24,6 +24,7 @@ jobs:
         run: |
           lake build
           lake env lean Tests/RootedDynamicProgram.lean
+          lake env lean Tests/OrderedIsomorphism.lean
   rust:
     runs-on: ubuntu-latest
     steps:

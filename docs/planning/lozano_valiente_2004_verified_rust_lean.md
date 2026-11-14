@@ -1,10 +1,36 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: LCBE optimum, corrected state bound, memo counts and actual translated Rust reference solver proved; optimization/integration open
-Last revised: 2026-11-13 (after successful local Lean build was reported)
+Status: LCBE and separate ordered-isomorphism mathematical optima proved; translated Rust LCBE and memo refinement proved; isomorphism Rust refinement and optimization/integration open
+Last revised: 2026-11-14
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
+
+## Independent ordered-isomorphism optima: 2026-11-14
+
+`OrderedIsomorphism.lean` specifies adjacency-preserving ordered subtree
+selection independently of sequences, contractions and algorithms. `RootPrunes`
+and `ForestPrunes` delete whole child subtrees and independently prune retained
+children in order. `IsomorphicSubtree` permits the selected root to be any
+actual descendant. The root contributes no incoming virtual edge. This is a
+separate project extension; the 2004 paper proves its LCBE contraction
+recurrence and does not state this second isomorphism recurrence.
+
+`OrderedIsoDP.level_correct` proves a constructive root-preserving common
+optimum. `anywhere_correct` proves a constructive maximum common connected
+ordered subtree with freely chosen roots. Soundness and completeness are
+structural proofs against the independent relations, with edge counts bounding
+all recursive calls. Separate numeric computations have independent optimum
+theorems `levelSize_optimum` and `anywhereSize_optimum`, and exact witness-score
+agreement. Neither optimum is defined by its algorithm.
+
+Six kernel-checked cases in `Tests/OrderedIsomorphism.lean` distinguish fixed
+and arbitrary roots and prove a contraction/isomorphism separation: contracting
+an internal edge can produce a three-leaf star, whereas adjacency-preserving
+selection has optimum two on the same inputs. Vertex-pair sequence APIs may
+represent a forest at their outer level; correspondence to those existing APIs,
+actual Rust refinement, index reconstruction and efficient memo costs remain
+open for this extension.
 
 ## Verified Rust memoization: 2026-11-14
 
