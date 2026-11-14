@@ -65,10 +65,33 @@ New compiled endpoints (same ordered-tree prefix):
   using only output list constructors. `encodeAccum_cost` counts exactly
   `5*edgeCount+2` constructor visits and output allocations.
 
-The recursive DP computes an optimum and witness but does not memoize.
-The polynomial state bound alone does not establish its running time.
+The witness recursion computes an optimum tree. The separate memoized numerical
+algorithm below shares states and has actual operation counts; full runtime
+refinement remains open.
 The distinct ordered-isomorphism contract, memoized cost model, index mapping
 witnesses, actual Rust solver refinement and integration remain open.
+
+## Memoization accepted: 2026-11-14
+
+`MemoizedDynamicProgram.memoLcs_optimum` proves the actual threaded memoized
+score computation attains the independent optimum. `memoLcs_nodup` proves
+no key is inserted twice; `memoLcs_new_keys` confines additions to the D-product.
+`memoLcs_counts` ties misses to actual table growth and bounds actual calls by
+four times misses plus one. `memoLcs_operation_bound` and
+`memoLcs_tree_operation_bound` combine these with the proved finite state bounds.
+`memoLcs_comparison_state_bound` accounts for the association list's linear
+lookup scans: at most `(4*S+1)*S` key comparisons for S product states.
+
+The table-operation bound has the paper's state-count scale, while this
+association-list implementation has the explicitly proved extra comparison
+factor. Structural word comparison, first-return splitting and word
+canonicalization costs still need an implementation-level model. Expected-time
+hashing and the full Theorem 3 runtime are not claimed by these operation counts.
+
+The shared matching proof now works over any linearly ordered additive
+commutative monoid, including integers and reals. Integer instantiations remain
+executable. No compatibility with the CLRS-Lean Hungarian implementation is
+assumed; its inspected source pin uses Lean/Mathlib 4.32.0-rc1.
 
 ## Executed independent evidence
 
@@ -92,13 +115,13 @@ witnesses, actual Rust solver refinement and integration remain open.
 
 | Target | State |
 | --- | --- |
-| Fresh-checkout local reproduction | Passed from `git archive 9cfe149` on local disk with a fresh `.lake`; `lake exe cache get && lake build` fetched pinned dependencies and built 3,473 jobs |
+| Fresh-checkout local reproduction | Passed from `git archive 6dbf81e` on local disk with a fresh `.lake`; `lake exe cache get && lake build` fetched pinned dependencies and built 3,473 jobs |
 | First remote CI run | Pending; workflow added |
 | Pinned source statement ledgers for all three papers | Added `docs/planning/paper_statement_crosswalk.md`; open source results are explicit |
 | Paper D/R/S and actual tree-parameter state bounds | Proved, including `states_closed` / `states_least` for Definition 4 |
 | Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
-| Computation-specific paper complexity | Open |
+| Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Verified translated Rust ordered solver and witness reconstruction | Open; W6 extraction feasibility completed |
 | Hungarian/assignment reduction and actual Rust matching correctness | Open; finite exhaustive matching is proved |
 | 2016/2018 graph/path Lean specifications and DP/optimization proofs | Open |

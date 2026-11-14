@@ -24,8 +24,10 @@ measures to the independent tree parameters. `DynamicProgram` proves the
 constructive Lemma 8 recurrence optimal by a structural first-pair argument;
 its decoded witness satisfies the independent `IsMaximumCommon` predicate.
 `LinearEncoding` provides a constructor-only accumulator encoder with an exact
-linear cost count (Fact 1). This recursive algorithm is not yet memoized, so its polynomial state domain
-does not by itself prove a polynomial running time.
+linear cost count (Fact 1). `MemoizedDynamicProgram` separately proves the threaded score computation
+correct, keys unique, and lookup/insertion counts bounded by the D-product.
+Its association-list lookup comparisons carry an extra proved state-count
+factor. Full word-representation and dictionary runtime refinement remains open.
 
 `Shared/WeightedMatching` specifies compatible partial matchings with integer
 weights, forbidden pairs and unmatched endpoints. Its executable exhaustive

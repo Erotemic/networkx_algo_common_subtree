@@ -15,7 +15,7 @@ cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
 python -m pytest tests
 ```
 
-A source-only `git archive 9cfe149` was unpacked at
+A source-only `git archive 6dbf81e` was unpacked at
 `/tmp/common-subtree-clean`, with no copied `.lake` or project build artifacts.
 `lake exe cache get && lake build` fetched its pinned dependencies and succeeded
 (3,473 jobs). The Mathlib download cache was reused; project modules rebuilt.

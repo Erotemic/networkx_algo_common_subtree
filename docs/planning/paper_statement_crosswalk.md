@@ -41,7 +41,7 @@ counts the singleton as one. Ordered-tree declarations have prefix
 | Definition 5 | Independent contraction closure and maximum common tree | Specified by `Embeds`, `IsMaximumCommon`; exhaustive optimum proved by `maximumCommonContraction_correct` |
 | Theorem 2 | Balanced optimum corresponds to tree optimum | Proved for operational containment: `isMaximumCommon_iff_isLongestCommonBalanced`, `longestCommonBalanced_decodes_maximum`; printed Definition 2 needs correction |
 | Lemma 8 | Three-branch common-balanced recurrence equals independent optimum | Proved `paperCommon_correct`, `paperCommon_tree_correct`, and `paperLcs_optimum` for a separate numerical computation |
-| Theorem 3 | Expected work O(N1*N2*min(d1,l1)*min(d2,l2)) | Open; requires actual state bound and executable cost model, including expected hashing |
+| Theorem 3 | Expected work O(N1*N2*min(d1,l1)*min(d2,l2)) | `memoLcs_tree_operation_bound` proves actual table-call counts; `memoLcs_comparison_state_bound` accounts for linear memo scans. Full structural word cost and expected hashing refinement remain open |
 
 The natural Definition 2 repair is arbitrary matched-pair deletion, with
 context closure and reflexive/transitive closure. `embeds_iff_dyckEmbeds`

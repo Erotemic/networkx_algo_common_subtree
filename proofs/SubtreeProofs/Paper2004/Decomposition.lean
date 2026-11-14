@@ -447,6 +447,21 @@ decreasing_by
   all_goals simp only [DyckWord.semilength_add] at *
   all_goals omega
 
+
+/-- Every state has no more pairs than its generating input. -/
+theorem states_semilength_le {word state : DyckWord} (hmem : state ∈ states word) :
+    state.semilength ≤ word.semilength := by
+  apply states_least word (fun part => part.semilength ≤ word.semilength) (Nat.le_refl _) _ state hmem
+  intro part hp hn
+  have hc := contracted_semilength hn
+  simp only [DyckWord.semilength_add] at hc
+  constructor
+  · omega
+  · constructor
+    · omega
+    · simp only [DyckWord.semilength_add]
+      omega
+
 /-- The printed ell recurrence, deliberately not named leafCount. -/
 def printedLeafMeasure (word : DyckWord) : Nat :=
   if _h : word = 0 then 1 else

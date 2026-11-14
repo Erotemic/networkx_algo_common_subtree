@@ -12,7 +12,8 @@ import Mathlib.Tactic
 /-!
 # Finite maximum-weight partial matchings
 
-Weights can be signed; `none` forbids a pair. Unmatched vertices and the empty
+Weights may lie in any linearly ordered additive commutative monoid (including
+signed integer and real weights); `none` forbids a pair. Unmatched vertices and the empty
 matching are permitted. The exhaustive solver enumerates subsets of the full
 bipartite product, independently of Hungarian assignment or any tree DP.
 -/
@@ -21,32 +22,33 @@ bipartite product, independently of Hungarian assignment or any tree DP.
 
 namespace SubtreeProofs.WeightedMatching
 
-variable {L R : Type*} [DecidableEq L] [DecidableEq R]
+variable {L R W : Type*} [DecidableEq L] [DecidableEq R]
+  [AddCommMonoid W] [LinearOrder W]
 
 /-- A compatible set of pairs with no repeated left or right endpoint. -/
-def Valid (weights : L → R → Option Int) (pairs : Finset (L × R)) : Prop :=
+def Valid (weights : L → R → Option W) (pairs : Finset (L × R)) : Prop :=
   (∀ p ∈ pairs, weights p.1 p.2 ≠ none) ∧
   (∀ p ∈ pairs, ∀ q ∈ pairs, p.1 = q.1 → p = q) ∧
   (∀ p ∈ pairs, ∀ q ∈ pairs, p.2 = q.2 → p = q)
 
-instance (weights : L → R → Option Int) (pairs : Finset (L × R)) :
+instance (weights : L → R → Option W) (pairs : Finset (L × R)) :
     Decidable (Valid weights pairs) := by unfold Valid; infer_instance
 
 /-- Each selected pair contributes exactly once. Forbidden pairs have value
 zero here; feasibility is imposed independently by `Valid`. -/
-def weight (weights : L → R → Option Int) (pairs : Finset (L × R)) : Int :=
+def weight (weights : L → R → Option W) (pairs : Finset (L × R)) : W :=
   ∑ p ∈ pairs, (weights p.1 p.2).getD 0
 
 /-- Optimality over every independently valid partial matching. -/
-def IsMaximum (weights : L → R → Option Int) (pairs : Finset (L × R)) : Prop :=
+def IsMaximum (weights : L → R → Option W) (pairs : Finset (L × R)) : Prop :=
   Valid weights pairs ∧ ∀ other, Valid weights other → weight weights other ≤ weight weights pairs
 
-omit [DecidableEq L] [DecidableEq R] in
-@[simp] theorem valid_empty (weights : L → R → Option Int) : Valid weights ∅ := by
+omit [DecidableEq L] [DecidableEq R] [AddCommMonoid W] [LinearOrder W] in
+@[simp] theorem valid_empty (weights : L → R → Option W) : Valid weights ∅ := by
   simp [Valid]
 
-omit [DecidableEq L] [DecidableEq R] in
-@[simp] theorem weight_empty (weights : L → R → Option Int) : weight weights ∅ = 0 := by
+omit [DecidableEq L] [DecidableEq R] [LinearOrder W] in
+@[simp] theorem weight_empty (weights : L → R → Option W) : weight weights ∅ = 0 := by
   simp [weight]
 
 
@@ -84,11 +86,12 @@ theorem mem_subsets_iff {α : Type*} [DecidableEq α] (xs : List α) (s : Finset
         simpa [hne] using hmem
 
 /-- Feasible candidates from an explicit list of all bipartite pairs. -/
-def candidates (allPairs : List (L × R)) (weights : L → R → Option Int) : List (Finset (L × R)) :=
+def candidates (allPairs : List (L × R)) (weights : L → R → Option W) : List (Finset (L × R)) :=
   (subsets allPairs).filter (Valid weights)
 
+omit [AddCommMonoid W] [LinearOrder W] in
 /-- Exact correspondence with the independent feasible set. -/
-theorem mem_candidates (allPairs : List (L × R)) (weights : L → R → Option Int)
+theorem mem_candidates (allPairs : List (L × R)) (weights : L → R → Option W)
     (complete : ∀ p, p ∈ allPairs) (pairs : Finset (L × R)) :
     pairs ∈ candidates allPairs weights ↔ Valid weights pairs := by
   simp only [candidates, List.mem_filter, decide_eq_true_eq, mem_subsets_iff]
@@ -98,11 +101,11 @@ theorem mem_candidates (allPairs : List (L × R)) (weights : L → R → Option 
   simp [hsub]
 
 /-- Executable exhaustive optimizer with deterministic list tie choices. -/
-def exhaustive (allPairs : List (L × R)) (weights : L → R → Option Int) : Finset (L × R) :=
+def exhaustive (allPairs : List (L × R)) (weights : L → R → Option W) : Finset (L × R) :=
   ((candidates allPairs weights).argmax (weight weights)).getD ∅
 
 /-- Global optimality of the executable exhaustive matching oracle. -/
-theorem exhaustive_correct (allPairs : List (L × R)) (weights : L → R → Option Int)
+theorem exhaustive_correct (allPairs : List (L × R)) (weights : L → R → Option W)
     (complete : ∀ p, p ∈ allPairs) :
     IsMaximum weights (exhaustive allPairs weights) := by
   have hempty : (∅ : Finset (L × R)) ∈ candidates allPairs weights :=
@@ -123,11 +126,11 @@ theorem exhaustive_correct (allPairs : List (L × R)) (weights : L → R → Opt
     exact List.le_of_mem_argmax ((mem_candidates allPairs weights complete other).mpr hother) hmem
 
 /-- A rectangular finite matrix supplies its allPairs without hypotheses. -/
-def solveMatrix (n m : Nat) (weights : Fin n → Fin m → Option Int) : Finset (Fin n × Fin m) :=
+def solveMatrix (n m : Nat) (weights : Fin n → Fin m → Option W) : Finset (Fin n × Fin m) :=
   exhaustive ((List.finRange n).product (List.finRange m)) weights
 
 /-- Correctness includes empty sides, forbidden edges, and negative weights. -/
-theorem solveMatrix_correct (n m : Nat) (weights : Fin n → Fin m → Option Int) :
+theorem solveMatrix_correct (n m : Nat) (weights : Fin n → Fin m → Option W) :
     IsMaximum weights (solveMatrix n m weights) := by
   unfold solveMatrix
   apply exhaustive_correct
@@ -137,7 +140,7 @@ theorem solveMatrix_correct (n m : Nat) (weights : Fin n → Fin m → Option In
 omit [DecidableEq L] [DecidableEq R] in
 /-- Optional unmatched endpoints ensure the optimum is nonnegative even when
 all compatible edge weights are negative. -/
-theorem maximum_weight_nonnegative {weights : L → R → Option Int} {pairs : Finset (L × R)}
+theorem maximum_weight_nonnegative {weights : L → R → Option W} {pairs : Finset (L × R)}
     (h : IsMaximum weights pairs) : 0 ≤ weight weights pairs := by
   simpa using h.2 ∅ (valid_empty weights)
 

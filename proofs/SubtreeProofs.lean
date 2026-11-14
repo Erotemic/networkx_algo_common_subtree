@@ -17,3 +17,4 @@ public import SubtreeProofs.Paper2004.Decomposition
 public import SubtreeProofs.Paper2004.TreeStateBounds
 public import SubtreeProofs.Paper2004.DynamicProgram
 public import SubtreeProofs.Paper2004.LinearEncoding
+public import SubtreeProofs.Paper2004.MemoizedDynamicProgram

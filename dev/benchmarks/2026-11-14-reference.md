@@ -1,6 +1,6 @@
 # Corrected graph-reference baseline, 2026-11-14
 
-Source: commit `9cfe149` (graph implementation fixed at `2a0fc30`).
+Source: commit `6dbf81e` (graph implementation fixed at `d188b67`).
 Rust: `rustc 1.95.0 (59807616e 2026-04-14)`, optimized Cargo bench profile.
 VM: Linux 6.8.0-147-generic, x86-64, 12 virtual CPUs exposing an Intel
 Core i9-11900K at 3.50 GHz. Runs use shared VM hardware; these measurements
