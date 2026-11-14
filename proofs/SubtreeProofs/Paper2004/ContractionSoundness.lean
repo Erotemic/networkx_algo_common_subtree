@@ -1,4 +1,6 @@
-import SubtreeProofs.Paper2004.EncodingEquivalence
+module
+
+public import SubtreeProofs.Paper2004.EncodingEquivalence
 
 /-!
 # One-step contraction is sound under the Dyck encoding
@@ -12,6 +14,8 @@ We prove that every operational tree contraction induces such a Dyck-word
 contraction, including contractions below the root. The converse is a distinct
 proof obligation; it is not assumed here.
 -/
+
+@[expose] public section
 
 namespace SubtreeProofs.Paper2004
 namespace OrderedTree
@@ -164,3 +168,5 @@ theorem embeds_encodeDyck {small large : OrderedTree}
 
 end OrderedTree
 end SubtreeProofs.Paper2004
+
+end

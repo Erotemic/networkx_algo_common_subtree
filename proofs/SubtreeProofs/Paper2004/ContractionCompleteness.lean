@@ -1,4 +1,6 @@
-import SubtreeProofs.Paper2004.ContractionSoundness
+module
+
+public import SubtreeProofs.Paper2004.ContractionSoundness
 
 /-!
 # Completeness of ordered-tree contraction under Dyck encoding
@@ -18,6 +20,8 @@ The equivalence here concerns the explicit `DyckContractStep` definition from
 (e.g. label/annotation matching and the LCS containment relation) remains a
 separate obligation.
 -/
+
+@[expose] public section
 
 namespace SubtreeProofs.Paper2004
 namespace OrderedTree
@@ -196,3 +200,5 @@ theorem dyckEmbeds_iff_decodedEmbeds {small large : DyckWord} :
 
 end OrderedTree
 end SubtreeProofs.Paper2004
+
+end

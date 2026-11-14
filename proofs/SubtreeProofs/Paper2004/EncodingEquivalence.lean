@@ -1,4 +1,6 @@
-import SubtreeProofs.Paper2004.BalancedSequence
+module
+
+public import SubtreeProofs.Paper2004.BalancedSequence
 
 /-!
 # Ordered rooted trees and Dyck words: a two-sided equivalence
@@ -14,6 +16,8 @@ and the independent `OrderedTree` type, and connect it to `encodeDyck`.
 
 This does not assume any relation between contractions and Dyck-word deletion.
 -/
+
+@[expose] public section
 
 namespace SubtreeProofs.Paper2004
 namespace OrderedTree
@@ -147,3 +151,5 @@ theorem encodeDyck_injective : Function.Injective encodeDyck := by
 
 end OrderedTree
 end SubtreeProofs.Paper2004
+
+end

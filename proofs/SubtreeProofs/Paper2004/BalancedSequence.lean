@@ -1,5 +1,7 @@
-import SubtreeProofs.Paper2004.OrderedTree
-import Mathlib.Combinatorics.Enumerative.DyckWord
+module
+
+public import SubtreeProofs.Paper2004.OrderedTree
+public import Mathlib.Combinatorics.Enumerative.DyckWord
 
 /-!
 # Encoding ordered trees as balanced sequences
@@ -11,6 +13,8 @@ The singleton tree therefore encodes as the empty Dyck word.
 This module is downstream of the independent tree specification: no theorem
 about sequence containment is used to define edge contraction.
 -/
+
+@[expose] public section
 
 namespace SubtreeProofs.Paper2004
 namespace OrderedTree
@@ -40,7 +44,7 @@ mutual
     | cons t rest =>
         simp [encodeForestDyck, forestEdgeCount,
           encodeDyck_semilength t, encodeForestDyck_semilength rest,
-          Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+          Nat.add_assoc, Nat.add_comm]
 end
 
 @[simp] theorem encodeDyck_singleton : encodeDyck singleton = 0 := rfl
@@ -52,3 +56,5 @@ theorem encodeDyck_oneEdge_semilength :
 
 end OrderedTree
 end SubtreeProofs.Paper2004
+
+end

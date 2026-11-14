@@ -1,5 +1,7 @@
-import SubtreeProofs.Paper2004.OrderedTree
-import SubtreeProofs.Paper2004.BalancedSequence
-import SubtreeProofs.Paper2004.EncodingEquivalence
-import SubtreeProofs.Paper2004.ContractionSoundness
-import SubtreeProofs.Paper2004.ContractionCompleteness
+module
+
+public import SubtreeProofs.Paper2004.OrderedTree
+public import SubtreeProofs.Paper2004.BalancedSequence
+public import SubtreeProofs.Paper2004.EncodingEquivalence
+public import SubtreeProofs.Paper2004.ContractionSoundness
+public import SubtreeProofs.Paper2004.ContractionCompleteness

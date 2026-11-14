@@ -1,4 +1,6 @@
-import Mathlib.Logic.Relation
+module
+
+public import Mathlib.Logic.Relation
 import Mathlib.Tactic
 
 /-!
@@ -12,6 +14,8 @@ position. The `below` constructor permits contractions at arbitrary depth.
 No balanced-sequence encoding, dynamic program or Rust representation occurs
 in the definitions of the embedding relation or the optimization objective.
 -/
+
+@[expose] public section
 
 namespace SubtreeProofs.Paper2004
 
@@ -136,8 +140,8 @@ theorem ContractStep.below (left right : List OrderedTree) {before after : Order
       (.node (left ++ [after] ++ right)) := by
   rcases step with ⟨ctx, innerLeft, innerRight, child, hb, ha⟩
   refine ⟨Context.under left right ctx, innerLeft, innerRight, child, ?_, ?_⟩
-  · simpa only [Context.plug, hb]
-  · simpa only [Context.plug, ha]
+  · simp only [Context.plug, hb]
+  · simp only [Context.plug, ha]
 
 /-- Every single edge contraction removes exactly one edge. -/
 theorem ContractStep.edgeCount_decreases {before after : OrderedTree}
@@ -217,3 +221,5 @@ theorem nested_contraction_example :
 
 end OrderedTree
 end SubtreeProofs.Paper2004
+
+end

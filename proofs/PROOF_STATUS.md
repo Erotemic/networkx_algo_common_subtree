@@ -1,12 +1,13 @@
 # Lozano-Valiente proof status
 
-## Compiled foundation (maintainer-reported)
+## Compiled development (maintainer-reported, before module conversion)
 
 The maintainer confirmed that `lake build` succeeded with Lean 4.35.0 after
-applying the latest `EncodingEquivalence.lean` and `ContractionSoundness.lean`
-parser fixes. Thus the ordered-tree foundation, balanced-sequence encoding,
-encoding round trips and forward tree-to-Dyck contraction proofs have passed a
-local build. Clean-checkout CI and the explicit axiom report are still pending.
+applying the `ContractionCompleteness.lean` overlay and the prior parser fixes.
+All five mathematical modules passed a local build using the pre-migration
+file format. A new `module`-system build is required after the migration
+included with this overlay. Clean-checkout CI and the explicit axiom report
+are still pending.
 
 | Module / theorem | Status | Main result |
 | --- | --- | --- |
@@ -17,25 +18,25 @@ local build. Clean-checkout CI and the explicit axiom report are still pending.
 | `ContractionSoundness.contractStep_encodeDyck` | Compiled locally | Tree contraction induces pair deletion |
 | `ContractionSoundness.embeds_encodeDyck` | Compiled locally | Soundness for contraction closure |
 
-## New converse development (awaiting local compilation)
+## Converse development (compiled locally before module conversion)
 
-`ContractionCompleteness.lean` is a new module in this overlay. It introduces
-an independently decoded forest and a one-step forest contraction relation,
-then builds the converse and its consequences. The following are **authored
-proofs, not yet kernel-checked in this environment**.
+`ContractionCompleteness.lean` introduces a decoded forest and a one-step
+forest contraction relation, then builds the converse and its consequences.
+The maintainer reports that these proofs passed `lake build` before the
+module-system migration. The migrated declarations are awaiting a fresh build.
 
 | Theorem | Status | Claim |
 | --- | --- | --- |
-| `encodeForestDyck_decodeForestDyck` | Build pending | Forest decode/encode right inverse |
-| `decodeForestDyck_encodeForestDyck` | Build pending | Forest decode/encode left inverse |
-| `decodeForestDyck_add` | Build pending | Dyck concatenation becomes forest concatenation |
-| `decodeForestDyck_nest` | Build pending | Dyck nesting becomes a single child |
-| `ForestContractStep.atRoot` | Build pending | Every forest contraction lifts to a rooted tree contraction |
-| `dyckContext_decodeForest_contract` | Build pending | Pair deletion under a Dyck context is a forest contraction |
-| `dyckContractStep_decodeDyck` | Build pending | Single-step completeness |
-| `dyckEmbeds_decodeDyck` | Build pending | Closure completeness |
-| `embeds_iff_dyckEmbeds` | Build pending | Full equivalence on ordered trees |
-| `dyckEmbeds_iff_decodedEmbeds` | Build pending | Full equivalence on arbitrary Dyck words |
+| `encodeForestDyck_decodeForestDyck` | Compiled before migration | Forest decode/encode right inverse |
+| `decodeForestDyck_encodeForestDyck` | Compiled before migration | Forest decode/encode left inverse |
+| `decodeForestDyck_add` | Compiled before migration | Dyck concatenation becomes forest concatenation |
+| `decodeForestDyck_nest` | Compiled before migration | Dyck nesting becomes a single child |
+| `ForestContractStep.atRoot` | Compiled before migration | Every forest contraction lifts to a rooted tree contraction |
+| `dyckContext_decodeForest_contract` | Compiled before migration | Pair deletion under a Dyck context is a forest contraction |
+| `dyckContractStep_decodeDyck` | Compiled before migration | Single-step completeness |
+| `dyckEmbeds_decodeDyck` | Compiled before migration | Closure completeness |
+| `embeds_iff_dyckEmbeds` | Compiled before migration | Full equivalence on ordered trees |
+| `dyckEmbeds_iff_decodedEmbeds` | Compiled before migration | Full equivalence on arbitrary Dyck words |
 
 ## Beyond the bridge
 
@@ -47,21 +48,32 @@ proofs, not yet kernel-checked in this environment**.
 | True-leaf-sensitive combinatorial complexity result | Open |
 | Rust/Aeneas translation and refinement | Open |
 
-No `sorry`, `admit` or new `axiom` is intentionally used in the new module.
-Successful compilation, rather than that source inspection, is the acceptance
-criterion for its proof statements.
+The module-system migration adds `module` headers, explicit `public import`
+edges, and `@[expose] public section` to preserve exported declaration
+visibility and definitional reduction while leaving theorem statements intact.
+The proof-only `Mathlib.Tactic` import stays private. This first migration
+pass uses exposed public sections; minimize exports and exposure only after
+the compiled API has been checked. It also removes the reported `simpa` and
+unused-simplifier-argument warnings.
+
+The pre-migration project compiled. The migrated project is **build pending**.
+Do not mark the module-system migration as verified until the commands below
+succeed without errors or warnings.
 
 ## Local verification
 
 ```bash
 cd proofs
 lake build
+lake env lean ModuleImportSmoke.lean
 ```
 
 After a successful build, audit the public theorems:
 
 ```bash
 cat > /tmp/lozano-axioms.lean <<'LEAN'
+module
+
 import SubtreeProofs.Paper2004.ContractionCompleteness
 #print axioms SubtreeProofs.Paper2004.OrderedTree.decodeDyck_encodeDyck
 #print axioms SubtreeProofs.Paper2004.OrderedTree.encodeDyck_decodeDyck
@@ -73,6 +85,6 @@ LEAN
 lake env lean /tmp/lozano-axioms.lean
 ```
 
-Record the build result and axiom report before treating the new converse
-theorems as verified. The next mathematical target is agreement with the paper's
+Record the module-system build result and axiom report before declaring this
+migration complete. The next mathematical target is agreement with the paper's
 exact containment relation and an independent tiny-tree contraction oracle.

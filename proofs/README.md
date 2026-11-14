@@ -18,10 +18,11 @@ Modules in dependency order:
   concatenation/nesting lemmas; lifting of Dyck-context deletions to tree-edge
   contractions; the two-way equivalence `embeds_iff_dyckEmbeds`.
 
-The maintainer reports a successful local `lake build` for the first four
-modules, including the encoding equivalence and forward contraction theorem.
-`ContractionCompleteness.lean` is **authored but not yet compiled** in this
-execution environment. Its new proof claims depend on a successful local build.
+The maintainer reports a successful Lean 4.35.0 `lake build` for all five
+mathematical modules before the module-system conversion. This overlay migrates
+all six library source files to the `module` system, preserves their public
+exports and fixes the reported tactic warnings. The migrated build still needs
+a local check; see `PROOF_STATUS.md` for the distinction.
 
 The contraction equivalence covers the explicitly defined `DyckEmbeds`
 relation. Reconciling that relation with the exact paper containment
@@ -32,7 +33,10 @@ This workspace does not import the historical v3-v6 proofs.
 ```bash
 cd proofs
 lake build
+lake env lean ModuleImportSmoke.lean
 ```
 
-Only mark the new theorems as accepted after the above passes. No binary
+The smoke test imports only the umbrella `SubtreeProofs` module and checks
+that key declarations remain accessible to downstream code. Report new module
+errors or warnings before marking the migration complete. No binary
 assets or generated build products belong in the documentation overlay.
