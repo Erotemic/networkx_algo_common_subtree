@@ -1,0 +1,105 @@
+{
+  "source_commit": "5e42f172b8b514c8021486be0068b6ba7a24a03d",
+  "source_archive_sha256": "a7b67575ff5e1402c725b77ea788e412886abd27ab2938db22acb283b6afbf2e",
+  "source_files": 470,
+  "prebuilt_native_libraries": 0,
+  "profile": "dev/abi3-cibuildwheel.toml",
+  "profile_sha256": "7f5d322ae626a25017aab11746082bae007257e6d94ad96b36893baab172152a",
+  "builder": {
+    "cibuildwheel": "4.3.5",
+    "manylinux_image": "quay.io/pypa/manylinux_2_28_x86_64@sha256:d086f64cddcace250ef0f0073583c51b8298159303290a730c9f59bd91edfd2c",
+    "rust": "1.95.0",
+    "build_python": "3.10.22",
+    "scikit_build_core": "1.1.2",
+    "cmake": "4.4.5",
+    "cython_build_tool_only": "3.3.1",
+    "ninja": "1.13.2"
+  },
+  "wheel": {
+    "filename": "networkx_algo_common_subtree-0.2.3-cp310-abi3-manylinux_2_28_x86_64.whl",
+    "size_bytes": 371833,
+    "sha256": "1e9c859e8063a16e5146d6a09f43592cd2fc421485ba13ff94201f81f1465362",
+    "native_libraries": [
+      "networkx_algo_common_subtree/_rust.abi3.so"
+    ],
+    "extension_sha256": "c4f65b56134d64ec85f482ef73bae0c29ea323acec8c4b4240633cf2f5dee668",
+    "metadata": "Wheel-Version: 1.0\nGenerator: scikit-build-core 1.1.2\nRoot-Is-Purelib: false\nTag: cp310-abi3-manylinux_2_28_x86_64\n\n"
+  },
+  "reproducibility": {
+    "source_date_epoch": 1794687261,
+    "two_fresh_container_builds_identical": true,
+    "wheel_sha256_first": "1e9c859e8063a16e5146d6a09f43592cd2fc421485ba13ff94201f81f1465362",
+    "wheel_sha256_second": "1e9c859e8063a16e5146d6a09f43592cd2fc421485ba13ff94201f81f1465362",
+    "all_zip_payloads_equal_to_initial_runtime_tested_build": true
+  },
+  "container_runtime": {
+    "python": "3.10.22",
+    "glibc": "2.28",
+    "passed": 176,
+    "skipped": 0
+  },
+  "host_runtime_tests": {
+    "3.10": {
+      "python": "3.10.20",
+      "networkx": "3.4.2",
+      "passed": 176,
+      "skipped": 0,
+      "summary": "176 passed in 1.45s"
+    },
+    "3.11": {
+      "python": "3.11.15",
+      "networkx": "3.6.1",
+      "passed": 176,
+      "skipped": 0,
+      "summary": "176 passed in 1.28s"
+    },
+    "3.12": {
+      "python": "3.12.3",
+      "networkx": "3.7",
+      "passed": 176,
+      "skipped": 0,
+      "summary": "176 passed in 1.30s"
+    },
+    "3.13": {
+      "python": "3.13.2",
+      "networkx": "3.6.1",
+      "passed": 176,
+      "skipped": 0,
+      "summary": "176 passed in 1.27s"
+    },
+    "3.14": {
+      "python": "3.14.3",
+      "networkx": "3.7",
+      "passed": 176,
+      "skipped": 0,
+      "summary": "176 passed in 1.16s"
+    }
+  },
+  "abi3audit": {
+    "specs": {
+      "/tmp/common-subtree-manylinux-repro-two/networkx_algo_common_subtree-0.2.3-cp310-abi3-manylinux_2_28_x86_64.whl": {
+        "kind": "wheel",
+        "wheel": [
+          {
+            "name": "_rust.abi3.so",
+            "result": {
+              "is_abi3": true,
+              "is_abi3_baseline_compatible": true,
+              "baseline": "3.10",
+              "computed": "3.10",
+              "non_abi3_symbols": [],
+              "future_abi3_objects": {}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "auditwheel_policy": "\nnetworkx_algo_common_subtree-0.2.3-cp310-abi3-manylinux_2_28_x86_64.whl\nis consistent with the following platform tag:\n\"manylinux_2_28_x86_64\".\n\nThe wheel references external versioned symbols in these\nsystem-provided shared libraries: libgcc_s.so.1 with versions\n{'GCC_3.3', 'GCC_4.2.0', 'GCC_3.0'}, libpthread.so.0 with versions\n{'GLIBC_2.2.5'}, libc.so.6 with versions {'GLIBC_2.28', 'GLIBC_2.2.5',\n'GLIBC_2.18', 'GLIBC_2.3', 'GLIBC_2.3.4', 'GLIBC_2.14'}\n\nThis constrains the platform tag to \"manylinux_2_28_x86_64\". In order\nto achieve a more compatible tag, you would need to recompile a new\nwheel from source on a system with earlier versions of these\nlibraries, such as a recent manylinux image.\n",
+  "remote_ci": "configured, execution pending",
+  "remaining_platforms": [
+    "macOS stable-ABI artifacts",
+    "Windows stable-ABI artifacts",
+    "other Linux architectures"
+  ]
+}

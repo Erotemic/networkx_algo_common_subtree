@@ -66,8 +66,11 @@ crate is outside the current extraction boundary. No new end audit was run.
   [token contracts](../../dev/benchmarks/2026-11-14-ordered-token-contract.md).
 - **Packaging** validates genuine opt-in Rust-only CP310 ABI3 and normal native
   parity. Source-only → sdist → both wheel modes was executed at `3d68c00`.
-  [Commands/evidence](../packaging.md). CI requires compiled backends; remote
-  execution and manylinux/macOS/Windows/architecture validation remain open.
+  Source-only `5e42f17` also produces a genuine manylinux_2_28 x86_64 wheel:
+  176 tests on its glibc floor and each CPython 3.10–3.14, clean Linux/ABI audits,
+  and two byte-identical fresh builds with the same source timestamp.
+  [Commands/evidence](../packaging.md). CI uses this profile and requires native
+  backends; remote execution and macOS/Windows/other architectures remain open.
 
 ## Remaining work in priority order
 

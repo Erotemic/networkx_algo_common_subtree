@@ -71,19 +71,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: dtolnay/rust-toolchain@1.95.0
       - uses: actions/setup-python@v5.1.1
         with:
           python-version: '3.13'
-      - name: Build and audit a genuine Rust-only stable-ABI wheel
+      - name: Build and audit a portable Rust-only stable-ABI wheel
         run: |
-          python -m pip install build abi3audit
-          python -m build --wheel --outdir dist -Cwheel.py-api=cp310 -Ccmake.define.BUILD_CYTHON_EXTENSIONS=OFF -Ccmake.define.REQUIRE_RUST_EXTENSIONS=ON
+          python -m pip install cibuildwheel==4.3.5 abi3audit
+          export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+          python -m cibuildwheel --platform linux --config-file dev/abi3-cibuildwheel.toml --output-dir dist
           abi3audit --strict --summary dist/*.whl
           python - <<'PY'
           from pathlib import Path
           from zipfile import ZipFile
-          wheels = list(Path('dist').glob('*-cp310-abi3-*.whl'))
+          wheels = list(Path('dist').glob('*-cp310-abi3-manylinux_2_28_x86_64.whl'))
           assert len(wheels) == 1, wheels
           with ZipFile(wheels[0]) as archive:
               libraries = [p for p in archive.namelist() if p.endswith(('.so', '.pyd', '.dll', '.dylib'))]
@@ -91,7 +91,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: cp310-abi3-linux
+          name: cp310-abi3-manylinux-x86_64
           path: dist/*.whl
   abi3-runtime:
     needs: abi3-build
@@ -106,7 +106,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - uses: actions/download-artifact@v4
         with:
-          name: cp310-abi3-linux
+          name: cp310-abi3-manylinux-x86_64
           path: dist
       - name: Install the identical wheel on every runtime
         run: |

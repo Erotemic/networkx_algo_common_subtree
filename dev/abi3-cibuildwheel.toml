@@ -1,0 +1,24 @@
+# Opt-in portable Rust-only wheel. The default Cython-inclusive matrix stays
+# in pyproject.toml. Use cibuildwheel 4.3.5 with this separate configuration.
+[tool.cibuildwheel]
+build = "cp310-manylinux_x86_64"
+archs = ["x86_64"]
+build-frontend = "build"
+build-verbosity = 1
+config-settings = { "wheel.py-api" = "cp310", "cmake.define.BUILD_CYTHON_EXTENSIONS" = "OFF", "cmake.define.REQUIRE_RUST_EXTENSIONS" = "ON" }
+before-all = "curl --proto '=https' --tlsv1.2 --fail --silent --show-error https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.95.0"
+environment = { PATH = "/root/.cargo/bin:$PATH" }
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64@sha256:d086f64cddcace250ef0f0073583c51b8298159303290a730c9f59bd91edfd2c"
+repair-wheel-command = "auditwheel repair --plat manylinux_2_28_x86_64 -w {dest_dir} {wheel}"
+test-extras = ["tests"]
+test-command = """
+set -e
+python -c '
+import importlib.util
+from networkx_algo_common_subtree import _rust
+assert _rust.__file__.endswith(".abi3.so")
+assert all(hasattr(_rust, name) for name in ["longest_common_balanced_embedding", "longest_common_balanced_isomorphism", "maximum_common_token_embedding", "maximum_common_subtree_isomorphism", "largest_weight_common_subtree_embedding_with_distance_penalty", "min_cost_assignment", "max_weight_partial_matching"])
+assert all(importlib.util.find_spec("networkx_algo_common_subtree." + name) is None for name in ["balanced_embedding_cython", "balanced_isomorphism_cython"])
+'
+python -m pytest -q "{project}/tests"
+"""

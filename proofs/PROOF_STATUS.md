@@ -103,6 +103,13 @@ five ABI3 runtimes). Star512 improves 5.10× in repeated installed measurements.
 This is tested production optimization; the dependency argument, skipped-
 highest decomposition and actual source refinement still need Lean proofs.
 
+The Rust-only CP310 ABI3 wheel now builds from source in a pinned manylinux_2_28
+x86_64 environment. Linux/ABI audits are clean; 176 tests pass on glibc 2.28 and
+each CPython 3.10–3.14, and two timestamp-controlled builds are byte-identical.
+This extends packaging evidence only. Mathematical, production-source, f64 and
+formal complexity obligations remain unchanged; the package is not a fully
+verified release. Remote CI and other stable-ABI platforms remain pending.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

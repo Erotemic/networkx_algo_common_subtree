@@ -37,6 +37,52 @@ The existing Cython targets use the full version-specific API; their Limited
 API mode has not been validated for this project. No Cython native library is
 included in the stable-ABI artifact.
 
+## Portable Linux stable-ABI wheel
+
+The separate [cibuildwheel profile](../dev/abi3-cibuildwheel.toml) builds one
+Rust-only **CP310 ABI3 manylinux_2_28 x86_64** artifact. Docker is required:
+
+```bash
+python -m pip install cibuildwheel==4.3.5
+export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+python -m cibuildwheel --platform linux \
+  --config-file dev/abi3-cibuildwheel.toml --output-dir dist/abi3
+```
+
+The profile pins the official PyPA image by digest and Rust 1.95.0. It enables
+the actual PyO3 limited API, repairs/checks the Linux symbol policy, audits the
+stable ABI, requires all seven Rust entry points and Cython absence, and runs
+the full test directory inside the manylinux container. CI uses this profile,
+then tests the identical artifact on CPython 3.10–3.14. The normal Cython matrix
+stays available for strict compiled parity.
+
+Executed source-only evidence at `5e42f17`: 470 tracked files, no prebuilt
+libraries, **176 tests on glibc 2.28 / CPython 3.10.22**, plus **176 tests,
+zero skips on each CPython 3.10–3.14** using the same artifact. `auditwheel`
+confirms the actual required floor is glibc 2.28; `abi3audit --strict` reports
+zero violations/mismatches and a Python 3.10 baseline. Exactly one native
+library is included. Two fresh container builds with the same source timestamp
+produce a byte-identical complete wheel, SHA256:
+
+`1e9c859e8063a16e5146d6a09f43592cd2fc421485ba13ff94201f81f1465362`
+
+[Machine-readable source, tool, audit and runtime evidence](../dev/packaging/2026-11-14-manylinux.json).
+Observed build dependencies are recorded there; this establishes repeatability
+for that source/tool environment, not arbitrary future dependency versions or
+other platforms. The timestamp is automatically forwarded by cibuildwheel.
+[Official image/platform policy](https://github.com/pypa/manylinux),
+[ABI3 auditing](https://cibuildwheel.pypa.io/en/stable/faq/#building-cpython-abi3-wheels-limited-api),
+[timestamp forwarding](https://cibuildwheel.pypa.io/en/stable/options/#environment-pass).
+
+Five-repeat installed graph measurements compare
+[the native CPython wheel](../dev/benchmarks/2026-11-14-native-wheel-graph.json)
+with [the portable wheel](../dev/benchmarks/2026-11-14-manylinux-wheel-graph.json),
+228 rows each. All objectives agree and public witnesses are independently
+rescored. Median portable/native public runtime ratios are **1.029** (2016)
+and **1.012** (2018); raw binding ratios are **1.013** and **1.009**. Shared-VM
+noise affects individual rows. The artifact's native code is partially verified;
+portable packaging adds no mathematical or Rust refinement claim.
+
 ## Executed Linux validation, 2026-11-14
 
 The genuine stable wheel contains exactly one native library. `abi3audit
@@ -74,9 +120,9 @@ embedding/isomorphism, and 1.035/1.058 for 2018/2016 graph algorithms. These
 shared-VM, small-workload ratios characterize this run; individual cases vary.
 All scores agree and graph witnesses are independently rescored.
 
-The locally built platform tag is `linux_x86_64`, not a portable manylinux
-claim. Auditwheel repair, macOS/Windows artifacts, wider architectures and
-their runtime tests remain packaging work. The production cibuildwheel matrix
-and default distribution are unchanged. These development artifacts are
+The earlier local builds used `linux_x86_64`; the portable Linux path is now
+validated above. macOS/Windows stable-ABI artifacts, wider architectures and
+their runtime tests remain packaging work. Remote CI execution remains pending.
+The default Cython-inclusive distribution is unchanged. These development artifacts are
 partially verified; complete production-source and applicable complexity
 proofs still block the final verified release.
