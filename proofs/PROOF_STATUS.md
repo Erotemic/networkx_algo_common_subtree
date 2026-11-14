@@ -462,6 +462,21 @@ formalizations, published optimized algorithms, or end-to-end Rust verification.
 
 
 
+
+## Independent Hungarian cut adjustment and numeric bound: 2026-11-14
+
+`Shared.AssignmentPotentials` proves `adjust_feasible`, preservation of tight
+matching edges whose endpoints move together, and creation of a tight edge
+attaining the cut slack. `exists_cut_adjustment` proves an attained nonnegative
+step exists for every nonempty selected-row cut with a remaining column.
+`adjust_dualValue_one` proves that a cut with one extra row raises the dual
+objective by exactly its adjustment. `total_increment_bound` bounds cumulative
+increments by `2*n*C` from dual feasibility, original cost bounds and the
+accounting identity. These are ordered-ring matrix statements, independent
+of the Rust program; deriving their premises from actual scan/adjust/augment
+loops and discharging final machine-arithmetic bounds remain open. The full
+library builds (3,559 jobs).
+
 ## Actual Rust feasible initial potentials: 2026-11-14
 
 `Rust.AssignmentPotentialInitialization.initial_potentials_spec` proves the
