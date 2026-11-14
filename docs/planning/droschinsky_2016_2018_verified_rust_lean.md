@@ -7,6 +7,24 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Actual Rust row-minimum scan: 2026-11-14
+
+The integer Hungarian core now initializes each row potential from its row
+minimum, with zero column potentials, so its intended starting dual state is
+feasible even for negative costs. Input-shape checking and the augmentation
+driver are separate functions to keep the pinned extractor's control flow
+supported. The three independent permutation/dual-certificate Rust tests still
+pass, and the regenerated actual semantics compile and compare reproducibly.
+
+`Rust.AssignmentRowMinimum.minimum_row_spec` proves safe termination and exact
+equality with Mathlib's finite minimum of the row's integer values.
+`minimum_row_nonempty_spec` additionally proves that nonempty input returns an
+actual row entry whose value is no greater than every row cost. The proof uses
+a decreasing loop measure and exact prefix-minimum invariant, including the
+empty-row result. The full library builds (3,557 jobs). Feasibility of the
+complete initialized vector and the subsequent Hungarian phases remain open.
+
 ## Exact integer assignment core and initialization: 2026-11-14
 
 The signed partial-matching/dummy-assignment reduction now works over ordered

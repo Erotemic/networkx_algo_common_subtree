@@ -169,8 +169,107 @@ def unused_columns_loop
 def unused_columns (len : Std.Usize) : Result (alloc.vec.Vec Bool) := do
   unused_columns_loop len (alloc.vec.Vec.new Bool) 0#usize
 
+/-- [verified_assignment_core::minimum_row]: loop body 0:
+    Source: 'src/lib.rs', lines 67:4-77:5 -/
+@[rust_loop_body]
+def minimum_row_loop.body
+  (row : Slice Std.I64) (minimum : Option Std.I64) (column : Std.Usize) :
+  Result (ControlFlow ((Option Std.I64) × Std.Usize) (Option Std.I64))
+  := do
+  let i := Slice.len row
+  if column < i
+  then
+    let value ← Slice.index_usize row column
+    let improve ←
+      match minimum with
+      | none => ok true
+      | some old => ok (value < old)
+    let minimum1 ← if improve
+                     then ok (some value)
+                     else ok minimum
+    let column1 ← column + 1#usize
+    ok (cont (minimum1, column1))
+  else ok (done minimum)
+
+/-- [verified_assignment_core::minimum_row]: loop 0:
+    Source: 'src/lib.rs', lines 67:4-77:5 -/
+@[rust_loop]
+def minimum_row_loop
+  (row : Slice Std.I64) (minimum : Option Std.I64) (column : Std.Usize) :
+  Result (Option Std.I64)
+  := do
+  loop
+    (fun (minimum1, column1) => minimum_row_loop.body row minimum1 column1)
+    (minimum, column)
+
+/-- [verified_assignment_core::minimum_row]:
+    Source: 'src/lib.rs', lines 64:0-79:1 -/
+@[reducible]
+def minimum_row (row : Slice Std.I64) : Result (Option Std.I64) := do
+  minimum_row_loop row none 0#usize
+
+/-- [verified_assignment_core::initial_potentials]: loop body 0:
+    Source: 'src/lib.rs', lines 1:0-92:5 -/
+@[rust_loop_body]
+def initial_potentials_loop.body
+  (cost : Slice (alloc.vec.Vec Std.I64)) (result : alloc.vec.Vec Std.I128)
+  (row : Std.Usize) (failure : Option AssignmentError) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize × (Option
+    AssignmentError)) ((alloc.vec.Vec Std.I128) × (Option AssignmentError)))
+  := do
+  let i := Slice.len cost
+  if row < i
+  then
+    let b := core.option.Option.is_none failure
+    if b
+    then
+      let v ← Slice.index_usize cost row
+      let s := alloc.vec.Vec.deref v
+      let o ← minimum_row s
+      let (result1, failure1) ←
+        match o with
+        | none => ok (result, some AssignmentError.InvariantViolation)
+        | some value =>
+          do
+          let i1 ← row + 1#usize
+          let (_, index_mut_back) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              Std.I128) result i1
+          let i2 ← lift (IScalar.cast .I128 value)
+          let result2 := index_mut_back i2
+          ok (result2, failure)
+      let row1 ← row + 1#usize
+      ok (cont (result1, row1, failure1))
+    else ok (done (result, failure))
+  else ok (done (result, failure))
+
+/-- [verified_assignment_core::initial_potentials]: loop 0:
+    Source: 'src/lib.rs', lines 1:0-92:5 -/
+@[rust_loop]
+def initial_potentials_loop
+  (cost : Slice (alloc.vec.Vec Std.I64)) (result : alloc.vec.Vec Std.I128)
+  (row : Std.Usize) (failure : Option AssignmentError) :
+  Result ((alloc.vec.Vec Std.I128) × (Option AssignmentError))
+  := do
+  loop
+    (fun (result1, row1, failure1) => initial_potentials_loop.body cost result1
+      row1 failure1)
+    (result, row, failure)
+
+/-- [verified_assignment_core::initial_potentials]:
+    Source: 'src/lib.rs', lines 82:0-97:1 -/
+def initial_potentials
+  (cost : Slice (alloc.vec.Vec Std.I64)) (extent : Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.I128) AssignmentError)
+  := do
+  let result ← zeros_i128 extent
+  let (result1, failure) ← initial_potentials_loop cost result 0#usize none
+  match failure with
+  | none => ok (core.result.Result.Ok result1)
+  | some error => ok (core.result.Result.Err error)
+
 /-- [verified_assignment_core::scan_columns]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-117:1 -/
+    Source: 'src/lib.rs', lines 1:0-152:1 -/
 @[rust_loop_body]
 def scan_columns_loop.body
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
@@ -262,7 +361,7 @@ def scan_columns_loop.body
         predecessor))
 
 /-- [verified_assignment_core::scan_columns]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-117:1 -/
+    Source: 'src/lib.rs', lines 1:0-152:1 -/
 @[rust_loop]
 def scan_columns_loop
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
@@ -281,7 +380,7 @@ def scan_columns_loop
     (slack, predecessor, delta, next_column, candidate)
 
 /-- [verified_assignment_core::scan_columns]:
-    Source: 'src/lib.rs', lines 65:0-117:1 -/
+    Source: 'src/lib.rs', lines 100:0-152:1 -/
 @[reducible]
 def scan_columns
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
@@ -296,7 +395,7 @@ def scan_columns
     0#usize 1#usize
 
 /-- [verified_assignment_core::adjust_potentials]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-149:1 -/
+    Source: 'src/lib.rs', lines 1:0-184:1 -/
 @[rust_loop_body]
 def adjust_potentials_loop.body
   (matched_row : Slice Std.Usize) (used : Slice Bool) (amount : Std.I128)
@@ -365,7 +464,7 @@ def adjust_potentials_loop.body
   else ok (done (core.result.Result.Ok (), u, v, slack))
 
 /-- [verified_assignment_core::adjust_potentials]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-149:1 -/
+    Source: 'src/lib.rs', lines 1:0-184:1 -/
 @[rust_loop]
 def adjust_potentials_loop
   (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
@@ -381,7 +480,7 @@ def adjust_potentials_loop
     (u, v, slack, index)
 
 /-- [verified_assignment_core::adjust_potentials]:
-    Source: 'src/lib.rs', lines 119:0-149:1 -/
+    Source: 'src/lib.rs', lines 154:0-184:1 -/
 @[reducible]
 def adjust_potentials
   (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
@@ -394,7 +493,7 @@ def adjust_potentials
   adjust_potentials_loop u v matched_row used slack amount n 0#usize
 
 /-- [verified_assignment_core::find_augmenting_column]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-200:5 -/
+    Source: 'src/lib.rs', lines 1:0-235:5 -/
 @[rust_loop_body]
 def find_augmenting_column_loop.body
   (cost : Slice (alloc.vec.Vec Std.I64)) (matched_row : Slice Std.Usize)
@@ -473,7 +572,7 @@ def find_augmenting_column_loop.body
   else ok (done (u, v, predecessor, column, failure))
 
 /-- [verified_assignment_core::find_augmenting_column]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-200:5 -/
+    Source: 'src/lib.rs', lines 1:0-235:5 -/
 @[rust_loop]
 def find_augmenting_column_loop
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : alloc.vec.Vec Std.I128)
@@ -491,7 +590,7 @@ def find_augmenting_column_loop
     (u, v, predecessor, column, slack, used, visited, searching, failure)
 
 /-- [verified_assignment_core::find_augmenting_column]:
-    Source: 'src/lib.rs', lines 151:0-205:1 -/
+    Source: 'src/lib.rs', lines 186:0-240:1 -/
 def find_augmenting_column
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : alloc.vec.Vec Std.I128)
   (v : alloc.vec.Vec Std.I128) (matched_row : Slice Std.Usize)
@@ -510,7 +609,7 @@ def find_augmenting_column
   | some error => ok (core.result.Result.Err error, u1, v1, predecessor1)
 
 /-- [verified_assignment_core::augment_matching]: loop body 0:
-    Source: 'src/lib.rs', lines 214:4-224:1 -/
+    Source: 'src/lib.rs', lines 249:4-259:1 -/
 @[rust_loop_body]
 def augment_matching_loop.body
   (predecessor : Slice Std.Usize) (n : Std.Usize)
@@ -539,7 +638,7 @@ def augment_matching_loop.body
   else ok (done (core.result.Result.Ok (), matched_row))
 
 /-- [verified_assignment_core::augment_matching]: loop 0:
-    Source: 'src/lib.rs', lines 214:4-224:1 -/
+    Source: 'src/lib.rs', lines 249:4-259:1 -/
 @[rust_loop]
 def augment_matching_loop
   (matched_row : alloc.vec.Vec Std.Usize) (predecessor : Slice Std.Usize)
@@ -553,7 +652,7 @@ def augment_matching_loop
     (matched_row, column, path_length)
 
 /-- [verified_assignment_core::augment_matching]:
-    Source: 'src/lib.rs', lines 207:0-224:1 -/
+    Source: 'src/lib.rs', lines 242:0-259:1 -/
 @[reducible]
 def augment_matching
   (matched_row : alloc.vec.Vec Std.Usize) (predecessor : Slice Std.Usize)
@@ -564,7 +663,7 @@ def augment_matching
   augment_matching_loop matched_row predecessor column n 0#usize
 
 /-- [verified_assignment_core::reconstruct_assignment]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-244:5 -/
+    Source: 'src/lib.rs', lines 1:0-279:5 -/
 @[rust_loop_body]
 def reconstruct_assignment_loop0.body
   (matched_row : Slice Std.Usize) (n : Std.Usize)
@@ -600,7 +699,7 @@ def reconstruct_assignment_loop0.body
   else ok (done (failure, column_for_row))
 
 /-- [verified_assignment_core::reconstruct_assignment]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-244:5 -/
+    Source: 'src/lib.rs', lines 1:0-279:5 -/
 @[rust_loop]
 def reconstruct_assignment_loop0
   (matched_row : Slice Std.Usize) (n : Std.Usize)
@@ -615,7 +714,7 @@ def reconstruct_assignment_loop0
     (failure, column_for_row, column)
 
 /-- [verified_assignment_core::reconstruct_assignment]: loop body 1:
-    Source: 'src/lib.rs', lines 1:0-257:5 -/
+    Source: 'src/lib.rs', lines 1:0-292:5 -/
 @[rust_loop_body]
 def reconstruct_assignment_loop1.body
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
@@ -656,7 +755,7 @@ def reconstruct_assignment_loop1.body
   else ok (done (failure, total, row_potential, column_potential))
 
 /-- [verified_assignment_core::reconstruct_assignment]: loop 1:
-    Source: 'src/lib.rs', lines 1:0-257:5 -/
+    Source: 'src/lib.rs', lines 1:0-292:5 -/
 @[rust_loop]
 def reconstruct_assignment_loop1
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
@@ -674,7 +773,7 @@ def reconstruct_assignment_loop1
     (failure, total, row_potential, column_potential, index)
 
 /-- [verified_assignment_core::reconstruct_assignment]:
-    Source: 'src/lib.rs', lines 226:0-267:1 -/
+    Source: 'src/lib.rs', lines 261:0-302:1 -/
 def reconstruct_assignment
   (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
   (v : Slice Std.I128) (matched_row : Slice Std.Usize) (n : Std.Usize) :
@@ -697,11 +796,10 @@ def reconstruct_assignment
       })
   | some error => ok (core.result.Result.Err error)
 
-/-- [verified_assignment_core::min_cost_assignment]: loop body 1:
-    Source: 'src/lib.rs', lines 1:0-317:5
-    Visibility: public -/
+/-- [verified_assignment_core::finish_assignment]: loop body 0:
+    Source: 'src/lib.rs', lines 1:0-333:5 -/
 @[rust_loop_body]
-def min_cost_assignment_loop0_loop0.body
+def finish_assignment_loop.body
   (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (extent : Std.Usize)
   (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
   (matched_row : alloc.vec.Vec Std.Usize)
@@ -741,11 +839,10 @@ def min_cost_assignment_loop0_loop0.body
     else ok (done (u, v, matched_row, failure))
   else ok (done (u, v, matched_row, failure))
 
-/-- [verified_assignment_core::min_cost_assignment]: loop 1:
-    Source: 'src/lib.rs', lines 1:0-317:5
-    Visibility: public -/
+/-- [verified_assignment_core::finish_assignment]: loop 0:
+    Source: 'src/lib.rs', lines 1:0-333:5 -/
 @[rust_loop]
-def min_cost_assignment_loop0_loop0
+def finish_assignment_loop
   (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (extent : Std.Usize)
   (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
   (matched_row : alloc.vec.Vec Std.Usize)
@@ -756,58 +853,66 @@ def min_cost_assignment_loop0_loop0
   := do
   loop
     (fun (u1, v1, matched_row1, predecessor1, next_row1, failure1) =>
-      min_cost_assignment_loop0_loop0.body cost n extent u1 v1 matched_row1
-      predecessor1 next_row1 failure1)
+      finish_assignment_loop.body cost n extent u1 v1 matched_row1 predecessor1
+      next_row1 failure1)
     (u, v, matched_row, predecessor, next_row, failure)
 
-/-- [verified_assignment_core::min_cost_assignment]: loop body 0:
-    Source: 'src/lib.rs', lines 287:4-322:1
-    Visibility: public -/
-@[rust_loop_body]
-def min_cost_assignment_loop0.body
+/-- [verified_assignment_core::finish_assignment]:
+    Source: 'src/lib.rs', lines 304:0-338:1 -/
+def finish_assignment
   (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (extent : Std.Usize)
-  (row : Std.Usize) :
-  Result (ControlFlow Std.Usize (core.result.Result Assignment
-    AssignmentError))
+  (u : alloc.vec.Vec Std.I128) :
+  Result (core.result.Result Assignment AssignmentError)
+  := do
+  let v ← zeros_i128 extent
+  let matched_row ← zeros_usize extent
+  let (u1, v1, matched_row1, failure) ←
+    finish_assignment_loop cost n extent u v matched_row matched_row 1#usize
+      none
+  match failure with
+  | none =>
+    let s := alloc.vec.Vec.deref u1
+    let s1 := alloc.vec.Vec.deref v1
+    let s2 := alloc.vec.Vec.deref matched_row1
+    reconstruct_assignment cost s s1 s2 n
+  | some error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::is_square]: loop body 0:
+    Source: 'src/lib.rs', lines 343:4-350:1 -/
+@[rust_loop_body]
+def is_square_loop.body
+  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (row : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
   := do
   if row < n
   then
     let v ← Slice.index_usize cost row
     let i := alloc.vec.Vec.len v
     if i != n
-    then ok (done (core.result.Result.Err AssignmentError.NonSquare))
+    then ok (done false)
     else let row1 ← row + 1#usize
          ok (cont row1)
-  else
-    let u ← zeros_i128 extent
-    let matched_row ← zeros_usize extent
-    let (u1, v, matched_row1, failure) ←
-      min_cost_assignment_loop0_loop0 cost n extent u u matched_row matched_row
-        1#usize none
-    match failure with
-    | none =>
-      let s := alloc.vec.Vec.deref u1
-      let s1 := alloc.vec.Vec.deref v
-      let s2 := alloc.vec.Vec.deref matched_row1
-      let r ← reconstruct_assignment cost s s1 s2 n
-      ok (done r)
-    | some error => ok (done (core.result.Result.Err error))
+  else ok (done true)
 
-/-- [verified_assignment_core::min_cost_assignment]: loop 0:
-    Source: 'src/lib.rs', lines 287:4-322:1
-    Visibility: public -/
+/-- [verified_assignment_core::is_square]: loop 0:
+    Source: 'src/lib.rs', lines 343:4-350:1 -/
 @[rust_loop]
-def min_cost_assignment_loop0
-  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (extent : Std.Usize)
-  (row : Std.Usize) :
-  Result (core.result.Result Assignment AssignmentError)
+def is_square_loop
+  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (row : Std.Usize) :
+  Result Bool
   := do
   loop
-    (fun row1 => min_cost_assignment_loop0.body cost n extent row1)
+    (fun row1 => is_square_loop.body cost n row1)
     row
 
+/-- [verified_assignment_core::is_square]:
+    Source: 'src/lib.rs', lines 340:0-350:1 -/
+def is_square (cost : Slice (alloc.vec.Vec Std.I64)) : Result Bool := do
+  let n := Slice.len cost
+  is_square_loop cost n 0#usize
+
 /-- [verified_assignment_core::min_cost_assignment]:
-    Source: 'src/lib.rs', lines 277:0-322:1
+    Source: 'src/lib.rs', lines 360:0-376:1
     Visibility: public -/
 def min_cost_assignment
   (cost : Slice (alloc.vec.Vec Std.I64)) :
@@ -821,6 +926,14 @@ def min_cost_assignment
     let o ← lift (Usize.checked_add n 1#usize)
     match o with
     | none => ok (core.result.Result.Err AssignmentError.TooLarge)
-    | some value => min_cost_assignment_loop0 cost n value 0#usize
+    | some value =>
+      let b ← is_square cost
+      if b
+      then
+        let r ← initial_potentials cost value
+        match r with
+        | core.result.Result.Ok value1 => finish_assignment cost n value value1
+        | core.result.Result.Err error => ok (core.result.Result.Err error)
+      else ok (core.result.Result.Err AssignmentError.NonSquare)
 
 end verified_assignment_core

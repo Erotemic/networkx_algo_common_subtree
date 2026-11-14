@@ -61,6 +61,41 @@ fn unused_columns(len: usize) -> Vec<bool> {
     result
 }
 
+fn minimum_row(row: &[i64]) -> Option<i64> {
+    let mut minimum = None;
+    let mut column = 0;
+    while column < row.len() {
+        let value = row[column];
+        let improve = match minimum {
+            None => true,
+            Some(old) => value < old,
+        };
+        if improve {
+            minimum = Some(value);
+        }
+        column += 1;
+    }
+    minimum
+}
+
+/// Row minima with zero column potentials give a feasible initial dual state.
+fn initial_potentials(cost: &[Vec<i64>], extent: usize) -> Result<Vec<i128>, AssignmentError> {
+    let mut result = zeros_i128(extent);
+    let mut row = 0;
+    let mut failure = None;
+    while row < cost.len() && failure.is_none() {
+        match minimum_row(&cost[row]) {
+            Some(value) => result[row + 1] = value as i128,
+            None => failure = Some(AssignmentError::InvariantViolation),
+        }
+        row += 1;
+    }
+    match failure {
+        Some(error) => Err(error),
+        None => Ok(result),
+    }
+}
+
 /// Scan the unused columns and update the exact minimum slacks.
 fn scan_columns(
     cost: &[Vec<i64>],
@@ -266,31 +301,12 @@ fn reconstruct_assignment(
     }
 }
 
-/// Minimum-cost perfect assignment of a square signed-integer matrix.
-///
-/// Empty input has the empty assignment and cost zero. Malformed inputs and
-/// checked-arithmetic failures are explicit errors. Finite costs are never
-/// replaced by a sentinel, and zero is a valid reduced cost.
-///
-/// The implementation uses the potential form of the Hungarian algorithm
-/// with a reserved column zero. All exported indices are zero based.
-pub fn min_cost_assignment(cost: &[Vec<i64>]) -> Result<Assignment, AssignmentError> {
-    let n = cost.len();
-    if n > u32::MAX as usize {
-        return Err(AssignmentError::TooLarge);
-    }
-    let extent = match n.checked_add(1) {
-        Some(value) => value,
-        None => return Err(AssignmentError::TooLarge),
-    };
-    let mut row = 0;
-    while row < n {
-        if cost[row].len() != n {
-            return Err(AssignmentError::NonSquare);
-        }
-        row += 1;
-    }
-    let mut u = zeros_i128(extent);
+fn finish_assignment(
+    cost: &[Vec<i64>],
+    n: usize,
+    extent: usize,
+    mut u: Vec<i128>,
+) -> Result<Assignment, AssignmentError> {
     let mut v = zeros_i128(extent);
     let mut matched_row = zeros_usize(extent);
     let mut predecessor = zeros_usize(extent);
@@ -318,6 +334,44 @@ pub fn min_cost_assignment(cost: &[Vec<i64>]) -> Result<Assignment, AssignmentEr
     match failure {
         Some(error) => Err(error),
         None => reconstruct_assignment(cost, &u, &v, &matched_row, n),
+    }
+}
+
+fn is_square(cost: &[Vec<i64>]) -> bool {
+    let n = cost.len();
+    let mut row = 0;
+    while row < n {
+        if cost[row].len() != n {
+            return false;
+        }
+        row += 1;
+    }
+    true
+}
+
+/// Minimum-cost perfect assignment of a square signed-integer matrix.
+///
+/// Empty input has the empty assignment and cost zero. Malformed inputs and
+/// checked-arithmetic failures are explicit errors. Finite costs are never
+/// replaced by a sentinel, and zero is a valid reduced cost.
+///
+/// Row minima and zero column potentials initialize a feasible dual state.
+/// A reserved column zero supports augmentation; exported indices are zero based.
+pub fn min_cost_assignment(cost: &[Vec<i64>]) -> Result<Assignment, AssignmentError> {
+    let n = cost.len();
+    if n > u32::MAX as usize {
+        return Err(AssignmentError::TooLarge);
+    }
+    let extent = match n.checked_add(1) {
+        Some(value) => value,
+        None => return Err(AssignmentError::TooLarge),
+    };
+    if !is_square(cost) {
+        return Err(AssignmentError::NonSquare);
+    }
+    match initial_potentials(cost, extent) {
+        Ok(value) => finish_assignment(cost, n, extent, value),
+        Err(error) => Err(error),
     }
 }
 

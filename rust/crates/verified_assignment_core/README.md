@@ -5,6 +5,7 @@ Hungarian potentials. It returns a zero-based permutation, `i128` row/column
 potentials and an `i128` total. Malformed matrices and checked-arithmetic
 failures return explicit errors. Helpers separate column scanning, potential
 updates, augmenting-path reconstruction and final decoding for extraction.
+Row minima initialize feasible dual potentials for signed costs.
 
 Current assurance is deliberately narrower than the crate's eventual target:
 
@@ -14,7 +15,10 @@ Current assurance is deliberately narrower than the crate's eventual target:
 - Pinned Charon/Aeneas exports the actual source into
   `proofs/SubtreeProofs/Rust/Generated/VerifiedAssignmentCore.lean`.
 - `Rust.AssignmentInitialization` proves safe terminating execution and exact
-  contents of all four actual initialization loops.
+  contents of all four actual constant-fill initialization loops.
+  `Rust.AssignmentRowMinimum` proves the actual row scan terminates and returns
+  exactly the independent finite minimum, including membership and lower bounds
+  for nonempty rows.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.
