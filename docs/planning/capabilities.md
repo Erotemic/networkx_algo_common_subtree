@@ -103,6 +103,14 @@ proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-
 
 ## Immediate implementation queue
 
+Both graph families now store score/choice IDs and reconstruct only the final
+winning witness. All 44 native and 163 installed Python tests pass. On the
+166/319 2018 case, peak requested heap falls **106→55 MB** and the installed
+API improves **0.418→0.334 s**. Chain64 2016 peak falls **5.86→1.59 MB**.
+The change preserves feasibility/optima and deterministic-per-backend ties;
+specific equal-score witnesses may change. Published full-runtime and actual
+production refinement remain open. [Evidence](../../dev/benchmarks/2026-11-14-graph-witness-choices.md).
+
 2016 high-degree nonroot states now reuse a full child matching and repair
 each matched right-parent deletion with one Hungarian augmentation. Independent
 exhaustive checks pass; all **44 graph Rust** and **163 installed Python tests**

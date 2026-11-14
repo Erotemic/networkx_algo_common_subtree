@@ -51,8 +51,15 @@ objectives and original indices; 44 graph Rust and 163 installed Python tests
 pass, including five ABI3 runtimes. Dense family arithmetic is O(k²l), but no
 new Lean recurrence, refinement or runtime theorem is claimed. Its f64 dual
 repair is distinct from the source-proved exact sparse augmentation and
-partially verified exact deletion caller below. Full graph witness
-materialization and 2018 optimized scheduling remain open.
+partially verified exact deletion caller below. At that milestone, full graph witness
+materialization and 2018 optimized scheduling remained open.
+
+Graph production states now retain constant-size score/choice IDs, with only
+the winning mapping expanded at the boundary. Independent original-index/path
+checks continue to pass (44 native, 163 installed Python tests). Full witness
+copying is removed and measured memory/runtime improve, but the choice pool,
+tie rule and f64 graph implementation have no new source-refinement or runtime
+theorem. Existing mathematical/exact-core proof endpoints are preserved.
 
 ## Accepted development: 2026-11-14
 

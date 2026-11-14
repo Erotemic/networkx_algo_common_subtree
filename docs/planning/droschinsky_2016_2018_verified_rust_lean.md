@@ -10,15 +10,18 @@ Both graph families are now public NetworkX/PyO3 APIs, with optional labels,
 signed scalar/callback weights, empty/nonempty objectives, original-node/path
 witnesses and independent exhaustive references/rescorers. Exact source-proved
 integer assignment/partial matching are also public Python APIs. The installed
-Release wheel passes all 139 tests with compiled backends required. Python
+Release wheel passes all 163 tests with compiled backends required. Python
 conversion and f64 graph DPs remain tested, not source proved.
 
 Measured optimization removes padded dummy matching matrices and roots the
 2016 left input once. The latter yields 125x on 32-vertex stars and 3.63–6.04x
 on ResNet-sized installed APIs over the preceding wheel. Reproducible API,
 raw PyO3 and native Rust evidence is in the capability matrix and benchmark
-reports. The 2018 root/path schedule and the paper's specialized all-deletion
-matching remain implementation tasks. Substantial formal work below is
+reports. Dense all-right-deletion matching reuse is now integrated into 2016;
+both families store reconstruction choices instead of full per-state mappings.
+Independent deletion and graph oracles pass. The 2018 optimized root/path
+schedule and complete production complexity/refinement remain implementation
+and proof tasks. Substantial formal work below is
 deferred until software coverage/correctness/performance are established;
 existing proofs are preserved, and full verification remains a final-release
 blocker.
