@@ -88,3 +88,5 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.deleted_bi_state
 #print axioms SubtreeProofs.Rust.SparseBiAdjustment.adjust_potentials_bi_safe_spec
+
+#print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.matched_single_cycle_decodes

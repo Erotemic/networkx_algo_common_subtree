@@ -14,6 +14,25 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Original-index decoding after single-cycle deletion repair: 2026-11-14
+
+`Shared/CopiedMatchingDeletionDecode.surviving_minimum_decodes` proves that
+an independent minimum compatible assignment on the actual induced surviving
+copied graph decodes to maximum partial matchings for `deleteRight weights
+removed`, with surviving vertices retaining their original indices. The
+proof extends the surviving permutation by the removed zero identity edge,
+preserves the exact objective, and compares against every compatible
+assignment for the deleted matrix. Every such assignment fixes the removed
+vertex because all incident cross edges are absent.
+
+`matched_single_cycle_decodes` combines this with the existing cycle repair:
+from a feasible/tight compatible old assignment and an actually matched right
+vertex, there exists one cycle repair whose original and copy decodings are
+independently maximum for the deleted instance, and all old assignment edges
+outside that cycle stay unchanged. This closes the mathematical decoding
+obligation; constructing that cycle efficiently in the actual Rust source
+and proving the paper's runtime remain open.
+
 ## Two-sided copied-graph potential safety: 2026-11-14
 
 `Shared/AssignmentBiEnvelope` tracks independent initial row and column
