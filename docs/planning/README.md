@@ -30,7 +30,7 @@ inventory and evidence are in [capabilities.md](capabilities.md).
 
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
-wheel passes all 176 tests with native backends mandatory. Independent graph
+wheel passes all 199 tests with native backends mandatory. Independent graph
 witness rescoring and exhaustive optimum comparisons are included. Installed
 API measurements identify high-degree matching as the next graph performance
 bottleneck. Rectangular matching already improves 32-vertex stars by
@@ -42,7 +42,7 @@ The ordered isomorphism APIs now expose the existing root-preserving level
 state with `rooted=True`, alongside the default general state. Independent
 parent-preserving subset enumeration validates both contracts and fractional
 affinities. Normal and genuine Rust-only ABI3 wheels are tested; the latter
-passes the complete 176-test API suite on each CPython 3.10–3.14.
+passes the complete 199-test API suite on each CPython 3.10–3.14.
 
 2018 now uses the fixed-left mapped/skipped schedule and includes the skipped
 highest-vertex path case. Independent high-degree/path oracles pass; installed
@@ -57,6 +57,12 @@ and graph-witness checks pass. Measured 32/32 chain-versus-star and double-star
 speedups are 2.74× and 1.69×. Module cases include regressions that need
 attention; full per-state witnesses and 2018's optimized schedule remain open.
 [Evidence and assurance boundary](../../dev/benchmarks/2026-11-14-matching-families.md).
+
+Both graph families additionally expose fixed ambient roots and the separate
+root-to-root restriction, with original-node witnesses and all existing signed
+scoring modes. Independent rooted oracles and 47 native / 199 installed tests
+pass, including every host ABI3 runtime. The portable 176-test source snapshot
+is recorded separately until rebuilt. [Root contracts and measurements](../../dev/benchmarks/2026-11-14-graph-root-modes.md).
 
 ## Verified actual one-path sparse augmentation: 2026-11-14
 

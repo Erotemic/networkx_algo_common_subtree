@@ -271,6 +271,52 @@ pub struct CommonSubtree {
     pub node_pairs: Vec<(NodeId, NodeId)>,
 }
 
+/// Orientation restrictions, separate from labels and scoring.
+#[derive(Clone, Copy, Debug, Default)]
+pub enum RootConstraint {
+    #[default]
+    Unrooted,
+    /// Keep one common highest mapped pair in these ambient orientations.
+    /// `root_to_root` additionally requires the supplied root pair itself.
+    Rooted {
+        left: NodeId,
+        right: NodeId,
+        root_to_root: bool,
+    },
+}
+
+impl RootConstraint {
+    fn roots(self, left: &LabeledTree, right: &LabeledTree) -> Option<(NodeId, NodeId)> {
+        match self {
+            Self::Unrooted => None,
+            Self::Rooted {
+                left: u, right: v, ..
+            } => {
+                assert!(
+                    u < left.len() && v < right.len(),
+                    "tree roots must be input vertices"
+                );
+                Some((u, v))
+            }
+        }
+    }
+
+    fn top_ranges(
+        self,
+        left_size: usize,
+        right_size: usize,
+    ) -> (std::ops::Range<usize>, std::ops::Range<usize>) {
+        match self {
+            Self::Rooted {
+                left,
+                right,
+                root_to_root: true,
+            } => (left..left + 1, right..right + 1),
+            _ => (0..left_size, 0..right_size),
+        }
+    }
+}
+
 // Memo/skip states carry constant-size choices. Rooted choices refer only to
 // earlier choices, and the winning mapping is expanded once at the API boundary.
 type WitnessId = NonZeroUsize;
@@ -309,11 +355,14 @@ fn reconstruct_mapping(
     pairs
 }
 
-fn fixed_orientation(tree: &LabeledTree) -> (Vec<Option<NodeId>>, Vec<NodeId>, Vec<usize>) {
+fn orientation(
+    tree: &LabeledTree,
+    root: Option<NodeId>,
+) -> (Vec<Option<NodeId>>, Vec<NodeId>, Vec<usize>) {
     let mut parents = vec![None; tree.len()];
     let mut order = Vec::with_capacity(tree.len());
     let mut views: Vec<_> = (0..tree.len()).collect();
-    if let Some(root) = (0..tree.len()).max_by_key(|&u| tree.neighbors(u).len()) {
+    if let Some(root) = root.or_else(|| (0..tree.len()).max_by_key(|&u| tree.neighbors(u).len())) {
         let mut stack = vec![root];
         while let Some(u) = stack.pop() {
             order.push(u);
@@ -563,11 +612,12 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
     // complete before processing u. This separates matching from the same-u
     // right-skip dependencies and avoids recursive rerooting cycles.
     fn embedding_matching_family(&mut self, state: State, left_children: &[EdgeRef]) {
-        let v = state.view; // This phase receives whole views, indexed by vertex.
+        let (v, parent_v) = self.right.views[state.view];
+        let family = state.parent_u.is_some();
         let root_weight = self.scoring.node_weight(self.left, state.u, self.right, v);
         let Some(root_weight) = root_weight else {
             self.embedding_memo.insert(state, None);
-            for (_, excluded, _) in self.right.neighbor_views(v) {
+            for (_, excluded, _) in self.right.neighbor_views(v).filter(|_| family) {
                 self.embedding_memo.insert(
                     State {
                         view: excluded,
@@ -579,10 +629,12 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             return;
         };
         let root_weight = finite_weight(root_weight);
-        if left_children.is_empty() || self.right.neighbors(v).is_empty() {
+        let right_degree =
+            self.right.neighbors(v).len() - usize::from(!family && parent_v.is_some());
+        if left_children.is_empty() || right_degree == 0 {
             let leaf = self.retain_root(state, root_weight, Vec::new());
             self.embedding_memo.insert(state, Some(leaf));
-            for (_, excluded, _) in self.right.neighbor_views(v) {
+            for (_, excluded, _) in self.right.neighbor_views(v).filter(|_| family) {
                 self.embedding_memo.insert(
                     State {
                         view: excluded,
@@ -593,11 +645,15 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             }
             return;
         }
-        let right_degree = self.right.neighbors(v).len();
         let mut matrix = vec![vec![None; right_degree]; left_children.len()];
         let mut child_results = vec![vec![None; right_degree]; left_children.len()];
         for (i, &left_edge) in left_children.iter().enumerate() {
-            for (j, (right_edge, _, child_view)) in self.right.neighbor_views(v).enumerate() {
+            for (j, (right_edge, _, child_view)) in self
+                .right
+                .neighbor_views(v)
+                .filter(|(edge, _, _)| family || Some(edge.to) != parent_v)
+                .enumerate()
+            {
                 let child_state = State {
                     u: left_edge.to,
                     parent_u: Some(state.u),
@@ -620,9 +676,9 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                 }
             }
         }
-        // The global left root has no parent caller. M1 uses only its whole
-        // right views, while M2 reads its children, so no deletion is needed.
-        if state.parent_u.is_none() {
+        // The global left root has no parent caller. M1 uses one prescribed
+        // right view per vertex, while M2 reads its children, so no family is needed.
+        if !family {
             let matching = max_weight_bipartite_matching(&matrix);
             let full = self.combine_rooted_matches(state, root_weight, &matching, &child_results);
             self.embedding_memo.insert(state, Some(full));
@@ -653,8 +709,13 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         self.skipped_memo.insert(state, best);
     }
 
-    fn compute_embeddings(&mut self, parents: &[Option<NodeId>], order: &[NodeId]) {
-        let (right_parents, right_order, right_views) = fixed_orientation(self.right);
+    fn compute_embeddings(
+        &mut self,
+        parents: &[Option<NodeId>],
+        order: &[NodeId],
+        root_views: Option<&[usize]>,
+    ) {
+        let (right_parents, right_order, right_views) = orientation(self.right, None);
         let stride = self.embedding_memo.stride;
         for &u in order.iter().rev() {
             let left_children = Self::child_edges(self.left, u, parents[u]);
@@ -663,7 +724,11 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     State {
                         u,
                         parent_u: parents[u],
-                        view: v,
+                        view: if parents[u].is_none() {
+                            root_views.map_or(v, |views| views[v])
+                        } else {
+                            v
+                        },
                     },
                     &left_children,
                 );
@@ -791,19 +856,38 @@ pub fn maximum_nonempty_common_subtree_isomorphism<S: Scoring>(
     right: &LabeledTree,
     scoring: &S,
 ) -> Option<CommonSubtree> {
+    maximum_nonempty_common_subtree_isomorphism_with_roots(
+        left,
+        right,
+        scoring,
+        RootConstraint::Unrooted,
+    )
+}
+
+/// Nonempty isomorphism under explicit ambient/root-to-root constraints.
+/// Panics if a supplied root is not an input vertex.
+pub fn maximum_nonempty_common_subtree_isomorphism_with_roots<S: Scoring>(
+    left: &LabeledTree,
+    right: &LabeledTree,
+    scoring: &S,
+    constraint: RootConstraint,
+) -> Option<CommonSubtree> {
+    let roots = constraint.roots(left, right);
     if left.is_empty() || right.is_empty() {
         return None;
     }
 
     let mut solver = RootedSolver::new(left, right, scoring);
-    let (parents, _, _) = fixed_orientation(left);
+    let (parents, _, _) = orientation(left, roots.map(|(u, _)| u));
+    let right_views = roots.map(|(_, v)| orientation(right, Some(v)).2);
     let mut best = None;
-    for u in 0..left.len() {
-        for v in 0..right.len() {
+    let (left_tops, right_tops) = constraint.top_ranges(left.len(), right.len());
+    for u in left_tops {
+        for v in right_tops.clone() {
             let state = State {
                 u,
                 parent_u: parents[u],
-                view: v,
+                view: right_views.as_ref().map_or(v, |views| views[v]),
             };
             if let Some(candidate) = solver.rooted_isomorphism(state) {
                 RootedSolver::<S>::keep_candidate(&mut best, candidate);
@@ -853,6 +937,25 @@ pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S:
     scoring: &S,
     skip_vertex_penalty: Weight,
 ) -> Option<CommonSubtree> {
+    largest_weight_nonempty_common_subtree_embedding_with_roots(
+        left,
+        right,
+        scoring,
+        skip_vertex_penalty,
+        RootConstraint::Unrooted,
+    )
+}
+
+/// Nonempty embedding with fixed ambient roots or the root-to-root restriction.
+/// Panics for invalid roots, a negative/nonfinite penalty or arithmetic overflow.
+pub fn largest_weight_nonempty_common_subtree_embedding_with_roots<S: Scoring>(
+    left: &LabeledTree,
+    right: &LabeledTree,
+    scoring: &S,
+    skip_vertex_penalty: Weight,
+    constraint: RootConstraint,
+) -> Option<CommonSubtree> {
+    let roots = constraint.roots(left, right);
     assert!(
         skip_vertex_penalty.is_finite() && skip_vertex_penalty >= 0.0,
         "skip vertex penalty must be finite and nonnegative"
@@ -861,20 +964,25 @@ pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S:
         return None;
     }
 
-    let (parents, order, _) = fixed_orientation(left);
+    let (parents, order, _) = orientation(left, roots.map(|(u, _)| u));
+    let right_views = roots.map(|(_, v)| orientation(right, Some(v)).2);
     let mut solver = RootedSolver::with_skip_penalty(left, right, scoring, skip_vertex_penalty);
-    solver.compute_embeddings(&parents, &order);
+    solver.compute_embeddings(&parents, &order, right_views.as_deref());
     let mut best = None;
-    for u in 0..left.len() {
-        for v in 0..right.len() {
+    let (left_tops, right_tops) = constraint.top_ranges(left.len(), right.len());
+    for u in left_tops {
+        for v in right_tops.clone() {
             if let Some(candidate) = solver.embedding_memo.get(State {
                 u,
                 parent_u: parents[u],
-                view: v,
+                view: right_views.as_ref().map_or(v, |views| views[v]),
             }) {
                 RootedSolver::<S>::keep_candidate(&mut best, candidate);
             }
         }
+    }
+    if roots.is_some() {
+        return best.map(|result| result.into_public(&solver.choices));
     }
     // Lemma 10, M2: the highest left vertex is skipped inside one path.
     // Split that path across a right edge and two distinct left child branches.

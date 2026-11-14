@@ -173,9 +173,11 @@ def maximum_common_subtree_isomorphism_reference(
     left: ReferenceLabeledTree,
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
+    *, roots=None, root_to_root=False,
 ) -> ReferenceCommonSubtree:
     """Exhaustive connected isomorphism oracle, permitting an empty score-zero result."""
-    result = _maximum_common_subtree_isomorphism_reference(left, right, scoring)
+    result = _maximum_common_subtree_isomorphism_reference(
+        left, right, scoring, roots=roots, root_to_root=root_to_root)
     assert result is not None
     return result
 
@@ -184,9 +186,11 @@ def maximum_nonempty_common_subtree_isomorphism_reference(
     left: ReferenceLabeledTree,
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
+    *, roots=None, root_to_root=False,
 ) -> ReferenceCommonSubtree | None:
     """Nonempty source-style oracle; retain negative scores and report infeasibility."""
-    return _maximum_common_subtree_isomorphism_reference(left, right, scoring, allow_empty=False)
+    return _maximum_common_subtree_isomorphism_reference(
+        left, right, scoring, allow_empty=False, roots=roots, root_to_root=root_to_root)
 
 
 def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
@@ -194,10 +198,11 @@ def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
     skip_vertex_penalty: Weight = 0.0,
+    *, roots=None, root_to_root=False,
 ) -> ReferenceCommonSubtree:
     """Exhaustive topological-path oracle, permitting an empty score-zero result."""
     result = _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
-        left, right, scoring, skip_vertex_penalty)
+        left, right, scoring, skip_vertex_penalty, roots=roots, root_to_root=root_to_root)
     assert result is not None
     return result
 
@@ -207,10 +212,11 @@ def largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_refer
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
     skip_vertex_penalty: Weight = 0.0,
+    *, roots=None, root_to_root=False,
 ) -> ReferenceCommonSubtree | None:
     """Nonempty topological-path oracle; retain negative scores and report infeasibility."""
     return _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
-        left, right, scoring, skip_vertex_penalty, allow_empty=False)
+        left, right, scoring, skip_vertex_penalty, allow_empty=False, roots=roots, root_to_root=root_to_root)
 
 
 def _maximum_common_subtree_isomorphism_reference(
@@ -218,6 +224,8 @@ def _maximum_common_subtree_isomorphism_reference(
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
     allow_empty: bool = True,
+    roots=None,
+    root_to_root=False,
 ) -> ReferenceCommonSubtree | None:
     """Brute-force maximum common subtree isomorphism.
 
@@ -230,6 +238,7 @@ def _maximum_common_subtree_isomorphism_reference(
     The algorithm is exponential and should only be used for small tests.
     """
 
+    roots = _validate_roots(left, right, roots, root_to_root)
     scoring = ExactLabelScoring() if scoring is None else scoring
     best = ReferenceCommonSubtree(0.0, ()) if allow_empty else None
     for left_subset in _connected_subsets(left):
@@ -243,7 +252,7 @@ def _maximum_common_subtree_isomorphism_reference(
                 candidate = _score_exact_subtree_bijection(
                     left, right, scoring, left_subset, left_edges, right_subset_set, node_map
                 )
-                if candidate is not None:
+                if candidate is not None and _rooted_mapping_valid(left, right, candidate.node_pairs, roots, root_to_root):
                     best = _keep_better(best, candidate)
     return best
 
@@ -254,6 +263,8 @@ def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
     scoring: ExactLabelScoring | None = None,
     skip_vertex_penalty: Weight = 0.0,
     allow_empty: bool = True,
+    roots=None,
+    root_to_root=False,
 ) -> ReferenceCommonSubtree | None:
     """Brute-force common subtree embedding with skipped-vertex penalties.
 
@@ -272,6 +283,7 @@ def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
     """
 
     _validate_skip_penalty(skip_vertex_penalty)
+    roots = _validate_roots(left, right, roots, root_to_root)
     scoring = ExactLabelScoring() if scoring is None else scoring
     best = ReferenceCommonSubtree(0.0, ()) if allow_empty else None
     for left_subset in _nonempty_subsets(left.n):
@@ -297,7 +309,7 @@ def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
                     node_map,
                     skip_vertex_penalty,
                 )
-                if candidate is not None:
+                if candidate is not None and _rooted_mapping_valid(left, right, candidate.node_pairs, roots, root_to_root):
                     best = _keep_better(best, candidate)
     return best
 
@@ -419,6 +431,30 @@ def score_embedding_witness(
 def _validate_skip_penalty(penalty: Weight) -> None:
     if not isfinite(penalty) or penalty < 0:
         raise ValueError("skip vertex penalty must be finite and nonnegative")
+
+
+def _validate_roots(left, right, roots, root_to_root):
+    if roots is None:
+        if root_to_root:
+            raise ValueError("root_to_root requires a pair of roots")
+        return None
+    try:
+        u, v = roots
+    except (TypeError, ValueError) as ex:
+        raise ValueError("roots must be a pair of input vertices") from ex
+    if not (isinstance(u, int) and isinstance(v, int) and 0 <= u < left.n and 0 <= v < right.n):
+        raise ValueError("roots must be input tree vertices")
+    return u, v
+
+
+def _rooted_mapping_valid(left, right, pairs, roots, root_to_root):
+    """Independent source predicate, using actual root-to-vertex paths."""
+    if roots is None or not pairs:
+        return True
+    if root_to_root:
+        return roots in pairs
+    return any(all(u in left.path(roots[0], x) and v in right.path(roots[1], y)
+                   for x, y in pairs) for u, v in pairs)
 
 
 def _canonical_pairs(node_pairs: Iterable[tuple[NodeId, NodeId]]) -> tuple[tuple[NodeId, NodeId], ...]:

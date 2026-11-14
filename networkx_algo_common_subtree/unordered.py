@@ -99,12 +99,27 @@ class _Scoring(reference.ExactLabelScoring):
 
 
 class _Problem:
-    def __init__(self, left, right, node_label, edge_label, node_weight, edge_weight):
+    def __init__(self, left, right, node_label, edge_label, node_weight, edge_weight,
+                 *, roots=None, root_to_root=False):
         node_codes, edge_codes = {}, {}
         self.left = _tree_data(left, node_label, edge_label, node_codes, edge_codes)
         self.right = _tree_data(right, node_label, edge_label, node_codes, edge_codes)
         ln, ll, le = self.left
         rn, rl, re = self.right
+        if not isinstance(root_to_root, bool):
+            raise TypeError("root_to_root must be a bool")
+        self.root_to_root = root_to_root
+        self.roots = None
+        if roots is None:
+            if root_to_root:
+                raise ValueError("root_to_root requires a pair of roots")
+        else:
+            try:
+                u, v = roots
+                self.roots = ({node: i for i, node in enumerate(ln)}[u],
+                              {node: i for i, node in enumerate(rn)}[v])
+            except (KeyError, TypeError, ValueError) as ex:
+                raise ValueError("roots must be a pair of input tree vertices") from ex
         self.node_scalar = 1.0 if callable(node_weight) else _finite(node_weight)
         self.edge_scalar = 1.0 if callable(edge_weight) else _finite(edge_weight)
         def weight(callback, *args):
@@ -146,6 +161,8 @@ def _solve(problem, impl, allow_empty, penalty):
             raise ImportError("the Rust extension must be rebuilt for weighted graph algorithms")
         kwargs = dict(node_weights=problem.node_table, edge_weights=problem.edge_table,
                       node_match_weight=problem.node_scalar, edge_match_weight=problem.edge_scalar, allow_empty=allow_empty)
+        if problem.roots is not None:
+            kwargs.update(roots=problem.roots, root_to_root=problem.root_to_root)
         if penalty is not None:
             kwargs["skip_vertex_penalty"] = penalty
         raw = solver(problem.left[1], problem.left[2], problem.right[1], problem.right[2], **kwargs)
@@ -154,11 +171,11 @@ def _solve(problem, impl, allow_empty, penalty):
     if penalty is None:
         solver = (reference.maximum_common_subtree_isomorphism_reference if allow_empty else
                   reference.maximum_nonempty_common_subtree_isomorphism_reference)
-        raw = solver(left, right, problem.scoring)
+        raw = solver(left, right, problem.scoring, roots=problem.roots, root_to_root=problem.root_to_root)
     else:
         solver = (reference.largest_weight_common_subtree_embedding_with_distance_penalty_reference if allow_empty else
                   reference.largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference)
-        raw = solver(left, right, problem.scoring, penalty)
+        raw = solver(left, right, problem.scoring, penalty, roots=problem.roots, root_to_root=problem.root_to_root)
     if raw is None:
         return None
     mapping = dict(raw.node_pairs)
@@ -170,7 +187,8 @@ def _solve(problem, impl, allow_empty, penalty):
 
 
 def maximum_common_subtree_isomorphism(tree1, tree2, *, node_label=None, edge_label=None,
-                                       node_weight=1.0, edge_weight=1.0, allow_empty=True, impl="auto"):
+                                       node_weight=1.0, edge_weight=1.0, allow_empty=True, impl="auto",
+                                       roots=None, root_to_root=False):
     """Maximum-weight connected unordered subtree isomorphism (2016).
 
     Inputs are undirected NetworkX trees, including empty trees. Label options
@@ -182,17 +200,26 @@ def maximum_common_subtree_isomorphism(tree1, tree2, *, node_label=None, edge_la
     allowed by default; ``allow_empty=False`` retains negative optima and
     returns ``None`` only when no compatible nonempty witness exists.
 
+    ``roots=(left_root, right_root)`` fixes ambient orientations: a nonempty
+    common tree must have one mapped pair ancestral to every selected vertex
+    on both sides. Its root may occur below either supplied root. With
+    ``root_to_root=True`` that pair must be the supplied roots themselves.
+    Roots are original input vertices; omitting them gives the unrooted problem.
+    The optional empty optimum remains permitted in each mode.
+
     Ties are deterministic for a fixed input iteration order and backend;
     different backends may choose different optimal witnesses. Rust uses f64
     arithmetic; it is tested against independent oracles, not yet source proved.
     """
-    problem = _Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight)
+    problem = _Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight,
+                       roots=roots, root_to_root=root_to_root)
     return _solve(problem, impl, allow_empty, None)
 
 
 def largest_weight_common_subtree_embedding_with_distance_penalty(
         tree1, tree2, *, skip_vertex_penalty=0.0, node_label=None, edge_label=None,
-        node_weight=1.0, edge_weight=1.0, allow_empty=True, impl="auto"):
+        node_weight=1.0, edge_weight=1.0, allow_empty=True, impl="auto",
+        roots=None, root_to_root=False):
     """Largest-weight unordered topological tree embedding (2018).
 
     Scoring/backend options follow :func:`maximum_common_subtree_isomorphism`.
@@ -200,8 +227,13 @@ def largest_weight_common_subtree_embedding_with_distance_penalty(
     compatibility apply only when **both** matched paths consist of one edge.
     Every longer path contributes only the penalty for its skipped vertices.
     The result includes aligned original-node paths for independent inspection.
+    ``roots`` fixes ambient orientations, while ``root_to_root=True`` additionally
+    requires the supplied root pair. These restrictions follow the distinct
+    rooted and root-to-root contracts; they do not include unrooted paths whose
+    highest ambient vertex is skipped between different branches.
     """
-    problem = _Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight)
+    problem = _Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight,
+                       roots=roots, root_to_root=root_to_root)
     return _solve(problem, impl, allow_empty, skip_vertex_penalty)
 
 
@@ -269,6 +301,37 @@ def _score_path_witness(problem, left, right, indexed, paths, li, ri, penalty):
     return score
 
 
+def _check_rooted_mapping(problem, left, right, pairs):
+    if problem.roots is None or not pairs:
+        return
+    if problem.root_to_root:
+        if problem.roots not in pairs:
+            raise ValueError("witness does not map the supplied roots together")
+        return
+    def intervals(tree, root):
+        adjacency = [[] for _ in range(tree.n)]
+        for u, v, _ in tree.edges:
+            adjacency[u].append(v)
+            adjacency[v].append(u)
+        begin, end = [0] * tree.n, [0] * tree.n
+        stack, clock = [(root, -1, False)], 0
+        while stack:
+            u, parent, exiting = stack.pop()
+            if exiting:
+                end[u] = clock
+            else:
+                begin[u] = clock
+                clock += 1
+                stack.append((u, parent, True))
+                stack.extend((v, u, False) for v in adjacency[u] if v != parent)
+        return begin, end
+    lb, le = intervals(left, problem.roots[0])
+    rb, re = intervals(right, problem.roots[1])
+    u, v = min(pairs, key=lambda pair: lb[pair[0]])
+    if any(not (lb[u] <= lb[x] < le[u] and rb[v] <= rb[y] < re[v]) for x, y in pairs):
+        raise ValueError("witness has no common highest pair in the supplied root orientations")
+
+
 def _rescore(problem, witness, penalty):
     left, right = problem.references()
     li = {node: i for i, node in enumerate(problem.left[0])}
@@ -278,6 +341,7 @@ def _rescore(problem, witness, penalty):
         indexed = reference._canonical_pairs((li[u], ri[v]) for u, v in pairs)
     except KeyError as ex:
         raise ValueError("witness contains a node outside its input tree") from ex
+    _check_rooted_mapping(problem, left, right, indexed)
     if isinstance(witness, CommonSubtreeResult):
         return _score_path_witness(problem, left, right, indexed, witness.edge_paths, li, ri, penalty)
     if penalty is None:
@@ -287,16 +351,19 @@ def _rescore(problem, witness, penalty):
     return score
 
 
-def score_common_subtree_isomorphism(tree1, tree2, witness, *, node_label=None, edge_label=None, node_weight=1.0, edge_weight=1.0):
+def score_common_subtree_isomorphism(tree1, tree2, witness, *, node_label=None, edge_label=None, node_weight=1.0, edge_weight=1.0,
+                                    roots=None, root_to_root=False):
     """Independently validate and rescore an original-node 2016 witness.
 
     Result objects validate their supplied paths directly. Bare node-pair
     iterables use the separate reference validator.
     """
-    return _rescore(_Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight), witness, None)
+    return _rescore(_Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight,
+                            roots=roots, root_to_root=root_to_root), witness, None)
 
 
-def score_common_subtree_embedding(tree1, tree2, witness, *, skip_vertex_penalty=0.0, node_label=None, edge_label=None, node_weight=1.0, edge_weight=1.0):
+def score_common_subtree_embedding(tree1, tree2, witness, *, skip_vertex_penalty=0.0, node_label=None, edge_label=None, node_weight=1.0, edge_weight=1.0,
+                                  roots=None, root_to_root=False):
     """Independently validate/rescore original-node paths using the 2018 rule.
 
     Result objects check original edges, simple paths, disjoint interiors and
@@ -306,7 +373,8 @@ def score_common_subtree_embedding(tree1, tree2, witness, *, skip_vertex_penalty
     penalty = _finite(skip_vertex_penalty)
     if penalty < 0:
         raise ValueError("skip vertex penalty must be finite and nonnegative")
-    return _rescore(_Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight), witness, penalty)
+    return _rescore(_Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight,
+                            roots=roots, root_to_root=root_to_root), witness, penalty)
 
 
 __all__ = ["CommonSubtreeResult", "available_unordered_backends", "maximum_common_subtree_isomorphism",

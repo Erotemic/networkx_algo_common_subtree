@@ -55,6 +55,8 @@ def main():
     parser.add_argument("--seed", type=int, default=2018)
     parser.add_argument("--algorithm", choices=["both", "isomorphism", "embedding"], default="both")
     parser.add_argument("--weights", choices=["scalar", "callbacks"], default="scalar")
+    parser.add_argument("--root-mode", choices=["unrooted", "rooted", "root-to-root"], default="unrooted",
+                        help="Rooted modes orient each tree at its first input vertex")
     parser.add_argument("--time-rescoring", action="store_true", help="Also time independent public witness validation")
     parser.add_argument("--module-trees", action="store_true", help="Also measure three existing ResNet-sized fixtures")
     parser.add_argument("--json", type=Path, required=True)
@@ -86,6 +88,12 @@ def main():
         le = [(u, v, data.get("label", 0)) for u, v, data in left.edges(data=True)]
         re = [(u, v, data.get("label", 0)) for u, v, data in right.edges(data=True)]
         api_weights, raw_weights = {}, {}
+        api_roots, raw_roots = {}, {}
+        if args.root_mode != "unrooted":
+            if not n or not m:
+                parser.error("rooted benchmark workloads require nonempty trees")
+            api_roots = dict(roots=(next(iter(left)), next(iter(right))), root_to_root=args.root_mode == "root-to-root")
+            raw_roots = dict(roots=(0, 0), root_to_root=args.root_mode == "root-to-root")
         if args.weights == "callbacks":
             def node_weight(u, v):
                 return 1.0 + .125 * (u % 3 == v % 3)
@@ -112,16 +120,16 @@ def main():
             for backend in ["rust", "raw-pyo3"] + (["python"] if max(n, m) <= args.oracle_max_size else []):
                 if backend == "raw-pyo3":
                     def call():
-                        return getattr(_rust, name)(ll, le, rl, re, **raw_weights, **extra)
+                        return getattr(_rust, name)(ll, le, rl, re, **raw_weights, **raw_roots, **extra)
                 else:
                     def call():
-                        return getattr(common, name)(left, right, impl=backend, **labels, **api_weights, **extra)
+                        return getattr(common, name)(left, right, impl=backend, **labels, **api_weights, **api_roots, **extra)
                 samples, result = measure(call, args.repeat, args.warmup)
                 weight = result[0] if backend == "raw-pyo3" else result.weight
                 rescore_samples = None
                 if backend != "raw-pyo3":
                     def rescore():
-                        return scorer(left, right, result, **labels, **api_weights, **extra)
+                        return scorer(left, right, result, **labels, **api_weights, **api_roots, **extra)
                     if args.time_rescoring:
                         rescore_samples, rescored = measure(rescore, args.repeat, args.warmup)
                     else:
@@ -129,6 +137,7 @@ def main():
                     assert rescored == weight
                 values.append(weight)
                 row = dict(algorithm=name, shape=shape, left_size=n, right_size=m, backend=backend, weights=args.weights,
+                           root_mode=args.root_mode,
                            samples_seconds=samples, median_seconds=statistics.median(samples), weight=weight)
                 if rescore_samples is not None:
                     row.update(rescore_samples_seconds=rescore_samples,

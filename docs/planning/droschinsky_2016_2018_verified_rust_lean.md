@@ -10,8 +10,13 @@ Both graph families are now public NetworkX/PyO3 APIs, with optional labels,
 signed scalar/callback weights, empty/nonempty objectives, original-node/path
 witnesses and independent exhaustive references/rescorers. Exact source-proved
 integer assignment/partial matching are also public Python APIs. The installed
-Release wheel passes all 176 tests with compiled backends required. Python
+Release wheel passes all 199 tests with compiled backends required. Python
 conversion and f64 graph DPs remain tested, not source proved.
+
+Both APIs also accept original-vertex ambient roots and the distinct forced
+root-pair restriction. The independent oracle filters by actual root-to-vertex
+paths; separate witness checks and all 47 native / 199 installed tests pass.
+[API contracts and benchmark evidence](../../dev/benchmarks/2026-11-14-graph-root-modes.md).
 
 Measured optimization removes padded dummy matching matrices and roots the
 2016 left input once. The latter yields 125x on 32-vertex stars and 3.63–6.04x

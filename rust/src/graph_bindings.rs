@@ -215,6 +215,8 @@ fn solve_graph(
     edge_match_weight: f64,
     allow_empty: bool,
     penalty: Option<f64>,
+    roots: Option<(usize, usize)>,
+    root_to_root: bool,
 ) -> PyResult<Option<GraphResult>> {
     finite(node_match_weight)?;
     finite(edge_match_weight)?;
@@ -227,6 +229,20 @@ fn solve_graph(
     }
     let left = LabeledTree::new(left_labels, &left_edges).map_err(PyValueError::new_err)?;
     let right = LabeledTree::new(right_labels, &right_edges).map_err(PyValueError::new_err)?;
+    let constraint = match roots {
+        Some((u, v)) if u < left.len() && v < right.len() => algorithms::RootConstraint::Rooted {
+            left: u,
+            right: v,
+            root_to_root,
+        },
+        Some(_) => return Err(PyValueError::new_err("roots must be input tree vertices")),
+        None if root_to_root => {
+            return Err(PyValueError::new_err(
+                "root_to_root requires a pair of roots",
+            ))
+        }
+        None => algorithms::RootConstraint::Unrooted,
+    };
     if let Some(weights) = &nodes {
         validate_matrix(weights, left.len(), right.len())?;
     }
@@ -242,24 +258,19 @@ fn solve_graph(
         },
     };
     py.allow_threads(|| {
-        let result = checked_call(|| match (penalty, allow_empty) {
-            (None, true) => Some(algorithms::maximum_common_subtree_isomorphism(
-                &left, &right, &scoring,
-            )),
-            (None, false) => {
-                algorithms::maximum_nonempty_common_subtree_isomorphism(&left, &right, &scoring)
-            }
-            (Some(p), true) => Some(
-                algorithms::largest_weight_common_subtree_embedding_with_distance_penalty(
-                    &left, &right, &scoring, p,
-                ),
+        let result = checked_call(|| match penalty {
+            None => algorithms::maximum_nonempty_common_subtree_isomorphism_with_roots(
+                &left, &right, &scoring, constraint,
             ),
-            (Some(p), false) => {
-                algorithms::largest_weight_nonempty_common_subtree_embedding_with_distance_penalty(
-                    &left, &right, &scoring, p,
-                )
-            }
+            Some(p) => algorithms::largest_weight_nonempty_common_subtree_embedding_with_roots(
+                &left, &right, &scoring, p, constraint,
+            ),
         })?;
+        let result = if allow_empty {
+            Some(result.filter(|r| r.weight > 0.0).unwrap_or_default())
+        } else {
+            result
+        };
         result
             .map(|r| {
                 let paths = witness_paths(&left, &right, &r.node_pairs)?;
@@ -269,7 +280,7 @@ fn solve_graph(
     })
 }
 
-#[pyfunction(signature=(left_labels,left_edges,right_labels,right_edges,node_weights=None,edge_weights=None,node_match_weight=1.0,edge_match_weight=1.0,allow_empty=true))]
+#[pyfunction(signature=(left_labels,left_edges,right_labels,right_edges,node_weights=None,edge_weights=None,node_match_weight=1.0,edge_match_weight=1.0,allow_empty=true,roots=None,root_to_root=false))]
 fn maximum_common_subtree_isomorphism(
     py: Python<'_>,
     left_labels: Vec<i64>,
@@ -281,6 +292,8 @@ fn maximum_common_subtree_isomorphism(
     node_match_weight: f64,
     edge_match_weight: f64,
     allow_empty: bool,
+    roots: Option<(usize, usize)>,
+    root_to_root: bool,
 ) -> PyResult<Option<GraphResult>> {
     solve_graph(
         py,
@@ -294,10 +307,12 @@ fn maximum_common_subtree_isomorphism(
         edge_match_weight,
         allow_empty,
         None,
+        roots,
+        root_to_root,
     )
 }
 
-#[pyfunction(signature=(left_labels,left_edges,right_labels,right_edges,skip_vertex_penalty=0.0,node_weights=None,edge_weights=None,node_match_weight=1.0,edge_match_weight=1.0,allow_empty=true))]
+#[pyfunction(signature=(left_labels,left_edges,right_labels,right_edges,skip_vertex_penalty=0.0,node_weights=None,edge_weights=None,node_match_weight=1.0,edge_match_weight=1.0,allow_empty=true,roots=None,root_to_root=false))]
 fn largest_weight_common_subtree_embedding_with_distance_penalty(
     py: Python<'_>,
     left_labels: Vec<i64>,
@@ -310,6 +325,8 @@ fn largest_weight_common_subtree_embedding_with_distance_penalty(
     node_match_weight: f64,
     edge_match_weight: f64,
     allow_empty: bool,
+    roots: Option<(usize, usize)>,
+    root_to_root: bool,
 ) -> PyResult<Option<GraphResult>> {
     solve_graph(
         py,
@@ -323,6 +340,8 @@ fn largest_weight_common_subtree_embedding_with_distance_penalty(
         edge_match_weight,
         allow_empty,
         Some(skip_vertex_penalty),
+        roots,
+        root_to_root,
     )
 }
 

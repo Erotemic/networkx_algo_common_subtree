@@ -31,8 +31,10 @@ pub use model_trees::{
 pub use tree::{
     largest_weight_common_subtree_embedding_with_distance_penalty,
     largest_weight_nonempty_common_subtree_embedding_with_distance_penalty,
-    maximum_common_subtree_isomorphism, maximum_nonempty_common_subtree_isomorphism, CommonSubtree,
-    EdgeRef, ExactLabelScoring, LabeledTree, NodeId, Scoring,
+    largest_weight_nonempty_common_subtree_embedding_with_roots,
+    maximum_common_subtree_isomorphism, maximum_nonempty_common_subtree_isomorphism,
+    maximum_nonempty_common_subtree_isomorphism_with_roots, CommonSubtree,
+    EdgeRef, ExactLabelScoring, LabeledTree, NodeId, RootConstraint, Scoring,
 };
 
 /// Weight type used by the algorithms.

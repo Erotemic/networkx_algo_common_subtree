@@ -110,6 +110,16 @@ This extends packaging evidence only. Mathematical, production-source, f64 and
 formal complexity obligations remain unchanged; the package is not a fully
 verified release. Remote CI and other stable-ABI platforms remain pending.
 
+Both graph Python/PyO3 families now expose fixed ambient roots and the separate
+root-to-root restriction through the production Rust `RootConstraint` policy.
+Existing independent Lean rooted predicates/recurrences supply their mathematical
+contracts. Independent subset/bijection/path oracles, NetworkX ancestor-path
+checks and original-node rescorers pass, including signed forced roots and
+actual high-degree deletion repair in each policy (47 native, 199 installed
+tests; all five host ABI3 runtimes). These are tested production/API additions,
+not new source-refinement or complexity theorems. The preceding manylinux
+artifact's 176-test evidence remains separate until its source is rebuilt.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

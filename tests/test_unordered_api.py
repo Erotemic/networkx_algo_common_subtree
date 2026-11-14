@@ -167,6 +167,12 @@ def test_native_low_level_validation_and_exact_matching():
         _rust.maximum_common_subtree_isomorphism([0], [], [0], [], node_weights=[[float("nan")]])
     with pytest.raises(ValueError):
         _rust.maximum_common_subtree_isomorphism([0, 0], [], [0], [])
+    for name in ["maximum_common_subtree_isomorphism", "largest_weight_common_subtree_embedding_with_distance_penalty"]:
+        native = getattr(_rust, name)
+        with pytest.raises(ValueError, match="roots"):
+            native([0], [], [0], [], roots=(1, 0))
+        with pytest.raises(ValueError, match="roots"):
+            native([0], [], [0], [], root_to_root=True)
     assignment, cost, u, v = _rust.min_cost_assignment([[3, -2], [0, 4]])
     assert assignment == [1, 0] and cost == -2
     assert cost == sum(u) + sum(v)
@@ -212,7 +218,8 @@ def test_signed_optional_callback_tables_against_exhaustive_objectives():
 
 @pytest.mark.parametrize("leaves", [2, 5])
 @pytest.mark.parametrize("kind", ["iso", "embedding"])
-def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves, kind):
+@pytest.mark.parametrize("root_mode", ["unrooted", "rooted", "root-to-root"])
+def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves, kind, root_mode):
     if "rust" not in common.available_unordered_backends():
         if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
             pytest.fail("required weighted graph Rust bindings are missing")
@@ -236,6 +243,8 @@ def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves,
         solver, scorer = (common.largest_weight_common_subtree_embedding_with_distance_penalty,
                           common.score_common_subtree_embedding)
         kwargs = {"skip_vertex_penalty": 100}
+    if root_mode != "unrooted":
+        kwargs.update(roots=(1, 1), root_to_root=root_mode == "root-to-root")
     result = solver(left, right, node_weight=weight, impl="rust", **kwargs)
     # At most one vertex pair weighs 10; every other vertex/edge weighs at
     # most one. Injectivity bounds the retained count, giving this independent
@@ -373,3 +382,121 @@ def test_path_witness_rejects_unselected_branch_overlap(overlap_side):
         common.score_common_subtree_embedding(left, right, witness)
     with pytest.raises(ValueError):
         common.score_common_subtree_embedding(left, right, pairs)
+
+
+@pytest.mark.parametrize("kind", ["iso", "embedding"])
+def test_rooted_modes_distinguish_three_optima_and_original_roots(impl, kind):
+    left = _graph([0, 1, 2], [(0, 1, 0), (1, 2, 0)], ("left", ("mid", 1), 8))
+    right = _graph([0, 1, 2], [(0, 1, 0), (1, 2, 0)], ("x", "y", "z"))
+    if kind == "iso":
+        solver, scorer = common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism
+    else:
+        solver, scorer = (common.largest_weight_common_subtree_embedding_with_distance_penalty,
+                          common.score_common_subtree_embedding)
+    kwargs = dict(node_label="label")
+    unrestricted = solver(left, right, impl=impl, **kwargs)
+    assert unrestricted.weight == 5
+    roots = ("left", "z")
+    rooted = solver(left, right, impl=impl, roots=roots, **kwargs)
+    assert rooted.weight == 1
+    assert scorer(left, right, rooted, roots=roots, **kwargs) == 1
+    with pytest.raises(ValueError, match="highest"):
+        scorer(left, right, unrestricted, roots=roots, **kwargs)
+    assert solver(left, right, impl=impl, roots=roots, root_to_root=True, allow_empty=False, **kwargs) is None
+    assert solver(left, right, impl=impl, roots=roots, root_to_root=True, **kwargs).node_pairs == ()
+    below = solver(left, right, impl=impl, roots=(("mid", 1), "x"), **kwargs)
+    assert below.weight == 3 and below.mapping == {("mid", 1): "y", 8: "z"}
+    fixed = solver(left, right, impl=impl, roots=(("mid", 1), "y"), root_to_root=True, **kwargs)
+    assert fixed.weight == 5 and fixed.mapping[("mid", 1)] == "y"
+    assert scorer(left, right, fixed, roots=(("mid", 1), "y"), root_to_root=True, **kwargs) == 5
+
+
+def test_rooted_embedding_excludes_only_the_skipped_highest_case(impl):
+    left, right = nx.star_graph(4), nx.path_graph(2)
+    kwargs = dict(node_weight=lambda u, v: 1 if u else None, edge_weight=100,
+                  skip_vertex_penalty=.25, impl=impl)
+    solver = common.largest_weight_common_subtree_embedding_with_distance_penalty
+    assert solver(left, right, **kwargs).weight == 1.75
+    assert solver(left, right, roots=(0, 0), **kwargs).weight == 1
+    assert solver(left, right, roots=(0, 0), root_to_root=True, allow_empty=False, **kwargs) is None
+    result = solver(left, right, roots=(1, 0), root_to_root=True, **kwargs)
+    assert result.weight == 1.75 and result.mapping[1] == 0
+    scoring = {k: v for k, v in kwargs.items() if k != "impl"}
+    assert common.score_common_subtree_embedding(left, right, result, roots=(1, 0), root_to_root=True, **scoring) == 1.75
+
+
+def test_signed_rooted_contracts_against_exhaustive_oracles():
+    if "rust" not in common.available_unordered_backends():
+        if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
+            pytest.fail("required weighted graph Rust bindings are missing")
+        pytest.skip("optional weighted graph Rust bindings are missing")
+    rng = random.Random(201618)
+    for case in range(32):
+        trees = []
+        for side in range(2):
+            n = rng.randrange(1, 5)
+            graph = nx.Graph()
+            graph.add_nodes_from(((side, i), {"label": rng.randrange(2)}) for i in range(n))
+            graph.add_edges_from(((side, i), (side, rng.randrange(i)), {"label": rng.randrange(2)}) for i in range(1, n))
+            trees.append(graph)
+        left, right = trees
+        nodes = {(u, v): rng.choice([None, -.5, 0, .125, 1.5]) for u in left for v in right}
+        edges = {(frozenset(a), frozenset(b)): rng.choice([None, -1, .25, 2.5]) for a in left.edges for b in right.edges}
+        kwargs = dict(node_label="label", edge_label="label", node_weight=lambda u, v: nodes[u, v],
+                      edge_weight=lambda a, b: edges[frozenset(a), frozenset(b)],
+                      roots=(rng.choice(list(left)), rng.choice(list(right))), allow_empty=bool(case % 2))
+        for root_to_root in [False, True]:
+            for solver, scorer, extra in [
+                (common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism, {}),
+                (common.largest_weight_common_subtree_embedding_with_distance_penalty, common.score_common_subtree_embedding,
+                 {"skip_vertex_penalty": rng.choice([0, .125, 2.0])}),
+            ]:
+                result = solver(left, right, impl="rust", root_to_root=root_to_root, **kwargs, **extra)
+                oracle = solver(left, right, impl="python", root_to_root=root_to_root, **kwargs, **extra)
+                if oracle is None:
+                    assert result is None
+                else:
+                    assert result.weight == oracle.weight
+                    if result.node_pairs:
+                        # Check the root contract directly through NetworkX
+                        # paths, separately from the interval-based rescorer.
+                        a, b = kwargs["roots"]
+                        assert any(all(u in nx.shortest_path(left, a, x) and v in nx.shortest_path(right, b, y)
+                                       for x, y in result.node_pairs) for u, v in result.node_pairs)
+                        if root_to_root:
+                            assert (a, b) in result.node_pairs
+                    scoring = {k: v for k, v in kwargs.items() if k != "allow_empty"}
+                    assert scorer(left, right, result, root_to_root=root_to_root, **scoring, **extra) == result.weight
+                    assert scorer(left, right, result.node_pairs, root_to_root=root_to_root, **scoring, **extra) == result.weight
+
+
+@pytest.mark.parametrize("kind", ["iso", "embedding"])
+def test_invalid_root_modes(impl, kind):
+    tree = nx.path_graph(2)
+    solver = (common.maximum_common_subtree_isomorphism if kind == "iso" else
+              common.largest_weight_common_subtree_embedding_with_distance_penalty)
+    for kwargs in [dict(root_to_root=True), dict(roots=()), dict(roots=(0,)), dict(roots=(0, 1, 0)),
+                   dict(roots=(0, "unknown")), dict(roots=("unknown", 0))]:
+        with pytest.raises(ValueError, match="roots"):
+            solver(tree, tree, impl=impl, **kwargs)
+    with pytest.raises(TypeError, match="bool"):
+        solver(tree, tree, impl=impl, roots=(0, 0), root_to_root=1)
+    with pytest.raises(ValueError, match="roots"):
+        solver(nx.Graph(), tree, impl=impl, roots=(0, 0))
+
+
+@pytest.mark.parametrize("kind", ["iso", "embedding"])
+def test_forced_roots_retain_negative_parents(impl, kind):
+    tree = nx.path_graph(2)
+    if kind == "iso":
+        solver, scorer = common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism
+    else:
+        solver, scorer = (common.largest_weight_common_subtree_embedding_with_distance_penalty,
+                          common.score_common_subtree_embedding)
+    kwargs = dict(roots=(0, 0), root_to_root=True,
+                  node_weight=lambda u, v: (-5 if u == 0 else 1) if u == v else None)
+    result = solver(tree, tree, impl=impl, allow_empty=False, edge_weight=0, **kwargs)
+    assert result.weight == -4 and result.mapping == {0: 0, 1: 1}
+    assert scorer(tree, tree, result, edge_weight=0, **kwargs) == -4
+    assert solver(tree, tree, impl=impl, edge_weight=0, **kwargs).node_pairs == ()
+    assert solver(tree, tree, impl=impl, allow_empty=False, edge_weight=6, **kwargs).weight == 2
