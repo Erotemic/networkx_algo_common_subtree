@@ -38,6 +38,28 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## Actual path certificate, prefix semantics and flip loop body: 2026-11-14
+
+`Rust/SparsePathCertificate` interprets the actual returned predecessor indices
+as finite original graph vertices. Every positive-rank coordinate is proved in
+bounds, so the unused-coordinate default introduces no path edge. Its
+`PathCertificate.exists_optimal_augmentation` derives the independent optimal
+ranked augmentation directly from the actual search certificate and compatible
+old nonroot matching edges.
+
+`Shared/AssignmentTracePrefix` proves that one predecessor-row overwrite
+extends the exact final-value prefix and that exhausting the trace yields the
+canonical augmentation permutation, including unchanged rows outside it.
+`Rust/SparsePathFlipBody.flip_body_step_spec` proves the actual active flip
+iteration performs precisely that row write and either stops at the root or
+follows the old assignment to a smaller positive discovery rank. Checked
+counter increments and all predecessor/parent/rank reads and writes succeed
+under the local bounds that the complete loop must derive.
+
+The actual full flip-loop invariant/termination, public augmentation wrapper
+and deletion driver are still open. These supporting results do not substitute
+for the remaining public source-refinement endpoint.
+
 ## Ranked augmentation mathematics and actual path-flip reference: 2026-11-14
 
 `Shared/AssignmentRankedTrace.exists_ranked_predecessor_trace` constructs a
