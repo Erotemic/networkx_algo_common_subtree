@@ -34,7 +34,7 @@ namespace BoundaryFamily
 variable {left : FiniteTree V} {right : FiniteTree W} {leftBase u : V} {rightBase v : W}
   (family : BoundaryFamily left right leftBase rightBase u v)
 
-abbrev Index := ↑family.children
+abbrev Index : Type _ := ↑family.children
 abbrev Carrier (i : family.Index) : Type _ := ↑(LeftVertices (family.witness i.val).1)
 
 noncomputable def pointed (i : family.Index) :

@@ -363,6 +363,17 @@ used only when non-bottom, so empty skipped families do not acquire invented
 witnesses. The full mapped-state recurrence still requires optimal matching
 assembly and decomposition of arbitrary mapped-root witnesses.
 
+## Optimal child matching assembly accepted: 2026-11-14
+
+`Droschinsky2018.familyOfMatching_score` constructs a concrete parent mapping
+for every compatible partial child matching, selects actual attaining branch
+witnesses and proves its score equals the node-plus-matching objective.
+`bestStateMatching_correct` certifies the finite matching oracle, and
+`matchingValue_le_mappedValue` proves optimal matching assembly is bounded by
+the independent mapped-state optimum. This is the constructive lower-bound
+direction of the mapped recurrence. Decomposition of arbitrary mapped-root
+witnesses is still needed for the reverse inequality.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
