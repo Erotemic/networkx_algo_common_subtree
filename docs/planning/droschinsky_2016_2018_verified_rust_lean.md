@@ -1,130 +1,339 @@
-# Droschinsky-Kriege-Mutzel (2016, 2018): verified Rust and Lean program
+# Droschinsky, Kriege, Mutzel (2016 and 2018): verified Rust and Lean plan
 
-Status: planning and source audit; no accepted Lean proof or Aeneas verification yet.
-Audit baseline: `networkx_algo_common_subtree`, supplied snapshot `af0bbdb` (2026-11-13).
-Relation to the Lozano-Valiente roadmap: parallel, separate formalization of **unordered, weighted trees**. Share only proven generic infrastructure such as finite trees and maximum-weight matching, never silently identify the ordered edge-contraction problem with topological embeddings.
+Status: paper references and Rust reference code available; mathematical formalization not started  
+Updated: 2026-11-13  
+Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
-## 1. Target results
+## 1. Scope: two papers, two objectives
 
-Build two separately stated and verified results, both connected to code generated from the *actual* Rust implementation via Charon/Aeneas:
+These papers are independent of the Lozano-Valiente ordered-tree proof, though
+some definitions and formal proof infrastructure can be shared. Do not conflate
+subtree **isomorphism** (edge-to-edge adjacency preservation) with a topological
+**embedding** (an abstract edge can be realized by a longer input-tree path).
 
-1. **2016: maximum common subtree isomorphism (MCSI)** between unordered, unrooted, vertex/edge-weighted trees. Prove validity and maximum weight of returned node correspondence. Support the paper's allowed weight semantics and prove a meaningful bound for the implemented algorithm. Prove the paper's faster asymptotic bound only for an implementation that actually incorporates its faster matching/subproblem techniques.
-2. **2018: largest-weight common subtree embedding with distance penalties (LaWeCSE)**. Formalize the rooted topological-embedding definition, rooted/unrooted cases, path-based scoring, skipped-vertex penalties, recurrence and witness optimality. Prove cost bounds only when justified by actual matching and DP implementations.
-
-A clean independent mathematical contract is a prerequisite. Agreement between Rust and the current Python oracle does not establish correspondence to the papers.
-
-## 2. Authoritative publications and related work
-
-The public papers are sufficient to begin specification and correctness proofs. Their implementations of the *best complexity bounds*, however, rely on more specialized matching/subproblem arguments requiring a separate line-by-line study.
-
-| Role | Source | Link | Needed for |
-| --- | --- | --- | --- |
-| Primary 2016 | Andre Droschinsky, Nils M. Kriege, Petra Mutzel, *Faster Algorithms for the Maximum Common Subtree Isomorphism Problem*, MFCS 2016, DOI `10.4230/LIPIcs.MFCS.2016.33` | https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.MFCS.2016.33 ; https://arxiv.org/abs/1602.07210 | MCSI definition, rooted/unrooted DP, matching reuse, asymptotic and enumeration results |
-| Primary 2018 | Same authors, *Largest Weight Common Subtree Embeddings with Distance Penalties*, MFCS 2018, DOI `10.4230/LIPIcs.MFCS.2018.54` | https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.MFCS.2018.54 ; https://arxiv.org/abs/1805.00821 | Topological embedding, path weights, skip-penalty semantics, two-state recurrence, complexity |
-| Foundational related work | Gupta and Nishimura, largest common embeddable subtree | Cited in 2018, Sections 1 and 3 | Distinguish topological embedding from edge contraction; unweighted recurrence |
-| Matching improvements | Ramshaw and Tarjan, unbalanced weighted matching; other matching references cited in 2018 | Follow 2018 Lemmas 7-8 and bibliography | Necessary for claimed near-optimal running time |
-| Enumeration extension | Droschinsky, Heinemann, Kriege, Mutzel, *Enumeration of Maximum Common Subtree Isomorphisms with Polynomial-Delay* (2014) | https://eprints.cs.univie.ac.at/6745/ | Optional later verification of enumeration of all optima |
-| Different problem | Lozano and Valiente (2004), ordered common embedded subtree | See `docs/planning/lozano_valiente_2004_verified_rust_lean.md` | Disambiguation: edge contraction, ordered structure, different optimization problem |
-
-**Reference acquisition actions:** Pin bibliographic metadata, full versions and any mathematical errata/appendices in a short source ledger; record the exact definition/lemma/equation/page for every formal claim. Prefer linking to papers and versioned sources rather than committing PDF binaries. Inspect full arXiv versions alongside conference papers before locking theorem statements.
-
-`dev/notes/notes.txt` says an author responded with reference implementations on 2025-03-12 and that publicly shareable portions were ported to Rust on 2026-05-12. These original reference implementations are **not present** in the supplied tree. Treat that note as provenance, not as permission to redistribute source or as a replacement for the published specification. Recover and inspect any originals only if appropriate and authorized; they are not a formalization dependency.
-
-## 3. Existing repository inventory
-
-| Path | Current role | Disposition |
+| Reference | Mathematical objective | Intended proof targets |
 | --- | --- | --- |
-| `dev/notes/notes.txt` | Original research notes, paper links, author-contact provenance | Preserve, supplement bibliographic record |
-| `dev/common_subtree_algorithms_notes.md` | Design intent, implementation status, future validation | Preserve, update when contracts are fixed |
-| `docs/source/common_subtree_algorithm_families.rst` | Critical ordered/unordered distinction | Keep consistent with proof contracts |
-| `docs/source/common_subtree_correctness.rst` | Informal definitions and recurrence proof sketch | Turn into paper-to-theorem ledger, correct mismatches |
-| `docs/source/common_subtree_algorithms_rust.rst` | User-facing crate description | Update after correctness gates |
-| `rust/crates/common_subtree_algorithms/src/tree.rs` | Working MCSI DP; experimental LaWeCSE prototype | Preserve as baseline; refactor verification core separately |
-| `rust/crates/common_subtree_algorithms/src/matching.rs` | Dense Hungarian solver with optional unmatched vertices | Useful baseline; prove or replace with verified primitive |
-| `networkx_algo_common_subtree/common_subtree_reference.py` | Independent *enumeration strategy* but partially shared scoring semantics | Correct paper objective before accepting as oracle |
-| `rust/crates/common_subtree_algorithms/tests/` | Matching, isomorphism, embedding, witness tests | Add paper-specific and exhaustive differential cases |
-| `tests/fixtures/common_subtree_cases.json` | Named reproducible cases | Add independent paper examples and counterexamples |
-| `rust/crates/common_subtree_algorithms/benches/` | ResNet-shaped comparison trees | Retain as performance characterization; never conflate with correctness proof |
+| Droschinsky, Kriege, Mutzel, *Faster Algorithms for the Maximum Common Subtree Isomorphism Problem* (2016), [arXiv:1602.07210](https://arxiv.org/abs/1602.07210) | Maximum-weight connected common subtree isomorphism for unordered, potentially unrooted trees | Correct witnesses, rooted/unrooted DP, child matching, specialized matching speedups and claimed `O(n^2 Delta)` bound |
+| Droschinsky, Kriege, Mutzel, *Largest Weight Common Subtree Embeddings with Distance Penalties* (2018), [arXiv:1805.00821](https://arxiv.org/abs/1805.00821) | Maximum-weight common topological embeddings with skipped internal vertices and path penalties | Correct path/skeleton semantics, full scoring rule, rooted/unrooted recurrence, paper optimization and qualified complexity |
 
-No Lean formalization of either Droschinsky result and no translated Rust-to-Lean proof are present in this baseline. The Droschinsky branch already contains the graph-algorithm crate and notes; older C/Cython/packaging branches do not appear to add a separate Droschinsky mathematical source development.
+The goal is a **faithful mathematical formalization of both papers** and a
+proof of a Rust implementation against each mathematical problem. A Rust
+solver that computes correct answers using a slower reference recurrence
+would satisfy part of that goal but **not** the full paper-level optimization
+and complexity target.
 
-## 4. Confirmed mismatch: 2018 paper scoring versus the repository
+## 2. Actual repository baseline
 
-**Paper authority:** MFCS 2018 Definition 4 (pages 54:5-54:6), Lemma 5 (page 54:6). When a topological path from a mapped common edge has length greater than one in **either** input tree, the edge contribution is **only** `-p * (len_left + len_right - 2)`. An edge-label similarity weight is credited **only** if both corresponding paths have length one.
+The supplied `af0bbdb` repository snapshot contains:
 
-Current `networkx_algo_common_subtree/common_subtree_reference.py`, `_score_embedding_bijection`, lines approximately 488-496, instead scores the first edge of each path and adds that weight *even when either path has skipped vertices*. This can both overstate scores and incorrectly reject legal embeddings when those first-edge labels differ. The Rust `compute_rooted_embedding_with_roots_mapped` uses first-step `scoring.edge_weight` in its matching transition, so the underlying contract is similarly restricted. The existing witness-rescoring tests reproduce the repository convention; those tests do not validate the paper convention.
+- `rust/crates/common_subtree_algorithms/src/matching.rs`: a weighted
+  Hungarian-style solver used for partially matched child sets.
+- `rust/crates/common_subtree_algorithms/src/tree.rs`: connected common subtree
+  isomorphism DP and an **experimental** path-embedding DP.
+- `rust/crates/common_subtree_algorithms/tests/matching_reference_tests.rs`:
+  deterministic matching/independent brute-force tests.
+- `rust/crates/common_subtree_algorithms/tests/tree_isomorphism_reference_tests.rs`:
+  small enumerated tree-pair and witness tests.
+- `rust/crates/common_subtree_algorithms/tests/embedding_reference_tests.rs`:
+  a small set of skipped-path and witness tests, **not a paper-correct oracle**.
+- `networkx_algo_common_subtree/common_subtree_reference.py`: separate slow
+  pure-Python implementation with exhaustive graph enumeration in some paths,
+  but sharing the 2018 paper-semantic problem described below.
+- `dev/common_subtree_algorithms_notes.md`, `dev/notes/notes.txt`,
+  `docs/source/common_subtree_correctness.rst`, and ResNet-like tree benchmarks.
 
-**Regression witness A:** left tree: two mapped endpoints with vertex labels `[1,2]` connected by edge label `5`; right tree: `[1,9,2]` in a path of length two, both edges label `9`; unit matching-node score, skip penalty `0.25`. Paper permits both endpoints to be mapped and gives score `1 + 1 - 0.25 = 1.75`. Existing Python reference returns `1.0` and one node because edge labels mismatch.
+The Droschinsky crate is **not integrated into the Python extension**. The
+ordered-tree PyO3 backend in `rust/src/lib.rs` is a different code path.
+Retain this separation until mathematical contracts and adapters are explicit.
 
-**Regression witness B:** same inputs, except both edges on right have label `5`. Paper still gives `1.75`; existing Python reference returns `2.75` by adding an edge reward despite the skipped vertex.
+### Historical test evidence (do not claim a new passing run)
 
-Do not patch tests to match current code. First make an independent paper-scoring evaluator. Replace the reference oracle's scoring with the paper definition, add both fixtures, and use the resulting failures to guide Rust repairs. If the current scoring behavior is wanted as an extension, give it an explicit independent objective and API rather than presenting it as the 2018 theorem.
+The previous audit found the 2016 source tests comparing 1,764 pairs of small
+labeled trees plus 64 additional examples, identity cases through five
+vertices, and 1,600 deterministic small matching matrices. The 2018 test file
+contained seven focused tests. An earlier Python test run reported 25 passing
+reference/property/correctness tests. Cargo could not be executed in that
+audit environment, and no dedicated CI invocation of the Droschinsky crate's
+`cargo test` had been established. These are coverage observations, **not**
+proof of either published algorithm.
 
-## 5. Independent mathematical specifications
+## 3. The known 2018 mismatch is a release blocker
 
-### 5.1 Shared finite-graph and scoring layer
+The earlier paper-versus-source audit identified a substantive disagreement
+between the published 2018 objective and the Python/Rust scoring convention:
 
-- Define finite simple undirected trees with connectedness and acyclicity, label maps, adjacency, unique paths, root/parent/child orientation and path interior.
-- Define valid partial bijections, finite nonempty or explicitly empty solutions, weight sums, validity of witnesses, maximum scores and existence of optima.
-- Use exact mathematical integer/rational scores initially, plus explicit forbidden compatibility; distinguish the formal mathematical weights from the production Rust `f64`, `EPS = 1e-9`, and sentinel `-1e100`. Decide how zero, negative, forbidden, infinity, NaN and ties are specified. Provide exact scoring implementations early.
-- Define finite weighted bipartite matching with forbidden pairs and optional unmatched vertices, and prove optimality of the matching specification independently of Hungarian code.
+- A mapped skeleton edge whose corresponding paths both have length **one**
+  may contribute the direct compatible edge-pair weight.
+- If **either** path has length greater than one, the paper's formulation
+  uses the negative distance penalty for its skipped internal vertices,
+  **without** adding a direct first-edge match reward.
+- The current Python and Rust implementations instead award the first-edge
+  reward on longer paths, and the reference can reject permitted longer-path
+  mappings when those first-edge labels are incompatible.
 
-### 5.2 MCSI (2016)
+Record these fixed discrimination cases as independent mathematical examples.
+The weights below are the controlled values in the previous audit, not the
+result of a new run:
 
-- Common subtree = connected subgraphs selected from both trees; witness = adjacency-preserving bijection with compatible mapped vertex and edge pairs.
-- State the objective as the sum of mapped vertex-pair and edge-pair weights. Fix empty-match policy and root restrictions explicitly, including negative weights.
-- Prove rooted branch independence, matching reduction, witness assembly feasibility, optimality of each rooted DP state, and completeness of the unrooted maximum over valid root choices.
-- Then prove the reduced-subproblem and related-matching properties used by the **faster** 2016 algorithm. The present full-root-pair DP with a dense padded Hungarian matching is a valuable correctness baseline but must not be described as having proved the paper's `O(n^2 Delta)` performance.
-- Treat polynomial-delay enumeration of all optimum witnesses as a distinct optional result with separate code and proof obligations.
+| Case | Left and right inputs | Published score | Current Python result in audit |
+| --- | --- | --- | --- |
+| Skipped path, incompatible direct edge labels | Two endpoint vertices on the left connected by one edge labeled `5`; right side is a three-vertex path with both edge labels `9`; endpoints compatible with vertex weights 1 each, middle label different; skip penalty 0.25 | `1+1-0.25 = 1.75` | `1.0` (only one mapped vertex; rejects the valid longer-path mapping) |
+| Skipped path, matching first-edge labels | Same trees and weights but right edge labels changed to `5` | `1.75` | `2.75` (adds an edge match reward that the paper does not award) |
 
-### 5.3 LaWeCSE (2018)
+The current witness rescoring code shares the implementation's convention;
+comparing Rust against that Python oracle cannot detect the error. Before
+changing the DP, write a paper-specific scorer with **no calls to** the
+production scorer, and a brute-force path/skeleton enumerator. Fix both
+feasibility and scoring. If a useful alternative first-edge-reward objective
+is deliberately retained, give it a separate API name and a distinct spec;
+it cannot stand in for the 2018 theorem.
 
-- Independent topological embedding: injective mappings, descendant preservation in rooted trees, and disjoint interiors of paths leaving different children (paper Definition 1); account for unrooted variants through explicit root/structural choices.
-- Common embedding = compatible pair of embeddings of an abstract common tree; show equivalence to the selected-node/bijection representation used by the implementation, *including branch-disjointness*. Do not define correctness merely as equality of a skeleton made from selected vertices.
-- Define path contribution **piecewise** as in paper Definition 4: edge-pair similarity if each path length is one; otherwise skipped-interior penalty only.
-- Prove the paper's two-state root-mapped versus skipped-root recurrence (Lemma 5), including the exclusivity of edge weight and skip penalty. Reconstruct a witness with explicit paths, not solely a node-pair list.
-- Prove rooted correctness, unrooted reduction, and the specializations obtained for infinite/high skip penalties where justified. Document assumptions needed for positive/negative weights and forbiddance.
-- Reproduce paper example figures as discriminating executable fixtures. Ensure edge-label/penalty tests include mismatching edge labels, long paths in either/both trees, multiple child branches, zero weights, negative vertex weights and high penalties.
+**Gate D18-S:** both cases return the paper-correct optimum and a valid
+independently rescored mapping in the exact small-tree oracle and the Rust
+reference. Add further examples to confirm the general rule, not merely these
+two fixed outcomes.
 
-## 6. Rust/Charon/Aeneas development strategy
+Also audit the older `docs/source/common_subtree_correctness.rst` wording:
+it currently describes an endpoint-edge contribution on skipped paths. Align
+that documentation with the verified paper rule when the correction is made.
 
-- Retain the current Rust crate for performance and differential comparison. Build a small proof-friendly `no-PyO3` Rust core exposing validated tree inputs, exact integer weights, explicit `Result`/`Option` and deterministic witness format. Avoid making `f64` behavior the initial theorem target.
-- Run a minimal Charon/Aeneas translation spike on finite-tree and matching operations **before** committing to containers, recursion or callback representation; record tool versions and unsupported features.
-- Translate the actual Rust functions; do not substitute hand-written Lean counterparts. Establish refinement at each boundary: tree representation, scoring, matching, DP subproblem and final witness.
-- Confirm the exact abstract integer proof matches the chosen Rust arithmetic regime (overflow checked or demonstrably bounded). If later adding floating-point support, prove or state a separate approximation/rounding contract.
-- Optimize matching and subproblem reuse behind proved interfaces. Measure and verify the actual complexity; do not infer the paper's asymptotic bound from a symbolic score formula.
-- Keep Python/NetworkX wrappers thin and validate adapters separately. Both algorithms should be callable from Python only after paper-level core correctness is stable.
+## 4. Independent mathematics to specify
 
-## 7. Work packages and acceptance criteria
+### Common finite graph/tree foundation
 
-**D0. Source ledger and baseline.** Pin paper versions; map all definitions, recurrence cases, lemmas, proofs and complexity claims to page/equation numbers. Record current Rust/Python coverage and benchmark commands. Gate: every claim has a source or is labeled a derived extension.
+Use a finite vertex type, a loop-free symmetric adjacency relation, a
+connected/acyclic proof, and **unique simple paths** in a tree. Fix labeling,
+edge identity, root orientation, node/edge compatibility, and score domains.
+Weights may need signed values and forbidden pairs; distinguish incompatible
+(`none`) from compatible with weight zero. Decide explicitly whether the empty
+common object is permitted and what negative score should return; the paper
+may require a nonempty connected common subtree even when its score is negative.
+Do not silently clamp all values to zero without a stated convention.
 
-**D1. Fix objective mismatch.** Add the two score counterexamples above and original-paper examples; implement an evaluator independent of the DP that follows Definition 4 exactly. Gate: oracle agrees with hand calculations; tests intentionally expose current Rust discrepancies.
+Useful general proof infrastructure includes:
 
-**D2. Shared Lean definitions.** Finite unordered labeled trees, paths, finite weights, valid matchings and witness validity. Gate: multiple small examples + finite search agree with the definitions; no DP definitions in specification modules.
+- finite subsets and their induced connectedness;
+- partial injections/bijections and a concrete mapping witness;
+- isomorphism of the chosen connected subtrees;
+- unique paths, interior vertices and path lengths;
+- maximum over a finite feasible witness set, with a proved existence theorem;
+- independent score evaluation and equality of witness score to reported score.
 
-**D3. Verified weighted matching.** Prove the matching primitive's witness and objective optimality; select and implement a translatable matching solver. Gate: Aeneas-generated Lean is related to the independent matching optimum for all well-formed accepted inputs.
+Do not choose Aeneas-generated Rust graph types as the specification's types.
+They belong to the refinement layer. Keep generic infrastructure only where
+there is real reuse across both papers.
 
-**D4. MCSI mathematics and DP.** Prove rooted recurrence and unrooted completeness. Gate: formally proved output optimality against independent maximum over connected-subtree bijections; exhaustive small-tree differential tests.
+### 2016: common subtree isomorphism
 
-**D5. MCSI Rust refinement.** Verify actual translated Rust tree DP and witness. Gate: main Rust entry point has a closed proof of valid, maximum-weight correspondence under explicit preconditions.
+An abstract witness should specify nonempty connected vertex subsets in both
+input trees and a bijection preserving adjacency in both directions. Compatible
+mapped vertices and edges contribute their explicit weights. Score it by
+summing each mapped vertex and abstract edge **exactly once**. Prove that
+candidate feasibility and scoring are decidable/finite where required.
 
-**D6. LaWeCSE mathematical specification and recurrence.** Formalize topological embedding, disjoint paths, paper scoring, two-state DP and reconstruction. Gate: theorem does not identify witness validity with algorithm states; exact paper examples pass.
+Rooted states can orient an unrooted tree at a selected mapped pair and a
+parent-edge exclusion. Child continuation choices form independent neighbor
+branches, so optimal selection is a **maximum-weight partial bipartite
+matching**. The matching proof must cover forbidden choices and unmatched
+children. Establish rooted-to-unrooted coverage rather than assuming a fixed
+input root always contains the optimum.
 
-**D7. LaWeCSE Rust repair and refinement.** Correct paper-semantic discrepancies, translate implementation and prove optimality of returned embedding. Gate: generated Lean is connected to the same independent LaWeCSE specification.
+### 2018: topological embedding with distance penalties
 
-**D8. Paper-speed optimization and cost proofs.** Implement specialized related/unbalanced matching methods needed for the 2016/2018 claims, prove core invariants, then cost recurrences. Gate: complexity theorem refers to the actual optimized algorithm and assumptions; empirical scaling is also recorded but never used as proof.
+Model an abstract connected skeleton tree with two injective maps into
+selected vertices of the inputs. Every skeleton edge has a **unique path**
+between its mapped endpoints in each input tree. Consecutive selected vertices
+and exclusion of other selected vertices along that path determine the
+skeleton. Prove no prohibited path sharing/branch overlap; pin the paper's
+exact admissibility constraints before choosing the final Lean encoding.
 
-**D9. API, benchmarks, and continuous verification.** Python interfaces, build matrix, malformed-input tests, score-mode compatibility, stress tests, reproducible performance baselines and source/theorem ledger refresh. Gate: repeatable release CI with both algorithm families and both paper-level specifications.
+Define node weights and, per abstract skeleton edge, the paper's direct-edge
+contribution *only when both realizations are single edges*. Otherwise define
+the precise penalty from intermediate vertices/path length(s), without a
+first-edge reward. Reconcile how the paper handles differing penalties per
+input, incompatible edge pairs, negative weights and nonempty solutions.
 
-Dependencies: D0 and D1 precede D6; D2 precedes D3/D4/D6; D3 precedes acceptance of D4/D6; D4 before D5; D6 before D7; correctness/refinement precedes D8 performance claims. D0-D3 can progress in parallel with the separate Lozano-Valiente mathematics.
+Obligations: a witness is structurally feasible; all path interiors are
+accounted for once; every feasible embedded solution is represented by the
+independent skeleton mapping; scoring agrees with the paper; the optimum is
+attained on finite trees. Use the paper's actual definition rather than the
+prototype's `skip_vertex_penalty` parameter as the starting point.
 
-## 8. What constitutes completion
+## 5. Matching as a shared, independently proved foundation
 
-- For **each** of the 2016 and 2018 targets, there is a standalone Lean theorem stating witness validity and true maximum weight against a mathematical specification independent of the algorithm.
-- The theorem covers generated semantics for the specific Rust source shipped, with explicit assumptions about valid input, scoring, arithmetic, resources and any admissible excluded cases.
-- Any claimed `O(n^2 Delta)` or `O(|T||T'| Delta)` result follows from a cost model of the algorithm actually implemented. Simpler baselines may ship with their honest weaker bounds.
-- The scoring conventions and topological constraints of both original papers are covered by independent fixtures and differential/oracle checks, including the counterexamples in Section 4.
-- Papers, definitions, theorem statements, implementation entry points, test fixtures, proof status and verification commands are indexed in a maintained ledger.
+Define a finite partial matching as a set of compatible left/right pairs
+with no repeated endpoint. Its weight is the sum of selected edge weights,
+with unmatched endpoints permitted when allowed. The optimum is the maximum
+of these scores over all valid partial matchings.
 
-The existence of a compiling Lean file, successful Python/Rust parity checks, or a fast benchmark alone does not satisfy these completion criteria.
+1. Prove the basic match-validity, score and finite-optimum lemmas.
+2. Implement a deliberately slow exhaustive matching oracle; test matrices
+   with empty sides, ties, negative/zero scores, rectangular shape, forbidden
+   entries, partial matchings, and high magnitude values.
+3. Prove a mathematical Hungarian/assignment reduction when appropriate:
+   dummy rows/columns, transformation of maximization to minimization,
+   forbidden edges, and preservation of the chosen optimum. Avoid assuming
+   complete equal-sized assignment is the same problem.
+4. Check [CLRS-Lean](https://github.com/TankTechnology/CLRS-Lean) at an exact
+   compatible revision before reusing its existing Hungarian development.
+   A mathematical assignment-existence/optimality result is not automatically
+   a theorem about our Rust `matching.rs`.
+5. Verify the actual Aeneas-translated Rust matching routine against the
+   finite-matching specification, including index bounds and arithmetic
+   contracts. If translation is infeasible, provide a smaller verified
+   matching core and compare/replace the existing solver on evidence.
+
+This work is worth starting alongside early Lozano-Valiente mathematics. It
+is essential for 2016 and likely useful for 2018, while tree-order conventions
+should remain paper-specific.
+
+## 6. 2016 paper proof and optimization sequence
+
+**M16-A: mathematical recurrence.** Prove that deleting the mapped roots
+separates usable branches and that an arbitrary valid rooted witness induces
+a partial matching of child branches. Conversely, assemble any compatible
+matching of valid continuations into a valid rooted witness. Derive the
+recurrence's optimality from these two directions, not by defining optimum
+as its recurrence. Include witness reconstruction and all-root-pairs coverage.
+
+**M16-B: reference implementation.** Prove an executable Lean/reference DP
+matches that optimum. Audit Rust tree/edge label and scoring API behavior,
+including error/empty/negative cases. Expand Rust versus independent
+brute-force testing and require a passing `cargo test` in CI.
+
+**M16-C: faster algorithm.** Work through the paper's shared/reused matching
+instances, prove their relation and the optimized update rules, and establish
+the published `O(n^2 Delta)` operation bound under explicit arithmetic and
+container assumptions. The existing repeated Hungarian approach cannot be
+claimed to meet this theorem merely because the recurrence is correct.
+
+**M16-D: verified Rust.** Translate a proof-friendly implementation with
+Charon/Aeneas; prove the entry point returns a feasible globally optimal
+mapping and score for accepted inputs. Then verify/refine optimized changes
+rather than discarding performance evidence. Provide reproducible tool pins,
+regeneration, theorem dependency review, and benchmark comparisons.
+
+## 7. 2018 paper proof and optimization sequence
+
+**E18-A: authoritative oracle.** Write the path/skeleton feasibility and
+score specification independently of Rust and Python source. Make the two
+counterexamples in section 3 pass; add exhaustive small-tree tests covering
+path lengths, labels and penalties. Do this before restructuring the DP.
+
+**E18-B: branch/path recurrence.** Establish branch independence when
+skipped vertices are allowed, recurrence soundness, coverage of every feasible
+skeleton, and proper penalty accounting. Handle rooted and unrooted cases as
+specified by the paper, with explicit witness paths and all score components.
+
+**E18-C: optimized paper algorithm.** Identify exact optimized constructions,
+state families and claimed bounds from a pinned paper version; prove the
+specific improvements and count work of an actual algorithm. Record a theorem
+crosswalk, including hypotheses and any changes needed to the printed claims.
+Do not invent a bound by analogy with the 2016 algorithm.
+
+**E18-D: verified Rust.** Replace or distinguish the current incorrect
+prototype, build an Aeneas-friendly Rust core, and prove a refinement from
+generated Lean to the independent paper optimum and an explicit witness.
+Integrate into Python only after conformance and performance gates are met.
+
+## 8. Research-library candidates
+
+- **Mathlib:** finite graphs, trees, unique paths, `Finset`, equivalences,
+  injections, finite maxima, recursion, cost/asymptotic syntax.
+- **TauCeti:** `Combinatorics.SimpleGraph.Paths` for endpoint/interior path
+  decompositions; `Combinatorics.Graph.Matching.Basic` for matching validity.
+  Inspect signatures and build compatibility before depending on them.
+- **CLRS-Lean:** Hungarian algorithm mathematics, potentially reusable for
+  the 2016 child-matching part after a proved partial-matching reduction.
+- **Lean Std/Batteries:** executable data structures for implementation
+  models; abstract theorem statements must remain representation-independent.
+- **Charon/Aeneas:** real Rust extraction into Lean; evaluate supported
+  numeric types, loops, indexing, collections and error handling early.
+
+Do not force Mathlib and TauCeti pins to diverge just to use one small lemma.
+A precise independent proof plus a prospective upstream PR may be better when
+upstream compatibility is the limiting issue.
+
+## 9. Work packages and acceptance gates
+
+| ID | Work | Depends on | Acceptance |
+| --- | --- | --- | --- |
+| D0 | Pin source editions and create paper-to-Lean statement ledgers | none | Each paper's definitions, lemmas, theorems, assumptions and complexity claims inventoried |
+| D1 | Independent finite-tree, path, mapping and score specification | D0 | Small checked examples, genuine finite feasible optima |
+| D2 | Partial weighted matching spec, exhaustive oracle, reduction | D1 | Matching theorem plus independent negative/forbidden/unmatched tests |
+| D3 | Fix 2018 paper scoring and feasibility oracle | D1 | Gate D18-S and exhaustive path cases |
+| D4 | 2016 rooted/unrooted recurrence and witness proof | D2 | Executable mathematical DP equals independent optimum |
+| D5 | 2016 optimized matching updates and operation bound | D4 | Verified paper-specific `O(n^2 Delta)` assumptions and actual work |
+| D6 | 2018 path/branch recurrence, witness and optimum | D3, D2 | Executable paper recurrence equals independent maximum |
+| D7 | 2018 optimized method and complexity | D6 | Exact paper bound proved or documented correction |
+| D8 | Aeneas translation/refinement for verified Rust matching and DP(s) | D2, D4/D6; translation spike parallel | Theorem about actual translated Rust entry point, generated Lean reproducible |
+| D9 | CI, paper examples, independent differential tests, performance, Python integration | D4-D8 as relevant | Validated witness, measured scaling, correct dispatch and no hidden fallback masking |
+
+**Priority:** stabilize 2016 reference tests/semantics and the shared matching
+spec, while independently correcting the 2018 oracle. Formalize 2016 first;
+2018 adds topological path bookkeeping and its current source cannot yet be
+trusted as a paper-correct differential oracle. An Aeneas translation spike can
+proceed in parallel with mathematical definitions.
+
+## 10. Proposed module boundaries (create only when needed)
+
+A useful conceptual arrangement is:
+
+```text
+proofs/SubtreeProofs/
+  Shared/                 # finite-tree witnesses, paths, weighted partial matching
+  Paper2004/              # existing ordered contraction and Dyck-word work
+  Droschinsky2016/        # rooted branch DP, optimality, fast matching/cost
+  Droschinsky2018/        # skeleton paths, penalty score, DP/cost
+  Rust/                   # paper-specific Aeneas imports and refinement
+rust/crates/
+  common_subtree_algorithms/  # existing graph-only reference crate
+  ...                     # verified core crate(s), if translation requires them
+```
+
+This is a separation of proof responsibilities, **not** a directive to create
+placeholder modules or copy generic graph code everywhere. Shared proofs
+should capture genuine agreement of semantics; paper-specific modules should
+make disagreements visible. Keep exported definitions grep-friendly and named
+for their domain.
+
+## 11. Tests and production integration
+
+- Make every Rust Cargo test target part of CI. Use a fresh, pinned Rust
+  toolchain, record command and outputs, and never describe a source-inspected
+  suite as a passing run.
+- Exhaustively enumerate small connected subtrees and injective mappings,
+  partial matchings and embedding skeletons. Compare optimal scores and
+  independently evaluate the *returned witnesses*.
+- Add property tests for renaming/vertex relabeling where score functions
+  transform accordingly; input swapping when weight functions are symmetric;
+  nonincreasing optimal score as nonnegative skip penalty rises; and
+  adversarial branching/matching cases.
+- Test integer overflow, invalid indices, nonfinite floating values if
+  accepted, incompatible labels, ties, empty-versus-nonempty policies, and
+  skipped paths with edge mismatches.
+- Benchmark high-degree stars (repeated matching stress), chains, balanced
+  and random trees, and existing ResNet-like module containment examples.
+  Compare baseline Hungarian DP, optimized 2016/2018 solvers and any verified
+  core with reproducible hardware/flags, time and memory profiles.
+- Add Python/NetworkX adapters only once objectives, edge/vertex compatibility,
+  witness shape and error policy are stable. Don't merge unordered weighted
+  semantics into ordered balanced-sequence APIs implicitly.
+
+## 12. Literature, provenance and scope boundaries
+
+- Primary 2016 paper: https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.MFCS.2016.33
+- Primary 2018 paper: https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.MFCS.2018.54
+- Earlier repository materials: `dev/common_subtree_algorithms_notes.md`,
+  `dev/notes/notes.txt`, `docs/source/common_subtree_correctness.rst`, and the
+  Rust/Python source/tests described above.
+
+The prior audit found notes saying that reference implementations were shared
+by an author on 2025-03-12 and that parts were ported to Rust on 2026-05-12.
+The notes did not themselves include private correspondence or source code.
+Keep permission/provenance records for any nonpublic-source derivation, and
+base the publicly claimed algorithm specification on the published papers.
+
+The earlier C/Cython/PyO3 work on **ordered** balanced sequences is a useful
+backend baseline for Lozano-Valiente; it is not evidence that the 2016 or 2018
+unordered algorithms have already been fully implemented or verified.

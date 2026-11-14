@@ -1,69 +1,110 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: fresh Lean W1 sources drafted; first Lake build pending
-Last revised: 2026-11-13 (evening)
+Status: fresh Lean W1 sources drafted; compilation errors reported, clean build pending
+Last revised: 2026-11-13 (after initial Lean build feedback)
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
+Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
-## Initial modern Lean implementation (November 13, 2026)
+## 0. Present state and immediate milestone
 
-A new `proofs/lakefile.toml` requests Lean 4.35.0 and Mathlib `v4.35.0`,
-without TauCeti or Aeneas as initial dependencies. The new sources are:
+The old `proofs` branch and v3-v6 proof sources are retired from active imports.
+The restart **has already occurred**; do not run the earlier removal/reset
+instructions again. Existing Rust/Python/Cython algorithms and Git history
+remain intact. As of commit `b94593e`, the new Lean source and Lake project have
+been committed.
 
-- `SubtreeProofs/Paper2004/OrderedTree.lean`: independent ordered-tree
-  semantics; edge contractions at root and arbitrary depths; edge and real-leaf
-  counts; common embeddings and maximum-witness specification; elementary
-  count and feasibility proofs.
-- `SubtreeProofs/Paper2004/BalancedSequence.lean`: encoding into Mathlib's
-  `DyckWord`, with an authored proof that semilength equals the edge count.
-- `proofs/PROOF_STATUS.md`: declaration-level coverage and verification state.
+The fresh Lake workspace requests Lean 4.35.0 and Mathlib `v4.35.0`.
+The first drafted sources are:
 
-**Verification state:** The Lean source and proof terms have been authored,
-but the archive inspection environment has no Lean/Lake installation and no
-network path to install one. `lake build` has not been run. The first job on a
-Lean-equipped machine is to compile, repair any elaboration issues, run
-`#print axioms` on accepted theorems, and commit the generated dependency
-lockfile. The later W1 exhaustive oracle and W2 containment equivalence have
-not been attempted. The rest of this roadmap remains the intended scope.
+- `proofs/SubtreeProofs/Paper2004/OrderedTree.lean`: finite rooted ordered
+  trees, true leaf/edge counts, one-hole contexts and arbitrary-depth edge
+  contractions, reflexive-transitive embedding and independent optimum.
+- `proofs/SubtreeProofs/Paper2004/BalancedSequence.lean`: encoding into
+  Mathlib `DyckWord` and a proposed semilength theorem.
+- `proofs/PROOF_STATUS.md`: intended theorem-level evidence inventory.
 
-## 1. Decision and desired outcome
+**Observed build status:** a clean build has **not** been reported. Lean
+4.35.0 was successfully invoked, but the first builds failed on deriving
+`DecidableEq`, mutual syntax, a kernel-invalid mutual inductive relation,
+proof arithmetic, then `.node` elaboration inside `ContractStep.below`.
+The latest patch replaces the offending `change` expressions with
+simplification of `Context.plug`; there is no later user-provided build log
+confirming that repair. Mathlib module-system import warnings were nonfatal.
 
-**Start the Lean proof code from scratch.** Retire the older `proofs/` definitions, v3-v6 experiments, local utility lemmas, Aristotle attempts, partial runtime arguments, and related handoff notes. Do not port or selectively reuse their declarations, proofs, file layout, or theorem statements. Do not merge the historical `proofs` branch. The existing Git history and remote branches are sufficient to preserve that work if historical comparison is ever useful. No new in-tree `legacy/` or `Attempts/` directory is needed.
+**Next action (before new theorems):** run `cd proofs && lake build` after the
+latest source overlay. Fix any remaining compilation errors, pin and commit
+the generated `lake-manifest.json`, record accepted theorem declarations and
+`#print axioms`, and add a tiny independent contraction oracle. A passing build
+validates elaboration and kernel checking of *those declarations*; it does not
+validate the 2004 paper, the recurrence, or any Rust code.
 
-This reset applies to **formal proofs**, not to the existing Python/Cython/Rust implementations, tests, benchmarks, or their history. Those are useful independent baselines. The new mathematical statements must be derived from the 2004 paper and checked against an independently specified problem, with proof architecture selected for the new Rust/Aeneas effort.
+Do not conflate the existing `ContractStep` implementation with proof of
+agreement with the paper's exact root/edge contraction convention; that
+correspondence is still a first-phase mathematical obligation.
 
-Deliver:
+## 1. Research goal and boundaries
 
-1. A Lean formalization of the paper's ordered-tree problem, principal definitions and lemmas, correctness theorem, and meaningful complexity theorem.
-2. An executable, deterministic Rust solution for the specified problem, with generated Lean semantics from that exact Rust source through Charon/Aeneas.
-3. Machine-checked theorems connecting the translated Rust entry point to an independently defined optimum and a valid output witness, including explicit safety/precondition claims.
-4. A computational cost theorem for the algorithm actually implemented, identifying any dictionary, allocation, arithmetic, or probabilistic assumptions rather than claiming unconditional real-world runtime.
-5. Reproducible, competitive performance and sound integration with the existing Python/NetworkX interface.
+Formalize the **original 2004 paper**, including its problem specification,
+mathematical correspondence to balanced sequences, decomposition lemmas,
+correctness of the dynamic program, constructive witnesses and the genuine
+complexity argument. Then prove that an executable **Rust implementation**
+translates through Charon/Aeneas and refines the independent Lean optimum.
+Finally measure and integrate a competitive solver into the existing
+NetworkX-facing API.
 
-Do not count a proof of a recurrence defined to equal itself as algorithm optimality. Do not define the paper's embedding relation in terms of the algorithm's balanced-sequence encoding. Do not treat a manually written Lean counterpart as verified Rust code. Scope every accepted theorem to its actual hypotheses.
+Verification is layered: the independently defined maximum, the paper
+algorithm's recurrence and complexity, the Aeneas-translated Rust entry point,
+and the Python integration are separate results. A proof of each is required
+for a corresponding completion claim. Mathlib is the initial foundation;
+TauCeti is optional pending exact theorem/dependency evidence. Neither the
+old Lean experiments nor the existing Rust solver defines the problem.
 
-## 2. Reset the active proof tree
+The reset applies **only to old proof code**. Keep the optimized ordered Rust
+baseline (`rust/src/lib.rs` with `Solver::emb`, `Solver::iso`, `decompose1`,
+`decompose2`, memoization and PyO3 bindings), Python/Cython variants, tests,
+benchmarks, relevant Git commits and history. No need to reimplement the
+already working native algorithm before doing semantics; the future
+proof-friendly Rust core will be compared against it. Do not merge the old
+`proofs` branch or copy its declarations.
 
-From the supplied `f829c7a` snapshot, retire the following tracked paths in a single reviewable cleanup:
+Targets:
 
-- `proofs/SubtreeProofs/` (all old theorem and helper code, including `Attempts`)
-- `proofs/Main.lean` (stale placeholder importing missing modules)
-- `proofs/LozanoValiente2004-writeup-v1.md` (old proof-adjacent write-up)
-- `proofs/lake-manifest.json` (old dependency resolution, with no corresponding active `lakefile`)
-- `next_steps.md` (obsolete handoff that assumes continuing `Lozano-v6`)
+1. Independent finite-tree embedding and optimization specifications.
+2. Two-way tree contraction / Dyck-word containment equivalence and exact
+   encoding/decoding round trips.
+3. Real DP optimality (including witness soundness/completeness), not merely
+   a recurrence defined to equal itself.
+4. Paper definitions, Facts, Lemmas, Corollaries and Theorems crosswalk,
+   including any necessary correction to a printed statement.
+5. Complexity expressed as operations of an actual algorithm with finite
+   decomposition-state bounds and explicit dictionary assumptions.
+6. Verified translated Rust solver, including accepted-input safety and
+   output witness, with reproducible generation and theorem dependencies.
+7. Independent tests, measured scaling, and production integration.
 
-Replace `proofs/README.md` with the concise fresh-start policy in this overlay. Keep `proofs/.gitignore`. Keep `proofs/lean-toolchain` temporarily as an *existing pin to review*, not as an accepted toolchain decision. Add a new Lake configuration and fresh lock/manifest once the chosen Lean/Mathlib versions are tested together. Keep the proofs directory intentionally free of new `.lean` files until W1 defines the contract; avoid adding placeholders that look like working proofs.
+Avoid proof-specific shims inside the mathematical specification, vague generic
+helper names, one-off optimized Rust changes without semantic evidence, and
+claims of verification based only on tests or authored uncompiled Lean.
 
-Leave all Git history untouched. In particular, keep the current application/benchmark commits, and leave `origin/proofs` as an archived branch without importing it. **No squash, force push, or history rewrite is required.** If a local worktree contains uncommitted changes to the paths above, inspect or save those separately before removing them; do not use a forced deletion to overwrite someone's uncommitted work.
+## 2. Lessons from the retired proofs
 
-The old development exposed useful *failure modes*, which can inform review checklists without contributing proof dependencies:
+These are hard requirements for the fresh development, not a plan to resurrect
+old files:
 
-- The paper's printed sequence recurrence for `ell` yields `semilen + 1`; verify whether it counts actual tree leaves before using it in a tree-leaf bound.
-- A tree-contraction theorem must account for contractions at arbitrary depths, not just a root operation or containment defined by encoding.
-- A DP recurrence must be proved equivalent to an independent maximum, not merely unfolded.
-- A complexity theorem needs an executable costed algorithm, not a symbolic formula assigned to a noncomputable choice of optimum.
+- `Lozano-v6` used an encoded-containment relation as its notion of embedding;
+  it therefore did not prove the missing edge-contraction correspondence.
+- Its `lcsLen` recurrence was unfolded from the way `lcsLen` was defined;
+  it did not prove equality with an independent maximum common embedding.
+- Its runtime result was conditional on a cost formula and state hypotheses
+  rather than operation counts derived from an executable algorithm.
+- The printed `ell(nil)=1`, `ell(0 x 1 y)=ell(x)+ell(y)` recurrence yields
+  `semilength+1`, **not actual tree leaves**; this matters for the claimed
+  leaf-sensitive running time. The one-edge tree `01` has one leaf but the
+  recurrence gives two. Resolve the correct combinatorial bound explicitly.
 
-These are **requirements for fresh specifications**, not a mandate to repair or recover a particular old theorem.
+Retain historical examples only as evidence of what needs checking. Never
+inherit their proof assumptions, theorem names or architecture.
 
 ## 3. Precisely define the first verified problem
 
@@ -106,14 +147,22 @@ Work in dependency order. Create modules only when their mathematical boundary i
 
 **Gate B:** a closed theorem bounds the actual state set in the tree parameters that appear in the claimed asymptotic result. It has no unexplained combinatorial hypothesis. Counterexamples or corrections are preserved as small mathematical tests.
 
-### C. Optimality of the dynamic program
+### C. Optimality of the dynamic program (embedding and isomorphism)
 
-1. Define LCBS/MCES optima independently (maximum over feasible witnesses or a proved equivalent finite characterization).
+1. Identify the exact paper-level LCBE (balanced embedding) and LCBS/LCSI
+   (balanced isomorphism) result contracts, and distinguish them from the
+   NetworkX-facing routine names `Solver::emb` and `Solver::iso`.
+   Define each optimum independently over valid finite witnesses or a proved
+   equivalent finite characterization. Do not assume the two recurrences
+   solve the same problem.
 2. Define the paper's numeric recurrence as a *separate* executable function; prove the recurrence returns that independent optimum by soundness, completeness, and well-founded induction.
-3. Give an explicit witness-producing algorithm and prove its returned witness is feasible and has the optimal score, including base cases and tie choices.
+3. Give an explicit witness-producing algorithm for each promised solver;
+   prove its returned witness is feasible and has the optimal score, including
+   base cases, order constraints, and tie choices. Show tree witnesses and
+   sequence-index witnesses correspond.
 4. Prove the resulting tree witness solves the contraction-based MCES problem using Gate A, without defining `MCES` via the DP result.
 
-**Gate C:** a checked theorem says the executable Lean algorithm returns an optimal, independently valid tree witness. Unfolding a recurrence is insufficient.
+**Gate C:** checked theorems establish the specified embedding/isomorphism optima and independently valid tree witnesses for every covered algorithm. Unfolding a recurrence is insufficient.
 
 ### D. Cost semantics and the 2004 complexity claim
 
@@ -151,8 +200,8 @@ Work in dependency order. Create modules only when their mathematical boundary i
 
 | ID | Deliverable | Depends on | Done when |
 | --- | --- | --- | --- |
-| W0 | Clean proof-tree reset; baseline/test and toolchain inventory | none | legacy proof files removed from active tree, history intact; Rust/Python baseline recorded |
-| W1 | Independent tree and contraction-based specification plus exhaustive oracle | W0 | precise semantics and examples checked |
+| W0 | Stabilize the fresh Lean build, toolchain and baseline inventory | none | `lake build` passes from clean checkout; dependency lockfile and exact status recorded |
+| W1 | Independent tree and contraction-based specification plus exhaustive oracle | W0 | edge/root conventions explicit, examples and small oracle checked |
 | W2 | Fresh balanced-sequence definitions and full contraction/containment equivalence | W1 | Gate A |
 | W3 | State decomposition mathematics, actual-leaf cardinality bound | W2 | Gate B |
 | W4 | Independent DP optimality and witness construction | W2; W3 for paper theorem chain | Gate C |
@@ -169,11 +218,11 @@ Work can be parallel where dependencies permit, but **never let Rust implementat
 
 Track accepted claims in a small `proofs/PROOF_STATUS.md` once there are actual proof targets. Give exact theorem identifier, hypothesis list, source file, build command and classification: `specified`, `proved`, `conditional`, `extracted`, `tested`, or `open`. An item is `proved` only after the fresh Lake build and theorem-dependency review.
 
-Initial status after reset:
+Status following the first authored sources and user build logs (update after the next clean build):
 
 | Target | Status |
 | --- | --- |
-| Independent tree/embedded-subtree specification | open |
+| Independent tree/embedded-subtree specification | authored; unbuilt in observed logs |
 | Tree-to-sequence correspondence and containment/contraction equivalence | open |
 | Paper combinatorial results and actual-leaf state bound | open |
 | LCBS DP optimality vs. independent optimum | open |
@@ -229,16 +278,36 @@ This is a responsibility map, not a mandate to create empty modules. Make choice
 
 Keep CI proportional to real failures: target core invariants and regressions, avoid source-text/process meta-tests, and keep full exhaustive or large benchmark runs optional outside appropriate release jobs.
 
-## 9. First execution cycle
+## 9. First execution cycle: concrete acceptance checklist
 
-1. Commit the proof reset and the new README/plan without modifying existing algorithm source.
-2. Establish a valid new Lean/Mathlib workspace with a working trivial proof; record toolchain pins. Separately record current Rust/Python test and benchmark outcomes. No legacy imports.
-3. Write the new `OrderedTree` specification and contraction-based exhaustive oracle, with discriminating examples.
-4. Prove actual tree statistics and encoding round-trips, then the two-way containment/contraction bridge.
-5. Prototype one Rust function through Charon/Aeneas in parallel. Confirm Lean generation, imports and a small refinement theorem before committing to a full verified Rust design.
-6. Continue the paper's combinatorial theorems and LCBS recurrence from independent definitions; establish a real-leaf cardinality theorem before relying on the paper's complexity claim.
+1. Apply the newest `OrderedTree.lean` elaboration correction. Run `lake build`
+   on Lean 4.35.0. Repair remaining failures, inspect all accepted theorem
+   dependencies with `#print axioms`, and refresh `PROOF_STATUS.md`. Keep the
+   current source/build failures visible until a real build passes.
+2. Pin toolchain and commit `lake-manifest.json`. Add a minimal CI job running
+   the actual Lean build (not a test of file text or theorem names).
+3. Write a tiny **contraction-enumerating** oracle independent of the Dyck-word
+   recurrence. Fix root conventions and examples for contraction of a root
+   child, a nested edge, and sibling splicing. Exhaustively compare true leaf
+   and edge counts on small trees.
+4. Prove tree/forest encoding and decoding round trips, with semilength, edge,
+   depth, and true-leaf invariants. Then prove both directions of sequence
+   containment versus the tree contraction closure.
+5. In parallel, translate a small real Rust state/encoding operation with
+   Charon/Aeneas. Compile the generated Lean and prove a nontrivial
+   representation/refinement lemma; pin the compatible revisions.
+6. Derive decompositions and finite state sets `D`, `R`, `S` and the true-leaf
+   cardinality bound, with exhaustive discriminators for chains, stars, and
+   unary cases.
+7. Prove independent LCBE/LCBS numeric DP optimality and witness correctness,
+   then connect exact operation counts to the corrected complexity statement.
+8. Isolate a proof-friendly Rust core without disrupting the currently
+   integrated optimized baseline; prove its translated entry point correct,
+   benchmark on adversarial and practical trees, then integrate deliberately.
 
-The first substantive checkpoint is **a small, independently specified theorem that compiles**, together with a translated Rust example whose equivalence can be proved. Do not jump straight to the paper's final theorem or port the old 2,500-line file.
+The next milestone is **successful compilation and an independent oracle**,
+not another unverified batch of Lean declarations. Avoid building higher proof
+layers atop an unresolved kernel/elaboration error.
 
 ## 10. Sources
 
@@ -247,4 +316,4 @@ The first substantive checkpoint is **a small, independently specified theorem t
 - Aeneas getting started (verify commands against pinned revision): https://github.com/AeneasVerif/aeneas/blob/main/documentation/getting-started.md
 - Existing application code, tests and benchmark suite in this repository (not a source of mathematical truth)
 
-The historical `proofs` branch remains accessible through Git, but it is intentionally excluded from the new work plan and formal dependency graph.
+The historical `proofs` branch remains accessible through Git, but it is intentionally excluded from the new work plan and formal dependency graph. Cross-paper reuse and verification principles live in the [program charter](verified_common_subtree_research_program.md).
