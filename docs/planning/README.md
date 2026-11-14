@@ -49,19 +49,18 @@ required proof work.
 
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
-wheel passes all 199 tests with native backends mandatory. Independent graph
+wheel passes all 209 tests with native backends mandatory. Independent graph
 witness rescoring and exhaustive optimum comparisons are included. Installed
-API measurements identify high-degree matching as the next graph performance
-bottleneck. Rectangular matching already improves 32-vertex stars by
-2.68x/2.20x for the two families; these DPs do not yet reproduce the published optimized
-schedules. See the capability matrix and benchmark evidence before continuing
-the remaining ordered coverage, correctness and optimization tasks.
+API measurements cover both optimized schedules, matching deletion families,
+conversion overhead and independent witness rescoring. See the capability
+matrix and benchmark evidence before continuing the remaining ordered
+coverage, correctness and optimization tasks.
 
 The ordered isomorphism APIs now expose the existing root-preserving level
 state with `rooted=True`, alongside the default general state. Independent
 parent-preserving subset enumeration validates both contracts and fractional
 affinities. Normal and genuine Rust-only ABI3 wheels are tested; the latter
-passes the complete 199-test API suite on each CPython 3.10–3.14.
+passes the complete 209-test API suite on each CPython 3.10–3.14.
 
 2018 now uses the fixed-left mapped/skipped schedule and includes the skipped
 highest-vertex path case. Independent high-degree/path oracles pass; installed
@@ -73,8 +72,8 @@ scaling runs; production refinement and formal complexity remain open.
 
 2016 now reuses high-degree right-parent deletion families; exhaustive matching
 and graph-witness checks pass. Measured 32/32 chain-versus-star and double-star
-speedups are 2.74× and 1.69×. Module cases include regressions that need
-attention; full per-state witnesses and 2018's optimized schedule remain open.
+speedups are 2.74× and 1.69×. Later choice-table and dense-view changes address module costs; the current
+2018 optimized schedule is implemented and measured separately.
 [Evidence and assurance boundary](../../dev/benchmarks/2026-11-14-matching-families.md).
 
 Both graph families additionally expose fixed ambient roots and the separate
@@ -82,6 +81,11 @@ root-to-root restriction, with original-node witnesses and all existing signed
 scoring modes. Independent rooted oracles and 47 native / 199 installed tests
 pass, including every host ABI3 runtime. A source-only portable rebuild at
 `e272d36` also passes 199 tests on the glibc floor and all five runtimes. [Root contracts and measurements](../../dev/benchmarks/2026-11-14-graph-root-modes.md).
+
+The 2018 API now also accepts positive infinity as the distance penalty,
+forbidding skipped vertices under every root policy. Independent enumeration
+and both witness formats validate this case; 48 native and 209 installed tests
+pass, including each host ABI3 runtime. [Evidence](../../dev/benchmarks/2026-11-14-infinite-penalty.md).
 
 ## Verified actual one-path sparse augmentation: 2026-11-14
 

@@ -622,5 +622,67 @@
         }
       }
     }
+  },
+  "infinite_penalty_update": {
+    "source_base_commit": "dfa3f43",
+    "normal_wheel_sha256": "2383d25ae40ad4ca35878e44dd141e3993ba7264f634cb2c455ed22fd1e89840",
+    "abi3_wheel_sha256": "2911e352c1ad659579788d352bf4585be437859dcaf69deb4191ca3243808292",
+    "extension_sha256": "5beaacb70252291258ee0dc9837f3968f2f3b90bae831ec8d1a44a1dd2753306",
+    "only_rust_extension": true,
+    "normal_required_native_tests_passed": 209,
+    "native_graph_tests_passed": 48,
+    "runtimes": [
+      {
+        "python": "3.10.20",
+        "networkx": "3.4.2",
+        "tests_passed": 209,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.11.15",
+        "networkx": "3.6.1",
+        "tests_passed": 209,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.12.3",
+        "networkx": "3.7",
+        "tests_passed": 209,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.13.2",
+        "networkx": "3.6.1",
+        "tests_passed": 209,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.14.3",
+        "networkx": "3.7",
+        "tests_passed": 209,
+        "tests_skipped": 0
+      }
+    ],
+    "abi3audit": {
+      "specs": {
+        "/tmp/common-subtree-infinite-abi3-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-linux_x86_64.whl": {
+          "kind": "wheel",
+          "wheel": [
+            {
+              "name": "_rust.abi3.so",
+              "result": {
+                "is_abi3": true,
+                "is_abi3_baseline_compatible": true,
+                "baseline": "3.10",
+                "computed": "3.10",
+                "non_abi3_symbols": [],
+                "future_abi3_objects": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "portable_manylinux": "The earlier e272d36 rooted artifact passes 199; this scoring update is host-built ABI3 validated, pending its own portable rebuild."
   }
 }

@@ -909,7 +909,7 @@ pub fn maximum_nonempty_common_subtree_isomorphism_with_roots<S: Scoring>(
 /// locate views in constant time; no source-proved runtime claim is made.
 ///
 /// # Panics
-/// Panics if the penalty is negative or nonfinite.
+/// Positive infinity forbids skipped vertices. Panics for a negative/NaN penalty.
 pub fn largest_weight_common_subtree_embedding_with_distance_penalty<S: Scoring>(
     left: &LabeledTree,
     right: &LabeledTree,
@@ -930,7 +930,7 @@ pub fn largest_weight_common_subtree_embedding_with_distance_penalty<S: Scoring>
 /// Returns `None` when there is no compatible mapped vertex pair.
 ///
 /// # Panics
-/// Panics if the penalty is negative or nonfinite.
+/// Positive infinity forbids skipped vertices. Panics for a negative/NaN penalty.
 pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S: Scoring>(
     left: &LabeledTree,
     right: &LabeledTree,
@@ -947,7 +947,8 @@ pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S:
 }
 
 /// Nonempty embedding with fixed ambient roots or the root-to-root restriction.
-/// Panics for invalid roots, a negative/nonfinite penalty or arithmetic overflow.
+/// Positive infinity uses the isomorphism solver, forbidding skipped vertices.
+/// Panics for invalid roots, a negative/NaN penalty or arithmetic overflow.
 pub fn largest_weight_nonempty_common_subtree_embedding_with_roots<S: Scoring>(
     left: &LabeledTree,
     right: &LabeledTree,
@@ -957,9 +958,14 @@ pub fn largest_weight_nonempty_common_subtree_embedding_with_roots<S: Scoring>(
 ) -> Option<CommonSubtree> {
     let roots = constraint.roots(left, right);
     assert!(
-        skip_vertex_penalty.is_finite() && skip_vertex_penalty >= 0.0,
-        "skip vertex penalty must be finite and nonnegative"
+        skip_vertex_penalty >= 0.0,
+        "skip vertex penalty must be nonnegative or positive infinity"
     );
+    if skip_vertex_penalty == f64::INFINITY {
+        return maximum_nonempty_common_subtree_isomorphism_with_roots(
+            left, right, scoring, constraint,
+        );
+    }
     if left.is_empty() || right.is_empty() {
         return None;
     }

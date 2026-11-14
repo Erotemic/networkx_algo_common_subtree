@@ -17,6 +17,18 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Infinite distance penalties exposed: 2026-11-14
+
+Both graph backends now accept the paper's positive-infinity penalty, which
+forbids skipped vertices. Native execution reuses optimized isomorphism with
+the same root policy; the Python exhaustive oracle independently rejects
+long-path candidates. Both structured and bare-pair rescorers enforce the
+restriction. All 48 graph Rust and 209 installed Python tests pass, including
+each host ABI3 runtime. This is API/test evidence. The existing `WithTop`
+mathematical penalty model is preserved; no new production-source, witness
+or complexity proof is claimed. IEEE-754 correctness remains outside the
+initial proof scope stated above.
+
 ## Python integration and software-first sequencing: 2026-11-14
 
 The existing graph Rust DPs for both Droschinsky families are now exposed

@@ -9,6 +9,7 @@ workload, score and execution environment; score mismatches fail the run.
 import argparse
 import hashlib
 import json
+import math
 import platform
 import random
 import statistics
@@ -55,6 +56,8 @@ def main():
     parser.add_argument("--seed", type=int, default=2018)
     parser.add_argument("--algorithm", choices=["both", "isomorphism", "embedding"], default="both")
     parser.add_argument("--weights", choices=["scalar", "callbacks"], default="scalar")
+    parser.add_argument("--skip-vertex-penalty", default="0.25",
+                        help="Nonnegative embedding penalty or 'inf'; saved as a JSON string")
     parser.add_argument("--root-mode", choices=["unrooted", "rooted", "root-to-root"], default="unrooted",
                         help="Rooted modes orient each tree at its first input vertex")
     parser.add_argument("--time-rescoring", action="store_true", help="Also time independent public witness validation")
@@ -63,6 +66,12 @@ def main():
     args = parser.parse_args()
     if args.repeat < 1 or args.warmup < 0:
         parser.error("repeat must be positive and warmup nonnegative")
+    try:
+        penalty = float(args.skip_vertex_penalty)
+    except ValueError:
+        parser.error("skip vertex penalty must be nonnegative or 'inf'")
+    if math.isnan(penalty) or penalty < 0:
+        parser.error("skip vertex penalty must be nonnegative or 'inf'")
     workloads = []
     for n in map(int, filter(None, args.sizes.split(","))):
         for shape in args.shapes.split(","):
@@ -110,7 +119,7 @@ def main():
         for name, scorer, extra in [
             ("maximum_common_subtree_isomorphism", common.score_common_subtree_isomorphism, {}),
             ("largest_weight_common_subtree_embedding_with_distance_penalty", common.score_common_subtree_embedding,
-             {"skip_vertex_penalty": .25}),
+             {"skip_vertex_penalty": penalty}),
         ]:
             if args.algorithm == "isomorphism" and name != "maximum_common_subtree_isomorphism":
                 continue

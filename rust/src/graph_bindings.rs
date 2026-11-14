@@ -221,9 +221,9 @@ fn solve_graph(
     finite(node_match_weight)?;
     finite(edge_match_weight)?;
     if let Some(p) = penalty {
-        if !p.is_finite() || p < 0.0 {
+        if p.is_nan() || p < 0.0 {
             return Err(PyValueError::new_err(
-                "skip vertex penalty must be finite and nonnegative",
+                "skip vertex penalty must be nonnegative or positive infinity",
             ));
         }
     }

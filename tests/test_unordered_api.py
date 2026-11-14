@@ -100,8 +100,9 @@ def test_invalid_weights_and_penalties(value, impl):
         common.maximum_common_subtree_isomorphism(tree, tree, node_weight=value, impl=impl)
     with pytest.raises(ValueError, match="finite"):
         common.maximum_common_subtree_isomorphism(tree, tree, edge_weight=lambda a, b: value, impl=impl)
-    with pytest.raises(ValueError):
-        common.largest_weight_common_subtree_embedding_with_distance_penalty(tree, tree, skip_vertex_penalty=value, impl=impl)
+    if value != math.inf:
+        with pytest.raises(ValueError):
+            common.largest_weight_common_subtree_embedding_with_distance_penalty(tree, tree, skip_vertex_penalty=value, impl=impl)
     with pytest.raises(ValueError, match="nonnegative"):
         common.largest_weight_common_subtree_embedding_with_distance_penalty(tree, tree, skip_vertex_penalty=-1, impl=impl)
 
@@ -500,3 +501,76 @@ def test_forced_roots_retain_negative_parents(impl, kind):
     assert scorer(tree, tree, result, edge_weight=0, **kwargs) == -4
     assert solver(tree, tree, impl=impl, edge_weight=0, **kwargs).node_pairs == ()
     assert solver(tree, tree, impl=impl, allow_empty=False, edge_weight=6, **kwargs).weight == 2
+
+
+@pytest.mark.parametrize("root_mode", ["unrooted", "rooted", "root-to-root"])
+def test_infinite_penalty_matches_independent_isomorphism_optimum(impl, root_mode):
+    rng = random.Random(2018)
+    for case in range(24):
+        trees = []
+        for side in range(2):
+            n = rng.randrange(1, 5)
+            graph = _graph([rng.randrange(2) for _ in range(n)],
+                           [(u, rng.randrange(u), rng.randrange(2)) for u in range(1, n)],
+                           tuple((side, u) for u in range(n)))
+            trees.append(graph)
+        left, right = trees
+        nodes = {(u, v): rng.choice([None, -.5, 0, .125, 1.5]) for u in left for v in right}
+        edges = {(frozenset(a), frozenset(b)): rng.choice([None, -1, .25, 2.5])
+                 for a in left.edges for b in right.edges}
+        scoring = dict(node_label="label", edge_label="label", node_weight=lambda u, v: nodes[u, v],
+                       edge_weight=lambda a, b: edges[frozenset(a), frozenset(b)])
+        if root_mode != "unrooted":
+            scoring.update(roots=(rng.choice(list(left)), rng.choice(list(right))),
+                           root_to_root=root_mode == "root-to-root")
+        extra = dict(allow_empty=bool(case % 2))
+        expected = common.maximum_common_subtree_isomorphism(left, right, impl="python", **scoring, **extra)
+        actual = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+            left, right, skip_vertex_penalty=math.inf, impl=impl, **scoring, **extra)
+        if expected is None:
+            assert actual is None
+            continue
+        assert actual.weight == expected.weight
+        assert all(len(lp) == len(rp) == 2 for lp, rp in actual.edge_paths)
+        for witness in [actual, actual.node_pairs]:
+            assert common.score_common_subtree_embedding(
+                left, right, witness, skip_vertex_penalty=math.inf, **scoring) == actual.weight
+            assert common.score_common_subtree_isomorphism(left, right, witness, **scoring) == actual.weight
+
+
+def test_infinite_penalty_forbids_long_paths_without_overflow(impl):
+    left = _graph([1, 2], [(0, 1, 5)], ("a", "b"))
+    right = _graph([1, 99, 2], [(0, 1, 6), (1, 2, 7)], ("x", "skip", "y"))
+    kwargs = dict(node_label="label", edge_label="label", edge_weight=lambda a, b: None)
+    finite = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+        left, right, skip_vertex_penalty=.25, impl=impl, **kwargs)
+    assert finite.weight == 1.75
+    for node_weight in [1, 1e308]:
+        actual = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+            left, right, skip_vertex_penalty=math.inf, node_weight=node_weight, impl=impl, **kwargs)
+        assert actual.weight == node_weight
+        assert len(actual.node_pairs) == 1
+        for witness in [finite, finite.node_pairs]:
+            with pytest.raises(ValueError, match="infinite distance penalty forbids"):
+                common.score_common_subtree_embedding(
+                    left, right, witness, skip_vertex_penalty=math.inf, node_weight=node_weight, **kwargs)
+    empty = nx.Graph()
+    for allow_empty in [False, True]:
+        result = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+            empty, right, skip_vertex_penalty=math.inf, impl=impl, allow_empty=allow_empty)
+        assert result == (common.CommonSubtreeResult(0, (), ()) if allow_empty else None)
+
+
+def test_raw_infinite_penalty_and_invalid_penalties(impl):
+    for invalid in ["invalid", None, object(), -math.inf, math.nan]:
+        with pytest.raises(ValueError, match="nonnegative"):
+            common.largest_weight_common_subtree_embedding_with_distance_penalty(
+                nx.empty_graph(1), nx.empty_graph(1), skip_vertex_penalty=invalid, impl=impl)
+    if impl != "rust":
+        return
+    from networkx_algo_common_subtree import _rust
+    solve = _rust.largest_weight_common_subtree_embedding_with_distance_penalty
+    assert solve([1, 2], [(0, 1, 0)], [1, 99, 2], [(0, 1, 0), (1, 2, 0)], math.inf)[0] == 1
+    for invalid in [math.nan, -math.inf, -1]:
+        with pytest.raises(ValueError, match="nonnegative"):
+            solve([1], [], [1], [], invalid)

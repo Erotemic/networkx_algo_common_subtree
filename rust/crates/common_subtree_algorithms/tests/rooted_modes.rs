@@ -111,3 +111,29 @@ fn invalid_native_root_is_rejected() {
         },
     );
 }
+
+#[test]
+fn infinite_penalty_is_isomorphism_for_every_root_policy() {
+    let left = LabeledTree::new(vec![1, 99, 2], &[(0, 1, 0), (1, 2, 0)]).unwrap();
+    let right = LabeledTree::new(vec![1, 2], &[(0, 1, 0)]).unwrap();
+    for node_match_weight in [-0.5, 0.0, 1.0, 1e308] {
+        let scoring = ExactLabelScoring {
+            node_match_weight,
+            edge_match_weight: 100.0,
+        };
+        for constraint in [
+            RootConstraint::Unrooted,
+            RootConstraint::Rooted { left: 0, right: 0, root_to_root: false },
+            RootConstraint::Rooted { left: 0, right: 0, root_to_root: true },
+            RootConstraint::Rooted { left: 1, right: 0, root_to_root: true },
+        ] {
+            let iso = maximum_nonempty_common_subtree_isomorphism_with_roots(
+                &left, &right, &scoring, constraint,
+            );
+            let embedding = largest_weight_nonempty_common_subtree_embedding_with_roots(
+                &left, &right, &scoring, f64::INFINITY, constraint,
+            );
+            assert_eq!(embedding, iso);
+        }
+    }
+}

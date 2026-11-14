@@ -249,10 +249,12 @@ def _maximum_common_subtree_isomorphism_reference(
             right_subset_set = frozenset(right_subset)
             for right_perm in permutations(right_subset):
                 node_map = dict(zip(left_subset, right_perm))
+                if not _rooted_mapping_valid(left, right, node_map.items(), roots, root_to_root):
+                    continue
                 candidate = _score_exact_subtree_bijection(
                     left, right, scoring, left_subset, left_edges, right_subset_set, node_map
                 )
-                if candidate is not None and _rooted_mapping_valid(left, right, candidate.node_pairs, roots, root_to_root):
+                if candidate is not None:
                     best = _keep_better(best, candidate)
     return best
 
@@ -277,7 +279,8 @@ def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
     Direct skeleton edges contribute their compatible edge-pair weight only
     when both paths have length one. Otherwise only the penalty for every
     skipped internal vertex is applied (2018 paper, Definition 4). The empty
-    mapping is allowed and has score zero; penalties must be finite and nonnegative.
+    mapping is allowed and has score zero. Penalties are nonnegative; positive
+    infinity forbids every skipped vertex.
 
     This is exponential and intended only for small correctness tests.
     """
@@ -299,6 +302,8 @@ def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
             right_skeleton_set = frozenset(_normalized_edge(u, v) for u, v in right_skeleton)
             for right_perm in permutations(right_subset):
                 node_map = dict(zip(left_subset, right_perm))
+                if not _rooted_mapping_valid(left, right, node_map.items(), roots, root_to_root):
+                    continue
                 candidate = _score_embedding_bijection(
                     left,
                     right,
@@ -309,7 +314,7 @@ def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
                     node_map,
                     skip_vertex_penalty,
                 )
-                if candidate is not None and _rooted_mapping_valid(left, right, candidate.node_pairs, roots, root_to_root):
+                if candidate is not None:
                     best = _keep_better(best, candidate)
     return best
 
@@ -396,13 +401,6 @@ def score_embedding_witness(
     left_subset = tuple(sorted(node_map))
     right_subset = tuple(sorted(node_map.values()))
 
-    weight = 0.0
-    for u, v in pairs:
-        node_w = scoring.node_weight(left, u, right, v)
-        if node_w is None:
-            raise ValueError(f"incompatible mapped nodes ({u}, {v})")
-        weight = _finite_weight(weight + _finite_weight(node_w))
-
     left_skeleton = _embedding_skeleton_edges(left, left_subset)
     right_skeleton_edges = _embedding_skeleton_edges(right, right_subset)
     if left_skeleton is None or right_skeleton_edges is None:
@@ -411,6 +409,18 @@ def score_embedding_witness(
     mapped_skeleton = frozenset(_normalized_edge(node_map[u], node_map[u2]) for u, u2 in left_skeleton)
     if mapped_skeleton != right_skeleton:
         raise ValueError("mapped embedding skeleton does not equal the right embedding skeleton")
+
+    if skip_vertex_penalty == float("inf") and any(
+        len(left.path(u, u2)) != 2 or len(right.path(node_map[u], node_map[u2])) != 2
+        for u, u2 in left_skeleton
+    ):
+        raise ValueError("infinite distance penalty forbids skipped vertices")
+    weight = 0.0
+    for u, v in pairs:
+        node_w = scoring.node_weight(left, u, right, v)
+        if node_w is None:
+            raise ValueError(f"incompatible mapped nodes ({u}, {v})")
+        weight = _finite_weight(weight + _finite_weight(node_w))
 
     for u, u2 in left_skeleton:
         v = node_map[u]
@@ -429,8 +439,8 @@ def score_embedding_witness(
 
 
 def _validate_skip_penalty(penalty: Weight) -> None:
-    if not isfinite(penalty) or penalty < 0:
-        raise ValueError("skip vertex penalty must be finite and nonnegative")
+    if not penalty >= 0:
+        raise ValueError("skip vertex penalty must be nonnegative or positive infinity")
 
 
 def _validate_roots(left, right, roots, root_to_root):
@@ -591,6 +601,13 @@ def _score_embedding_bijection(
     node_map: dict[int, int],
     skip_vertex_penalty: Weight,
 ) -> ReferenceCommonSubtree | None:
+    # Reject structurally forbidden candidates before accumulating their node
+    # scores: an infeasible long path must not trigger arithmetic overflow.
+    if skip_vertex_penalty == float("inf") and any(
+        len(left.path(u, u2)) != 2 or len(right.path(node_map[u], node_map[u2])) != 2
+        for u, u2 in left_skeleton
+    ):
+        return None
     weight = 0.0
     for u in left_subset:
         node_w = scoring.node_weight(left, u, right, node_map[u])

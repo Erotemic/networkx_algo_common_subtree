@@ -127,10 +127,10 @@ def test_embedding_rejects_omitted_branch_point():
     assert result.weight == 7.0
 
 
-@pytest.mark.parametrize("penalty", [-1, float("nan"), float("inf")])
+@pytest.mark.parametrize("penalty", [-1, float("nan"), -float("inf")])
 def test_embedding_rejects_invalid_penalty(penalty):
     tree = ReferenceLabeledTree([0], [])
-    with pytest.raises(ValueError, match="finite and nonnegative"):
+    with pytest.raises(ValueError, match="nonnegative"):
         largest_weight_common_subtree_embedding_with_distance_penalty_reference(
             tree, tree, skip_vertex_penalty=penalty)
 

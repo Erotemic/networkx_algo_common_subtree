@@ -53,6 +53,16 @@ def _finite(value):
     return value
 
 
+def _distance_penalty(value):
+    try:
+        value = float(value)
+    except (OverflowError, TypeError, ValueError) as ex:
+        raise ValueError("skip vertex penalty must be nonnegative or positive infinity") from ex
+    if not value >= 0:
+        raise ValueError("skip vertex penalty must be nonnegative or positive infinity")
+    return value
+
+
 def _tree_data(graph, node_label, edge_label, node_codes, edge_codes):
     if not isinstance(graph, nx.Graph):
         raise TypeError("expected a NetworkX undirected tree")
@@ -148,10 +158,6 @@ def _solve(problem, impl, allow_empty, penalty):
         impl = available_unordered_backends()[0]
     if impl not in {"rust", "python"}:
         raise ValueError(f"unknown unordered-tree backend: {impl!r}")
-    if penalty is not None:
-        penalty = _finite(penalty)
-        if penalty < 0:
-            raise ValueError("skip vertex penalty must be finite and nonnegative")
     if impl == "rust":
         from . import _rust
         name = ("maximum_common_subtree_isomorphism" if penalty is None else
@@ -223,7 +229,9 @@ def largest_weight_common_subtree_embedding_with_distance_penalty(
     """Largest-weight unordered topological tree embedding (2018).
 
     Scoring/backend options follow :func:`maximum_common_subtree_isomorphism`.
-    ``skip_vertex_penalty`` is finite and nonnegative. An edge reward and edge
+    ``skip_vertex_penalty`` is nonnegative or positive infinity. Infinity forbids
+    skipped vertices and gives the common subtree isomorphism objective.
+    An edge reward and edge
     compatibility apply only when **both** matched paths consist of one edge.
     Every longer path contributes only the penalty for its skipped vertices.
     The result includes aligned original-node paths for independent inspection.
@@ -234,7 +242,7 @@ def largest_weight_common_subtree_embedding_with_distance_penalty(
     """
     problem = _Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight,
                        roots=roots, root_to_root=root_to_root)
-    return _solve(problem, impl, allow_empty, skip_vertex_penalty)
+    return _solve(problem, impl, allow_empty, _distance_penalty(skip_vertex_penalty))
 
 
 def _score_path_witness(problem, left, right, indexed, paths, li, ri, penalty):
@@ -277,6 +285,8 @@ def _score_path_witness(problem, left, right, indexed, paths, li, ri, penalty):
                 raise ValueError("incompatible mapped edges in witness paths")
             contribution = _finite(weight)
         else:
+            if penalty == float("inf"):
+                raise ValueError("infinite distance penalty forbids skipped vertices")
             contribution = _finite(-penalty * (len(lp) + len(rp) - 4))
         contributions.append((key, contribution))
     if mapping:
@@ -370,9 +380,7 @@ def score_common_subtree_embedding(tree1, tree2, witness, *, skip_vertex_penalty
     the connected common skeleton without enumerating every mapped pair.
     Bare node-pair iterables retain the small reference path/skeleton validator.
     """
-    penalty = _finite(skip_vertex_penalty)
-    if penalty < 0:
-        raise ValueError("skip vertex penalty must be finite and nonnegative")
+    penalty = _distance_penalty(skip_vertex_penalty)
     return _rescore(_Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight,
                             roots=roots, root_to_root=root_to_root), witness, penalty)
 
