@@ -29,6 +29,20 @@ constant-time dictionary. `largest_common_embedding` remains the independent
 exponential source baseline. Both are checked against all tree pairs through
 six edges.
 
+`isomorphism::rooted_common_isomorphism` preserves both tree roots;
+`isomorphism::largest_common_isomorphism` may choose any actual descendant
+root. They skip whole child subtrees and preserve adjacency, rather than
+splicing grandchildren as contractions do. Both have compiled end-to-end
+refinement theorems under `Rust.OrderedIsomorphism` with suffix
+`rooted_common_isomorphism_of_trees` and `largest_common_isomorphism_of_trees`.
+For every pair of ordered trees with fewer than 2^32 edges each, the actual
+translated functions terminate successfully, return independently optimal
+tree witnesses and report exact edge scores. All checked ranges are derived.
+Both are exponential reference recursions and are separately checked against
+whole-tree pruning/descendant enumeration on all 38,809 pairs through six edges.
+The shared historical `CommonEmbedding` payload stores a word and score;
+the new APIs have their own independent isomorphism contracts.
+
 The witness is a tree, rather than a map to original input indices.
 The optimized existing PyO3 backend remains an independent baseline.
 The Aeneas allocation and recursive-call model does not establish an OS-level

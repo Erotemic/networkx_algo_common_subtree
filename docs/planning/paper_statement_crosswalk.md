@@ -54,8 +54,11 @@ extensions require separate contracts, as stated in the paper plan. The ordered
 isomorphism tree extension now has independent root-preserving and arbitrary-root
 contracts and constructive optima, `OrderedIsoDP.level_correct` and
 `anywhere_correct`, plus separate numeric optimum theorems. These are project
-extensions, not additional statements attributed to this paper. Sequence/API
-correspondence and actual Rust refinement remain open for the extension.
+extensions, not additional statements attributed to this paper. Actual structural Rust reference solvers are also proved by
+`Rust.OrderedIsomorphism.rooted_common_isomorphism_of_trees` and
+`largest_common_isomorphism_of_trees`, through the two-sided tree/Dyck bridge.
+Original index maps, vertex-pair API conversion and efficient implementation
+remain open for the extension.
 
 ## Droschinsky--Kriege--Mutzel 2016 v4
 

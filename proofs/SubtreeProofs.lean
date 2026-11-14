@@ -113,3 +113,6 @@ public import SubtreeProofs.Rust.MatchingEntrypoint
 public import SubtreeProofs.Paper2004.OrderedIsomorphism
 public import SubtreeProofs.Paper2004.IsomorphismDynamicProgram
 public import SubtreeProofs.Paper2004.IsomorphismScores
+public import SubtreeProofs.Rust.OrderedIsomorphismRepresentation
+public import SubtreeProofs.Rust.OrderedRootedIsomorphism
+public import SubtreeProofs.Rust.OrderedArbitraryIsomorphism

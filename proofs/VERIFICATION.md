@@ -85,6 +85,15 @@ Rust compilation, Charon/Aeneas translation, and the models of supported Rust
 operations are explicit translation trust boundaries. Lean checks the resulting
 refinement proof. The mathematical tree relation remains independent of them.
 
+The ordered crate's root-preserving and arbitrary-root isomorphism reference
+APIs are also verified in `Rust/OrderedRootedIsomorphism.lean` and
+`Rust/OrderedArbitraryIsomorphism.lean`. For inputs below the u32 edge-count
+limit they return independently maximum adjacency-preserving ordered subtrees
+with exact scores. Structural forest interpretation agrees with the existing
+two-sided Dyck/tree bridge. These exponential reference functions make no
+memoization or running-time claim; original index maps and vertex-pair Python
+conversion remain open.
+
 The exact assignment core has reproducible generated semantics and complete
 public entry-point total correctness in `Rust/AssignmentEntrypoint.lean`.
 `min_cost_assignment_total_spec` verifies every represented input, returning

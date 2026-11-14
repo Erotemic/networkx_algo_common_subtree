@@ -438,6 +438,37 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual Rust ordered-isomorphism reference solvers: 2026-11-14
+
+The maintained extraction crate now implements separate root-preserving and
+arbitrary-root isomorphism reference recursions in `src/isomorphism.rs`.
+`Rust.OrderedIsomorphism.rooted_common_isomorphism_of_trees` and
+`largest_common_isomorphism_of_trees` prove actual source success, independent
+maximum ordered subtree witnesses and exact u32 edge scores for every pair
+of independently specified ordered trees with fewer than 2^32 edges each.
+The generated partial-fixpoint functions are proved to terminate, and both
+checked candidate additions are proved to fit from independent subtree bounds.
+No optimum, path or arithmetic certificate is supplied as an input.
+
+`OrderedIsomorphismRepresentation.toForest_decode` and `toTree_decode` connect
+the actual structural first-child/next-sibling representation to the existing
+two-sided tree/Dyck bridge. Both source recursions return precisely the
+previously verified witness computations, including their tie choices. An
+independent Rust oracle enumerates whole-child selections in actual trees,
+then all actual descendant roots. Both isomorphism solvers pass witness and
+score checks on all 38,809 pairs of the 197 ordered trees through six edges.
+The earlier embedding/memo tests still pass; pinned extraction succeeds for
+both maintained crates.
+
+The full maintained library builds successfully (3,621 jobs), and fresh pinned
+source extraction exactly matches both committed generated modules.
+
+These are exponential reference recursions, with no memoization or paper
+running-time claim. Existing Python/PyO3 vertex-pair sequence APIs remain
+separate: their outer forest can have a virtual root. Original input-index
+maps, those conversions, efficient memo/dictionary costs and full integration
+remain open. The supported-operation/allocation boundary is unchanged.
+
 ## Independent ordered-isomorphism optima: 2026-11-14
 
 `OrderedIsomorphism.lean` specifies adjacency-preserving ordered subtree
@@ -473,7 +504,7 @@ open for this extension.
 | Pinned source statement ledgers for all three papers | Added `docs/planning/paper_statement_crosswalk.md`; open source results are explicit |
 | Paper D/R/S and actual tree-parameter state bounds | Proved, including `states_closed` / `states_least` for Definition 4 |
 | Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
-| LCBS/isomorphism's distinct ordered contract and optimum | Independent root-preserving and arbitrary-root tree contracts, witness DP and separate numeric optima proved; balanced-word/API correspondence and actual Rust refinement open |
+| LCBS/isomorphism's distinct ordered contract and optimum | Independent root-preserving and arbitrary-root tree contracts, witness DP, separate numeric optima and actual Rust reference APIs proved through two-sided structural/Dyck representation; input-index maps, vertex-pair API conversion and optimization open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 assignment and rectangular optional signed-i64 partial-matching public APIs total correctness proved; graph integration, floating arithmetic equivalence and complexity open |

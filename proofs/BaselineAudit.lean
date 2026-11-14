@@ -43,3 +43,6 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Paper2004.OrderedTree.OrderedIsoDP.level_correct
 #print axioms SubtreeProofs.Paper2004.OrderedTree.OrderedIsoDP.anywhere_correct
 #print axioms SubtreeProofs.Paper2004.OrderedTree.OrderedIsoDP.anywhereSize_optimum
+
+#print axioms SubtreeProofs.Rust.OrderedIsomorphism.rooted_common_isomorphism_of_trees
+#print axioms SubtreeProofs.Rust.OrderedIsomorphism.largest_common_isomorphism_of_trees

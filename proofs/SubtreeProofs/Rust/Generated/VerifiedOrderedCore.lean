@@ -20,6 +20,123 @@ set_option maxRecDepth 2048
 
 namespace verified_ordered_core
 
+/-- [verified_ordered_core::BalancedWord]
+    Source: 'src/lib.rs', lines 18:0-21:1
+    Visibility: public -/
+@[discriminant isize]
+inductive BalancedWord where
+| Empty : BalancedWord
+| Pair : BalancedWord → BalancedWord → BalancedWord
+
+/-- [verified_ordered_core::CommonEmbedding]
+    Source: 'src/lib.rs', lines 45:0-48:1
+    Visibility: public -/
+structure CommonEmbedding where
+  word : BalancedWord
+  edges : Std.U32
+
+/-- [verified_ordered_core::choose_longer]:
+    Source: 'src/lib.rs', lines 51:0-57:1
+    Visibility: public -/
+def choose_longer
+  (first : CommonEmbedding) (second : CommonEmbedding) :
+  Result CommonEmbedding
+  := do
+  if first.edges < second.edges
+  then ok second
+  else ok first
+
+/-- [verified_ordered_core::isomorphism::rooted_common_isomorphism]:
+    Source: 'src/isomorphism.rs', lines 14:0-55:1
+    Visibility: public -/
+def isomorphism.rooted_common_isomorphism
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  match left with
+  | BalancedWord.Empty =>
+    ok (some { word := BalancedWord.Empty, edges := 0#u32 })
+  | BalancedWord.Pair lh lt =>
+    match right with
+    | BalancedWord.Empty =>
+      ok (some { word := BalancedWord.Empty, edges := 0#u32 })
+    | BalancedWord.Pair rh rt =>
+      let o ← isomorphism.rooted_common_isomorphism lh rh
+      match o with
+      | none => ok none
+      | some value =>
+        let o1 ← isomorphism.rooted_common_isomorphism lt rt
+        match o1 with
+        | none => ok none
+        | some value1 =>
+          let o2 ← lift (U32.checked_add value.edges value1.edges)
+          match o2 with
+          | none => ok none
+          | some value2 =>
+            let o3 ← lift (U32.checked_add value2 1#u32)
+            match o3 with
+            | none => ok none
+            | some value3 =>
+              let o4 ← isomorphism.rooted_common_isomorphism lt right
+              match o4 with
+              | none => ok none
+              | some value4 =>
+                let o5 ← isomorphism.rooted_common_isomorphism left rt
+                match o5 with
+                | none => ok none
+                | some value5 =>
+                  let ce ←
+                    choose_longer
+                      {
+                        word := (BalancedWord.Pair value.word value1.word),
+                        edges := value3
+                      } value4
+                  let ce1 ← choose_longer ce value5
+                  ok (some ce1)
+partial_fixpoint
+
+/-- [verified_ordered_core::isomorphism::largest_common_isomorphism]:
+    Source: 'src/isomorphism.rs', lines 61:0-100:1
+    Visibility: public -/
+def isomorphism.largest_common_isomorphism
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  match left with
+  | BalancedWord.Empty =>
+    ok (some { word := BalancedWord.Empty, edges := 0#u32 })
+  | BalancedWord.Pair lh lt =>
+    match right with
+    | BalancedWord.Empty =>
+      ok (some { word := BalancedWord.Empty, edges := 0#u32 })
+    | BalancedWord.Pair rh rt =>
+      let o ← isomorphism.rooted_common_isomorphism left right
+      match o with
+      | none => ok none
+      | some value =>
+        let o1 ← isomorphism.largest_common_isomorphism lh right
+        match o1 with
+        | none => ok none
+        | some value1 =>
+          let o2 ← isomorphism.largest_common_isomorphism lt right
+          match o2 with
+          | none => ok none
+          | some value2 =>
+            let o3 ← isomorphism.largest_common_isomorphism left rh
+            match o3 with
+            | none => ok none
+            | some value3 =>
+              let o4 ← isomorphism.largest_common_isomorphism left rt
+              match o4 with
+              | none => ok none
+              | some value4 =>
+                let ce ← choose_longer value1 value2
+                let ce1 ← choose_longer value3 value4
+                let ce2 ← choose_longer ce ce1
+                let ce3 ← choose_longer value ce2
+                ok (some ce3)
+partial_fixpoint
+
 /-- [verified_ordered_core::remaining_edges_after_contraction]:
     Source: 'src/lib.rs', lines 8:0-14:1
     Visibility: public -/
@@ -29,14 +146,6 @@ def remaining_edges_after_contraction
   then ok none
   else let i ← edges - 1#u32
        ok (some i)
-
-/-- [verified_ordered_core::BalancedWord]
-    Source: 'src/lib.rs', lines 18:0-21:1
-    Visibility: public -/
-@[discriminant isize]
-inductive BalancedWord where
-| Empty : BalancedWord
-| Pair : BalancedWord → BalancedWord → BalancedWord
 
 /-- [verified_ordered_core::copy_word]:
     Source: 'src/lib.rs', lines 24:0-31:1
@@ -62,24 +171,6 @@ def concatenate
     let bw1 ← concatenate tail right
     ok (BalancedWord.Pair bw bw1)
 partial_fixpoint
-
-/-- [verified_ordered_core::CommonEmbedding]
-    Source: 'src/lib.rs', lines 45:0-48:1
-    Visibility: public -/
-structure CommonEmbedding where
-  word : BalancedWord
-  edges : Std.U32
-
-/-- [verified_ordered_core::choose_longer]:
-    Source: 'src/lib.rs', lines 51:0-57:1
-    Visibility: public -/
-def choose_longer
-  (first : CommonEmbedding) (second : CommonEmbedding) :
-  Result CommonEmbedding
-  := do
-  if first.edges < second.edges
-  then ok second
-  else ok first
 
 /-- [verified_ordered_core::largest_common_embedding]:
     Source: 'src/lib.rs', lines 63:0-106:1

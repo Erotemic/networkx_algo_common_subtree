@@ -1,10 +1,41 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: LCBE and separate ordered-isomorphism mathematical optima proved; translated Rust LCBE and memo refinement proved; isomorphism Rust refinement and optimization/integration open
+Status: LCBE and separate ordered-isomorphism mathematical optima proved; translated Rust LCBE and memo refinement proved; translated Rust isomorphism reference solvers proved; optimization/integration open
 Last revised: 2026-11-14
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
+
+## Actual Rust ordered-isomorphism reference solvers: 2026-11-14
+
+The maintained extraction crate now implements separate root-preserving and
+arbitrary-root isomorphism reference recursions in `src/isomorphism.rs`.
+`Rust.OrderedIsomorphism.rooted_common_isomorphism_of_trees` and
+`largest_common_isomorphism_of_trees` prove actual source success, independent
+maximum ordered subtree witnesses and exact u32 edge scores for every pair
+of independently specified ordered trees with fewer than 2^32 edges each.
+The generated partial-fixpoint functions are proved to terminate, and both
+checked candidate additions are proved to fit from independent subtree bounds.
+No optimum, path or arithmetic certificate is supplied as an input.
+
+`OrderedIsomorphismRepresentation.toForest_decode` and `toTree_decode` connect
+the actual structural first-child/next-sibling representation to the existing
+two-sided tree/Dyck bridge. Both source recursions return precisely the
+previously verified witness computations, including their tie choices. An
+independent Rust oracle enumerates whole-child selections in actual trees,
+then all actual descendant roots. Both isomorphism solvers pass witness and
+score checks on all 38,809 pairs of the 197 ordered trees through six edges.
+The earlier embedding/memo tests still pass; pinned extraction succeeds for
+both maintained crates.
+
+The full maintained library builds successfully (3,621 jobs), and fresh pinned
+source extraction exactly matches both committed generated modules.
+
+These are exponential reference recursions, with no memoization or paper
+running-time claim. Existing Python/PyO3 vertex-pair sequence APIs remain
+separate: their outer forest can have a virtual root. Original input-index
+maps, those conversions, efficient memo/dictionary costs and full integration
+remain open. The supported-operation/allocation boundary is unchanged.
 
 ## Independent ordered-isomorphism optima: 2026-11-14
 

@@ -114,3 +114,85 @@ fn solver_matches_independent_tree_contractions_through_six_edges() {
         }
     }
 }
+
+// Enumerate ordered adjacency-preserving selections in actual trees. A skipped
+// child contributes nothing; its descendants are never promoted into siblings.
+fn rooted_prunings(tree: &Tree) -> BTreeSet<Vec<u8>> {
+    fn select_children(children: &[Tree]) -> Vec<Vec<Tree>> {
+        match children.split_first() {
+            None => vec![vec![]],
+            Some((first, tail)) => {
+                let suffixes = select_children(tail);
+                let mut out = suffixes.clone();
+                for child in select_children(&first.0) {
+                    for suffix in &suffixes {
+                        let mut kept = vec![Tree(child.clone())];
+                        kept.extend_from_slice(suffix);
+                        out.push(kept);
+                    }
+                }
+                out
+            }
+        }
+    }
+    select_children(&tree.0)
+        .into_iter()
+        .map(|children| tree_encoding(&Tree(children)))
+        .collect()
+}
+
+fn subtree_prunings(tree: &Tree) -> BTreeSet<Vec<u8>> {
+    let mut out = rooted_prunings(tree);
+    for child in &tree.0 {
+        out.extend(subtree_prunings(child));
+    }
+    out
+}
+
+#[test]
+fn isomorphism_matches_independent_tree_selections_through_six_edges() {
+    use verified_ordered_core::isomorphism::{
+        largest_common_isomorphism, rooted_common_isomorphism,
+    };
+    let inputs: Vec<_> = (0..=6).flat_map(trees).collect();
+    assert_eq!(inputs.len(), 197);
+    let rooted: Vec<_> = inputs.iter().map(rooted_prunings).collect();
+    let anywhere: Vec<_> = inputs.iter().map(subtree_prunings).collect();
+    for (i, left) in inputs.iter().enumerate() {
+        for (j, right) in inputs.iter().enumerate() {
+            for (candidates, solve) in [
+                (
+                    &rooted,
+                    rooted_common_isomorphism
+                        as fn(
+                            &BalancedWord,
+                            &BalancedWord,
+                        )
+                            -> Option<verified_ordered_core::CommonEmbedding>,
+                ),
+                (
+                    &anywhere,
+                    largest_common_isomorphism
+                        as fn(
+                            &BalancedWord,
+                            &BalancedWord,
+                        )
+                            -> Option<verified_ordered_core::CommonEmbedding>,
+                ),
+            ] {
+                let expected = candidates[i]
+                    .intersection(&candidates[j])
+                    .map(|word| word.len() / 2)
+                    .max()
+                    .unwrap();
+                let result: verified_ordered_core::CommonEmbedding =
+                    solve(&as_word(&left.0), &as_word(&right.0)).expect("tiny scores fit u32");
+                let witness = word_encoding(&result.word);
+                assert_eq!(result.edges as usize, expected, "pair {i}, {j}");
+                assert_eq!(witness.len() / 2, expected);
+                assert!(candidates[i].contains(&witness));
+                assert!(candidates[j].contains(&witness));
+            }
+        }
+    }
+}
