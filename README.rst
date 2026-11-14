@@ -9,6 +9,11 @@ optimized versions, plus Rust/PyO3 backends. Weighted unordered isomorphism
 (Droschinsky 2016), distance-penalized embedding (2018), and exact integer
 assignment/partial matching are also available from Python.
 
+The default build includes Rust and Cython. An opt-in Rust-only ``cp310-abi3``
+wheel is tested across CPython 3.10–3.14; see `build and validation details
+<docs/packaging.md>`_. This does not change the package's partial verification
+status.
+
 Weighted unordered trees
 ------------------------
 

@@ -8,6 +8,9 @@ build = "build.rs"
 name = "_rust"
 crate-type = ["cdylib"]
 
+[features]
+abi3 = ["pyo3/abi3-py310"]
+
 [dependencies]
 pyo3 = { version = "0.22", features = ["extension-module"] }
 rustc-hash = "2"

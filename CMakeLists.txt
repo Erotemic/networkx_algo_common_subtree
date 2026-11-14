@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(networkx_algo_common_subtree LANGUAGES C CXX)
+project(networkx_algo_common_subtree LANGUAGES NONE)
 
 set(_disable_c_extensions "$ENV{DISABLE_C_EXTENSIONS}")
 string(TOLOWER "${_disable_c_extensions}" _disable_c_extensions)
@@ -22,13 +22,42 @@ option(BUILD_CYTHON_EXTENSIONS "Build Cython extension modules" ${_build_cython_
 option(BUILD_RUST_EXTENSIONS "Build Rust extension module" ${_build_rust_default})
 option(REQUIRE_RUST_EXTENSIONS "Fail configure if Rust extension cannot be built" OFF)
 
-find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+set(_cargo_abi_args "")
+if(SKBUILD_SABI_COMPONENT)
+  if(NOT SKBUILD_SABI_VERSION STREQUAL "3.10")
+    message(FATAL_ERROR "Stable ABI builds require wheel.py-api=cp310 and scikit-build-core>=1.0")
+  endif()
+  if(BUILD_CYTHON_EXTENSIONS)
+    message(FATAL_ERROR "Stable ABI wheels require BUILD_CYTHON_EXTENSIONS=OFF; the Cython targets use the version-specific API")
+  endif()
+  if(NOT BUILD_RUST_EXTENSIONS)
+    message(FATAL_ERROR "Stable ABI wheels require BUILD_RUST_EXTENSIONS=ON")
+  endif()
+  set(REQUIRE_RUST_EXTENSIONS ON)
+  set(_cargo_abi_args --features abi3)
+endif()
+
+# Rust owns its Python ABI/link configuration through PyO3. Headers and CMake's
+# Development.Module target are needed only for the Cython targets.
+if(BUILD_CYTHON_EXTENSIONS)
+  enable_language(C CXX)
+  find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+else()
+  find_package(Python3 COMPONENTS Interpreter REQUIRED)
+endif()
 
 execute_process(
   COMMAND "${Python3_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX') or '')"
   OUTPUT_VARIABLE PYTHON_EXT_SUFFIX
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+if(SKBUILD_SABI_COMPONENT)
+  if(WIN32)
+    set(PYTHON_EXT_SUFFIX ".pyd")
+  else()
+    set(PYTHON_EXT_SUFFIX ".abi3.so")
+  endif()
+endif()
 
 function(cpu_cython_module cython_source module_name)
   set(_generated_cpp "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.cpp")
@@ -100,6 +129,7 @@ if(BUILD_RUST_EXTENSIONS)
         --target-dir "${_cargo_target_dir}"
         --locked
         ${_cargo_release_arg}
+        ${_cargo_abi_args}
       COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${_cargo_lib_path}" "${_rust_ext_path}"
       DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.toml"

@@ -67,3 +67,60 @@ jobs:
         run: |
           python -c 'from networkx_algo_common_subtree import _rust; assert all(hasattr(_rust, name) for name in ["maximum_common_token_embedding", "maximum_common_subtree_isomorphism", "largest_weight_common_subtree_embedding_with_distance_penalty", "min_cost_assignment", "max_weight_partial_matching"])'
           COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 python -m pytest "${{ github.workspace }}/tests"
+  abi3-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: dtolnay/rust-toolchain@1.95.0
+      - uses: actions/setup-python@v5.1.1
+        with:
+          python-version: '3.13'
+      - name: Build and audit a genuine Rust-only stable-ABI wheel
+        run: |
+          python -m pip install build abi3audit
+          python -m build --wheel --outdir dist -Cwheel.py-api=cp310 -Ccmake.define.BUILD_CYTHON_EXTENSIONS=OFF -Ccmake.define.REQUIRE_RUST_EXTENSIONS=ON
+          abi3audit --strict --summary dist/*.whl
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          wheels = list(Path('dist').glob('*-cp310-abi3-*.whl'))
+          assert len(wheels) == 1, wheels
+          with ZipFile(wheels[0]) as archive:
+              libraries = [p for p in archive.namelist() if p.endswith(('.so', '.pyd', '.dll', '.dylib'))]
+              assert libraries == ['networkx_algo_common_subtree/_rust.abi3.so'], libraries
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cp310-abi3-linux
+          path: dist/*.whl
+  abi3-runtime:
+    needs: abi3-build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5.1.1
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: cp310-abi3-linux
+          path: dist
+      - name: Install the identical wheel on every runtime
+        run: |
+          wheels=(dist/*.whl)
+          python -m pip install "${wheels[0]}[tests]"
+      - name: Require all Rust families and exercise the installed package
+        working-directory: ${{ runner.temp }}
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from networkx_algo_common_subtree import _rust
+          assert _rust.__file__.endswith('.abi3.so')
+          assert all(hasattr(_rust, name) for name in ['longest_common_balanced_embedding', 'longest_common_balanced_isomorphism', 'maximum_common_token_embedding', 'maximum_common_subtree_isomorphism', 'largest_weight_common_subtree_embedding_with_distance_penalty', 'min_cost_assignment', 'max_weight_partial_matching'])
+          for name in ['balanced_embedding_cython', 'balanced_isomorphism_cython']:
+              assert importlib.util.find_spec('networkx_algo_common_subtree.' + name) is None
+          PY
+          python -m pytest -rs "${{ github.workspace }}/tests"

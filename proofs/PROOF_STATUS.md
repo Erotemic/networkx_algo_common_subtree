@@ -19,6 +19,11 @@ Lean theorem. The existing verified token parser/solver and its proof boundary
 are unchanged. The latest installed wheel passes 149 tests with all required
 compiled backends executing.
 
+The optional Rust-only ABI3 build compiles the same cores with PyO3's limited
+API. Strict binary auditing and 149 tests on each CPython 3.10–3.14 validate
+packaging/runtime behavior; they add no Lean claim about Python/FFI conversion
+or the floating-point graph production implementations.
+
 Substantial remaining formalization is deferred until public functionality,
 independent correctness and measured efficiency are established. All existing
 proofs are preserved; full mathematical, production-source and applicable

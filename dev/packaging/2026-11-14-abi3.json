@@ -1,0 +1,109 @@
+{
+  "wheel": "networkx_algo_common_subtree-0.2.3-cp310-abi3-linux_x86_64.whl",
+  "wheel_sha256": "f0f349a6bc1bf8ef5ccfeafc2117e9fe4d39ba86e68fbb33d9fbd050032b029c",
+  "extension_sha256": "a5439d415be5629b3a714c34c5a46d088a369f034e8aa845c11548d119acbcd7",
+  "tested_initial_wheel_sha256": "fa19d49256658c5014e42736a9cb3cd3877f9789e4094a1d538cee4136daeb04",
+  "tested_package_payloads_identical": true,
+  "abi3audit": {
+    "specs": {
+      "/tmp/common-subtree-abi3-final-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-linux_x86_64.whl": {
+        "kind": "wheel",
+        "wheel": [
+          {
+            "name": "_rust.abi3.so",
+            "result": {
+              "is_abi3": true,
+              "is_abi3_baseline_compatible": true,
+              "baseline": "3.10",
+              "computed": "3.10",
+              "non_abi3_symbols": [],
+              "future_abi3_objects": {}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "runtimes": [
+    {
+      "python": "3.10.20",
+      "networkx": "3.4.2",
+      "extension": "/tmp/common-subtree-abi3-py310/lib/python3.10/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+      "required_entry_points": [
+        "longest_common_balanced_embedding",
+        "longest_common_balanced_isomorphism",
+        "maximum_common_token_embedding",
+        "maximum_common_subtree_isomorphism",
+        "largest_weight_common_subtree_embedding_with_distance_penalty",
+        "min_cost_assignment",
+        "max_weight_partial_matching"
+      ],
+      "tests_passed": 149,
+      "tests_skipped": 0
+    },
+    {
+      "python": "3.11.15",
+      "networkx": "3.6.1",
+      "extension": "/tmp/common-subtree-abi3-py311/lib/python3.11/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+      "required_entry_points": [
+        "longest_common_balanced_embedding",
+        "longest_common_balanced_isomorphism",
+        "maximum_common_token_embedding",
+        "maximum_common_subtree_isomorphism",
+        "largest_weight_common_subtree_embedding_with_distance_penalty",
+        "min_cost_assignment",
+        "max_weight_partial_matching"
+      ],
+      "tests_passed": 149,
+      "tests_skipped": 0
+    },
+    {
+      "python": "3.12.3",
+      "networkx": "3.7",
+      "extension": "/tmp/common-subtree-abi3-py312/lib/python3.12/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+      "required_entry_points": [
+        "longest_common_balanced_embedding",
+        "longest_common_balanced_isomorphism",
+        "maximum_common_token_embedding",
+        "maximum_common_subtree_isomorphism",
+        "largest_weight_common_subtree_embedding_with_distance_penalty",
+        "min_cost_assignment",
+        "max_weight_partial_matching"
+      ],
+      "tests_passed": 149,
+      "tests_skipped": 0
+    },
+    {
+      "python": "3.13.2",
+      "networkx": "3.6.1",
+      "extension": "/tmp/common-subtree-abi3-install/networkx_algo_common_subtree/_rust.abi3.so",
+      "required_entry_points": [
+        "longest_common_balanced_embedding",
+        "longest_common_balanced_isomorphism",
+        "maximum_common_token_embedding",
+        "maximum_common_subtree_isomorphism",
+        "largest_weight_common_subtree_embedding_with_distance_penalty",
+        "min_cost_assignment",
+        "max_weight_partial_matching"
+      ],
+      "tests_passed": 149,
+      "tests_skipped": 0
+    },
+    {
+      "python": "3.14.3",
+      "networkx": "3.7",
+      "extension": "/tmp/common-subtree-abi3-py314/lib/python3.14/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+      "required_entry_points": [
+        "longest_common_balanced_embedding",
+        "longest_common_balanced_isomorphism",
+        "maximum_common_token_embedding",
+        "maximum_common_subtree_isomorphism",
+        "largest_weight_common_subtree_embedding_with_distance_penalty",
+        "min_cost_assignment",
+        "max_weight_partial_matching"
+      ],
+      "tests_passed": 149,
+      "tests_skipped": 0
+    }
+  ]
+}

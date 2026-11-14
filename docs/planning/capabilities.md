@@ -102,6 +102,17 @@ proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-
 
 ## Immediate implementation queue
 
+An opt-in Rust-only **cp310-abi3** build now enables PyO3's actual limited API,
+rejects incompatible Cython configurations, and passes strict symbol auditing
+with zero ABI violations/mismatches. Identical package/binary payloads pass
+149 tests with zero skips on **each CPython 3.10–3.14**. Normal Cython-inclusive
+builds and strict compiled parity remain supported. New CI builds/audits one
+artifact and tests the runtime matrix; remote execution remains pending.
+ABI3 installed-API measurements show median ratios near 1.00–1.06x against
+version-specific wheels on the measured workloads. Manylinux repair,
+macOS/Windows and architecture validation remain open. See
+[packaging commands and evidence](../packaging.md).
+
 Ordered input/scoring validation now rejects typed unbalanced sequences on
 either side (including against empty input), cycles/disconnected cyclic
 components and multiple-parent graph inputs. Rust preserves errors from
