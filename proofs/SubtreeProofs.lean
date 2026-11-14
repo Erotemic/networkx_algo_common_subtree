@@ -129,3 +129,4 @@ public import SubtreeProofs.Shared.CopiedMatchingDeletion
 public import SubtreeProofs.Shared.CopiedMatchingInitialization
 public import SubtreeProofs.Shared.AssignmentDualityOn
 public import SubtreeProofs.Shared.CopiedMatchingDuality
+public import SubtreeProofs.Paper2004.IndexedWord

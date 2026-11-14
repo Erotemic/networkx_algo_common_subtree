@@ -438,6 +438,29 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Independent original-index witness contract: 2026-11-14
+
+`Paper2004.IndexedWord` uses Mathlib binary trees whose nodes carry original
+matched-pair indices. Its `Step` deletes a pair at an arbitrary structural
+context and splices the indexed interior before the suffix. `Retains` is the
+operational closure, independently defined without the reconstruction solver
+or erasure. `Retains.erase_embeds` and `tree_embedding` prove this witness
+refines the established independent Dyck/tree contraction relation.
+
+`Retains.indices_sublist` proves deletion retains original identities in their
+original opening/preorder order. `indices_nodup` preserves uniqueness, and
+`index_lt` derives actual original-index bounds under canonical zero-based
+numbering. Mathlib's `BinaryTree.numNodes` counts represented pairs;
+`erase_semilength` and `indices_length` identify it with both unlabeled edge
+score and indexed-list length. The indexed concatenation and context lemmas
+preserve nesting and every retained identity.
+
+This establishes the independent indexed-witness contract. Actual Rust input
+numbering, reconstruction, completeness and composition with the verified
+optimal shape solver remain open. Reconstruction must recover identities from
+each original input after shape memoization, because equal cached shapes may
+occur at different original indices.
+
 ## Actual Rust ordered-isomorphism reference solvers: 2026-11-14
 
 The maintained extraction crate now implements separate root-preserving and
