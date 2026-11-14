@@ -136,12 +136,8 @@ theorem ContractStep.below (left right : List OrderedTree) {before after : Order
       (.node (left ++ [after] ++ right)) := by
   rcases step with ⟨ctx, innerLeft, innerRight, child, hb, ha⟩
   refine ⟨Context.under left right ctx, innerLeft, innerRight, child, ?_, ?_⟩
-  · change .node (left ++ [before] ++ right) =
-        .node (left ++ [ctx.plug (.node (innerLeft ++ [child] ++ innerRight))] ++ right)
-    rw [← hb]
-  · change .node (left ++ [after] ++ right) =
-        .node (left ++ [ctx.plug (.node (innerLeft ++ children child ++ innerRight))] ++ right)
-    rw [← ha]
+  · simpa only [Context.plug, hb]
+  · simpa only [Context.plug, ha]
 
 /-- Every single edge contraction removes exactly one edge. -/
 theorem ContractStep.edgeCount_decreases {before after : OrderedTree}
