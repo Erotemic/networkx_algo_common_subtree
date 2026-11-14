@@ -119,3 +119,7 @@ public import SubtreeProofs.Rust.OrderedArbitraryIsomorphism
 public import SubtreeProofs.Shared.MatchingDeletion
 public import SubtreeProofs.Rust.MatchingDeletionReuse
 public import SubtreeProofs.Rust.MatchingDeletionMask
+public import SubtreeProofs.Rust.MatchingDeletionRepresentation
+public import SubtreeProofs.Rust.MatchingDeletionCorrectness
+public import SubtreeProofs.Rust.MatchingDeletionInvariant
+public import SubtreeProofs.Rust.MatchingDeletionEntrypoint

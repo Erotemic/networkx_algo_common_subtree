@@ -46,3 +46,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.OrderedIsomorphism.rooted_common_isomorphism_of_trees
 #print axioms SubtreeProofs.Rust.OrderedIsomorphism.largest_common_isomorphism_of_trees
+
+#print axioms SubtreeProofs.Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec
+#print axioms SubtreeProofs.Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_spec

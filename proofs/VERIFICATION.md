@@ -105,7 +105,12 @@ optional signed-i64 partial-matching public API total contract, including exact
 input-index pair membership, list uniqueness, independent global optimality,
 exact weight and prescribed shape/size rejection. Actual construction,
 assignment, decoding and checked weight conversion are verified. Graph/Python
-integration and implementation costs remain open. The same supported-operation
+integration and implementation costs remain open. The actual deletion-family
+reference API is verified by
+`Rust/MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`,
+including the original optimum, all deleted optima, exact original indices,
+weights and unmatched-result reuse. It fully recomputes matched deletions;
+paper one-augmentation repair and optimized costs remain separate obligations. The same supported-operation
 and allocation-model boundaries apply. The pinned release
 emits a generic unknown-externals warning in single-file mode for this crate;
 a split-file diagnostic emitted only `Types.lean` and `Funs.lean`, and the

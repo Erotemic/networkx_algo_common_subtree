@@ -23,12 +23,17 @@ open AssignmentColumnScan MatchingAssignmentBridge AssignmentEntrypoint Assignme
 
 /-- Exact returned indices, list uniqueness, independent feasibility/global
 optimality, and exact weight of the actual partial-matching result. -/
-def CorrectPartial (weights : Slice (alloc.vec.Vec (Option I64))) (left right : Usize) (result : matching.PartialMatching) : Prop :=
+def CorrectFor (left right : Usize) (weights : Fin left.val → Fin right.val → Option ℤ)
+    (result : matching.PartialMatching) : Prop :=
   ∃ pairs : Finset (Fin left.val × Fin right.val), (result.pairs.val.map pairValue).Nodup ∧
     (∀ pair : Nat × Nat, pair ∈ result.pairs.val.map pairValue ↔
       ∃ concrete ∈ pairs, (concrete.1.val,concrete.2.val) = pair) ∧
-    WeightedMatching.IsMaximum (weightsModel weights left.val right.val) pairs ∧
-    result.weight.val = WeightedMatching.weight (weightsModel weights left.val right.val) pairs
+    WeightedMatching.IsMaximum weights pairs ∧ result.weight.val = WeightedMatching.weight weights pairs
+
+/-- Specialization of the indexed independent optimum contract to a concrete
+optional-weight input matrix. -/
+def CorrectPartial (weights : Slice (alloc.vec.Vec (Option I64))) (left right : Usize) (result : matching.PartialMatching) : Prop :=
+  CorrectFor left right (weightsModel weights left.val right.val) result
 
 /-- Every integer assignment total is bounded by the number of original
 signed i64 entries in that assignment, independently of optimality. -/

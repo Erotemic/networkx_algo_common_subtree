@@ -82,7 +82,7 @@ algorithm; its repeated matching calls do not establish this bound.
 | Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Executable rerooting baseline is correct by `RootedDP.unrootedOptimum_correct`; exact paper schedule and operation bound open |
 | Theorem 4 | Optimized unrestricted-weight MCSI bound above | Open |
 | Lemma 5 | Rectangular matching work O(k*l*(k+log l)), k<=l | Open cost/rectangular optimization; exhaustive finite matching and actual square signed-i64 assignment total correctness (`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec`) proved separately |
-| Lemma 6 | All one-vertex-deleted matching instances in O(k*l*(min(k,l)+log(max(k,l)))) | Unmatched reuse and affected-vertex count proved by `WeightedMatching.IsMaximum.deleteRight` / `deletion_repair_card_bound`; independent reference family correct; tested/extracted Rust family and actual helper proofs added. Complete source wrapper, one-augmentation repair and runtime open |
+| Lemma 6 | All one-vertex-deleted matching instances in O(k*l*(min(k,l)+log(max(k,l)))) | Unmatched reuse and affected-vertex count proved by `WeightedMatching.IsMaximum.deleteRight` / `deletion_repair_card_bound`; independent reference family and complete actual Rust reference family API proved (`Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`). One-augmentation repair and runtime open |
 | Theorem 7 | Total matching work in Algorithm 1 | Open |
 | Proposition 8 | Faster unrestricted-weight MCSI implies subcubic dense assignment | Open reduction |
 | Theorem 9 | Output-sensitive enumeration with preprocessing as Theorem 4 and per-output min(|G|*DeltaH,DeltaG*|H|) | Open |

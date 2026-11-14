@@ -14,6 +14,40 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual public matching deletion-family total correctness: 2026-11-14
+
+`Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`
+proves the complete actual public reference family API safely terminates on
+every represented input. Admitted inputs return the original independently
+maximum matching and every right-vertex-deleted optimum, with exact original
+input-index pairs, unique pair lists and exact i128 weights. The original
+shape/size rejection is preserved on every other represented input.
+`max_weight_matching_deletions_spec` states admitted-input success directly.
+
+`MatchingDeletionRepresentation` derives preserved row lengths, width,
+admission and exact optional-integer model equality from the actual mask
+construction. `MatchingDeletionCorrectness` connects detector membership to
+independently matched right vertices, proves returned-result reuse sound, and
+transports the already verified single-instance solver to each deleted graph.
+`MatchingDeletionInvariant` proves every actual vector append preserves earlier
+entries and their indices. The complete loop also proves that every unused
+vertex's output is physically equal to the original matching result. All
+counter, vector and mask operations are verified under the existing translation
+and allocation model, with no supplied optimum or local arithmetic certificate.
+
+The indexed result predicate is factored as `MatchingSolveBuiltMatrix.CorrectFor`
+for an arbitrary independent finite weight matrix; `CorrectPartial` is its
+original concrete-input specialization. The existing single-instance public
+proof compiles unchanged in meaning after this factoring.
+
+The full maintained library builds successfully (3,628 jobs). The Rust source
+is unchanged from the tested and extraction-checked helper increment.
+
+Matched deletions still run the full reference assignment solver. This proves
+the whole reference family's functional behavior, not the paper's optimized
+one-augmentation repair or its running-time bound. Graph integration and those
+optimizations remain open.
+
 ## Deletion-family reuse foundations and actual helpers: 2026-11-14
 
 `WeightedMatching.IsMaximum.deleteRight` proves the unmatched-vertex reuse

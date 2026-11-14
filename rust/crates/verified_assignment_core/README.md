@@ -52,7 +52,11 @@ original result for unmatched deletions and fully recomputes matched deletions.
 Independent injection tests cover 392 generated matrices and edge cases.
 Unmatched reuse and its affected-vertex count are proved mathematically; actual
 endpoint detection, result copying and both matrix mask loops are verified.
-The complete Rust family wrapper is still awaiting its refinement proof.
+The complete actual public API now has a total-correctness theorem,
+`Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`:
+every original/deleted result is independently maximum with exact original
+indices, unique pair list and weight, or the original shape/size rejection.
+All unmatched-deletion outputs equal the original result exactly.
 This reference API does not implement the paper's one-augmentation repair.
 
 Graph/Python integration, rectangular and reused matching optimizations, and
