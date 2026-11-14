@@ -4,6 +4,15 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Fixed-root reduction accepted: 2026-11-14
+
+`Droschinsky2016.fixedRootValue_eq_unrootedValue` proves 2016 Lemma 2
+against the independent graph and score specification. Connected selected
+subtrees have a unique top vertex in any fixed left orientation; this supplies
+a rooted representative without changing the witness or score. Ancestry uses
+canonical graph paths, with path closure and injective-map invariance proved.
+The child-matching recurrence, algorithm refinement and complexity are open.
+
 ## Matching reduction accepted: 2026-11-14
 
 `WeightedMatching.AssignmentReduction.minimum_assignment_decodes` now proves

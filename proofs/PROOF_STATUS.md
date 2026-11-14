@@ -166,6 +166,22 @@ Rooted ancestry, full source-witness correspondence, graph DP soundness/
 completeness, optimized matching and Rust refinements remain open. The new
 specifications and finite-existence results are not proofs of those algorithms.
 
+## Fixed-root reduction accepted: 2026-11-14
+
+`Shared.RootedTree` defines ancestry by the unique path and proves transitivity,
+strict depth increase, injective-tree-map invariance, connected-subtree path
+closure and `connected_exists_unique_top`. `Droschinsky2016.RootedValid`
+specifies root-to-root witnesses inside independently defined descendant
+subtrees. `Valid.fixed_root_representative` proves every unrestricted witness
+belongs to the fixed-root family, with a unique representative mapped root.
+`fixedRootValue_eq_unrootedValue` proves the exact variational equality of
+2016 Lemma 2 for the independent score, including negative-infinity weights.
+No dynamic recurrence appears in the definitions of these optima.
+
+Child-matching decomposition/assembly and the actual rooted/unrooted graph
+algorithms and cost bounds remain open. These structural results do not
+verify the Rust graph solvers.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
@@ -197,7 +213,7 @@ specifications and finite-existence results are not proofs of those algorithms.
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed-real dummy reduction proved; Hungarian loop, numeric refinement and complexity open |
-| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; rooted/source completeness and DP/optimization proofs open |
+| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; rooted recurrence/source completeness and DP/optimization proofs open |
 | Verified Python adapters and qualified performance evidence | Open |
 
 The overall program remains active. These results do not complete the paper

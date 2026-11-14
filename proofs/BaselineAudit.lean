@@ -23,3 +23,4 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.MemoizedOrderedSolver.memoized_common_embedding_cache_bound
 
 #print axioms SubtreeProofs.WeightedMatching.AssignmentReduction.minimum_assignment_decodes
+#print axioms SubtreeProofs.Droschinsky2016.fixedRootValue_eq_unrootedValue
