@@ -203,3 +203,6 @@ public import SubtreeProofs.Rust.SparsePathFlipPreservation
 public import SubtreeProofs.Rust.SparsePathFlipLoop
 public import SubtreeProofs.Rust.SparsePathFlipEntrypoint
 public import SubtreeProofs.Rust.SparseAugmentationEntrypoint
+public import SubtreeProofs.Shared.AssignmentFiniteDeletion
+public import SubtreeProofs.Shared.AssignmentCompactDeletionState
+public import SubtreeProofs.Rust.SparseDeletionIndices

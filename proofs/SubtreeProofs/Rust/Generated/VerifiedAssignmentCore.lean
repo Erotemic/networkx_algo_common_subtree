@@ -1876,262 +1876,324 @@ def sparse.advance_sparse_cut
       | core.result.Result.Err error => ok (core.result.Result.Err error)
   | core.result.Result.Err error => ok (core.result.Result.Err error)
 
-/-- [verified_assignment_core::sparse_search::SparseSearch]
-    Source: 'src/sparse_search.rs', lines 9:0-17:1
+/-- [verified_assignment_core::sparse_deletion::SparseDeletedAssignment]
+    Source: 'src/sparse_deletion.rs', lines 8:0-17:1
     Visibility: public -/
-structure sparse_search.SparseSearch where
+structure sparse_deletion.SparseDeletedAssignment where
+  vertices : alloc.vec.Vec Std.Usize
+  column_for_row : alloc.vec.Vec Std.Usize
   rows : alloc.vec.Vec Std.I128
   columns : alloc.vec.Vec Std.I128
-  predecessor_row : alloc.vec.Vec Std.Usize
-  discovery : alloc.vec.Vec Std.Usize
-  target : Std.Usize
-  steps : Std.Usize
+  repaired : Bool
 
-/-- [verified_assignment_core::sparse_search::SparseAugmentation]
-    Source: 'src/sparse_search.rs', lines 19:0-22:1
-    Visibility: public -/
-structure sparse_search.SparseAugmentation where
-  column_for_row : alloc.vec.Vec Std.Usize
-  search : sparse_search.SparseSearch
-
-/-- [verified_assignment_core::sparse_search::inverse_completed]: loop body 0:
-    Source: 'src/sparse_search.rs', lines 31:4-42:5 -/
-@[rust_loop_body]
-def sparse_search.inverse_completed_loop.body
-  (completed : Slice Std.Usize) (n : Std.Usize)
-  (inverse : alloc.vec.Vec Std.Usize) (seen : alloc.vec.Vec Bool)
-  (failure : Option AssignmentError) (row : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × (alloc.vec.Vec Bool) ×
-    (Option AssignmentError) × Std.Usize) ((alloc.vec.Vec Std.Usize) ×
-    (Option AssignmentError)))
+/-- [verified_assignment_core::sparse_deletion::compact_index]:
+    Source: 'src/sparse_deletion.rs', lines 19:0-27:1 -/
+def sparse_deletion.compact_index
+  (vertex : Std.Usize) (removed : Std.Usize) :
+  Result (core.result.Result Std.Usize AssignmentError)
   := do
-  if row < n
+  if vertex = removed
+  then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+  else
+    if vertex < removed
+    then ok (core.result.Result.Ok vertex)
+    else let i ← vertex - 1#usize
+         ok (core.result.Result.Ok i)
+
+/-- [verified_assignment_core::sparse_deletion::surviving_vertices]: loop body 0:
+    Source: 'src/sparse_deletion.rs', lines 32:4-37:5 -/
+@[rust_loop_body]
+def sparse_deletion.surviving_vertices_loop.body
+  (n : Std.Usize) (removed : Std.Usize) (vertices : alloc.vec.Vec Std.Usize)
+  (vertex : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize) (alloc.vec.Vec
+    Std.Usize))
+  := do
+  if vertex < n
+  then
+    let vertices1 ←
+      if vertex != removed
+      then alloc.vec.Vec.push vertices vertex
+      else ok vertices
+    let vertex1 ← vertex + 1#usize
+    ok (cont (vertices1, vertex1))
+  else ok (done vertices)
+
+/-- [verified_assignment_core::sparse_deletion::surviving_vertices]: loop 0:
+    Source: 'src/sparse_deletion.rs', lines 32:4-37:5 -/
+@[rust_loop]
+def sparse_deletion.surviving_vertices_loop
+  (n : Std.Usize) (removed : Std.Usize) (vertices : alloc.vec.Vec Std.Usize)
+  (vertex : Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  loop
+    (fun (vertices1, vertex1) => sparse_deletion.surviving_vertices_loop.body n
+      removed vertices1 vertex1)
+    (vertices, vertex)
+
+/-- [verified_assignment_core::sparse_deletion::surviving_vertices]:
+    Source: 'src/sparse_deletion.rs', lines 29:0-39:1 -/
+@[reducible]
+def sparse_deletion.surviving_vertices
+  (n : Std.Usize) (removed : Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  sparse_deletion.surviving_vertices_loop n removed (alloc.vec.Vec.new
+    Std.Usize) 0#usize
+
+/-- [verified_assignment_core::sparse_deletion::project_row]: loop body 0:
+    Source: 'src/sparse_deletion.rs', lines 44:4-47:5 -/
+@[rust_loop_body]
+def sparse_deletion.project_row_loop.body
+  (values : Slice (Option Std.I64)) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec (Option Std.I64)) (column : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (Option Std.I64)) × Std.Usize)
+    (alloc.vec.Vec (Option Std.I64)))
+  := do
+  let i := Slice.len vertices
+  if column < i
+  then
+    let i1 ← Slice.index_usize vertices column
+    let o ← Slice.index_usize values i1
+    let result1 ← alloc.vec.Vec.push result o
+    let column1 ← column + 1#usize
+    ok (cont (result1, column1))
+  else ok (done result)
+
+/-- [verified_assignment_core::sparse_deletion::project_row]: loop 0:
+    Source: 'src/sparse_deletion.rs', lines 44:4-47:5 -/
+@[rust_loop]
+def sparse_deletion.project_row_loop
+  (values : Slice (Option Std.I64)) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec (Option Std.I64)) (column : Std.Usize) :
+  Result (alloc.vec.Vec (Option Std.I64))
+  := do
+  loop
+    (fun (result1, column1) => sparse_deletion.project_row_loop.body values
+      vertices result1 column1)
+    (result, column)
+
+/-- [verified_assignment_core::sparse_deletion::project_row]:
+    Source: 'src/sparse_deletion.rs', lines 41:0-49:1 -/
+@[reducible]
+def sparse_deletion.project_row
+  (values : Slice (Option Std.I64)) (vertices : Slice Std.Usize) :
+  Result (alloc.vec.Vec (Option Std.I64))
+  := do
+  sparse_deletion.project_row_loop values vertices (alloc.vec.Vec.new (Option
+    Std.I64)) 0#usize
+
+/-- [verified_assignment_core::sparse_deletion::project_cost]: loop body 0:
+    Source: 'src/sparse_deletion.rs', lines 54:4-57:5 -/
+@[rust_loop_body]
+def sparse_deletion.project_cost_loop.body
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))) ×
+    Std.Usize) (alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))))
+  := do
+  let i := Slice.len vertices
+  if row < i
+  then
+    let i1 ← Slice.index_usize vertices row
+    let v ← Slice.index_usize cost i1
+    let s := alloc.vec.Vec.deref v
+    let v1 ← sparse_deletion.project_row s vertices
+    let result1 ← alloc.vec.Vec.push result v1
+    let row1 ← row + 1#usize
+    ok (cont (result1, row1))
+  else ok (done result)
+
+/-- [verified_assignment_core::sparse_deletion::project_cost]: loop 0:
+    Source: 'src/sparse_deletion.rs', lines 54:4-57:5 -/
+@[rust_loop]
+def sparse_deletion.project_cost_loop
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec (Option Std.I64)))
+  := do
+  loop
+    (fun (result1, row1) => sparse_deletion.project_cost_loop.body cost
+      vertices result1 row1)
+    (result, row)
+
+/-- [verified_assignment_core::sparse_deletion::project_cost]:
+    Source: 'src/sparse_deletion.rs', lines 51:0-59:1 -/
+@[reducible]
+def sparse_deletion.project_cost
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (vertices : Slice Std.Usize)
+  :
+  Result (alloc.vec.Vec (alloc.vec.Vec (Option Std.I64)))
+  := do
+  sparse_deletion.project_cost_loop cost vertices (alloc.vec.Vec.new
+    (alloc.vec.Vec (Option Std.I64))) 0#usize
+
+/-- [verified_assignment_core::sparse_deletion::project_potentials]: loop body 0:
+    Source: 'src/sparse_deletion.rs', lines 64:4-67:5 -/
+@[rust_loop_body]
+def sparse_deletion.project_potentials_loop.body
+  (values : Slice Std.I128) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec Std.I128) (vertex : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize) (alloc.vec.Vec
+    Std.I128))
+  := do
+  let i := Slice.len vertices
+  if vertex < i
+  then
+    let i1 ← Slice.index_usize vertices vertex
+    let i2 ← Slice.index_usize values i1
+    let result1 ← alloc.vec.Vec.push result i2
+    let vertex1 ← vertex + 1#usize
+    ok (cont (result1, vertex1))
+  else ok (done result)
+
+/-- [verified_assignment_core::sparse_deletion::project_potentials]: loop 0:
+    Source: 'src/sparse_deletion.rs', lines 64:4-67:5 -/
+@[rust_loop]
+def sparse_deletion.project_potentials_loop
+  (values : Slice Std.I128) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec Std.I128) (vertex : Std.Usize) :
+  Result (alloc.vec.Vec Std.I128)
+  := do
+  loop
+    (fun (result1, vertex1) => sparse_deletion.project_potentials_loop.body
+      values vertices result1 vertex1)
+    (result, vertex)
+
+/-- [verified_assignment_core::sparse_deletion::project_potentials]:
+    Source: 'src/sparse_deletion.rs', lines 61:0-69:1 -/
+@[reducible]
+def sparse_deletion.project_potentials
+  (values : Slice Std.I128) (vertices : Slice Std.Usize) :
+  Result (alloc.vec.Vec Std.I128)
+  := do
+  sparse_deletion.project_potentials_loop values vertices (alloc.vec.Vec.new
+    Std.I128) 0#usize
+
+/-- [verified_assignment_core::sparse_deletion::complete_surviving]: loop body 0:
+    Source: 'src/sparse_deletion.rs', lines 77:4-85:5 -/
+@[rust_loop_body]
+def sparse_deletion.complete_surviving_loop.body
+  (completed : Slice Std.Usize) (vertices : Slice Std.Usize)
+  (removed : Std.Usize) (free_row : Std.Usize) (free_column : Std.Usize)
+  (result : alloc.vec.Vec Std.Usize) (index : Std.Usize)
+  (failure : Option AssignmentError) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize × (Option
+    AssignmentError)) ((alloc.vec.Vec Std.Usize) × (Option AssignmentError)))
+  := do
+  let i := Slice.len vertices
+  if index < i
   then
     let b := core.option.Option.is_none failure
     if b
     then
-      let column ← Slice.index_usize completed row
-      let (inverse1, seen1, failure1) ←
-        if column >= n
-        then ok (inverse, seen, some AssignmentError.InvariantViolation)
-        else
+      let row ← Slice.index_usize vertices index
+      let old_column ←
+        if row = free_row
+        then ok free_column
+        else Slice.index_usize completed row
+      let r ← sparse_deletion.compact_index old_column removed
+      let (result1, failure1) ←
+        match r with
+        | core.result.Result.Ok column =>
           do
-          let b1 ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bool)
-              seen column
-          if b1
-          then ok (inverse, seen, some AssignmentError.InvariantViolation)
-          else
-            let (_, index_mut_back) ←
-              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                Bool) seen column
-            let (_, index_mut_back1) ←
-              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                Std.Usize) inverse column
-            let inverse2 := index_mut_back1 row
-            let seen2 := index_mut_back true
-            ok (inverse2, seen2, failure)
-      let row1 ← row + 1#usize
-      ok (cont (inverse1, seen1, failure1, row1))
-    else ok (done (inverse, failure))
-  else ok (done (inverse, failure))
+          let result2 ← alloc.vec.Vec.push result column
+          ok (result2, failure)
+        | core.result.Result.Err error => ok (result, some error)
+      let index1 ← index + 1#usize
+      ok (cont (result1, index1, failure1))
+    else ok (done (result, failure))
+  else ok (done (result, failure))
 
-/-- [verified_assignment_core::sparse_search::inverse_completed]: loop 0:
-    Source: 'src/sparse_search.rs', lines 31:4-42:5 -/
+/-- [verified_assignment_core::sparse_deletion::complete_surviving]: loop 0:
+    Source: 'src/sparse_deletion.rs', lines 77:4-85:5 -/
 @[rust_loop]
-def sparse_search.inverse_completed_loop
-  (completed : Slice Std.Usize) (n : Std.Usize)
-  (inverse : alloc.vec.Vec Std.Usize) (seen : alloc.vec.Vec Bool)
-  (failure : Option AssignmentError) (row : Std.Usize) :
+def sparse_deletion.complete_surviving_loop
+  (completed : Slice Std.Usize) (vertices : Slice Std.Usize)
+  (removed : Std.Usize) (free_row : Std.Usize) (free_column : Std.Usize)
+  (result : alloc.vec.Vec Std.Usize) (index : Std.Usize)
+  (failure : Option AssignmentError) :
   Result ((alloc.vec.Vec Std.Usize) × (Option AssignmentError))
   := do
   loop
-    (fun (inverse1, seen1, failure1, row1) =>
-      sparse_search.inverse_completed_loop.body completed n inverse1 seen1
-      failure1 row1)
-    (inverse, seen, failure, row)
+    (fun (result1, index1, failure1) =>
+      sparse_deletion.complete_surviving_loop.body completed vertices removed
+      free_row free_column result1 index1 failure1)
+    (result, index, failure)
 
-/-- [verified_assignment_core::sparse_search::inverse_completed]:
-    Source: 'src/sparse_search.rs', lines 25:0-47:1 -/
-def sparse_search.inverse_completed
-  (completed : Slice Std.Usize) :
+/-- [verified_assignment_core::sparse_deletion::complete_surviving]:
+    Source: 'src/sparse_deletion.rs', lines 71:0-90:1 -/
+def sparse_deletion.complete_surviving
+  (completed : Slice Std.Usize) (vertices : Slice Std.Usize)
+  (removed : Std.Usize) (free_row : Std.Usize) (free_column : Std.Usize) :
   Result (core.result.Result (alloc.vec.Vec Std.Usize) AssignmentError)
   := do
-  let n := Slice.len completed
-  let inverse ← zeros_usize n
-  let seen ← unused_columns n
-  let (inverse1, failure) ←
-    sparse_search.inverse_completed_loop completed n inverse seen none 0#usize
+  let (result, failure) ←
+    sparse_deletion.complete_surviving_loop completed vertices removed free_row
+      free_column (alloc.vec.Vec.new Std.Usize) 0#usize none
   match failure with
-  | none => ok (core.result.Result.Ok inverse1)
+  | none => ok (core.result.Result.Ok result)
   | some error => ok (core.result.Result.Err error)
 
-/-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]: loop body 0:
-    Source: 'src/sparse_search.rs', lines 87:4-112:5
-    Visibility: public -/
+/-- [verified_assignment_core::sparse_deletion::original_columns]: loop body 0:
+    Source: 'src/sparse_deletion.rs', lines 96:4-104:5 -/
 @[rust_loop_body]
-def sparse_search.find_sparse_augmenting_path_loop.body
-  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (n : Std.Usize)
-  (inverse : alloc.vec.Vec Std.Usize) (target : Std.Usize)
-  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
-  (selected_rows : alloc.vec.Vec Bool) (selected_columns : alloc.vec.Vec Bool)
-  (predecessor_row : alloc.vec.Vec Std.Usize)
-  (discovery : alloc.vec.Vec Std.Usize) (steps : Std.Usize) (searching : Bool)
+def sparse_deletion.original_columns_loop.body
+  (columns : Slice Std.Usize) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec Std.Usize) (index : Std.Usize)
   (failure : Option AssignmentError) :
-  Result (ControlFlow ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec Bool) × (alloc.vec.Vec Bool) × (alloc.vec.Vec Std.Usize)
-    × (alloc.vec.Vec Std.Usize) × Std.Usize × Bool × (Option
-    AssignmentError)) ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec Std.Usize) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
-    (Option AssignmentError)))
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize × (Option
+    AssignmentError)) ((alloc.vec.Vec Std.Usize) × (Option AssignmentError)))
   := do
-  if searching
+  let i := Slice.len columns
+  if index < i
   then
     let b := core.option.Option.is_none failure
     if b
     then
-      let failure1 ←
-        if steps >= n
-        then ok (some AssignmentError.InvariantViolation)
-        else ok failure
-      let b1 := core.option.Option.is_none failure1
-      if b1
-      then
-        let steps1 ← steps + 1#usize
-        let s := alloc.vec.Vec.deref rows
-        let s1 := alloc.vec.Vec.deref columns
-        let s2 := alloc.vec.Vec.deref selected_rows
-        let s3 := alloc.vec.Vec.deref selected_columns
-        let r ← sparse.advance_sparse_cut cost s s1 s2 s3
-        match r with
-        | core.result.Result.Ok o =>
-          match o with
-          | none =>
-            ok (cont (rows, columns, selected_rows, selected_columns,
-              predecessor_row, discovery, steps1, searching, some
-              AssignmentError.InvariantViolation))
-          | some step =>
-            let (_, index_mut_back) ←
-              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                Std.Usize) predecessor_row step.cut.column
-            let (_, index_mut_back1) ←
-              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                Std.Usize) discovery step.cut.column
-            if step.cut.column = target
-            then
-              let discovery1 := index_mut_back1 steps1
-              let predecessor_row1 := index_mut_back step.cut.row
-              ok (cont (step.rows, step.columns, selected_rows,
-                selected_columns, predecessor_row1, discovery1, steps1, false,
-                failure1))
-            else
-              let (_, index_mut_back2) ←
-                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                  Bool) selected_columns step.cut.column
-              let i ←
-                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                  Std.Usize) inverse step.cut.column
-              let (_, index_mut_back3) ←
-                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                  Bool) selected_rows i
-              let selected_rows1 := index_mut_back3 true
-              let selected_columns1 := index_mut_back2 true
-              let discovery1 := index_mut_back1 steps1
-              let predecessor_row1 := index_mut_back step.cut.row
-              ok (cont (step.rows, step.columns, selected_rows1,
-                selected_columns1, predecessor_row1, discovery1, steps1,
-                searching, failure1))
-        | core.result.Result.Err error =>
-          ok (cont (rows, columns, selected_rows, selected_columns,
-            predecessor_row, discovery, steps1, searching, some error))
-      else
-        ok (cont (rows, columns, selected_rows, selected_columns,
-          predecessor_row, discovery, steps, searching, failure1))
-    else ok (done (rows, columns, predecessor_row, discovery, steps, failure))
-  else ok (done (rows, columns, predecessor_row, discovery, steps, failure))
+      let column ← Slice.index_usize columns index
+      let i1 := Slice.len vertices
+      let (result1, failure1) ←
+        if column >= i1
+        then ok (result, some AssignmentError.InvariantViolation)
+        else
+          do
+          let i2 ← Slice.index_usize vertices column
+          let result2 ← alloc.vec.Vec.push result i2
+          ok (result2, failure)
+      let index1 ← index + 1#usize
+      ok (cont (result1, index1, failure1))
+    else ok (done (result, failure))
+  else ok (done (result, failure))
 
-/-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]: loop 0:
-    Source: 'src/sparse_search.rs', lines 87:4-112:5
-    Visibility: public -/
+/-- [verified_assignment_core::sparse_deletion::original_columns]: loop 0:
+    Source: 'src/sparse_deletion.rs', lines 96:4-104:5 -/
 @[rust_loop]
-def sparse_search.find_sparse_augmenting_path_loop
-  (cost : Slice (alloc.vec.Vec (Option Std.I64)))
-  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
-  (n : Std.Usize) (inverse : alloc.vec.Vec Std.Usize) (target : Std.Usize)
-  (selected_rows : alloc.vec.Vec Bool) (selected_columns : alloc.vec.Vec Bool)
-  (predecessor_row : alloc.vec.Vec Std.Usize)
-  (discovery : alloc.vec.Vec Std.Usize) (steps : Std.Usize) (searching : Bool)
+def sparse_deletion.original_columns_loop
+  (columns : Slice Std.Usize) (vertices : Slice Std.Usize)
+  (result : alloc.vec.Vec Std.Usize) (index : Std.Usize)
   (failure : Option AssignmentError) :
-  Result ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec Std.Usize) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
-    (Option AssignmentError))
+  Result ((alloc.vec.Vec Std.Usize) × (Option AssignmentError))
   := do
   loop
-    (fun (rows1, columns1, selected_rows1, selected_columns1, predecessor_row1,
-      discovery1, steps1, searching1, failure1) =>
-      sparse_search.find_sparse_augmenting_path_loop.body cost n inverse target
-      rows1 columns1 selected_rows1 selected_columns1 predecessor_row1
-      discovery1 steps1 searching1 failure1)
-    (rows, columns, selected_rows, selected_columns, predecessor_row,
-      discovery, steps, searching, failure)
+    (fun (result1, index1, failure1) =>
+      sparse_deletion.original_columns_loop.body columns vertices result1
+      index1 failure1)
+    (result, index, failure)
 
-/-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]:
-    Source: 'src/sparse_search.rs', lines 57:0-117:1
-    Visibility: public -/
-def sparse_search.find_sparse_augmenting_path
-  (cost : Slice (alloc.vec.Vec (Option Std.I64)))
-  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
-  (completed : Slice Std.Usize) (root : Std.Usize) :
-  Result (core.result.Result sparse_search.SparseSearch AssignmentError)
+/-- [verified_assignment_core::sparse_deletion::original_columns]:
+    Source: 'src/sparse_deletion.rs', lines 92:0-109:1 -/
+def sparse_deletion.original_columns
+  (columns : Slice Std.Usize) (vertices : Slice Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.Usize) AssignmentError)
   := do
-  let n := Slice.len cost
-  let i := alloc.vec.Vec.len rows
-  if i != n
-  then ok (core.result.Result.Err AssignmentError.NonSquare)
-  else
-    let i1 := alloc.vec.Vec.len columns
-    if i1 != n
-    then ok (core.result.Result.Err AssignmentError.NonSquare)
-    else
-      let i2 := Slice.len completed
-      if i2 != n
-      then ok (core.result.Result.Err AssignmentError.NonSquare)
-      else
-        let i3 ← lift (UScalar.cast .Usize core.num.U32.MAX)
-        if n > i3
-        then ok (core.result.Result.Err AssignmentError.TooLarge)
-        else
-          if root >= n
-          then ok (core.result.Result.Err AssignmentError.InvariantViolation)
-          else
-            let r ← sparse_search.inverse_completed completed
-            match r with
-            | core.result.Result.Ok value =>
-              let target ← Slice.index_usize completed root
-              let selected_rows ← unused_columns n
-              let predecessor_row ← zeros_usize n
-              let (_, index_mut_back) ←
-                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                  Bool) selected_rows root
-              let selected_rows1 := index_mut_back true
-              let (rows1, columns1, predecessor_row1, discovery, steps,
-                failure) ←
-                sparse_search.find_sparse_augmenting_path_loop cost rows
-                  columns n value target selected_rows1 selected_rows
-                  predecessor_row predecessor_row 0#usize true none
-              match failure with
-              | none =>
-                ok (core.result.Result.Ok
-                  {
-                    rows := rows1,
-                    columns := columns1,
-                    predecessor_row := predecessor_row1,
-                    discovery,
-                    target,
-                    steps
-                  })
-              | some error => ok (core.result.Result.Err error)
-            | core.result.Result.Err error => ok (core.result.Result.Err error)
+  let (result, failure) ←
+    sparse_deletion.original_columns_loop columns vertices (alloc.vec.Vec.new
+      Std.Usize) 0#usize none
+  match failure with
+  | none => ok (core.result.Result.Ok result)
+  | some error => ok (core.result.Result.Err error)
 
 /-- [verified_assignment_core::sparse_search::copy_indices]: loop body 0:
     Source: 'src/sparse_search.rs', lines 122:4-125:5 -/
@@ -2302,6 +2364,263 @@ def sparse_search.flip_sparse_path
               | none => ok (core.result.Result.Ok assignment1)
               | some error => ok (core.result.Result.Err error)
 
+/-- [verified_assignment_core::sparse_search::inverse_completed]: loop body 0:
+    Source: 'src/sparse_search.rs', lines 31:4-42:5 -/
+@[rust_loop_body]
+def sparse_search.inverse_completed_loop.body
+  (completed : Slice Std.Usize) (n : Std.Usize)
+  (inverse : alloc.vec.Vec Std.Usize) (seen : alloc.vec.Vec Bool)
+  (failure : Option AssignmentError) (row : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × (alloc.vec.Vec Bool) ×
+    (Option AssignmentError) × Std.Usize) ((alloc.vec.Vec Std.Usize) ×
+    (Option AssignmentError)))
+  := do
+  if row < n
+  then
+    let b := core.option.Option.is_none failure
+    if b
+    then
+      let column ← Slice.index_usize completed row
+      let (inverse1, seen1, failure1) ←
+        if column >= n
+        then ok (inverse, seen, some AssignmentError.InvariantViolation)
+        else
+          do
+          let b1 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bool)
+              seen column
+          if b1
+          then ok (inverse, seen, some AssignmentError.InvariantViolation)
+          else
+            let (_, index_mut_back) ←
+              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                Bool) seen column
+            let (_, index_mut_back1) ←
+              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                Std.Usize) inverse column
+            let inverse2 := index_mut_back1 row
+            let seen2 := index_mut_back true
+            ok (inverse2, seen2, failure)
+      let row1 ← row + 1#usize
+      ok (cont (inverse1, seen1, failure1, row1))
+    else ok (done (inverse, failure))
+  else ok (done (inverse, failure))
+
+/-- [verified_assignment_core::sparse_search::inverse_completed]: loop 0:
+    Source: 'src/sparse_search.rs', lines 31:4-42:5 -/
+@[rust_loop]
+def sparse_search.inverse_completed_loop
+  (completed : Slice Std.Usize) (n : Std.Usize)
+  (inverse : alloc.vec.Vec Std.Usize) (seen : alloc.vec.Vec Bool)
+  (failure : Option AssignmentError) (row : Std.Usize) :
+  Result ((alloc.vec.Vec Std.Usize) × (Option AssignmentError))
+  := do
+  loop
+    (fun (inverse1, seen1, failure1, row1) =>
+      sparse_search.inverse_completed_loop.body completed n inverse1 seen1
+      failure1 row1)
+    (inverse, seen, failure, row)
+
+/-- [verified_assignment_core::sparse_search::inverse_completed]:
+    Source: 'src/sparse_search.rs', lines 25:0-47:1 -/
+def sparse_search.inverse_completed
+  (completed : Slice Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.Usize) AssignmentError)
+  := do
+  let n := Slice.len completed
+  let inverse ← zeros_usize n
+  let seen ← unused_columns n
+  let (inverse1, failure) ←
+    sparse_search.inverse_completed_loop completed n inverse seen none 0#usize
+  match failure with
+  | none => ok (core.result.Result.Ok inverse1)
+  | some error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::sparse_search::SparseSearch]
+    Source: 'src/sparse_search.rs', lines 9:0-17:1
+    Visibility: public -/
+structure sparse_search.SparseSearch where
+  rows : alloc.vec.Vec Std.I128
+  columns : alloc.vec.Vec Std.I128
+  predecessor_row : alloc.vec.Vec Std.Usize
+  discovery : alloc.vec.Vec Std.Usize
+  target : Std.Usize
+  steps : Std.Usize
+
+/-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]: loop body 0:
+    Source: 'src/sparse_search.rs', lines 87:4-112:5
+    Visibility: public -/
+@[rust_loop_body]
+def sparse_search.find_sparse_augmenting_path_loop.body
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (n : Std.Usize)
+  (inverse : alloc.vec.Vec Std.Usize) (target : Std.Usize)
+  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
+  (selected_rows : alloc.vec.Vec Bool) (selected_columns : alloc.vec.Vec Bool)
+  (predecessor_row : alloc.vec.Vec Std.Usize)
+  (discovery : alloc.vec.Vec Std.Usize) (steps : Std.Usize) (searching : Bool)
+  (failure : Option AssignmentError) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec Bool) × (alloc.vec.Vec Bool) × (alloc.vec.Vec Std.Usize)
+    × (alloc.vec.Vec Std.Usize) × Std.Usize × Bool × (Option
+    AssignmentError)) ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec Std.Usize) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
+    (Option AssignmentError)))
+  := do
+  if searching
+  then
+    let b := core.option.Option.is_none failure
+    if b
+    then
+      let failure1 ←
+        if steps >= n
+        then ok (some AssignmentError.InvariantViolation)
+        else ok failure
+      let b1 := core.option.Option.is_none failure1
+      if b1
+      then
+        let steps1 ← steps + 1#usize
+        let s := alloc.vec.Vec.deref rows
+        let s1 := alloc.vec.Vec.deref columns
+        let s2 := alloc.vec.Vec.deref selected_rows
+        let s3 := alloc.vec.Vec.deref selected_columns
+        let r ← sparse.advance_sparse_cut cost s s1 s2 s3
+        match r with
+        | core.result.Result.Ok o =>
+          match o with
+          | none =>
+            ok (cont (rows, columns, selected_rows, selected_columns,
+              predecessor_row, discovery, steps1, searching, some
+              AssignmentError.InvariantViolation))
+          | some step =>
+            let (_, index_mut_back) ←
+              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                Std.Usize) predecessor_row step.cut.column
+            let (_, index_mut_back1) ←
+              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                Std.Usize) discovery step.cut.column
+            if step.cut.column = target
+            then
+              let discovery1 := index_mut_back1 steps1
+              let predecessor_row1 := index_mut_back step.cut.row
+              ok (cont (step.rows, step.columns, selected_rows,
+                selected_columns, predecessor_row1, discovery1, steps1, false,
+                failure1))
+            else
+              let (_, index_mut_back2) ←
+                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                  Bool) selected_columns step.cut.column
+              let i ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  Std.Usize) inverse step.cut.column
+              let (_, index_mut_back3) ←
+                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                  Bool) selected_rows i
+              let selected_rows1 := index_mut_back3 true
+              let selected_columns1 := index_mut_back2 true
+              let discovery1 := index_mut_back1 steps1
+              let predecessor_row1 := index_mut_back step.cut.row
+              ok (cont (step.rows, step.columns, selected_rows1,
+                selected_columns1, predecessor_row1, discovery1, steps1,
+                searching, failure1))
+        | core.result.Result.Err error =>
+          ok (cont (rows, columns, selected_rows, selected_columns,
+            predecessor_row, discovery, steps1, searching, some error))
+      else
+        ok (cont (rows, columns, selected_rows, selected_columns,
+          predecessor_row, discovery, steps, searching, failure1))
+    else ok (done (rows, columns, predecessor_row, discovery, steps, failure))
+  else ok (done (rows, columns, predecessor_row, discovery, steps, failure))
+
+/-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]: loop 0:
+    Source: 'src/sparse_search.rs', lines 87:4-112:5
+    Visibility: public -/
+@[rust_loop]
+def sparse_search.find_sparse_augmenting_path_loop
+  (cost : Slice (alloc.vec.Vec (Option Std.I64)))
+  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
+  (n : Std.Usize) (inverse : alloc.vec.Vec Std.Usize) (target : Std.Usize)
+  (selected_rows : alloc.vec.Vec Bool) (selected_columns : alloc.vec.Vec Bool)
+  (predecessor_row : alloc.vec.Vec Std.Usize)
+  (discovery : alloc.vec.Vec Std.Usize) (steps : Std.Usize) (searching : Bool)
+  (failure : Option AssignmentError) :
+  Result ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec Std.Usize) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
+    (Option AssignmentError))
+  := do
+  loop
+    (fun (rows1, columns1, selected_rows1, selected_columns1, predecessor_row1,
+      discovery1, steps1, searching1, failure1) =>
+      sparse_search.find_sparse_augmenting_path_loop.body cost n inverse target
+      rows1 columns1 selected_rows1 selected_columns1 predecessor_row1
+      discovery1 steps1 searching1 failure1)
+    (rows, columns, selected_rows, selected_columns, predecessor_row,
+      discovery, steps, searching, failure)
+
+/-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]:
+    Source: 'src/sparse_search.rs', lines 57:0-117:1
+    Visibility: public -/
+def sparse_search.find_sparse_augmenting_path
+  (cost : Slice (alloc.vec.Vec (Option Std.I64)))
+  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
+  (completed : Slice Std.Usize) (root : Std.Usize) :
+  Result (core.result.Result sparse_search.SparseSearch AssignmentError)
+  := do
+  let n := Slice.len cost
+  let i := alloc.vec.Vec.len rows
+  if i != n
+  then ok (core.result.Result.Err AssignmentError.NonSquare)
+  else
+    let i1 := alloc.vec.Vec.len columns
+    if i1 != n
+    then ok (core.result.Result.Err AssignmentError.NonSquare)
+    else
+      let i2 := Slice.len completed
+      if i2 != n
+      then ok (core.result.Result.Err AssignmentError.NonSquare)
+      else
+        let i3 ← lift (UScalar.cast .Usize core.num.U32.MAX)
+        if n > i3
+        then ok (core.result.Result.Err AssignmentError.TooLarge)
+        else
+          if root >= n
+          then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+          else
+            let r ← sparse_search.inverse_completed completed
+            match r with
+            | core.result.Result.Ok value =>
+              let target ← Slice.index_usize completed root
+              let selected_rows ← unused_columns n
+              let predecessor_row ← zeros_usize n
+              let (_, index_mut_back) ←
+                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                  Bool) selected_rows root
+              let selected_rows1 := index_mut_back true
+              let (rows1, columns1, predecessor_row1, discovery, steps,
+                failure) ←
+                sparse_search.find_sparse_augmenting_path_loop cost rows
+                  columns n value target selected_rows1 selected_rows
+                  predecessor_row predecessor_row 0#usize true none
+              match failure with
+              | none =>
+                ok (core.result.Result.Ok
+                  {
+                    rows := rows1,
+                    columns := columns1,
+                    predecessor_row := predecessor_row1,
+                    discovery,
+                    target,
+                    steps
+                  })
+              | some error => ok (core.result.Result.Err error)
+            | core.result.Result.Err error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::sparse_search::SparseAugmentation]
+    Source: 'src/sparse_search.rs', lines 19:0-22:1
+    Visibility: public -/
+structure sparse_search.SparseAugmentation where
+  column_for_row : alloc.vec.Vec Std.Usize
+  search : sparse_search.SparseSearch
+
 /-- [verified_assignment_core::sparse_search::augment_sparse_permutation]:
     Source: 'src/sparse_search.rs', lines 196:0-212:1
     Visibility: public -/
@@ -2323,5 +2642,113 @@ def sparse_search.augment_sparse_permutation
       ok (core.result.Result.Ok { column_for_row := value1, search := value })
     | core.result.Result.Err error => ok (core.result.Result.Err error)
   | core.result.Result.Err error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::sparse_deletion::repair_deleted_sparse_vertex]:
+    Source: 'src/sparse_deletion.rs', lines 119:0-165:1
+    Visibility: public -/
+def sparse_deletion.repair_deleted_sparse_vertex
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (rows : Slice Std.I128)
+  (columns : Slice Std.I128) (completed : Slice Std.Usize)
+  (removed : Std.Usize) :
+  Result (core.result.Result sparse_deletion.SparseDeletedAssignment
+    AssignmentError)
+  := do
+  let n := Slice.len cost
+  let i := Slice.len rows
+  if i != n
+  then ok (core.result.Result.Err AssignmentError.NonSquare)
+  else
+    let i1 := Slice.len columns
+    if i1 != n
+    then ok (core.result.Result.Err AssignmentError.NonSquare)
+    else
+      let i2 := Slice.len completed
+      if i2 != n
+      then ok (core.result.Result.Err AssignmentError.NonSquare)
+      else
+        let b ← sparse.square_shape cost
+        if b
+        then
+          let i3 ← lift (UScalar.cast .Usize core.num.U32.MAX)
+          if n > i3
+          then ok (core.result.Result.Err AssignmentError.TooLarge)
+          else
+            if removed >= n
+            then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+            else
+              let r ← sparse_search.inverse_completed completed
+              match r with
+              | core.result.Result.Ok value =>
+                let free_row ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    Std.Usize) value removed
+                let free_column ← Slice.index_usize completed removed
+                let vertices ← sparse_deletion.surviving_vertices n removed
+                let s := alloc.vec.Vec.deref vertices
+                let projected_cost ← sparse_deletion.project_cost cost s
+                let s1 := alloc.vec.Vec.deref vertices
+                let projected_rows ←
+                  sparse_deletion.project_potentials rows s1
+                let s2 := alloc.vec.Vec.deref vertices
+                let projected_columns ←
+                  sparse_deletion.project_potentials columns s2
+                let s3 := alloc.vec.Vec.deref vertices
+                let r1 ←
+                  sparse_deletion.complete_surviving completed s3 removed
+                    free_row free_column
+                match r1 with
+                | core.result.Result.Ok value1 =>
+                  if free_column != removed
+                  then
+                    let r2 ← sparse_deletion.compact_index free_row removed
+                    match r2 with
+                    | core.result.Result.Ok value2 =>
+                      let s4 := alloc.vec.Vec.deref projected_cost
+                      let s5 := alloc.vec.Vec.deref value1
+                      let r3 ←
+                        sparse_search.augment_sparse_permutation s4
+                          projected_rows projected_columns s5 value2
+                      match r3 with
+                      | core.result.Result.Ok value3 =>
+                        let s6 := alloc.vec.Vec.deref value3.column_for_row
+                        let s7 := alloc.vec.Vec.deref vertices
+                        let r4 ← sparse_deletion.original_columns s6 s7
+                        match r4 with
+                        | core.result.Result.Ok value4 =>
+                          ok (core.result.Result.Ok
+                            {
+                              vertices,
+                              column_for_row := value4,
+                              rows := value3.search.rows,
+                              columns := value3.search.columns,
+                              repaired := (free_column != removed)
+                            })
+                        | core.result.Result.Err error =>
+                          ok (core.result.Result.Err error)
+                      | core.result.Result.Err error =>
+                        ok (core.result.Result.Err error)
+                    | core.result.Result.Err error =>
+                      ok (core.result.Result.Err error)
+                  else
+                    let s4 := alloc.vec.Vec.deref value1
+                    let s5 := alloc.vec.Vec.deref vertices
+                    let r2 ← sparse_deletion.original_columns s4 s5
+                    match r2 with
+                    | core.result.Result.Ok value2 =>
+                      ok (core.result.Result.Ok
+                        {
+                          vertices,
+                          column_for_row := value2,
+                          rows := projected_rows,
+                          columns := projected_columns,
+                          repaired := (free_column != removed)
+                        })
+                    | core.result.Result.Err error =>
+                      ok (core.result.Result.Err error)
+                | core.result.Result.Err error =>
+                  ok (core.result.Result.Err error)
+              | core.result.Result.Err error =>
+                ok (core.result.Result.Err error)
+        else ok (core.result.Result.Err AssignmentError.NonSquare)
 
 end verified_assignment_core

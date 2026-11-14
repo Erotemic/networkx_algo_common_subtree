@@ -22,7 +22,7 @@ pub struct SparseAugmentation {
 }
 
 /// Validate and invert a completed permutation, including the temporary edge.
-fn inverse_completed(completed: &[usize]) -> Result<Vec<usize>, AssignmentError> {
+pub(crate) fn inverse_completed(completed: &[usize]) -> Result<Vec<usize>, AssignmentError> {
     let n = completed.len();
     let mut inverse = zeros_usize(n);
     let mut seen = unused_columns(n);

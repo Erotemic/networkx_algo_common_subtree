@@ -38,6 +38,36 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## Compact original-index deletion warm starts and source caller: 2026-11-14
+
+`Shared/AssignmentFiniteDeletion` uses Mathlib's increasing `Fin.succAbove`
+embedding to enumerate exactly the surviving original vertices, proves its
+exact skip-index expansion/compression formulas, and transports the bypassed
+permutation into compact coordinates. Every nonfree row keeps its old edge;
+the unique temporary completion joins the actual surviving old free row and
+column. Paired deletion retains every surviving edge.
+
+`AssignmentReindex` preserves exact assignment/dual objectives, sparse
+feasibility, compatibility, minima and two-sided envelopes under coordinate
+equivalence. `AssignmentCompactDeletionState.compact_deletion_state` proves
+the projected warm start preserves sparse feasibility, the full two-sided
+envelope and exact dual accounting with the removed contributions subtracted,
+and derives the surviving dimension's cumulative bound from identity edges.
+The removed baseline coordinates are zero, as for paper right-vertex/copy
+deletion. `compact_seed` proves all nonfree projected edges remain allowed and
+tight. `Rust/SparseDeletionIndices` verifies actual source compression on all
+represented scalars and its exact correspondence with this equivalence.
+
+The actual Rust `sparse_deletion::repair_deleted_sparse_vertex` now projects
+the graph/potentials, bypass-completes the surviving assignment, reuses fixed
+deletions or calls one verified sparse augmentation, and exports original row
+and column indices. It translates, and all fifteen exact-core tests pass,
+including 546 deletions of certified old optima through dimension six against
+exhaustive induced-graph optima, both reuse/repair branches, feasible/tight
+returned duals and malformed inputs. Its complete projection/caller source
+refinement, original partial-matching family integration and optimized runtime
+remain open; tests do not replace those Lean obligations.
+
 ## Actual single-path sparse augmentation verified end to end: 2026-11-14
 
 `Rust/SparseAugmentationEntrypoint.augment_sparse_permutation_spec` proves

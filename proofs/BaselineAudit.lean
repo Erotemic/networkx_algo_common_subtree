@@ -111,3 +111,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.SparseSearch.flip_sparse_path_spec
 #print axioms SubtreeProofs.Rust.SparseSearch.augment_sparse_permutation_spec
+
+#print axioms SubtreeProofs.AssignmentVertexDeletion.compact_deletion_state
+#print axioms SubtreeProofs.Rust.SparseDeletion.compact_index_total_spec

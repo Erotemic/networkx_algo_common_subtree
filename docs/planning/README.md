@@ -18,6 +18,17 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Verified actual one-path sparse augmentation: 2026-11-14
+
+The actual signed-integer sparse search and checked path flip now have an
+end-to-end independent minimum-permutation theorem from a feasible/tight
+single-deficit matching and the paper's two-sided numeric invariant:
+`Rust.SparseSearch.augment_sparse_permutation_spec`. Original-index readback,
+rank/path construction, arithmetic safety and termination are derived. The
+compact copied-graph deletion caller is implemented and tested, with projection
+and warm-start source refinement still in progress. Full-matrix scans remain
+a reference; the published optimized queue/runtime is open.
+
 ## Actual token and forest APIs with guided witnesses: 2026-11-14
 
 The flat Boolean Rust API is totally verified with original token readback,

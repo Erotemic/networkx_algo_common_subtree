@@ -28,7 +28,7 @@ fn select_cut(previous: Option<SparseCut>, candidate: SparseCut) -> SparseCut {
     }
 }
 
-fn square_shape(cost: &[Vec<Option<i64>>]) -> bool {
+pub(crate) fn square_shape(cost: &[Vec<Option<i64>>]) -> bool {
     let mut row = 0;
     while row < cost.len() {
         if cost[row].len() != cost.len() {
