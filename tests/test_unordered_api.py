@@ -238,3 +238,38 @@ def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves)
     if leaves == 2:
         exhaustive = common.maximum_common_subtree_isomorphism(left, right, node_weight=weight, impl="python")
         assert exhaustive.weight == optimum
+
+
+@pytest.mark.parametrize("kind", ["iso", "embedding"])
+def test_reordered_edges_keep_callback_indices_and_optima(kind):
+    if "rust" not in common.available_unordered_backends():
+        if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
+            pytest.fail("required weighted graph Rust bindings are missing")
+        pytest.skip("optional weighted graph Rust bindings are missing")
+    left_edges = [(3, 4), (0, 3), (1, 3), (1, 2)]
+    right_edges = [(0, 4), (2, 4), (1, 2), (2, 3)]
+    rng = random.Random(20162018)
+    nodes = {(u, v): rng.choice([None, -.5, .125, 1.25]) for u in range(5) for v in range(5)}
+    edges = {(frozenset(a), frozenset(b)): rng.choice([None, -1, .25, 2.5])
+             for a in left_edges for b in right_edges}
+    kwargs = dict(node_weight=lambda u, v: nodes[u, v],
+                  edge_weight=lambda a, b: edges[frozenset(a), frozenset(b)])
+    if kind == "iso":
+        solver, scorer = common.maximum_common_subtree_isomorphism, common.score_common_subtree_isomorphism
+    else:
+        solver, scorer = (common.largest_weight_common_subtree_embedding_with_distance_penalty,
+                          common.score_common_subtree_embedding)
+        kwargs["skip_vertex_penalty"] = .125
+    optima = []
+    for reverse in [False, True]:
+        left, right = nx.Graph(), nx.Graph()
+        left.add_nodes_from(range(5))
+        right.add_nodes_from(range(5))
+        left.add_edges_from(left_edges[::-1] if reverse else left_edges)
+        right.add_edges_from(right_edges[::-1] if reverse else right_edges)
+        result = solver(left, right, impl="rust", **kwargs)
+        oracle = solver(left, right, impl="python", **kwargs)
+        assert result.weight == oracle.weight
+        assert scorer(left, right, result, **kwargs) == result.weight
+        optima.append(result.weight)
+    assert optima[0] == optima[1]

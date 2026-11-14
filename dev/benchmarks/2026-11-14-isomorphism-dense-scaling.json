@@ -1,0 +1,1750 @@
+{
+  "python": "3.13.2 (main, Mar 17 2025, 21:02:54) [Clang 20.1.0 ]",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "package_path": "/tmp/common-subtree-dense-install/networkx_algo_common_subtree/__init__.py",
+  "extension_path": "/tmp/common-subtree-dense-install/networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-gnu.so",
+  "extension_sha256": "9a07439172977bf17b6733daa5a08deb6074a997ed6b2e65c9a4b63adc4f72fe",
+  "configuration": {
+    "sizes": "64,128,256,512",
+    "shapes": "chain,star,balanced,random,double-star,chain-star",
+    "repeat": 7,
+    "warmup": 2,
+    "oracle_max_size": 4,
+    "seed": 2018,
+    "algorithm": "isomorphism",
+    "module_trees": false,
+    "json": "/home/joncrall/code/networkx_algo_common_subtree/dev/benchmarks/2026-11-14-isomorphism-dense-scaling.json"
+  },
+  "rows": [
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001649803,
+        0.001630038,
+        0.001620159,
+        0.002155024,
+        0.002263121,
+        0.002529614,
+        0.002119924
+      ],
+      "median_seconds": 0.002119924,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001426552,
+        0.001461127,
+        0.001448464,
+        0.001384634,
+        0.001445928,
+        0.001405161,
+        0.001433388
+      ],
+      "median_seconds": 0.001433388,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000885152,
+        0.000928697,
+        0.000840231,
+        0.00116285,
+        0.000912325,
+        0.00083691,
+        0.000870809
+      ],
+      "median_seconds": 0.000885152,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000738279,
+        0.00070737,
+        0.000715134,
+        0.000750473,
+        0.00067911,
+        0.000684156,
+        0.000781701
+      ],
+      "median_seconds": 0.000715134,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000965091,
+        0.00103355,
+        0.001036283,
+        0.001114294,
+        0.001009258,
+        0.0009979,
+        0.0009553
+      ],
+      "median_seconds": 0.001009258,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001047873,
+        0.001220826,
+        0.001122089,
+        0.001023127,
+        0.001186944,
+        0.001146274,
+        0.000842508
+      ],
+      "median_seconds": 0.001122089,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000397295,
+        0.00044115,
+        0.000414327,
+        0.000401877,
+        0.000427802,
+        0.000405529,
+        0.000411824
+      ],
+      "median_seconds": 0.000411824,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.00032164,
+        0.000340005,
+        0.000343936,
+        0.000324227,
+        0.00031308,
+        0.000343385,
+        0.000324372
+      ],
+      "median_seconds": 0.000324372,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001766645,
+        0.001720245,
+        0.001808691,
+        0.001889009,
+        0.001977946,
+        0.002087599,
+        0.002029281
+      ],
+      "median_seconds": 0.001889009,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001702578,
+        0.001710913,
+        0.00163008,
+        0.001659141,
+        0.001649645,
+        0.001634732,
+        0.002001813
+      ],
+      "median_seconds": 0.001659141,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000959365,
+        0.000920317,
+        0.000911533,
+        0.000914484,
+        0.000939878,
+        0.000905082,
+        0.000904216
+      ],
+      "median_seconds": 0.000914484,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000858175,
+        0.000901275,
+        0.000845162,
+        0.000868037,
+        0.000952697,
+        0.000848385,
+        0.000845284
+      ],
+      "median_seconds": 0.000858175,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001558083,
+        0.0015908,
+        0.001533567,
+        0.001554021,
+        0.001584185,
+        0.00151219,
+        0.001603989
+      ],
+      "median_seconds": 0.001558083,
+      "weight": 93.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001419402,
+        0.001645168,
+        0.001432582,
+        0.001431158,
+        0.001413593,
+        0.001382725,
+        0.001490477
+      ],
+      "median_seconds": 0.001431158,
+      "weight": 93.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000813852,
+        0.000825625,
+        0.000767052,
+        0.000773945,
+        0.000808362,
+        0.000804649,
+        0.000742679
+      ],
+      "median_seconds": 0.000804649,
+      "weight": 59.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000631208,
+        0.000625803,
+        0.000629026,
+        0.000628672,
+        0.000629005,
+        0.00071751,
+        0.000650553
+      ],
+      "median_seconds": 0.000629026,
+      "weight": 59.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001177857,
+        0.001203565,
+        0.001185836,
+        0.001180937,
+        0.001236781,
+        0.001165514,
+        0.001216651
+      ],
+      "median_seconds": 0.001185836,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001040485,
+        0.001019526,
+        0.001014848,
+        0.001077183,
+        0.001063788,
+        0.001078814,
+        0.00107484
+      ],
+      "median_seconds": 0.001063788,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00040024,
+        0.000399407,
+        0.000410006,
+        0.000383303,
+        0.000388392,
+        0.000361657,
+        0.000365866
+      ],
+      "median_seconds": 0.000388392,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000271771,
+        0.000266148,
+        0.000292887,
+        0.000279266,
+        0.000272011,
+        0.00027214,
+        0.000279901
+      ],
+      "median_seconds": 0.00027214,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000842751,
+        0.000837759,
+        0.000795151,
+        0.000773198,
+        0.000900352,
+        0.000859712,
+        0.00083173
+      ],
+      "median_seconds": 0.000837759,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 64,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000675108,
+        0.000677736,
+        0.000678904,
+        0.000703823,
+        0.000736822,
+        0.000718843,
+        0.000680579
+      ],
+      "median_seconds": 0.000680579,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000434552,
+        0.000435053,
+        0.000439435,
+        0.000441409,
+        0.000440795,
+        0.000431664,
+        0.000450292
+      ],
+      "median_seconds": 0.000439435,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 64,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000356434,
+        0.000422619,
+        0.000353344,
+        0.000347059,
+        0.000351626,
+        0.000354885,
+        0.000344183
+      ],
+      "median_seconds": 0.000353344,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.006792967,
+        0.006893061,
+        0.006131483,
+        0.005649782,
+        0.005934649,
+        0.005622793,
+        0.005621903
+      ],
+      "median_seconds": 0.005934649,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.005458285,
+        0.005783033,
+        0.005602623,
+        0.005565692,
+        0.005369846,
+        0.005585836,
+        0.005451624
+      ],
+      "median_seconds": 0.005565692,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.002984908,
+        0.002912662,
+        0.003096177,
+        0.003427391,
+        0.003590359,
+        0.005159801,
+        0.003428289
+      ],
+      "median_seconds": 0.003427391,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.003265059,
+        0.002954797,
+        0.0031932,
+        0.002867754,
+        0.002790781,
+        0.003117846,
+        0.002766512
+      ],
+      "median_seconds": 0.002954797,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.005165637,
+        0.005223381,
+        0.005408677,
+        0.004955243,
+        0.005042429,
+        0.005132083,
+        0.004966115
+      ],
+      "median_seconds": 0.005132083,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.00448271,
+        0.004463556,
+        0.004441558,
+        0.004461172,
+        0.004526873,
+        0.005286849,
+        0.004624395
+      ],
+      "median_seconds": 0.00448271,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001712868,
+        0.001714407,
+        0.001719345,
+        0.001748243,
+        0.001728657,
+        0.001775105,
+        0.001721674
+      ],
+      "median_seconds": 0.001721674,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001556444,
+        0.001546404,
+        0.001620807,
+        0.001538442,
+        0.001575215,
+        0.001628289,
+        0.001666493
+      ],
+      "median_seconds": 0.001575215,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.006516586,
+        0.006493236,
+        0.006626162,
+        0.006590728,
+        0.006460935,
+        0.006455091,
+        0.006560721
+      ],
+      "median_seconds": 0.006516586,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.006558327,
+        0.006930671,
+        0.006773073,
+        0.00672092,
+        0.006737704,
+        0.006610183,
+        0.006514567
+      ],
+      "median_seconds": 0.00672092,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.003476038,
+        0.003493608,
+        0.003500606,
+        0.003452862,
+        0.00348824,
+        0.003402463,
+        0.00350554
+      ],
+      "median_seconds": 0.00348824,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.003255997,
+        0.003248081,
+        0.003317802,
+        0.003490699,
+        0.003261026,
+        0.003264748,
+        0.003254635
+      ],
+      "median_seconds": 0.003261026,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.005826138,
+        0.006064767,
+        0.005919167,
+        0.005864573,
+        0.006016793,
+        0.005911372,
+        0.006109033
+      ],
+      "median_seconds": 0.005919167,
+      "weight": 173.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.005346361,
+        0.005321642,
+        0.005373585,
+        0.005350879,
+        0.005867397,
+        0.005452428,
+        0.005317776
+      ],
+      "median_seconds": 0.005350879,
+      "weight": 173.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.003026507,
+        0.003075809,
+        0.003022309,
+        0.003012283,
+        0.002926572,
+        0.002984662,
+        0.00297002
+      ],
+      "median_seconds": 0.003012283,
+      "weight": 115.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.002773886,
+        0.002687338,
+        0.00261435,
+        0.002678064,
+        0.002589659,
+        0.00259619,
+        0.002672786
+      ],
+      "median_seconds": 0.002672786,
+      "weight": 115.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.006983734,
+        0.006978164,
+        0.007147126,
+        0.007319114,
+        0.007024243,
+        0.007123755,
+        0.007186903
+      ],
+      "median_seconds": 0.007123755,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.007031527,
+        0.007032024,
+        0.006788851,
+        0.007065382,
+        0.006916959,
+        0.006807927,
+        0.006599214
+      ],
+      "median_seconds": 0.006916959,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.002180026,
+        0.001945149,
+        0.002800909,
+        0.002093349,
+        0.001735944,
+        0.001788388,
+        0.001742649
+      ],
+      "median_seconds": 0.001945149,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001564123,
+        0.001529498,
+        0.001524193,
+        0.001497285,
+        0.001518518,
+        0.001493915,
+        0.001491308
+      ],
+      "median_seconds": 0.001518518,
+      "weight": 127.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.003358167,
+        0.003323198,
+        0.003164158,
+        0.003111846,
+        0.003014765,
+        0.003137378,
+        0.002959957
+      ],
+      "median_seconds": 0.003137378,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 128,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.00305784,
+        0.003536074,
+        0.003573024,
+        0.003381959,
+        0.00349879,
+        0.003191247,
+        0.003916364
+      ],
+      "median_seconds": 0.00349879,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001692868,
+        0.001592217,
+        0.001612783,
+        0.00158471,
+        0.001607202,
+        0.001658076,
+        0.001677246
+      ],
+      "median_seconds": 0.001612783,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 128,
+      "right_size": 64,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001432533,
+        0.00170538,
+        0.001635234,
+        0.001470437,
+        0.001501633,
+        0.001586734,
+        0.001502992
+      ],
+      "median_seconds": 0.001502992,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.025873691,
+        0.0255012,
+        0.024882936,
+        0.025023835,
+        0.026551214,
+        0.025477802,
+        0.02607357
+      ],
+      "median_seconds": 0.0255012,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.02452261,
+        0.025256891,
+        0.025512308,
+        0.024028821,
+        0.025217391,
+        0.025028355,
+        0.023808705
+      ],
+      "median_seconds": 0.025028355,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.01190652,
+        0.012447143,
+        0.013352151,
+        0.012577405,
+        0.01233466,
+        0.01252872,
+        0.012078157
+      ],
+      "median_seconds": 0.012447143,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.012594632,
+        0.012260949,
+        0.011553771,
+        0.012258133,
+        0.01255563,
+        0.012925871,
+        0.012524076
+      ],
+      "median_seconds": 0.012524076,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.032561471,
+        0.033394024,
+        0.033155898,
+        0.032020197,
+        0.032265283,
+        0.032323181,
+        0.032922053
+      ],
+      "median_seconds": 0.032561471,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.032582352,
+        0.032625561,
+        0.032810337,
+        0.032866792,
+        0.032832904,
+        0.036317088,
+        0.033623527
+      ],
+      "median_seconds": 0.032832904,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.010981567,
+        0.010891144,
+        0.011060041,
+        0.01087524,
+        0.010702351,
+        0.011194323,
+        0.010937397
+      ],
+      "median_seconds": 0.010937397,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.01022629,
+        0.010273097,
+        0.010345911,
+        0.010235985,
+        0.010204733,
+        0.01010857,
+        0.011093457
+      ],
+      "median_seconds": 0.010235985,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.028341467,
+        0.028938368,
+        0.029014798,
+        0.029166315,
+        0.029874993,
+        0.02983519,
+        0.029973001
+      ],
+      "median_seconds": 0.029166315,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.028674585,
+        0.029046931,
+        0.02875722,
+        0.028342059,
+        0.027444339,
+        0.028574861,
+        0.027881899
+      ],
+      "median_seconds": 0.028574861,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.013875686,
+        0.014466398,
+        0.013922289,
+        0.014070038,
+        0.014257392,
+        0.013974362,
+        0.014007266
+      ],
+      "median_seconds": 0.014007266,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.013622946,
+        0.013674019,
+        0.013799784,
+        0.01353874,
+        0.014694815,
+        0.013974845,
+        0.012947179
+      ],
+      "median_seconds": 0.013674019,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.024614981,
+        0.026127606,
+        0.02457188,
+        0.023608007,
+        0.025668532,
+        0.026007154,
+        0.026369692
+      ],
+      "median_seconds": 0.025668532,
+      "weight": 285.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.039290857,
+        0.027514411,
+        0.045970739,
+        0.03694529,
+        0.025750481,
+        0.025970241,
+        0.026173624
+      ],
+      "median_seconds": 0.027514411,
+      "weight": 285.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.019522666,
+        0.030549964,
+        0.026357538,
+        0.0157724,
+        0.013230433,
+        0.017518176,
+        0.019764612
+      ],
+      "median_seconds": 0.019522666,
+      "weight": 209.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.012727626,
+        0.012948678,
+        0.013049467,
+        0.013021061,
+        0.013247158,
+        0.012808016,
+        0.013331232
+      ],
+      "median_seconds": 0.013021061,
+      "weight": 209.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.052285677,
+        0.053371594,
+        0.055785538,
+        0.061247771,
+        0.051722348,
+        0.050995059,
+        0.051034035
+      ],
+      "median_seconds": 0.052285677,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.050548355,
+        0.050529287,
+        0.05024931,
+        0.050658274,
+        0.051891506,
+        0.050710862,
+        0.050727377
+      ],
+      "median_seconds": 0.050658274,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.009447398,
+        0.009070526,
+        0.009236928,
+        0.009379412,
+        0.009329061,
+        0.009172582,
+        0.009297522
+      ],
+      "median_seconds": 0.009297522,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.009594951,
+        0.009633097,
+        0.009210016,
+        0.008834573,
+        0.008821594,
+        0.009424025,
+        0.00897983
+      ],
+      "median_seconds": 0.009210016,
+      "weight": 255.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.014012437,
+        0.013644566,
+        0.013844063,
+        0.013402044,
+        0.013479601,
+        0.013541202,
+        0.013835928
+      ],
+      "median_seconds": 0.013644566,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 256,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.01337158,
+        0.0128109,
+        0.013004172,
+        0.01286771,
+        0.012995714,
+        0.013275246,
+        0.012777381
+      ],
+      "median_seconds": 0.012995714,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "rust",
+      "samples_seconds": [
+        0.006748655,
+        0.007175838,
+        0.006563141,
+        0.006385492,
+        0.006780079,
+        0.006616894,
+        0.006570905
+      ],
+      "median_seconds": 0.006616894,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 256,
+      "right_size": 128,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.005973554,
+        0.006282334,
+        0.006545641,
+        0.006102549,
+        0.006200063,
+        0.00661341,
+        0.006108925
+      ],
+      "median_seconds": 0.006200063,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "rust",
+      "samples_seconds": [
+        0.112256286,
+        0.112561821,
+        0.112477038,
+        0.112709566,
+        0.14841862,
+        0.113961327,
+        0.112217343
+      ],
+      "median_seconds": 0.112561821,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.127944064,
+        0.134401217,
+        0.123737949,
+        0.121258314,
+        0.12452347,
+        0.127382642,
+        0.124803219
+      ],
+      "median_seconds": 0.124803219,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.060721964,
+        0.059904576,
+        0.060024298,
+        0.059398404,
+        0.059248244,
+        0.060124741,
+        0.058206438
+      ],
+      "median_seconds": 0.059904576,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.059821735,
+        0.059175326,
+        0.059307182,
+        0.059789255,
+        0.059699573,
+        0.060112334,
+        0.058548746
+      ],
+      "median_seconds": 0.059699573,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "rust",
+      "samples_seconds": [
+        0.237021521,
+        0.239357856,
+        0.239047348,
+        0.244928255,
+        0.233133742,
+        0.228997909,
+        0.235126274
+      ],
+      "median_seconds": 0.237021521,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.240277138,
+        0.241024717,
+        0.239471643,
+        0.242665802,
+        0.246469039,
+        0.248391166,
+        0.24363358
+      ],
+      "median_seconds": 0.242665802,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.090847543,
+        0.083862349,
+        0.08014101,
+        0.086524688,
+        0.086604503,
+        0.080968519,
+        0.080178317
+      ],
+      "median_seconds": 0.083862349,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.079633571,
+        0.083825305,
+        0.082625725,
+        0.078779674,
+        0.080022351,
+        0.084355917,
+        0.086228442
+      ],
+      "median_seconds": 0.082625725,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "rust",
+      "samples_seconds": [
+        0.132626868,
+        0.132281557,
+        0.136479291,
+        0.133513137,
+        0.135027733,
+        0.140280267,
+        0.139823461
+      ],
+      "median_seconds": 0.135027733,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.126885859,
+        0.126083276,
+        0.120910198,
+        0.121810348,
+        0.121974711,
+        0.124411337,
+        0.124601975
+      ],
+      "median_seconds": 0.124411337,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.065980845,
+        0.063272356,
+        0.063683175,
+        0.063590164,
+        0.062513064,
+        0.062011227,
+        0.063011745
+      ],
+      "median_seconds": 0.063272356,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.067400825,
+        0.064217333,
+        0.061961327,
+        0.05993258,
+        0.06184368,
+        0.068230095,
+        0.059262604
+      ],
+      "median_seconds": 0.061961327,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "rust",
+      "samples_seconds": [
+        0.157713258,
+        0.157041214,
+        0.141639793,
+        0.140468391,
+        0.131746316,
+        0.131636369,
+        0.137323368
+      ],
+      "median_seconds": 0.140468391,
+      "weight": 523.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.124225652,
+        0.119002278,
+        0.122479172,
+        0.122770485,
+        0.119920205,
+        0.119364537,
+        0.117137534
+      ],
+      "median_seconds": 0.119920205,
+      "weight": 523.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.054705773,
+        0.058994286,
+        0.054730925,
+        0.056687065,
+        0.055241001,
+        0.0609586,
+        0.05956929
+      ],
+      "median_seconds": 0.056687065,
+      "weight": 377.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.060702865,
+        0.063888415,
+        0.062129968,
+        0.058743837,
+        0.055092568,
+        0.053812709,
+        0.054638147
+      ],
+      "median_seconds": 0.058743837,
+      "weight": 377.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "rust",
+      "samples_seconds": [
+        0.36907072,
+        0.358307009,
+        0.374698273,
+        0.368822044,
+        0.384544201,
+        0.371601198,
+        0.357443601
+      ],
+      "median_seconds": 0.36907072,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.375958193,
+        0.379941068,
+        0.362067802,
+        0.355632406,
+        0.365826362,
+        0.383529401,
+        0.382559289
+      ],
+      "median_seconds": 0.375958193,
+      "weight": 1023.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.060874087,
+        0.060180935,
+        0.05851413,
+        0.058405228,
+        0.058747793,
+        0.060144257,
+        0.058884408
+      ],
+      "median_seconds": 0.058884408,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.055706359,
+        0.055536951,
+        0.059933788,
+        0.059523196,
+        0.058528053,
+        0.058037609,
+        0.056002514
+      ],
+      "median_seconds": 0.058037609,
+      "weight": 511.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "rust",
+      "samples_seconds": [
+        0.057741213,
+        0.058614314,
+        0.059205248,
+        0.05760994,
+        0.061738025,
+        0.059623626,
+        0.059494387
+      ],
+      "median_seconds": 0.059205248,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 512,
+      "right_size": 512,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.058283089,
+        0.059446202,
+        0.058400779,
+        0.060634416,
+        0.066473659,
+        0.07692233,
+        0.062304325
+      ],
+      "median_seconds": 0.060634416,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "rust",
+      "samples_seconds": [
+        0.028417231,
+        0.027047188,
+        0.026739668,
+        0.027718722,
+        0.028549176,
+        0.026851492,
+        0.026339668
+      ],
+      "median_seconds": 0.027047188,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 512,
+      "right_size": 256,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.026639307,
+        0.025744819,
+        0.025696252,
+        0.025136832,
+        0.025530917,
+        0.025098198,
+        0.025818051
+      ],
+      "median_seconds": 0.025696252,
+      "weight": 5.0
+    }
+  ],
+  "process_peak_rss_bytes": 133369856
+}

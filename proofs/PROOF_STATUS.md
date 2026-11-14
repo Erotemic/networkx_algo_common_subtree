@@ -61,6 +61,14 @@ copying is removed and measured memory/runtime improve, but the choice pool,
 tie rule and f64 graph implementation have no new source-refinement or runtime
 theorem. Existing mathematical/exact-core proof endpoints are preserved.
 
+2016 production memoization now uses a dense table of fixed-left/oriented-right
+states, with binary-search parent and edge lookup. Matching-family reuse and
+choice storage supply a written operation-count argument for the published
+2016 target under explicit arithmetic/query costs. All 44 native and 165
+installed Python tests pass. This argument and measured scaling to 512-node
+inputs are not a Lean complexity theorem or actual-source refinement; those
+remain open alongside f64 arithmetic correspondence and the 2018 schedule.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

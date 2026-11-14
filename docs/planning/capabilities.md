@@ -103,6 +103,15 @@ proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-
 
 ## Immediate implementation queue
 
+2016 now uses a dense oriented-state table and binary-search edge lookup.
+All **44 Rust** and **165 installed Python tests** pass. Module-tree APIs
+improve **2.74–2.99×** over choice storage; the earlier matching-family
+regressions are removed. A 96-row scaling run reaches 512 vertices per side.
+There is now an operation-count argument matching the 2016 target under
+explicit arithmetic/query costs, **not a Lean complexity proof**. Production
+refinement and 2018's optimized schedule remain open.
+[Measured timings, allocations and argument](../../dev/benchmarks/2026-11-14-isomorphism-dense.md).
+
 Both graph families now store score/choice IDs and reconstruct only the final
 winning witness. All 44 native and 163 installed Python tests pass. On the
 166/319 2018 case, peak requested heap falls **106→55 MB** and the installed

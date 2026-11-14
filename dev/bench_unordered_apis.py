@@ -53,6 +53,7 @@ def main():
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--oracle-max-size", type=int, default=4)
     parser.add_argument("--seed", type=int, default=2018)
+    parser.add_argument("--algorithm", choices=["both", "isomorphism", "embedding"], default="both")
     parser.add_argument("--module-trees", action="store_true", help="Also measure three existing ResNet-sized fixtures")
     parser.add_argument("--json", type=Path, required=True)
     args = parser.parse_args()
@@ -87,6 +88,10 @@ def main():
             ("largest_weight_common_subtree_embedding_with_distance_penalty", common.score_common_subtree_embedding,
              {"skip_vertex_penalty": .25}),
         ]:
+            if args.algorithm == "isomorphism" and name != "maximum_common_subtree_isomorphism":
+                continue
+            if args.algorithm == "embedding" and name == "maximum_common_subtree_isomorphism":
+                continue
             values = []
             for backend in ["rust", "raw-pyo3"] + (["python"] if max(n, m) <= args.oracle_max_size else []):
                 if backend == "raw-pyo3":

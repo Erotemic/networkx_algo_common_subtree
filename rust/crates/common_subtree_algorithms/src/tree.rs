@@ -75,6 +75,9 @@ impl LabeledTree {
             adj[u].push(EdgeRef { to: v, label });
             adj[v].push(EdgeRef { to: u, label });
         }
+        for neighbors in &mut adj {
+            neighbors.sort_unstable_by_key(|edge| edge.to);
+        }
 
         let mut seen = vec![false; n];
         let mut queue = VecDeque::from([0usize]);
@@ -109,7 +112,7 @@ impl LabeledTree {
         self.node_labels[node]
     }
 
-    /// Adjacent edges of a node.
+    /// Adjacent edges of a node, sorted by neighbor index.
     pub fn neighbors(&self, node: NodeId) -> &[EdgeRef] {
         &self.adj[node]
     }
@@ -117,9 +120,9 @@ impl LabeledTree {
     /// Label of the edge between two adjacent nodes.
     pub fn edge_label(&self, u: NodeId, v: NodeId) -> Option<i64> {
         self.adj[u]
-            .iter()
-            .find(|edge| edge.to == v)
-            .map(|edge| edge.label)
+            .binary_search_by_key(&v, |edge| edge.to)
+            .ok()
+            .map(|position| self.adj[u][position].label)
     }
 }
 
@@ -263,11 +266,59 @@ impl State {
     }
 }
 
+// The 2016 left tree has one fixed orientation. Each right vertex has a whole
+// view and one view per excluded parent: 3*m-2 views in a nonempty tree. A
+// binary search in sorted neighbors locates the parent in O(log degree).
+// None is uncomputed; Some(None) is a computed incompatible state.
+#[derive(Default)]
+struct IsomorphismTable {
+    offsets: Vec<usize>,
+    entries: Vec<Option<Option<SolverResult>>>,
+}
+
+impl IsomorphismTable {
+    fn new(left_size: usize, right: &LabeledTree) -> Self {
+        let mut offsets = Vec::with_capacity(right.len() + 1);
+        offsets.push(0usize);
+        for v in 0..right.len() {
+            let next = offsets[v]
+                .checked_add(right.neighbors(v).len() + 1)
+                .expect("isomorphism view count overflow");
+            offsets.push(next);
+        }
+        let length = left_size
+            .checked_mul(offsets[right.len()])
+            .expect("isomorphism table dimension overflow");
+        Self {
+            offsets,
+            entries: vec![None; length],
+        }
+    }
+
+    fn index(&self, right: &LabeledTree, state: State) -> usize {
+        let local = match state.parent_v {
+            None => 0,
+            Some(parent) => {
+                1 + right
+                    .neighbors(state.v)
+                    .binary_search_by_key(&parent, |edge| edge.to)
+                    .expect("a view parent is an adjacent vertex")
+            }
+        };
+        state.u * self.offsets[right.len()] + self.offsets[state.v] + local
+    }
+
+    fn insert(&mut self, right: &LabeledTree, state: State, value: Option<SolverResult>) {
+        let index = self.index(right, state);
+        self.entries[index] = Some(value);
+    }
+}
+
 struct RootedSolver<'a, S: Scoring> {
     left: &'a LabeledTree,
     right: &'a LabeledTree,
     scoring: &'a S,
-    iso_memo: HashMap<StateKey, Option<SolverResult>>,
+    iso_memo: IsomorphismTable,
     embedding_memo: HashMap<StateKey, Option<SolverResult>>,
     skipped_memo: HashMap<StateKey, Option<SolverResult>>,
     choices: Vec<WitnessNode>,
@@ -280,7 +331,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             left,
             right,
             scoring,
-            iso_memo: HashMap::new(),
+            iso_memo: IsomorphismTable::new(left.len(), right),
             embedding_memo: HashMap::new(),
             skipped_memo: HashMap::new(),
             choices: Vec::new(),
@@ -298,7 +349,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             left,
             right,
             scoring,
-            iso_memo: HashMap::new(),
+            iso_memo: IsomorphismTable::default(),
             embedding_memo: HashMap::new(),
             skipped_memo: HashMap::new(),
             choices: Vec::new(),
@@ -331,12 +382,13 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
     }
 
     fn rooted_isomorphism(&mut self, state: State) -> Option<SolverResult> {
-        if let Some(found) = self.iso_memo.get(&state.key()) {
-            return *found;
+        let index = self.iso_memo.index(self.right, state);
+        if let Some(found) = self.iso_memo.entries[index] {
+            return found;
         }
 
         let result = self.compute_rooted_isomorphism(state);
-        self.iso_memo.insert(state.key(), result);
+        self.iso_memo.entries[index] = Some(result);
         result
     }
 
@@ -408,7 +460,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             };
             let full =
                 self.combine_rooted_matches(whole, root_weight, &matchings.base, &child_results);
-            self.iso_memo.insert(whole.key(), Some(full));
+            self.iso_memo.insert(self.right, whole, Some(full));
             for (edge, changed) in right_children.iter().zip(&matchings.deletions) {
                 let partial = State {
                     parent_v: Some(edge.to),
@@ -420,9 +472,10 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                         self.combine_rooted_matches(partial, root_weight, matching, &child_results)
                     }
                 };
-                self.iso_memo.insert(partial.key(), Some(result));
+                self.iso_memo.insert(self.right, partial, Some(result));
             }
-            return self.iso_memo[&state.key()];
+            return self.iso_memo.entries[self.iso_memo.index(self.right, state)]
+                .expect("the requested parent view was computed");
         }
         let matching = max_weight_bipartite_matching(&matrix);
         Some(self.combine_rooted_matches(state, root_weight, &matching, &child_results))
