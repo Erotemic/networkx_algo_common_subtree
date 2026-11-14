@@ -77,3 +77,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Assignment.exists_single_cycle_repair
 #print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.matched_single_cycle_repair
+
+#print axioms SubtreeProofs.Assignment.exists_cut_adjustment_on
+#print axioms SubtreeProofs.Assignment.ideal_adjustment_increment_bound_on

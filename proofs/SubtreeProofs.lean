@@ -163,3 +163,4 @@ public import SubtreeProofs.Rust.GuidedOwnedPayload
 public import SubtreeProofs.Shared.AssignmentCycleRepair
 public import SubtreeProofs.Shared.AssignmentDeletedPermutation
 public import SubtreeProofs.Shared.CopiedMatchingRepair
+public import SubtreeProofs.Shared.AssignmentSparsePotentials

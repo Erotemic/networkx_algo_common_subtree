@@ -14,6 +14,24 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Sparse cut progress and numeric envelope: 2026-11-14
+
+`AssignmentSparsePotentials.exists_allowed_crossing` derives a real allowed
+edge across every alternating cut with more selected rows than columns from
+one compatible perfect assignment. `exists_cut_adjustment_on` minimizes over
+only actual cut edges, derives nonnegative attained slack, preserves sparse
+dual feasibility and creates a tight allowed edge. Forbidden pairs receive no
+finite replacement cost. Existing tight-edge preservation and one-excess-row
+objective accounting apply to the same update.
+
+`dualValue_le_card_mul_on` and `total_increment_bound_on` use sparse weak duality
+and allowed-edge cost bounds to prove the dimension/cost envelope.
+`ideal_adjustment_increment_bound_on` establishes the next cumulative bound
+before any machine update is assumed representable. This extends the independent
+numeric-safety argument used by the dense exact reference to the source sparse
+APM setting. Executable sparse scans/search, priority-queue costs and the full
+paper repair/refinement remain open.
+
 ## One-cycle optimal repair of the paper copied graph: 2026-11-14
 
 `Shared/AssignmentCycleRepair` reuses Mathlib permutation cycles to prove the
