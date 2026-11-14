@@ -6,6 +6,20 @@ Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtr
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Accepted increment: 2026-11-14
+
+The complete existing library and new `ContractionOracle.lean` compile in
+the VM. `mem_contractions_iff` proves the independent tree enumerator complete;
+`maximumCommonContraction_correct` proves its returned tree globally optimal.
+The printed-containment counterexample is compiled. W6 is now demonstrated:
+pinned real Rust extraction, reproducible generated Lean and
+`Rust.contractionBudget_refines_tree` all pass. W3-W5 and W7-W10 remain open;
+this exhaustive baseline does not prove Lemma 8 or a polynomial-time solver.
+
+See [current proof evidence](../../proofs/PROOF_STATUS.md) and
+[reproduction instructions](../../proofs/VERIFICATION.md). Historical baseline
+and pending-build descriptions below are superseded by this increment.
+
 ## 0. Present state and immediate milestone
 
 The old `proofs` branch and v3-v6 proof sources are retired from active imports.

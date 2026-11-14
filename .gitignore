@@ -108,3 +108,6 @@ CMakeInit.txt
 
 *.tar.gz
 cargo-target
+
+# Charon intermediate representation (regenerated from maintained Rust)
+*.llbc

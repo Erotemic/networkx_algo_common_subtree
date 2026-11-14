@@ -67,7 +67,7 @@ theorem nested_unique_top_level_decomposition
       simpa only [add_assoc] using h
     have hFirst := congrArg DyckWord.firstReturn h'
     simp only [DyckWord.firstReturn_nest, DyckWord.firstReturn_add,
-      if_neg hNonempty] at hFirst
+      ite_eq_right hNonempty] at hFirst
     have hBound := DyckWord.firstReturn_lt_length hNonempty
     have hLeftCount := DyckWord.two_mul_semilength_eq_length (p := leftWords)
     have hInsideCount := DyckWord.two_mul_semilength_eq_length (p := inside)
@@ -80,7 +80,7 @@ theorem nested_unique_top_level_decomposition
   have hFirst := congrArg DyckWord.firstReturn hReduced
   have hNonzero : middle.nest ≠ 0 := DyckWord.nest_ne_zero
   simp only [DyckWord.firstReturn_nest, DyckWord.firstReturn_add,
-    if_neg hNonzero] at hFirst
+    ite_eq_right hNonzero] at hFirst
   have hInsideCount := DyckWord.two_mul_semilength_eq_length (p := inside)
   have hMiddleCount := DyckWord.two_mul_semilength_eq_length (p := middle)
   have hRightSize : rightWords.semilength = 0 := by omega

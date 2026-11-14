@@ -1,0 +1,49 @@
+name: Mathematical and Rust verification
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Install pinned Lean toolchain
+        run: |
+          curl --fail --silent --show-error --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Restore mathematical dependencies
+        working-directory: proofs
+        run: lake exe cache get
+      - name: Regenerate real Rust semantics
+        run: dev/regenerate_rust_lean.sh --check
+      - name: Compile all maintained mathematical and refinement modules
+        working-directory: proofs
+        run: lake build
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: dtolnay/rust-toolchain@1.95.0
+      - name: Test graph algorithms and exhaustive witness oracles
+        run: cargo test --locked --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml
+      - name: Test extraction core
+        run: cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
+  independent-oracles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5.1.1
+        with:
+          python-version: '3.13'
+      - name: Install oracle dependencies
+        run: python -m pip install pytest -r requirements/runtime.txt
+      - name: Independent tree and sequence enumeration
+        run: |
+          python proofs/checks/check_printed_containment.py
+          python proofs/checks/check_tree_contraction_oracle.py
+          python proofs/checks/check_paper_dp_recurrence.py
+      - name: Independent graph witnesses and paper scoring
+        run: python -m pytest tests/test_common_subtree_reference.py tests/test_common_subtree_reference_properties.py tests/test_common_subtree_correctness_fixtures.py

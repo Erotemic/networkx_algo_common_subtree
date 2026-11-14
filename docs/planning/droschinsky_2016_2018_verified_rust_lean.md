@@ -4,6 +4,21 @@ Status: paper references and Rust reference code available; mathematical formali
 Updated: 2026-11-13  
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Accepted increment: 2026-11-14
+
+The Python reference and Rust two-state DP now implement Definition 4's
+path score, including longer paths with incompatible edge labels. Both 1.75
+discriminators pass. An independent Rust partial-injection oracle validates
+small-tree optima and returned witnesses, including negative vertex weights
+and edge rewards. The Python oracle rejects omitted branch points.
+`WeightedMatching.solveMatrix_correct` proves an executable exhaustive
+integer-weight partial-matching solver; Hungarian refinement and paper DP
+proofs remain open. The graph-only Rust suite passes 27 tests.
+
+See [current proof evidence](../../proofs/PROOF_STATUS.md) and
+[reproduction instructions](../../proofs/VERIFICATION.md). Historical baseline
+and pending-build descriptions below are superseded by this increment.
+
 ## 1. Scope: two papers, two objectives
 
 These papers are independent of the Lozano-Valiente ordered-tree proof, though

@@ -12,6 +12,21 @@ Detailed work packages live in:
 - [Droschinsky, Kriege, Mutzel (2016 and 2018) plan](droschinsky_2016_2018_verified_rust_lean.md)
 - [Planning index and evidence map](README.md)
 
+## Accepted increment: 2026-11-14
+
+The current library compiles under pinned Lean/Mathlib 4.35.0 and has a
+reviewed public endpoint dependency baseline. New accepted results are the
+complete independent contraction enumerator, its maximum-tree witness theorem,
+an exhaustive integer-weight partial-matching optimizer, and a refinement
+lemma about an actual Charon/Aeneas-generated Rust contraction operation.
+The 2018 scoring/feasibility discrepancy is corrected in both references and
+covered by independent mapping enumeration. CI is configured. Full paper DP,
+complexity, optimized Rust solver refinement and integration remain open.
+
+See [current proof evidence](../../proofs/PROOF_STATUS.md) and
+[reproduction instructions](../../proofs/VERIFICATION.md). Historical baseline
+and pending-build descriptions below are superseded by this increment.
+
 ## 1. What we intend to accomplish
 
 Build a serious mathematical and implementation verification project for **three

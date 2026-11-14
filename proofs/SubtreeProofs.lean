@@ -7,3 +7,8 @@ public import SubtreeProofs.Paper2004.ContractionSoundness
 public import SubtreeProofs.Paper2004.ContractionCompleteness
 public import SubtreeProofs.Paper2004.PaperContainment
 public import SubtreeProofs.Paper2004.PrintedContainmentCounterexample
+
+public import SubtreeProofs.Paper2004.ContractionOracle
+public import SubtreeProofs.Rust.ContractionBudget
+
+public import SubtreeProofs.Shared.WeightedMatching

@@ -16,6 +16,35 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Executed progress: 2026-11-14
+
+The full Lean 4.35.0 library now builds in the VM with its nested `.lake`
+bind-mounted to ext4. The current evidence and exact theorem names are in
+[`proofs/PROOF_STATUS.md`](../../proofs/PROOF_STATUS.md); reproduction and
+translation pins are in [`proofs/VERIFICATION.md`](../../proofs/VERIFICATION.md).
+The older starting-point table below is historical.
+
+Completed increments:
+
+- Two-way operational contraction/encoding bridge and the printed Definition 2
+  counterexample compile; the public endpoint dependency baseline is reviewed.
+- An independent executable Lean contraction oracle is proved to return an
+  `IsMaximumCommon` tree, with a complete contraction enumeration theorem.
+- An executable finite integer-weight partial-matching oracle has a global
+  optimality theorem against independently defined feasible matchings.
+- Actual Rust source translates with pinned Charon/Aeneas; generated Lean
+  builds and a refinement theorem connects the contraction budget to trees.
+- The 2018 Python scorer/oracle and Rust reference DP use Definition 4's path
+  scoring; both 1.75 discriminator cases pass. Omitted branch-point selections
+  are rejected; exhaustive Rust mapping enumeration validates optimal scores
+  and returned witnesses on small trees.
+- Focused Lean, Rust, regeneration and independent-oracle CI is configured;
+  the first remote run remains pending.
+
+Next: paper statement ledgers, D/R/S combinatorics and the 2004 DP optimality
+proof, then verified matching/graph recurrences and actual solver extraction.
+The exhaustive reference solvers establish baselines, not published running times.
+
 ## Starting point as of 2026-11-13 (after reported successful Lean build)
 
 | Priority | Immediate action | Evidence of completion |

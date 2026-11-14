@@ -1,5 +1,17 @@
 # Lozano--Valiente (2004): Definition 2 containment audit
 
+## Accepted increment: 2026-11-14
+
+`PrintedContainmentCounterexample.lean` now compiles in the executed VM
+build. In particular `printed_containment_not_complete` and the distinct
+printed/operational optimum bounds are accepted. The independent executable
+contraction oracle is now certified by `mem_contractions_iff` and
+`maximumCommonContraction_correct`. Lemma 8's general correctness remains open.
+
+See [current proof evidence](../../proofs/PROOF_STATUS.md) and
+[reproduction instructions](../../proofs/VERIFICATION.md). Historical baseline
+and pending-build descriptions below are superseded by this increment.
+
 ## Source and precise issue
 
 Primary source: Antoni Lozano and Gabriel Valiente, *On the Maximum Common
