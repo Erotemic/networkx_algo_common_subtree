@@ -79,6 +79,14 @@ proof. Logarithmic view/edge lookup also remains an implementation gap to the
 precise 2018 bound. Existing recurrence and reference evaluator proofs remain
 preserved; full verification is still required for the final verified release.
 
+Directed-edge view IDs and original edge indices now remove parent/label
+searches from both production solvers; scalar and callback-table branch queries
+are constant time. A written operation-count argument now matches the 2018
+core bound with explicit arithmetic/scoring assumptions. All 44 native and 172
+installed tests pass, including five ABI3 runtimes. This closes an implementation
+cost gap, not any Lean dichotomy, choice-witness, source-refinement, f64 or
+complexity obligation. Those proofs remain required for the final release.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

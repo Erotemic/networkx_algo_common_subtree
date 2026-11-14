@@ -54,6 +54,7 @@ def main():
     parser.add_argument("--oracle-max-size", type=int, default=4)
     parser.add_argument("--seed", type=int, default=2018)
     parser.add_argument("--algorithm", choices=["both", "isomorphism", "embedding"], default="both")
+    parser.add_argument("--weights", choices=["scalar", "callbacks"], default="scalar")
     parser.add_argument("--module-trees", action="store_true", help="Also measure three existing ResNet-sized fixtures")
     parser.add_argument("--json", type=Path, required=True)
     args = parser.parse_args()
@@ -83,6 +84,20 @@ def main():
         rl = [data.get("label", 0) for _, data in right.nodes(data=True)]
         le = [(u, v, data.get("label", 0)) for u, v, data in left.edges(data=True)]
         re = [(u, v, data.get("label", 0)) for u, v, data in right.edges(data=True)]
+        api_weights, raw_weights = {}, {}
+        if args.weights == "callbacks":
+            def node_weight(u, v):
+                return 1.0 + .125 * (u % 3 == v % 3)
+            def edge_weight(a, b):
+                return .25 + .125 * (sum(a) % 3 == sum(b) % 3)
+            api_weights = dict(node_weight=node_weight, edge_weight=edge_weight)
+            # Raw timing starts from the same materialized score tables that
+            # the installed public API prepares on every invocation.
+            raw_weights = dict(
+                node_weights=[[node_weight(u, v) if ll[u] == rl[v] else None for v in range(m)] for u in range(n)],
+                edge_weights=[[edge_weight((u, v), (x, y)) if a == b else None
+                               for x, y, b in re] for u, v, a in le],
+            )
         for name, scorer, extra in [
             ("maximum_common_subtree_isomorphism", common.score_common_subtree_isomorphism, {}),
             ("largest_weight_common_subtree_embedding_with_distance_penalty", common.score_common_subtree_embedding,
@@ -96,16 +111,16 @@ def main():
             for backend in ["rust", "raw-pyo3"] + (["python"] if max(n, m) <= args.oracle_max_size else []):
                 if backend == "raw-pyo3":
                     def call():
-                        return getattr(_rust, name)(ll, le, rl, re, **extra)
+                        return getattr(_rust, name)(ll, le, rl, re, **raw_weights, **extra)
                 else:
                     def call():
-                        return getattr(common, name)(left, right, impl=backend, **labels, **extra)
+                        return getattr(common, name)(left, right, impl=backend, **labels, **api_weights, **extra)
                 samples, result = measure(call, args.repeat, args.warmup)
                 weight = result[0] if backend == "raw-pyo3" else result.weight
                 if backend != "raw-pyo3":
-                    assert scorer(left, right, result, **labels, **extra) == weight
+                    assert scorer(left, right, result, **labels, **api_weights, **extra) == weight
                 values.append(weight)
-                row = dict(algorithm=name, shape=shape, left_size=n, right_size=m, backend=backend,
+                row = dict(algorithm=name, shape=shape, left_size=n, right_size=m, backend=backend, weights=args.weights,
                            samples_seconds=samples, median_seconds=statistics.median(samples), weight=weight)
                 rows.append(row)
                 print(json.dumps(row), flush=True)

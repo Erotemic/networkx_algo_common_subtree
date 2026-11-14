@@ -13,7 +13,8 @@
 //! extension in `rust/` and by native benchmarks. Independent exhaustive tests
 //! validate its witnesses/objectives. Related matching families and fixed-left
 //! orientations improve both solvers; f64 source refinement and formal published
-//! runtime proofs remain open, including the 2018 constant-time view lookup.
+//! runtime proofs remain open. Directed-edge view and score-table lookups are
+//! constant time in the production kernels.
 
 pub mod matching;
 pub mod model_trees;

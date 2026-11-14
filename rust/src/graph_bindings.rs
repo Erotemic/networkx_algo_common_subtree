@@ -14,8 +14,6 @@ type GraphResult = (f64, Vec<(usize, usize)>, Paths);
 struct TableScoring {
     nodes: Option<Matrix>,
     edges: Option<Matrix>,
-    left_edge: FxHashMap<(usize, usize), usize>,
-    right_edge: FxHashMap<(usize, usize), usize>,
     default: ExactLabelScoring,
 }
 
@@ -42,8 +40,29 @@ impl Scoring for TableScoring {
         vc: usize,
     ) -> Option<f64> {
         match &self.edges {
-            Some(weights) => weights[self.left_edge[&(u, uc)]][self.right_edge[&(v, vc)]],
+            Some(weights) => {
+                let a = left.neighbors(u).iter().find(|edge| edge.to == uc)?;
+                let b = right.neighbors(v).iter().find(|edge| edge.to == vc)?;
+                weights[a.index][b.index]
+            }
             None => self.default.edge_weight(left, u, uc, right, v, vc),
+        }
+    }
+
+    fn branch_weight(
+        &self,
+        left: &LabeledTree,
+        u: usize,
+        left_edge: algorithms::EdgeRef,
+        right: &LabeledTree,
+        v: usize,
+        right_edge: algorithms::EdgeRef,
+    ) -> Option<f64> {
+        match &self.edges {
+            Some(weights) => weights[left_edge.index][right_edge.index],
+            None => self
+                .default
+                .branch_weight(left, u, left_edge, right, v, right_edge),
         }
     }
 }
@@ -66,14 +85,6 @@ fn validate_matrix(weights: &Matrix, rows: usize, columns: usize) -> PyResult<()
         finite(*value)?;
     }
     Ok(())
-}
-
-fn edge_indices(edges: &Edges) -> FxHashMap<(usize, usize), usize> {
-    edges
-        .iter()
-        .enumerate()
-        .flat_map(|(index, &(u, v, _))| [((u, v), index), ((v, u), index)])
-        .collect()
 }
 
 fn checked_call<T>(call: impl FnOnce() -> T) -> PyResult<T> {
@@ -225,8 +236,6 @@ fn solve_graph(
     let scoring = TableScoring {
         nodes,
         edges,
-        left_edge: edge_indices(&left_edges),
-        right_edge: edge_indices(&right_edges),
         default: ExactLabelScoring {
             node_match_weight,
             edge_match_weight,

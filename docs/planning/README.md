@@ -46,8 +46,9 @@ passes the complete 172-test API suite on each CPython 3.10–3.14.
 
 2018 now uses the fixed-left mapped/skipped schedule and includes the skipped
 highest-vertex path case. Independent high-degree/path oracles pass; installed
-APIs improve 179× on 32/32 stars and 19–36× on module trees. Constant-time
-view/edge lookup, production refinement and formal complexity remain open.
+APIs improve 179× on 32/32 stars and 19–36× on module trees. Directed view IDs
+and original edge metadata now remove the remaining core lookup cost. Efficient
+public witness rescoring, production refinement and formal complexity remain open.
 [Implementation and evidence](../../dev/benchmarks/2026-11-14-embedding-schedule.md).
 
 2016 now reuses high-degree right-parent deletion families; exhaustive matching

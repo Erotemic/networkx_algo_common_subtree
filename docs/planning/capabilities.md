@@ -12,7 +12,7 @@ milestones; full verification remains a final verified-release requirement.
 | Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; independent original-parent subset enumeration checks adjacency-preserving forest feasibility and optima | Single-label exhaustive cases, multicolor equality and fractional original-node affinity comparisons pass. Verified structural reference Rust core exists but original-index verified Python backend is missing |
 | Root-preserving ordered isomorphism | Both isomorphism APIs accept `rooted=True`; same backends/default | Exposes the already-computed level state; 529 exhaustive small pairs, 80 fractional original-index cases, graph root retention and independent rescoring | Installed Rust median 2.16x/1.57x faster than Python/Cython on the rooted weighted suite. Existing unweighted root-pruning math/source reference is distinct from this weighted legacy production implementation; its refinement remains open |
 | Droschinsky 2016 weighted unordered isomorphism | Public `maximum_common_subtree_isomorphism`; `auto` selects Rust, Python exhaustive fallback | Existing Rust DP bound through PyO3; signed/fractional scalar or callback weights, optional label equality, empty/nonempty objectives, original-node/path witnesses and independent rescorer | Dense oriented-state DP, fixed-left rooting and matching deletion families have independent checks and a written operation-count argument for the 2016 target. Graph Rust refinement and formal optimized runtime remain open |
-| Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Existing Rust DP; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Fixed-left matching families, rerooted skips and distinct-branch joins are implemented/tested. Installed module cases improve 19–36×; constant-time lookup, formal runtime and graph Rust refinement remain open |
+| Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Existing Rust DP; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Fixed-left matching families, rerooted skips and distinct-branch joins are implemented/tested. Installed module cases improve 19–36×; Constant-time view/branch lookup is implemented; formal runtime and graph Rust refinement remain open |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching`, exhaustive injection tests | Used internally by graph DP. Signed optional weights; f64 arithmetic, not an exact-integer proof |
 | Exact assignment / partial matching | Public `min_cost_assignment` / `max_weight_partial_matching`, Rust required | `verified_assignment_core`; signed i64, checked i128, forbidden edges, public dual certificates; independent permutation/injection tests and integer-boundary cases | Actual total-correctness Lean endpoints prove optimum and exact indices/weight. PyO3/Python conversion remains tested, not source proved |
 | Exact sparse augmentation / deletion repair | Standalone Rust only | Actual one-path augmentation verified; compact deletion caller implemented, 546 induced-instance tests | Caller projection/refinement still open. Full-matrix cut scans; published optimized sparse queue/runtime not implemented |
@@ -102,6 +102,16 @@ exists only in a separate benchmark executable; the math/production-source
 proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-14-graph-shared-witness.md).
 
 ## Immediate implementation queue
+
+Both graph solvers now use direct directed-edge view IDs and branch metadata.
+Parent/edge searches, adjacency sorting and callback-table hash lookups are
+removed from core work. All **44 native** and **172 installed Python tests**
+pass. A written operation-count argument now matches the 2018 O(n*m*minΔ)
+core target under constant-time scoring; **formal runtime/refinement remains
+open**. Scalar 2018 module APIs improve another **1.16–2.29×**; callback API
+and raw costs are recorded separately. Large scaling exposed slow independent
+Python rescoring, which must be made practical next.
+[Evidence and limits](../../dev/benchmarks/2026-11-14-directed-view-ids.md).
 
 2018 now uses fixed-left postorder matching families, two-pass right skip
 messages and the skipped-highest path case with distinct left branches.

@@ -21,8 +21,10 @@ reports. Dense all-right-deletion matching reuse is now integrated into 2016;
 both families store reconstruction choices instead of full per-state mappings.
 Independent deletion and graph oracles pass. The 2018 fixed-left mapped/skipped
 schedule and skipped-highest path join are implemented and independently
-tested. Constant-time view/edge lookup and complete production complexity/
-refinement remain implementation and proof tasks. Substantial formal work below is
+tested. Directed-edge IDs and original edge metadata now give constant-time
+view/branch queries, with a written operation-count argument. Efficient public
+witness rescoring and complete production complexity/refinement remain tasks.
+Substantial formal work below is
 deferred until software coverage/correctness/performance are established;
 existing proofs are preserved, and full verification remains a final-release
 blocker.
