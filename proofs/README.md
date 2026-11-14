@@ -1,20 +1,33 @@
-# Common subtree verification (fresh start)
+# Lozano-Valiente 2004: fresh formalization
 
-This directory is reserved for the new Lean 4 formalization of Lozano and
-Valiente (2004), and the proofs relating the new Rust implementation to its
-mathematical specification through Charon/Aeneas.
+This is the new Lean 4 development for maximum common embedded subtrees of
+finite, rooted, **ordered** trees, with the historical proof attempts excluded.
+The plan is in `../docs/planning/lozano_valiente_2004_verified_rust_lean.md`.
 
-The previous proof modules, experiments, runtime scaffolding and handoff notes
-have been retired from the active tree. Their Git history remains available;
-they are not imports or dependencies of the new proof development.
+The first definitions in `SubtreeProofs/Paper2004/OrderedTree.lean` model
+ordered children and operational edge contraction at arbitrary depth, with
+a fixed root and splicing at the contracted edge. `Embeds` is the reflexive
+transitive closure of that operation. `IsMaximumCommon` is defined directly
+on trees and scores edges. The specification never refers to balanced
+sequences or a dynamic program.
 
-**Plan:** [`../docs/planning/lozano_valiente_2004_verified_rust_lean.md`](../docs/planning/lozano_valiente_2004_verified_rust_lean.md)
+`SubtreeProofs/Paper2004/BalancedSequence.lean` uses Mathlib's `DyckWord`
+for the standard balanced-sequence encoding and the relationship between
+semilength and edge count. The full contraction/sequence correspondence is
+the next mathematical proof milestone.
 
-The initial proof workspace is deliberately empty. W0 will establish a
-working pinned Lake/Mathlib configuration, and W1 will introduce independent
-ordered-tree and edge-contraction definitions. Do not infer that the presence
-of the existing `lean-toolchain` file certifies a working Lean build.
+Pinned dependency target: Lean 4.35.0 / Mathlib `v4.35.0`, a stable release.
+A lockfile has not yet been generated. The source was authored in an environment
+without Lean/Lake and requires its first compilation pass. See
+`PROOF_STATUS.md` for precise verification state.
 
-The accepted final development will contain no unproved local axioms, `sorry`
-or `admit` in the critical proof chain. Generated Aeneas Lean is to be derived
-reproducibly from the maintained Rust source, never repaired manually.
+```bash
+cd proofs
+lake update
+lake exe cache get
+lake build
+```
+
+This work does not depend on TauCeti or Aeneas yet. Mathlib supplies Dyck
+words, the relation closure, and elementary tactics. TauCeti and Aeneas will
+be introduced only at boundaries where their features are required.

@@ -1,9 +1,30 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: approved direction -- clean restart of the proof code; implementation work not started
-Last revised: 2026-11-13
+Status: fresh Lean W1 sources drafted; first Lake build pending
+Last revised: 2026-11-13 (evening)
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
+
+## Initial modern Lean implementation (November 13, 2026)
+
+A new `proofs/lakefile.toml` requests Lean 4.35.0 and Mathlib `v4.35.0`,
+without TauCeti or Aeneas as initial dependencies. The new sources are:
+
+- `SubtreeProofs/Paper2004/OrderedTree.lean`: independent ordered-tree
+  semantics; edge contractions at root and arbitrary depths; edge and real-leaf
+  counts; common embeddings and maximum-witness specification; elementary
+  count and feasibility proofs.
+- `SubtreeProofs/Paper2004/BalancedSequence.lean`: encoding into Mathlib's
+  `DyckWord`, with an authored proof that semilength equals the edge count.
+- `proofs/PROOF_STATUS.md`: declaration-level coverage and verification state.
+
+**Verification state:** The Lean source and proof terms have been authored,
+but the archive inspection environment has no Lean/Lake installation and no
+network path to install one. `lake build` has not been run. The first job on a
+Lean-equipped machine is to compile, repair any elaboration issues, run
+`#print axioms` on accepted theorems, and commit the generated dependency
+lockfile. The later W1 exhaustive oracle and W2 containment equivalence have
+not been attempted. The rest of this roadmap remains the intended scope.
 
 ## 1. Decision and desired outcome
 
