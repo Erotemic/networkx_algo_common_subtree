@@ -5,6 +5,32 @@ Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
 
+
+## Executable 2016 and unrooted baselines: 2026-11-14
+
+`Droschinsky2016.RootedDP.solve_correct` proves every entry of the executable
+2016 descendant table equals the independent connected-isomorphism optimum.
+`unrootedOptimum_correct` fixes one left orientation and tries all right roots,
+then proves equality with the unrestricted nonempty optimum using Lemma 2.
+`Droschinsky2018.RootedDP.unrootedOptimum_correct` similarly proves a full
+all-root-pairs baseline for topological embeddings. These endpoints take only
+finite vertex-list coverage and exact oriented child-list representation
+hypotheses, over the shared real/integer scoring model.
+
+Both evaluators now use `Shared.FiniteTable.rounds`: each round materializes
+its table, with a general rank-based correctness proof and exact table-length
+theorem. The actual tree ranks supply the bound. The 2018 entry points retain
+their previous correctness statements after this refactoring.
+
+The full library builds (3,552 jobs), and all nine kernel-evaluated examples
+in `Tests/RootedDynamicProgram.lean` pass. The added cases distinguish a
+connected isomorphism from a skipped-middle embedding, preserve a direct edge
+reward, retain a negative singleton, and exercise both unrooted entry points.
+These remain score-only references using linear table lookup, repeated rounds
+and exhaustive matching. Returned index witnesses, accepted-representation
+validation, actual Rust graph refinement, optimized paper schedules/matching
+and their time/space bounds remain outstanding.
+
 ## Executable rooted 2018 evaluator: 2026-11-14
 
 `Droschinsky2018.RootedDP.solve_correct` proves that the executable finite
@@ -490,8 +516,8 @@ negative infinity through `WithBot K`; 2018 retains infinite penalties through
 `WithTop K`. Instantiating `K = ℝ` recovers the paper statements, while
 `K = ℤ` gives the same contracts for exact integer computation. No float-to-real
 identification is assumed. The full Lean library compiles after this change.
-Executable graph evaluation, checked machine arithmetic, efficient matching
-and the published optimized running times remain outstanding.
+Executable score evaluators are described above. Checked machine arithmetic,
+efficient matching and the published optimized running times remain outstanding.
 
 ## Fixed-orientation 2016 recurrence: 2026-11-14
 

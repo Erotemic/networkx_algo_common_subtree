@@ -68,10 +68,10 @@ algorithm; its repeated matching calls do not establish this bound.
 
 | Source | Target | State |
 | --- | --- | --- |
-| Section 2, definitions | Finite weighted connected subtree isomorphism; rooted/root-to-root restrictions | Proved independent `Droschinsky2016.Valid`, exact unordered-edge score, `Valid.inducedIso`, and unconditional finite `exists_maximum`; rooted descendant-subproblem spec proved; branch recurrence open |
-| Proposition 1 / Eq. (1) | Rooted recurrence and its operation bound | Proved `rooted_matching_recurrence` for whole rooted trees and `Oriented.rooted_matching_recurrence` for every descendant pair in fixed ambient orientations, using structural decomposition and actual witness assembly with certified child matching. Executable evaluation, efficient matching and operation bound open |
+| Section 2, definitions | Finite weighted connected subtree isomorphism; rooted/root-to-root restrictions | Proved independent `Droschinsky2016.Valid`, exact unordered-edge score, `Valid.inducedIso`, and unconditional finite `exists_maximum`; rooted descendant-subproblem specification, matching recurrence, executable score table and unrooted baseline proved |
+| Proposition 1 / Eq. (1) | Rooted recurrence and its operation bound | Proved `rooted_matching_recurrence` for whole rooted trees and `Oriented.rooted_matching_recurrence` for every descendant pair in fixed ambient orientations, using structural decomposition and actual witness assembly with certified child matching. Executable table and unrooted baseline proved by `RootedDP.solve_correct` and `unrootedOptimum_correct`; efficient matching and operation bound open |
 | Lemma 2 | Fixed-root family suffices for the unrestricted optimum | Proved `Droschinsky2016.fixedRootValue_eq_unrootedValue`, using canonical-path ancestry and the unique top vertex of every connected selected subtree |
-| Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Open |
+| Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Executable rerooting baseline is correct by `RootedDP.unrootedOptimum_correct`; exact paper schedule and operation bound open |
 | Theorem 4 | Optimized unrestricted-weight MCSI bound above | Open |
 | Lemma 5 | Rectangular matching work O(k*l*(k+log l)), k<=l | Open; exhaustive finite integer matching proved separately by `WeightedMatching.solveMatrix_correct` |
 | Lemma 6 | All one-vertex-deleted matching instances in O(k*l*(min(k,l)+log(max(k,l)))) | Open |

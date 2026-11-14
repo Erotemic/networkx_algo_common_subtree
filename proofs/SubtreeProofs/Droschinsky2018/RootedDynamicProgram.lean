@@ -2,6 +2,7 @@ module
 
 public import SubtreeProofs.Droschinsky2018.OverallOptima
 public import SubtreeProofs.Shared.RootedEvaluationOrder
+public import SubtreeProofs.Shared.FiniteTable
 public import Mathlib.Data.Finset.Lattice.Prod
 import Mathlib.Tactic
 
@@ -29,11 +30,11 @@ abbrev Table (V W K : Type*) := List ((V × W) × State K)
 
 /-- A missing entry has bottom in both states. -/
 def read (table : Table V W K) (u : V) (v : W) : State K :=
-  (table.lookup (u,v)).getD (⊥,⊥)
+  FiniteTable.read (⊥,⊥) table (u,v)
 
 /-- Empty child families have maximum bottom, preserving nonempty semantics. -/
 def listMax {A : Type*} (xs : List A) (f : A → WithBot K) : WithBot K :=
-  (xs.map f).foldr max ⊥
+  FiniteTable.maximum xs f
 
 /-- Allowed matching pairs are exactly the supplied immediate-child pairs. -/
 def childWeights (leftChildren : V → List V) (rightChildren : W → List W)
@@ -55,11 +56,9 @@ def step (leftChildren : V → List V) (rightChildren : W → List W)
 
 /-- Each round constructs an explicit finite table before the next round. -/
 def evaluate (allPairs : List (V × W)) (leftChildren : V → List V) (rightChildren : W → List W)
-    (weights : Scoring V W K) (oneSkip : WithBot K) : Nat → Table V W K
-  | 0 => []
-  | fuel + 1 =>
-    let previous := evaluate allPairs leftChildren rightChildren weights oneSkip fuel
-    allPairs.map (fun p => (p, step leftChildren rightChildren weights oneSkip (read previous) p.1 p.2))
+    (weights : Scoring V W K) (oneSkip : WithBot K) (fuel : Nat) : Table V W K :=
+  FiniteTable.rounds allPairs (⊥,⊥)
+    (fun previous p => step leftChildren rightChildren weights oneSkip (fun u v => previous (u,v)) p.1 p.2) fuel
 
 /-- Computable one-vertex penalty, including the infinite-penalty case. -/
 def oneSkip (penalty : WithTop K) : WithBot K :=
@@ -83,21 +82,28 @@ def rootedOptimum (leftVertices : List V) (rightVertices : List W)
   let table := solve leftVertices rightVertices leftChildren rightChildren weights penalty
   listMax (leftVertices.product rightVertices) (fun p => (read table p.1 p.2).1)
 
+/-- A correct baseline for unrestricted unrooted embeddings: try every pair
+of input orientations and read its root-to-root mapped entry. -/
+def unrootedOptimum (leftVertices : List V) (rightVertices : List W)
+    (leftChildren : V → V → List V) (rightChildren : W → W → List W)
+    (weights : Scoring V W K) (penalty : WithTop K) : WithBot K :=
+  FiniteTable.maximum leftVertices (fun u => FiniteTable.maximum rightVertices (fun v =>
+    let table := solve leftVertices rightVertices (leftChildren u) (rightChildren v) weights penalty
+    (read table u v).1))
+
 omit [IsStrictOrderedRing K] in
 @[simp] theorem oneSkip_eq (penalty : WithTop K) : oneSkip penalty = skippedScore penalty 1 := by
   cases penalty <;> simp [oneSkip, skippedScore]
 
 omit [CommRing K] [IsStrictOrderedRing K] in
 theorem listMax_eq_sup {A : Type*} [DecidableEq A] (xs : List A) (f : A → WithBot K) :
-    listMax xs f = xs.toFinset.sup f := by
-  induction xs with
-  | nil => simp [listMax]
-  | cons a xs ih => simpa [listMax, List.toFinset_cons] using congrArg (max (f a)) ih
+    listMax xs f = xs.toFinset.sup f :=
+  FiniteTable.maximum_eq_sup xs f
 
 omit [CommRing K] [LinearOrder K] [IsStrictOrderedRing K] in
 theorem read_map (allPairs : List (V × W)) (f : V × W → State K) {u : V} {v : W}
     (hp : (u,v) ∈ allPairs) : read (allPairs.map (fun p => (p,f p))) u v = f (u,v) := by
-  simp [read, List.lookup_graph f hp]
+  exact FiniteTable.read_map (⊥,⊥) allPairs f hp
 
 variable [Fintype V] [Fintype W]
 
@@ -186,18 +192,14 @@ theorem evaluate_correct (left : FiniteTree V) (right : FiniteTree W)
     (hrank : RootedEvaluationOrder.rank left right leftBase rightBase (u,v) < fuel) :
     read (evaluate allPairs leftChildren rightChildren weights (skippedScore penalty 1) fuel) u v =
       sourceState left right weights penalty leftBase rightBase u v := by
-  induction fuel generalizing u v with
-  | zero => omega
-  | succ fuel ih =>
-    rw [evaluate, read_map allPairs _ (complete (u,v))]
-    apply step_correct left right weights penalty leftBase rightBase leftChildren rightChildren hleft hright
-    rintro ⟨c,d⟩ hp
-    apply ih
-    change RootedEvaluationOrder.rank left right leftBase rightBase (c,d) < fuel
-    have hd := RootedEvaluationOrder.rank_decreases left right leftBase rightBase hp
-    change RootedEvaluationOrder.rank left right leftBase rightBase (c,d) <
-      RootedEvaluationOrder.rank left right leftBase rightBase (u,v) at hd
-    omega
+  apply FiniteTable.rounds_correct allPairs (⊥,⊥) _ complete
+    (RootedEvaluationOrder.Depends left right leftBase rightBase)
+    (RootedEvaluationOrder.rank left right leftBase rightBase)
+    (fun _ _ h => RootedEvaluationOrder.rank_decreases left right leftBase rightBase h)
+    (fun p => sourceState left right weights penalty leftBase rightBase p.1 p.2) _ fuel (u,v) hrank
+  intro previous p hp
+  exact step_correct left right weights penalty leftBase rightBase leftChildren rightChildren hleft hright
+    (fun u v => previous (u,v)) p.1 p.2 hp
 
 /-- Every entry of the materialized table is the independent mapped/skipped
 optimum. The hypotheses describe only the finite input representation. -/
@@ -244,6 +246,29 @@ theorem rootedOptimum_correct (left : FiniteTree V) (right : FiniteTree W)
   simp_rw [solve_correct left right weights penalty leftBase rightBase leftVertices rightVertices
     hlvertices hrvertices leftChildren rightChildren hleft hright]
   exact (rootedValue_eq_max_mapped left right weights penalty leftBase rightBase).symm
+
+/-- Executable all-root-pairs evaluation equals the independently specified
+unrestricted nonempty optimum. This is a baseline, not the optimized algorithm. -/
+theorem unrootedOptimum_correct (left : FiniteTree V) (right : FiniteTree W)
+    (weights : Scoring V W K) (penalty : WithTop K)
+    (leftVertices : List V) (rightVertices : List W)
+    (hlvertices : ∀ u, u ∈ leftVertices) (hrvertices : ∀ v, v ∈ rightVertices)
+    (leftChildren : V → V → List V) (rightChildren : W → W → List W)
+    (hleft : ∀ root u c, c ∈ leftChildren root u ↔ left.Child root u c)
+    (hright : ∀ root v d, d ∈ rightChildren root v ↔ right.Child root v d) :
+    unrootedOptimum leftVertices rightVertices leftChildren rightChildren weights penalty =
+      Droschinsky2018.unrootedValue left right weights penalty := by
+  have hlset : leftVertices.toFinset = Finset.univ := by ext u; simp [hlvertices]
+  have hrset : rightVertices.toFinset = Finset.univ := by ext v; simp [hrvertices]
+  unfold unrootedOptimum
+  rw [FiniteTable.maximum_eq_sup, hlset]
+  simp_rw [FiniteTable.maximum_eq_sup, hrset]
+  have hs : ∀ u v, read (solve leftVertices rightVertices (leftChildren u) (rightChildren v) weights penalty) u v =
+      sourceState left right weights penalty u v u v :=
+    fun u v => solve_correct left right weights penalty u v leftVertices rightVertices hlvertices hrvertices
+      (leftChildren u) (rightChildren v) (hleft u) (hright v) u v
+  simp_rw [hs]
+  exact (unrootedValue_eq_max_rerooted_mapped left right weights penalty).symm
 
 end SubtreeProofs.Droschinsky2018.RootedDP
 

@@ -115,6 +115,7 @@ theorem familyOfMatching_rooted (left : FiniteTree V) (right : FiniteTree W)
     have hv := (rootedValue_attained left right weights leftBase child.1 rightBase child.2).choose_spec.1
     exact ⟨left.ancestor_trans ha.1.2 (hv.2.2 p hp).1, right.ancestor_trans ha.2.2 (hv.2.2 p hp).2⟩
 
+omit [IsStrictOrderedRing K] in
 theorem familyOfMatching_score (left : FiniteTree V) (right : FiniteTree W)
     (weights : Scoring V W K) (leftBase : V) (rightBase : W) (root : V × W)
     (children : Mapping V W)
