@@ -177,3 +177,5 @@ public import SubtreeProofs.Rust.SparseBiAdjustment
 public import SubtreeProofs.Shared.CopiedMatchingDeletionDecode
 public import SubtreeProofs.Rust.SparseCutUpdate
 public import SubtreeProofs.Rust.SparseCutUpdateSafety
+public import SubtreeProofs.Rust.SparseCutBiInput
+public import SubtreeProofs.Rust.SparseCutStep

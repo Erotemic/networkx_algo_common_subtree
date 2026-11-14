@@ -1516,8 +1516,16 @@ structure sparse.SparseCut where
   column : Std.Usize
   delta : Std.I128
 
+/-- [verified_assignment_core::sparse::SparseStep]
+    Source: 'src/sparse.rs', lines 11:0-15:1
+    Visibility: public -/
+structure sparse.SparseStep where
+  cut : sparse.SparseCut
+  rows : alloc.vec.Vec Std.I128
+  columns : alloc.vec.Vec Std.I128
+
 /-- [verified_assignment_core::sparse::select_cut]:
-    Source: 'src/sparse.rs', lines 12:0-23:1 -/
+    Source: 'src/sparse.rs', lines 18:0-29:1 -/
 def sparse.select_cut
   (previous : Option sparse.SparseCut) (candidate : sparse.SparseCut) :
   Result sparse.SparseCut
@@ -1529,7 +1537,7 @@ def sparse.select_cut
                 else ok old
 
 /-- [verified_assignment_core::sparse::square_shape]: loop body 0:
-    Source: 'src/sparse.rs', lines 27:4-34:1 -/
+    Source: 'src/sparse.rs', lines 33:4-40:1 -/
 @[rust_loop_body]
 def sparse.square_shape_loop.body
   (cost : Slice (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
@@ -1548,7 +1556,7 @@ def sparse.square_shape_loop.body
   else ok (done true)
 
 /-- [verified_assignment_core::sparse::square_shape]: loop 0:
-    Source: 'src/sparse.rs', lines 27:4-34:1 -/
+    Source: 'src/sparse.rs', lines 33:4-40:1 -/
 @[rust_loop]
 def sparse.square_shape_loop
   (cost : Slice (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
@@ -1559,14 +1567,14 @@ def sparse.square_shape_loop
     row
 
 /-- [verified_assignment_core::sparse::square_shape]:
-    Source: 'src/sparse.rs', lines 25:0-34:1 -/
+    Source: 'src/sparse.rs', lines 31:0-40:1 -/
 @[reducible]
 def sparse.square_shape
   (cost : Slice (alloc.vec.Vec (Option Std.I64))) : Result Bool := do
   sparse.square_shape_loop cost 0#usize
 
 /-- [verified_assignment_core::sparse::minimum_sparse_row]: loop body 0:
-    Source: 'src/sparse.rs', lines 45:4-66:1 -/
+    Source: 'src/sparse.rs', lines 51:4-72:1 -/
 @[rust_loop_body]
 def sparse.minimum_sparse_row_loop.body
   (cost : Slice (Option Std.I64)) (row_potential : Std.I128)
@@ -1607,7 +1615,7 @@ def sparse.minimum_sparse_row_loop.body
   else ok (done (core.result.Result.Ok best))
 
 /-- [verified_assignment_core::sparse::minimum_sparse_row]: loop 0:
-    Source: 'src/sparse.rs', lines 45:4-66:1 -/
+    Source: 'src/sparse.rs', lines 51:4-72:1 -/
 @[rust_loop]
 def sparse.minimum_sparse_row_loop
   (cost : Slice (Option Std.I64)) (row_potential : Std.I128)
@@ -1621,7 +1629,7 @@ def sparse.minimum_sparse_row_loop
     (best, column)
 
 /-- [verified_assignment_core::sparse::minimum_sparse_row]:
-    Source: 'src/sparse.rs', lines 36:0-66:1 -/
+    Source: 'src/sparse.rs', lines 42:0-72:1 -/
 @[reducible]
 def sparse.minimum_sparse_row
   (cost : Slice (Option Std.I64)) (row_potential : Std.I128)
@@ -1633,7 +1641,7 @@ def sparse.minimum_sparse_row
     row best 0#usize
 
 /-- [verified_assignment_core::sparse::minimum_sparse_cut]: loop body 0:
-    Source: 'src/sparse.rs', lines 97:4-114:1
+    Source: 'src/sparse.rs', lines 103:4-120:1
     Visibility: public -/
 @[rust_loop_body]
 def sparse.minimum_sparse_cut_loop.body
@@ -1663,7 +1671,7 @@ def sparse.minimum_sparse_cut_loop.body
   else ok (done (core.result.Result.Ok best))
 
 /-- [verified_assignment_core::sparse::minimum_sparse_cut]: loop 0:
-    Source: 'src/sparse.rs', lines 97:4-114:1
+    Source: 'src/sparse.rs', lines 103:4-120:1
     Visibility: public -/
 @[rust_loop]
 def sparse.minimum_sparse_cut_loop
@@ -1679,7 +1687,7 @@ def sparse.minimum_sparse_cut_loop
     (best, row)
 
 /-- [verified_assignment_core::sparse::minimum_sparse_cut]:
-    Source: 'src/sparse.rs', lines 74:0-114:1
+    Source: 'src/sparse.rs', lines 80:0-120:1
     Visibility: public -/
 def sparse.minimum_sparse_cut
   (cost : Slice (alloc.vec.Vec (Option Std.I64))) (rows : Slice Std.I128)
@@ -1716,7 +1724,7 @@ def sparse.minimum_sparse_cut
           else ok (core.result.Result.Err AssignmentError.NonSquare)
 
 /-- [verified_assignment_core::sparse::increase_selected]:
-    Source: 'src/sparse.rs', lines 116:0-125:1 -/
+    Source: 'src/sparse.rs', lines 122:0-131:1 -/
 def sparse.increase_selected
   (value : Std.I128) (selected : Bool) (delta : Std.I128) :
   Result (core.result.Result Std.I128 AssignmentError)
@@ -1730,7 +1738,7 @@ def sparse.increase_selected
   else ok (core.result.Result.Ok value)
 
 /-- [verified_assignment_core::sparse::decrease_selected]:
-    Source: 'src/sparse.rs', lines 127:0-136:1 -/
+    Source: 'src/sparse.rs', lines 133:0-142:1 -/
 def sparse.decrease_selected
   (value : Std.I128) (selected : Bool) (delta : Std.I128) :
   Result (core.result.Result Std.I128 AssignmentError)
@@ -1744,7 +1752,7 @@ def sparse.decrease_selected
   else ok (core.result.Result.Ok value)
 
 /-- [verified_assignment_core::sparse::adjust_selected]: loop body 0:
-    Source: 'src/sparse.rs', lines 146:4-160:1 -/
+    Source: 'src/sparse.rs', lines 152:4-166:1 -/
 @[rust_loop_body]
 def sparse.adjust_selected_loop.body
   (values : Slice Std.I128) (selected : Slice Bool) (delta : Std.I128)
@@ -1776,7 +1784,7 @@ def sparse.adjust_selected_loop.body
   else ok (done (core.result.Result.Ok updated))
 
 /-- [verified_assignment_core::sparse::adjust_selected]: loop 0:
-    Source: 'src/sparse.rs', lines 146:4-160:1 -/
+    Source: 'src/sparse.rs', lines 152:4-166:1 -/
 @[rust_loop]
 def sparse.adjust_selected_loop
   (values : Slice Std.I128) (selected : Slice Bool) (delta : Std.I128)
@@ -1789,7 +1797,7 @@ def sparse.adjust_selected_loop
     (updated, index)
 
 /-- [verified_assignment_core::sparse::adjust_selected]:
-    Source: 'src/sparse.rs', lines 138:0-160:1 -/
+    Source: 'src/sparse.rs', lines 144:0-166:1 -/
 @[reducible]
 def sparse.adjust_selected
   (values : Slice Std.I128) (selected : Slice Bool) (delta : Std.I128)
@@ -1800,7 +1808,7 @@ def sparse.adjust_selected
     (alloc.vec.Vec.new Std.I128) 0#usize
 
 /-- [verified_assignment_core::sparse::adjust_sparse_cut]:
-    Source: 'src/sparse.rs', lines 168:0-194:1
+    Source: 'src/sparse.rs', lines 174:0-200:1
     Visibility: public -/
 def sparse.adjust_sparse_cut
   (rows : Slice Std.I128) (columns : Slice Std.I128)
@@ -1840,5 +1848,32 @@ def sparse.adjust_sparse_cut
               | core.result.Result.Err error =>
                 ok (core.result.Result.Err error)
             | core.result.Result.Err error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::sparse::advance_sparse_cut]:
+    Source: 'src/sparse.rs', lines 207:0-229:1
+    Visibility: public -/
+def sparse.advance_sparse_cut
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (rows : Slice Std.I128)
+  (columns : Slice Std.I128) (selected_rows : Slice Bool)
+  (selected_columns : Slice Bool) :
+  Result (core.result.Result (Option sparse.SparseStep) AssignmentError)
+  := do
+  let r ←
+    sparse.minimum_sparse_cut cost rows columns selected_rows selected_columns
+  match r with
+  | core.result.Result.Ok value =>
+    match value with
+    | none => ok (core.result.Result.Ok none)
+    | some cut =>
+      let r1 ←
+        sparse.adjust_sparse_cut rows columns selected_rows selected_columns
+          cut.delta
+      match r1 with
+      | core.result.Result.Ok value1 =>
+        let (updated_rows, updated_columns) := value1
+        ok (core.result.Result.Ok (some
+          { cut, rows := updated_rows, columns := updated_columns }))
+      | core.result.Result.Err error => ok (core.result.Result.Err error)
+  | core.result.Result.Err error => ok (core.result.Result.Err error)
 
 end verified_assignment_core

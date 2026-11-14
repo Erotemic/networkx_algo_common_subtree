@@ -1,4 +1,4 @@
-use verified_assignment_core::{sparse::{adjust_sparse_cut, minimum_sparse_cut}, AssignmentError};
+use verified_assignment_core::{sparse::{adjust_sparse_cut, advance_sparse_cut, minimum_sparse_cut}, AssignmentError};
 
 #[test]
 fn sparse_cut_matches_independent_allowed_edge_minimum() {
@@ -114,6 +114,12 @@ fn sparse_adjustment_preserves_feasibility_and_creates_tight_edge() {
                         Ok(output) => output,
                         Err(_) => panic!("small feasible adjustment must fit"),
                     };
+                    let step = match advance_sparse_cut(&cost, &rows, &columns, &sr, &sc) {
+                        Ok(Some(step)) => step,
+                        _ => panic!("feasible source step must succeed"),
+                    };
+                    assert_eq!((step.cut.row, step.cut.column, step.cut.delta), (cut.row, cut.column, cut.delta));
+                    assert_eq!((&step.rows, &step.columns), (&ur, &uc));
                     assert_eq!(ur[cut.row] + uc[cut.column], cost[cut.row][cut.column].unwrap() as i128);
                     for r in 0..n {
                         for c in 0..n {
@@ -137,4 +143,6 @@ fn sparse_adjustment_checks_dimensions_sign_and_both_overflow_directions() {
     assert!(matches!(adjust_sparse_cut(&[i128::MAX], &[0], &[true], &[false], 1), Err(AssignmentError::ArithmeticOverflow)));
     assert!(matches!(adjust_sparse_cut(&[0], &[i128::MIN], &[false], &[true], 1), Err(AssignmentError::ArithmeticOverflow)));
     assert!(matches!(adjust_sparse_cut(&[i128::MAX], &[i128::MIN], &[false], &[false], i128::MAX), Ok((r,c)) if r == [i128::MAX] && c == [i128::MIN]));
+    assert!(matches!(advance_sparse_cut(&[vec![None]], &[0], &[0], &[true], &[false]), Ok(None)));
+    assert!(matches!(advance_sparse_cut(&[vec![Some(-1)]], &[0], &[0], &[true], &[false]), Err(AssignmentError::InvariantViolation)));
 }

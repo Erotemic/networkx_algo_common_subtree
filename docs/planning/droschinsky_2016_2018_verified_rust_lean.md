@@ -14,6 +14,26 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual composed sparse search step: 2026-11-14
+
+The Rust `sparse::advance_sparse_cut` now selects an actual minimum allowed
+crossing edge and applies its zero-based potential adjustment. The maintained
+`Rust/SparseCutStep.advance_sparse_cut_spec` proves success from the independent
+two-sided paper state, sparse feasibility, exact dual accounting, a compatible
+perfect-assignment witness and a one-excess-row search cut. No cut minimum,
+path, arithmetic-success certificate or externally supplied potential bound
+is assumed. `SparseCutBiInput` derives the scanner's `2^96` potential frame
+from the dimension/weight budget, including nonzero initial columns.
+
+The returned `StepProgress` records the exact original minimum edge, both
+physical vector lengths and component updates, sparse feasibility, the
+two-sided envelope, exact dual progress, the next cumulative bound, and an
+actual original edge made tight across the search cut. Native cut/update
+composition tests exercise the public wrapper as well as its constituent
+primitives. This closes one actual dual-search step. Growing the alternating
+search, constructing/flipping its path, the deletion repair driver and the
+published optimized running time remain open.
+
 ## Actual zero-based sparse potential updates: 2026-11-14
 
 The maintained Rust `sparse::adjust_sparse_cut` now applies a nonnegative cut

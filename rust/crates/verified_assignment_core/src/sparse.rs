@@ -8,6 +8,12 @@ pub struct SparseCut {
     pub delta: i128,
 }
 
+pub struct SparseStep {
+    pub cut: SparseCut,
+    pub rows: Vec<i128>,
+    pub columns: Vec<i128>,
+}
+
 /// Retain the first edge on equal slack, with no sentinel for absence.
 fn select_cut(previous: Option<SparseCut>, candidate: SparseCut) -> SparseCut {
     match previous {
@@ -191,4 +197,33 @@ pub fn adjust_sparse_cut(
         Err(error) => return Err(error),
     };
     Ok((updated_rows, updated_columns))
+}
+
+/// Select an actual minimum allowed cut edge and apply its potential update.
+///
+/// None denotes an empty allowed cut. A feasible one-excess-row search cut
+/// in a graph admitting a perfect assignment always produces Some. This is
+/// one dual-search step; it does not yet augment or return an assignment.
+pub fn advance_sparse_cut(
+    cost: &[Vec<Option<i64>>],
+    rows: &[i128],
+    columns: &[i128],
+    selected_rows: &[bool],
+    selected_columns: &[bool],
+) -> Result<Option<SparseStep>, AssignmentError> {
+    let cut = match minimum_sparse_cut(cost, rows, columns, selected_rows, selected_columns) {
+        Ok(value) => value,
+        Err(error) => return Err(error),
+    };
+    match cut {
+        None => Ok(None),
+        Some(cut) => {
+            let (updated_rows, updated_columns) =
+                match adjust_sparse_cut(rows, columns, selected_rows, selected_columns, cut.delta) {
+                    Ok(value) => value,
+                    Err(error) => return Err(error),
+                };
+            Ok(Some(SparseStep { cut, rows: updated_rows, columns: updated_columns }))
+        }
+    }
 }
