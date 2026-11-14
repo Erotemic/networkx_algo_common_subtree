@@ -138,4 +138,28 @@ theorem find_hit (key : MemoKey) (value : Nat) (rest : MemoTable) :
     (Program.find (rest.length + 2) key (Queue.ofList ((key, value) :: rest))).cost .dequeue = 1 := by
   simp [Program.find, Queue.val_dequeue, Queue.cost_dequeue, queueOpcode, Interface.equalKey, CostVec.one]
 
+/-- Omitted-operation adversary: an extra scan preserves the result but pays
+for both executions. Value equality alone cannot justify the original budget.
+This checks the charged model; it is not a Rust-source mutation certificate. -/
+theorem extra_scan_cost (key : MemoKey) (table : MemoTable) :
+    let query := Program.find (table.length + 1) key (Queue.ofList table)
+    (query >>= fun _ => query).val = query.val ∧
+      (query >>= fun _ => query).cost .keyEq = 2 * (memoFind key table).2 := by
+  dsimp only
+  constructor
+  · rw [Charged.val_bind]
+  · rw [Charged.cost_bind, CostVec.add_apply, find_comparisons]
+    omega
+
+/-- Already a singleton first hit refutes the old one-comparison budget after
+an extra value-preserving scan. -/
+theorem extra_scan_exceeds_singleton_budget (key : MemoKey) (value : Nat) :
+    let query := Program.find 2 key (Queue.ofList [(key, value)])
+    ¬ (query >>= fun _ => query).cost .keyEq ≤ 1 := by
+  dsimp only
+  have h : (Program.find 2 key (Queue.ofList [(key, value)])).cost .keyEq = 1 := by
+    simpa only [List.length_nil, Nat.zero_add] using (find_hit key value []).2.1
+  rw [Charged.cost_bind, CostVec.add_apply, h]
+  decide
+
 end ArlibSpike

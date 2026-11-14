@@ -17,6 +17,21 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Resource backend reconnaissance: 2026-11-14
+
+The optional arlib model now proves that an extra result-preserving lookup
+scan doubles its exact comparison cost and violates the old singleton budget.
+Pinned realization/scan modules compile, as do selected Lax cost/NREST modules
+under 4.35, the order-maintenance machine examples at their original pin, and
+an isolated Std.WP worksheet over the existing independent Rust lookup result
+specification. Main dependency pins and production source remain fixed.
+
+This is partial reconnaissance, not a Rust runtime theorem. Structural key
+comparisons, hit witness copies and source control flow still need an adequate
+source-event interpretation. The pinned Lean backend rejects Aeneas fuel mode.
+[Executed scope and obligations](../docs/planning/lean-complexity-campaign/evidence/executed-g0-w02.md)
+keep G1/SRC-01 open; no full application/source cost claim follows.
+
 ## Actual production uniform-index source refinement: 2026-11-14
 
 Both optimized graph algorithms now call the integer-only production helper

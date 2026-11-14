@@ -43,6 +43,15 @@ The highest-value prospective contribution is therefore a **small interoperable 
 
 Machine-readable companions: [sources.json](evidence/sources.json), [targets.json](evidence/targets.json), [repository-observations.json](evidence/repository-observations.json). The [search log](evidence/search-log.md) records the scope and limits of this census. The [validation report](evidence/validation-report.md) describes what was checked for this delivery.
 
+## Executed follow-up
+
+The [G0/W02 follow-up](evidence/executed-g0-w02.md) records actual declaration
+inspection, narrow upstream compilation, a checked Std.WP worksheet, an
+omitted-scan counterexample and the source-operation inventory at `0cdd643`.
+G0 remains partial; G1 and the actual Rust-to-cost bridge remain open. Existing
+arlib mathematics is reused rather than recreated. The main toolchain and
+production algorithms remain fixed.
+
 ## First work package
 
 Run **G0: backend and statement reconnaissance** and **G1: one actual lookup and loop** before starting a broad formalization. Compare arlib, the Lax timed-refinement stack, and an adapter using Lean's existing `Std.WP` machinery on the **same task**. The comparison must include an omitted-operation test, a result specification independent of the instrumented implementation, and the current repository's toolchain. Investigate Iris as the ownership backend if the batch/shared-state contract needs it; do not require a complete Iris port to establish a deterministic scalar-cost pilot.

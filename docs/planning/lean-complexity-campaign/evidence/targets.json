@@ -36,7 +36,12 @@
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G1"
+      "first_acceptance_gate": "G1",
+      "executed_followup": {
+        "baseline_commit": "0cdd643",
+        "evidence": "executed-g0-w02.json",
+        "status": "Partial reconnaissance; no campaign target closure or Rust cost adequacy claim"
+      }
     },
     {
       "id": "SEM-01",
@@ -57,7 +62,12 @@
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G1"
+      "first_acceptance_gate": "G1",
+      "executed_followup": {
+        "baseline_commit": "0cdd643",
+        "evidence": "executed-g0-w02.json",
+        "status": "Partial reconnaissance; no campaign target closure or Rust cost adequacy claim"
+      }
     },
     {
       "id": "SEM-02",
@@ -78,7 +88,12 @@
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G1"
+      "first_acceptance_gate": "G1",
+      "executed_followup": {
+        "baseline_commit": "0cdd643",
+        "evidence": "executed-g0-w02.json",
+        "status": "Partial reconnaissance; no campaign target closure or Rust cost adequacy claim"
+      }
     },
     {
       "id": "REF-01",
@@ -100,7 +115,12 @@
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G1"
+      "first_acceptance_gate": "G1",
+      "executed_followup": {
+        "baseline_commit": "0cdd643",
+        "evidence": "executed-g0-w02.json",
+        "status": "Partial reconnaissance; no campaign target closure or Rust cost adequacy claim"
+      }
     },
     {
       "id": "REF-02",
@@ -494,7 +514,12 @@
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G1"
+      "first_acceptance_gate": "G1",
+      "executed_followup": {
+        "baseline_commit": "0cdd643",
+        "evidence": "executed-g0-w02.json",
+        "status": "Partial reconnaissance; no campaign target closure or Rust cost adequacy claim"
+      }
     },
     {
       "id": "MEM-04",
@@ -514,7 +539,12 @@
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G3"
+      "first_acceptance_gate": "G3",
+      "executed_followup": {
+        "baseline_commit": "0cdd643",
+        "evidence": "executed-g0-w02.json",
+        "status": "Partial reconnaissance; no campaign target closure or Rust cost adequacy claim"
+      }
     },
     {
       "id": "SRC-02",
@@ -663,5 +693,6 @@
       "dossier_document": "06-theorem-dossiers.md",
       "first_acceptance_gate": "G5"
     }
-  ]
+  ],
+  "executed_followup": "executed-g0-w02.json"
 }
