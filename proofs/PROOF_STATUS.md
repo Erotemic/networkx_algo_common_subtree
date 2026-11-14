@@ -2009,3 +2009,14 @@ the matching objective for every compatible matching. This supplies the
 recurrence needed by recursive evaluation without silently rerooting input
 subproblems. The full library builds (3,550 jobs); executable 2016 evaluation
 and optimized matching/cost remain outstanding.
+
+## Survivor enumeration completed before implementation reprioritization: 2026-11-14
+
+`Shared/AssignmentSurvivingIndices` proves the increasing filtered original-index
+list equals Mathlib's canonical `Fin.succAbove` enumeration.
+`Rust/SparseDeletionVertices.surviving_vertices_spec` verifies the actual Rust
+loop returns precisely that filtered list for every represented extent and
+removed index. The deletion caller's remaining projection/refinement work is
+open. Substantial further proof development is deferred under the updated
+software-first development sequence; complete verification remains a final
+verified-release requirement.

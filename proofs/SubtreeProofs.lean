@@ -206,3 +206,5 @@ public import SubtreeProofs.Rust.SparseAugmentationEntrypoint
 public import SubtreeProofs.Shared.AssignmentFiniteDeletion
 public import SubtreeProofs.Shared.AssignmentCompactDeletionState
 public import SubtreeProofs.Rust.SparseDeletionIndices
+public import SubtreeProofs.Shared.AssignmentSurvivingIndices
+public import SubtreeProofs.Rust.SparseDeletionVertices
