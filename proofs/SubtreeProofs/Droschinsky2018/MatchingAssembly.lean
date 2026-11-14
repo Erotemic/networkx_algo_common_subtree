@@ -17,27 +17,31 @@ mapped-state optimum. The converse decomposition is proved separately.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
 noncomputable def stateChildWeights (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
-    (u : V) (v : W) (c : V) (d : W) : Option (WithBot ℝ) := by
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
+    (u : V) (v : W) (c : V) (d : W) : Option (WithBot K) := by
   classical
   exact if left.Child leftBase u c ∧ right.Child rightBase v d then
     some (matchingBranchValue left right weights penalty leftBase rightBase u v c d) else none
 
+omit [IsStrictOrderedRing K] in
 @[simp] theorem stateChildWeights_allowed (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
     (u : V) (v : W) (c : V) (d : W) :
     stateChildWeights left right weights penalty leftBase rightBase u v c d ≠ none ↔
       left.Child leftBase u c ∧ right.Child rightBase v d := by
   classical
   simp [stateChildWeights]
 
+omit [IsStrictOrderedRing K] in
 theorem stateChildWeights_get (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
     (u : V) (v : W) (c : V) (d : W) (ha : left.Child leftBase u c ∧ right.Child rightBase v d) :
     (stateChildWeights left right weights penalty leftBase rightBase u v c d).getD 0 =
       matchingBranchValue left right weights penalty leftBase rightBase u v c d := by
@@ -45,7 +49,7 @@ theorem stateChildWeights_get (left : FiniteTree V) (right : FiniteTree W)
 
 /-- Pick actual optimum branch witnesses for any compatible child matching. -/
 noncomputable def familyOfMatching (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
     (u : V) (v : W) (children : Mapping V W)
     (hm : WeightedMatching.Valid (stateChildWeights left right weights penalty leftBase rightBase u v) children) :
     BoundaryFamily left right leftBase rightBase u v where
@@ -67,7 +71,7 @@ noncomputable def familyOfMatching (left : FiniteTree V) (right : FiniteTree W)
 
 /-- Chosen continuations attain each matrix entry with their actual path score. -/
 theorem familyOfMatching_reward (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
     (u : V) (v : W) (children : Mapping V W)
     (hm : WeightedMatching.Valid (stateChildWeights left right weights penalty leftBase rightBase u v) children)
     (child : V × W) (hc : child ∈ children) :
@@ -83,7 +87,7 @@ theorem familyOfMatching_reward (left : FiniteTree V) (right : FiniteTree W)
 
 /-- The concrete assembled parent's score equals the complete partial-matching objective. -/
 theorem familyOfMatching_score (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
     (u : V) (v : W) (children : Mapping V W)
     (hm : WeightedMatching.Valid (stateChildWeights left right weights penalty leftBase rightBase u v) children) :
     let family := familyOfMatching left right weights penalty leftBase rightBase u v children hm
@@ -105,11 +109,12 @@ theorem familyOfMatching_score (left : FiniteTree V) (right : FiniteTree W)
   exact Finset.sum_coe_sort children (fun p => (stateChildWeights left right weights penalty leftBase rightBase u v p.1 p.2).getD 0)
 
 noncomputable def bestStateMatching (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) : Mapping V W :=
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) : Mapping V W :=
   WeightedMatching.exhaustive Finset.univ.toList (stateChildWeights left right weights penalty leftBase rightBase u v)
 
+omit [IsStrictOrderedRing K] in
 theorem bestStateMatching_correct (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     WeightedMatching.IsMaximum (stateChildWeights left right weights penalty leftBase rightBase u v)
       (bestStateMatching left right weights penalty leftBase rightBase u v) := by
   apply WeightedMatching.exhaustive_correct
@@ -119,7 +124,7 @@ theorem bestStateMatching_correct (left : FiniteTree V) (right : FiniteTree W)
 /-- Optimal child-matching assembly gives a genuine mapped-state witness and
 therefore cannot exceed the independently specified mapped optimum. -/
 theorem matchingValue_le_mappedValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     weights.node u v + WeightedMatching.weight (stateChildWeights left right weights penalty leftBase rightBase u v)
       (bestStateMatching left right weights penalty leftBase rightBase u v) ≤
         mappedValue left right weights penalty leftBase rightBase u v := by

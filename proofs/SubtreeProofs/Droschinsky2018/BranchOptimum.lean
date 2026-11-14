@@ -15,20 +15,22 @@ are handled without inventing a witness for their negative-infinity value.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
 noncomputable def matchingBranchValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W)
-    (u : V) (v : W) (c : V) (d : W) : WithBot ℝ :=
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W)
+    (u : V) (v : W) (c : V) (d : W) : WithBot K :=
   max (weights.edge s(u,c) s(v,d) + mappedValue left right weights penalty leftBase rightBase c d)
     (skippedValue left right weights penalty leftBase rightBase c d)
 
 /-- Every independently valid branch witness has reward at most the candidate
 matching weight derived from the two independent state optima. -/
 theorem connecting_reward_le_branchValue {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u c : V} {rightBase v d : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u c : V} {rightBase v d : W}
     (hc : left.Child leftBase u c) (hd : right.Child rightBase v d) {w : BoundaryWitness V W}
     (h : StateValid left right leftBase rightBase c d w.1 w.2) :
     pathScore left right weights penalty s(u,w.2.1) s(v,w.2.2) + score left right weights penalty w.1 ≤
@@ -44,7 +46,7 @@ theorem connecting_reward_le_branchValue {left : FiniteTree V} {right : FiniteTr
 Mapped witnesses always exist; skipped witnesses are selected only when their
 value strictly improves over a mapped candidate and hence is not bottom. -/
 theorem matchingBranchValue_attained {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u c : V} {rightBase v d : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u c : V} {rightBase v d : W}
     (hc : left.Child leftBase u c) (hd : right.Child rightBase v d) :
     ∃ w : BoundaryWitness V W, StateValid left right leftBase rightBase c d w.1 w.2 ∧
       pathScore left right weights penalty s(u,w.2.1) s(v,w.2.2) + score left right weights penalty w.1 =

@@ -15,6 +15,8 @@ separate refinement. Direct-edge rewards follow Definition 4 exactly.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
 open Droschinsky2016
@@ -83,13 +85,13 @@ def Valid (left : FiniteTree V) (right : FiniteTree W) (pairs : Mapping V W) : P
 
 /-- Finite penalties and the infinite penalty are represented explicitly.
 Source problems require `0 ≤ penalty`; the score is defined for every value. -/
-noncomputable def skippedScore (penalty : WithTop ℝ) (skipped : Nat) : WithBot ℝ :=
+noncomputable def skippedScore (penalty : WithTop K) (skipped : Nat) : WithBot K :=
   if penalty = ⊤ then if skipped = 0 then 0 else ⊥
-  else ((-(penalty.untopD 0) * (skipped : ℝ)) : ℝ)
+  else ((-(penalty.untopD 0) * (skipped : K)) : K)
 
 /-- Definition 4: both paths must be single edges for an edge-label reward. -/
-noncomputable def pathScore (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (first : Sym2 V) (second : Sym2 W) : WithBot ℝ :=
+noncomputable def pathScore (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (first : Sym2 V) (second : Sym2 W) : WithBot K :=
   if pathLength left first = 1 ∧ pathLength right second = 1 then weights.edge first second
   else skippedScore penalty ((pathLength left first - 1) + (pathLength right second - 1))
 
@@ -99,28 +101,28 @@ noncomputable def mappedEdges (left : FiniteTree V) (pairs : Mapping V W) : Fins
   exact pairs.sym2.filter (fun edge => branchAdj left (pairs.image Prod.fst) (edge.map Prod.fst))
 
 /-- Score each selected vertex and each abstract topological path pair once. -/
-noncomputable def score (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (pairs : Mapping V W) : WithBot ℝ :=
+noncomputable def score (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (pairs : Mapping V W) : WithBot K :=
   (∑ pair ∈ pairs, weights.node pair.1 pair.2) +
     ∑ edge ∈ mappedEdges left pairs, pathScore left right weights penalty (edge.map Prod.fst) (edge.map Prod.snd)
 
-def IsMaximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (pairs : Mapping V W) : Prop :=
+def IsMaximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (pairs : Mapping V W) : Prop :=
   Valid left right pairs ∧ ∀ other, Valid left right other →
     score left right weights penalty other ≤ score left right weights penalty pairs
 
-omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] in
+omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] [IsStrictOrderedRing K] in
 /-- Labels contribute on direct paths exactly as printed. -/
-theorem pathScore_direct (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (first : Sym2 V) (second : Sym2 W)
+theorem pathScore_direct (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (first : Sym2 V) (second : Sym2 W)
     (hl : pathLength left first = 1) (hr : pathLength right second = 1) :
     pathScore left right weights penalty first second = weights.edge first second := by
   simp [pathScore, hl, hr]
 
-omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] in
+omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] [IsStrictOrderedRing K] in
 /-- On longer paths, changing any edge reward cannot affect the contribution. -/
-theorem pathScore_skipped (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (first : Sym2 V) (second : Sym2 W)
+theorem pathScore_skipped (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (first : Sym2 V) (second : Sym2 W)
     (h : ¬ (pathLength left first = 1 ∧ pathLength right second = 1)) :
     pathScore left right weights penalty first second =
       skippedScore penalty ((pathLength left first - 1) + (pathLength right second - 1)) := by
@@ -172,32 +174,32 @@ omit [Fintype V] [Fintype W] [DecidableEq W] in
   change ¬ BranchAdjacent left (({(u,v)} : Mapping V W).image Prod.fst) u u
   simp [BranchAdjacent]
 
-omit [Fintype V] [Fintype W] [DecidableEq W] in
-@[simp] theorem score_singleton (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (u : V) (v : W) :
+omit [Fintype V] [Fintype W] [DecidableEq W] [IsStrictOrderedRing K] in
+@[simp] theorem score_singleton (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (u : V) (v : W) :
     score left right weights penalty {(u,v)} = weights.node u v := by
   simp [score]
 
 
-omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] in
+omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] [IsStrictOrderedRing K] in
 /-- The 1-edge/2-edge discriminator contributes only one skipped-vertex penalty,
 even if the edge reward is incompatible or arbitrarily large. -/
-theorem one_two_path_score (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : ℝ) (first : Sym2 V) (second : Sym2 W)
+theorem one_two_path_score (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : K) (first : Sym2 V) (second : Sym2 W)
     (hl : pathLength left first = 1) (hr : pathLength right second = 2) :
-    pathScore left right weights penalty first second = ((-penalty : ℝ) : WithBot ℝ) := by
+    pathScore left right weights penalty first second = ((-penalty : K) : WithBot K) := by
   simp [pathScore, hl, hr, skippedScore]
 
 /-- Increasing a finite penalty decreases every skipped-path contribution. -/
-theorem skippedScore_antitone (first second : ℝ) (h : first ≤ second) (skipped : Nat) :
-    skippedScore (second : WithTop ℝ) skipped ≤ skippedScore (first : WithTop ℝ) skipped := by
+theorem skippedScore_antitone (first second : K) (h : first ≤ second) (skipped : Nat) :
+    skippedScore (second : WithTop K) skipped ≤ skippedScore (first : WithTop K) skipped := by
   simp only [skippedScore, WithTop.coe_ne_top, ↓reduceIte, WithTop.untopD_coe]
   exact_mod_cast mul_le_mul_of_nonneg_right (neg_le_neg h) (Nat.cast_nonneg skipped)
 
 omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] in
 /-- Penalty monotonicity holds per abstract path, without any edge-reward assumption. -/
-theorem pathScore_antitone (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (first second : ℝ) (h : first ≤ second) (leftEdge : Sym2 V) (rightEdge : Sym2 W) :
+theorem pathScore_antitone (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (first second : K) (h : first ≤ second) (leftEdge : Sym2 V) (rightEdge : Sym2 W) :
     pathScore left right weights second leftEdge rightEdge ≤
       pathScore left right weights first leftEdge rightEdge := by
   unfold pathScore
@@ -207,8 +209,8 @@ theorem pathScore_antitone (left : FiniteTree V) (right : FiniteTree W) (weights
 
 omit [Fintype V] [Fintype W] [DecidableEq W] in
 /-- Penalty monotonicity of every independently specified witness score. -/
-theorem score_antitone (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (first second : ℝ) (h : first ≤ second) (pairs : Mapping V W) :
+theorem score_antitone (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (first second : K) (h : first ≤ second) (pairs : Mapping V W) :
     score left right weights second pairs ≤ score left right weights first pairs := by
   unfold score
   exact add_le_add (le_refl _)
@@ -224,9 +226,10 @@ noncomputable def feasible (left : FiniteTree V) (right : FiniteTree W) : Finset
   classical
   simp [feasible]
 
+omit [IsStrictOrderedRing K] in
 /-- The finite nonempty witness family has an attained optimum. -/
-theorem exists_maximum_of_feasible (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (h : ∃ pairs, Valid left right pairs) :
+theorem exists_maximum_of_feasible (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (h : ∃ pairs, Valid left right pairs) :
     ∃ pairs, IsMaximum left right weights penalty pairs := by
   classical
   obtain ⟨pairs, hpairs⟩ := h
@@ -235,17 +238,18 @@ theorem exists_maximum_of_feasible (left : FiniteTree V) (right : FiniteTree W) 
   exact ⟨best, (mem_feasible _ _ _).mp hbest,
     fun other hother => hmaximum other ((mem_feasible _ _ _).mpr hother)⟩
 
+omit [IsStrictOrderedRing K] in
 /-- Every pair of finite trees has a nonempty maximum topological witness. -/
-theorem exists_maximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) : ∃ pairs, IsMaximum left right weights penalty pairs := by
+theorem exists_maximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) : ∃ pairs, IsMaximum left right weights penalty pairs := by
   obtain ⟨u⟩ := left.isTree.connected.nonempty
   obtain ⟨v⟩ := right.isTree.connected.nonempty
   exact exists_maximum_of_feasible left right weights penalty ⟨{(u,v)}, singleton_valid left right u v⟩
 
 omit [Fintype V] [Fintype W] in
 /-- The independently defined optimum is nonincreasing in the finite penalty. -/
-theorem maximum_score_antitone (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (first second : ℝ) (h : first ≤ second) (firstPairs secondPairs : Mapping V W)
+theorem maximum_score_antitone (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (first second : K) (h : first ≤ second) (firstPairs secondPairs : Mapping V W)
     (hf : IsMaximum left right weights first firstPairs)
     (hs : IsMaximum left right weights second secondPairs) :
     score left right weights second secondPairs ≤ score left right weights first firstPairs :=

@@ -456,3 +456,15 @@ published cost theorems remain open.
 
 The overall program remains active. These results do not complete the paper
 formalizations, published optimized algorithms, or end-to-end Rust verification.
+
+## Shared real and integer scoring: 2026-11-14
+
+The 2016 and 2018 specifications, witness score identities, finite optima,
+rooted recurrences and overall optimum identities are now generic over an
+ordered commutative ring `K`. `Droschinsky2016.Scoring V W K` retains explicit
+negative infinity through `WithBot K`; 2018 retains infinite penalties through
+`WithTop K`. Instantiating `K = ℝ` recovers the paper statements, while
+`K = ℤ` gives the same contracts for exact integer computation. No float-to-real
+identification is assumed. The full Lean library compiles after this change.
+Executable graph evaluation, checked machine arithmetic, efficient matching
+and the published optimized running times remain outstanding.

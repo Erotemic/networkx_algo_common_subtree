@@ -15,6 +15,8 @@ the corresponding descendant regions.
 
 namespace SubtreeProofs.Droschinsky2016
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 variable {V W : Type*} [DecidableEq V] [DecidableEq W]
 
 structure BranchFamily (left : FiniteTree V) (right : FiniteTree W) (root : V × W) where
@@ -214,8 +216,9 @@ theorem branchMapping_assemble (c : V × W) (hc : c ∈ family.children) :
     exact (mem_branchMapping left root.1 c.1 _ p).mpr
       ⟨(mem_assemble _ _ _ _).mpr (Or.inr ⟨c, hc, hp⟩), ((family.valid c hc).2.2 p hp).1⟩
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- Exact independent score of an assembled branch family. -/
-theorem score_assemble (weights : Scoring V W) :
+theorem score_assemble (weights : Scoring V W K) :
     score left weights (assemble root family.children family.continuation) = weights.node root.1 root.2 +
       ∑ child ∈ family.children,
         (weights.edge ((s(root,child)).map Prod.fst) ((s(root,child)).map Prod.snd) +

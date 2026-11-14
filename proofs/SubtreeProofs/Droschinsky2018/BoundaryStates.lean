@@ -16,6 +16,8 @@ state from a free search for a rooted optimum.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [DecidableEq V] [DecidableEq W]
@@ -41,13 +43,14 @@ theorem state_singleton_valid (left : FiniteTree V) (right : FiniteTree W)
   exact ⟨left.ancestor_refl _ _, right.ancestor_refl _ _⟩
 
 /-- Boundary path lengths count one skipped vertex per child descent. -/
-noncomputable def stateScore (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (u : V) (v : W) (pairs : Mapping V W) (top : V × W) : WithBot ℝ :=
+noncomputable def stateScore (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (u : V) (v : W) (pairs : Mapping V W) (top : V × W) : WithBot K :=
   score left right weights penalty pairs +
     skippedScore penalty (left.pathLength u top.1 + right.pathLength v top.2)
 
+omit [IsStrictOrderedRing K] in
 /-- Boundary penalties compose exactly, including the source infinite penalty. -/
-theorem skippedScore_add (penalty : WithTop ℝ) (a b : Nat) :
+theorem skippedScore_add (penalty : WithTop K) (a b : Nat) :
     skippedScore penalty (a+b) = skippedScore penalty a + skippedScore penalty b := by
   by_cases hp : penalty = ⊤
   · subst penalty
@@ -60,7 +63,7 @@ theorem skippedScore_add (penalty : WithTop ℝ) (a b : Nat) :
 omit [DecidableEq W] in
 /-- A mapped boundary has no extra boundary penalty. -/
 @[simp] theorem stateScore_mapped (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (u : V) (v : W) (pairs : Mapping V W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (u : V) (v : W) (pairs : Mapping V W) :
     stateScore left right weights penalty u v pairs (u,v) = score left right weights penalty pairs := by
   simp [stateScore, skippedScore]
 
@@ -126,10 +129,10 @@ theorem StateValid.extend_right {left : FiniteTree V} {right : FiniteTree W}
   have hdv : right.Ancestor rightBase d v := by simpa only [he] using h.2.2.2.2
   exact hd.1.ne (right.ancestor_antisymm hd.2 hdv)
 
-omit [DecidableEq W] in
+omit [DecidableEq W] [IsStrictOrderedRing K] in
 /-- The concrete witness score loses exactly one penalty on a left descent. -/
 theorem stateScore_step_left {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u c : V} {v : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u c : V} {v : W}
     (pairs : Mapping V W) (top : V × W) (hc : left.Child leftBase u c)
     (htop : left.Ancestor leftBase c top.1) :
     stateScore left right weights penalty u v pairs top = skippedScore penalty 1 +
@@ -142,9 +145,9 @@ theorem stateScore_step_left {left : FiniteTree V} {right : FiniteTree W}
   rw [he, skippedScore_add]
   ac_rfl
 
-omit [DecidableEq W] in
+omit [DecidableEq W] [IsStrictOrderedRing K] in
 theorem stateScore_step_right {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {u : V} {rightBase v d : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {u : V} {rightBase v d : W}
     (pairs : Mapping V W) (top : V × W) (hd : right.Child rightBase v d)
     (htop : right.Ancestor rightBase d top.2) :
     stateScore left right weights penalty u v pairs top = skippedScore penalty 1 +

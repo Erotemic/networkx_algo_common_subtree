@@ -16,6 +16,8 @@ identity is Lemma 2's variational equality; no recurrence is used to define it.
 
 namespace SubtreeProofs.Droschinsky2016
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
 /-- Root-to-root witnesses within the two specified descendant subtrees. -/
@@ -72,18 +74,20 @@ noncomputable def rootedFeasible (left : FiniteTree V) (right : FiniteTree W)
 
 /-- Exact independent rooted optimum, retaining negative and bottom scores. -/
 noncomputable def rootedValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot ℝ :=
+    (weights : Scoring V W K) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot K :=
   (rootedFeasible left right leftBase rightBase u v).sup (score left weights)
 
+omit [IsStrictOrderedRing K] in
 theorem rooted_score_le_value {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) {leftBase u : V} {rightBase v : W} {pairs : Mapping V W}
+    (weights : Scoring V W K) {leftBase u : V} {rightBase v : W} {pairs : Mapping V W}
     (h : RootedValid left right leftBase rightBase u v pairs) :
     score left weights pairs ≤ rootedValue left right weights leftBase rightBase u v :=
   Finset.le_sup (f := score left weights) ((mem_rootedFeasible _ _ _ _ _ _ _).mpr h)
 
+omit [IsStrictOrderedRing K] in
 /-- Every rooted optimum has a concrete independently valid witness. -/
 theorem rootedValue_attained (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (leftBase u : V) (rightBase v : W) :
+    (weights : Scoring V W K) (leftBase u : V) (rightBase v : W) :
     ∃ pairs, RootedValid left right leftBase rightBase u v pairs ∧
       score left weights pairs = rootedValue left right weights leftBase rightBase u v := by
   have hn : (rootedFeasible left right leftBase rightBase u v).Nonempty :=
@@ -95,18 +99,19 @@ theorem rootedValue_attained (left : FiniteTree V) (right : FiniteTree W)
 
 /-- Exact independent unrestricted optimum. -/
 noncomputable def unrootedValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) : WithBot ℝ :=
+    (weights : Scoring V W K) : WithBot K :=
   (feasible left right).sup (score left weights)
 
 /-- The source's restricted family: one fixed left orientation, all descendant
 roots on the left, and the whole right tree rooted at every possible vertex. -/
 noncomputable def fixedRootValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (root : V) : WithBot ℝ :=
+    (weights : Scoring V W K) (root : V) : WithBot K :=
   Finset.univ.sup (fun u => Finset.univ.sup (fun v => rootedValue left right weights root v u v))
 
+omit [IsStrictOrderedRing K] in
 /-- 2016 Lemma 2: fixing one tree's root does not change the optimum. -/
 theorem fixedRootValue_eq_unrootedValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (root : V) :
+    (weights : Scoring V W K) (root : V) :
     fixedRootValue left right weights root = unrootedValue left right weights := by
   classical
   apply le_antisymm

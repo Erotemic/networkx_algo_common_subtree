@@ -17,6 +17,8 @@ and branch edges are disjoint, so no common edge or vertex is counted twice.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {I : Type*} {A : I → Type*} [Fintype I] [∀ i, Fintype (A i)]
@@ -50,13 +52,14 @@ theorem graft_edge_sum {M : Type*} [AddCommMonoid M] (trees : ∀ i, FiniteTree 
   · rfl
   · exact fun a _ b _ he => Sym2.map.injective (TreeGraft.branchVertex_injective i) he
 
+omit [IsStrictOrderedRing K] in
 /-- A grafted realization's score is its mapped-root reward plus one
 path-and-continuation reward for each attached common branch. -/
 theorem realizationScore_graft {V W : Type*} [DecidableEq V] [DecidableEq W]
     (trees : ∀ i, FiniteTree (A i)) (roots : ∀ i, A i) {left : FiniteTree V} {right : FiniteTree W}
     (first : TopologicalEmbedding (TreeGraft.tree trees roots) left)
     (second : TopologicalEmbedding (TreeGraft.tree trees roots) right)
-    (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (weights : Scoring V W K) (penalty : WithTop K) :
     realizationScore first second weights penalty = weights.node (first.map none) (second.map none) +
       ∑ i, (pathScore left right weights penalty
           s(first.map none, first.map (TreeGraft.branchVertex i (roots i)))

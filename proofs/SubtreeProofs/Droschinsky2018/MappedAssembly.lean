@@ -16,6 +16,8 @@ trees and their maps are grafted beneath the mapped parent pair.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
@@ -92,8 +94,9 @@ theorem second_restrict (i : family.Index) :
   funext a
   rfl
 
+omit [IsStrictOrderedRing K] in
 /-- Exact parent and branch score of the concrete assembled witness. -/
-theorem score_eq (weights : Scoring V W) (penalty : WithTop ℝ) :
+theorem score_eq (weights : Scoring V W K) (penalty : WithTop K) :
     score left right weights penalty family.pairs = weights.node u v + ∑ i : family.Index,
       (pathScore left right weights penalty s(u,(family.witness i.val).2.1) s(v,(family.witness i.val).2.2) +
         score left right weights penalty (family.witness i.val).1) := by
@@ -104,12 +107,12 @@ theorem score_eq (weights : Scoring V W) (penalty : WithTop ℝ) :
   apply Finset.sum_congr rfl
   intro i _
   rw [family.first_branch_root, family.second_branch_root, family.first_restrict, family.second_restrict]
-  exact congrArg (fun x : WithBot ℝ => pathScore left right weights penalty
+  exact congrArg (fun x : WithBot K => pathScore left right weights penalty
     s(u,(family.witness i.val).2.1) s(v,(family.witness i.val).2.2) + x)
     ((family.pointed i).score_eq weights penalty)
 
 /-- The assembled score expressed exactly in mapped/skipped boundary rewards. -/
-theorem boundary_score_eq (weights : Scoring V W) (penalty : WithTop ℝ) :
+theorem boundary_score_eq (weights : Scoring V W K) (penalty : WithTop K) :
     score left right weights penalty family.pairs = weights.node u v + ∑ i : family.Index,
       (if (family.witness i.val).2 = i.val then
         weights.edge s(u,i.val.1) s(v,i.val.2) +

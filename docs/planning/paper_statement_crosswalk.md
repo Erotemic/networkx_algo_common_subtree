@@ -54,6 +54,12 @@ extensions require separate contracts, as stated in the paper plan.
 
 ## Droschinsky--Kriege--Mutzel 2016 v4
 
+The weighted graph statements below are generic over an ordered commutative
+ring `K`. Real instantiation gives the source scores; integer instantiation
+shares the same witness and optimum proofs for the exact implementation track.
+Negative infinity and infinite penalties remain explicit. This does not
+identify IEEE floating arithmetic with exact real arithmetic.
+
 The precise v4 unrestricted-weight bound is
 `O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))`.
 The `O(n^2 Delta)` abbreviation in the earlier plans needs this qualification

@@ -15,6 +15,8 @@ valid boundary witness, and its exact score is bounded by the matching entry.
 
 namespace SubtreeProofs.Droschinsky2018.MappedDecomposition
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {A V W : Type*} [Fintype A] [DecidableEq A] [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
@@ -44,8 +46,9 @@ theorem branch_state_valid (c : RootedDecomposition.Index common root) :
 noncomputable def childMatching : Mapping V W :=
   Finset.univ.image (fun c : RootedDecomposition.Index common root => (first.branchChild c, second.branchChild c))
 
+omit [IsStrictOrderedRing K] in
 /-- The concrete first-child pairs form an allowed partial matching. -/
-theorem childMatching_valid (weights : Scoring V W) (penalty : WithTop ℝ) :
+theorem childMatching_valid (weights : Scoring V W K) (penalty : WithTop K) :
     WeightedMatching.Valid (stateChildWeights left right weights penalty leftBase rightBase (first.map root) (second.map root))
       (childMatching first second) := by
   refine ⟨?_, ?_, ?_⟩
@@ -61,8 +64,9 @@ theorem childMatching_valid (weights : Scoring V W) (penalty : WithTop ℝ) :
     obtain ⟨d, _, rfl⟩ := Finset.mem_image.mp hq
     exact congrArg (fun c => (first.branchChild c, second.branchChild c)) (second.branchChild_injective he)
 
+omit [IsStrictOrderedRing K] in
 /-- Each source common-child branch is counted once in the child matching. -/
-theorem childMatching_weight (weights : Scoring V W) (penalty : WithTop ℝ) :
+theorem childMatching_weight (weights : Scoring V W K) (penalty : WithTop K) :
     WeightedMatching.weight (stateChildWeights left right weights penalty leftBase rightBase (first.map root) (second.map root))
       (childMatching first second) = ∑ c : RootedDecomposition.Index common root,
         matchingBranchValue left right weights penalty leftBase rightBase (first.map root) (second.map root)
@@ -77,7 +81,7 @@ theorem childMatching_weight (weights : Scoring V W) (penalty : WithTop ℝ) :
 
 /-- Every independent source-style mapped-root witness is bounded by the
 certified child matching optimum. -/
-theorem source_score_upper (weights : Scoring V W) (penalty : WithTop ℝ) :
+theorem source_score_upper (weights : Scoring V W K) (penalty : WithTop K) :
     realizationScore first.toUnrooted second.toUnrooted weights penalty ≤ weights.node (first.map root) (second.map root) +
       WeightedMatching.weight
         (stateChildWeights left right weights penalty leftBase rightBase (first.map root) (second.map root))
@@ -104,6 +108,8 @@ end SubtreeProofs.Droschinsky2018.MappedDecomposition
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
@@ -111,7 +117,7 @@ variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 /-- Reverse mapped-state inequality from decomposition of every independent
 feasible mapped-root witness. -/
 theorem mappedValue_le_matchingValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     mappedValue left right weights penalty leftBase rightBase u v ≤ weights.node u v +
       WeightedMatching.weight (stateChildWeights left right weights penalty leftBase rightBase u v)
         (bestStateMatching left right weights penalty leftBase rightBase u v) := by
@@ -127,7 +133,7 @@ theorem mappedValue_le_matchingValue (left : FiniteTree V) (right : FiniteTree W
 /-- 2018 Lemma 5's mapped-root matching recurrence, against the independent
 boundary-state optimum and with an actual certified partial-matching oracle. -/
 theorem mapped_recurrence (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     mappedValue left right weights penalty leftBase rightBase u v = weights.node u v +
       WeightedMatching.weight (stateChildWeights left right weights penalty leftBase rightBase u v)
         (bestStateMatching left right weights penalty leftBase rightBase u v) :=

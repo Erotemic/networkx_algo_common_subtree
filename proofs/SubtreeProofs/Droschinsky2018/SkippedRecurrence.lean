@@ -16,6 +16,8 @@ infinite penalties; it is not used as their definition.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
@@ -44,12 +46,12 @@ noncomputable def skippedFeasible (left : FiniteTree V) (right : FiniteTree W)
   classical
   simp [skippedFeasible]
 
-noncomputable def allStateValue (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot ℝ :=
+noncomputable def allStateValue (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot K :=
   (stateFeasible left right leftBase rightBase u v).sup (fun w => stateScore left right weights penalty u v w.1 w.2)
 
-noncomputable def skippedValue (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot ℝ :=
+noncomputable def skippedValue (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot K :=
   (skippedFeasible left right leftBase rightBase u v).sup (fun w => stateScore left right weights penalty u v w.1 w.2)
 
 noncomputable def mappedFeasible (left : FiniteTree V) (right : FiniteTree W)
@@ -64,8 +66,8 @@ noncomputable def mappedFeasible (left : FiniteTree V) (right : FiniteTree W)
   classical
   simp [mappedFeasible]
 
-noncomputable def mappedValue (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot ℝ :=
+noncomputable def mappedValue (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot K :=
   (mappedFeasible left right leftBase rightBase u v).sup (fun w => stateScore left right weights penalty u v w.1 w.2)
 
 noncomputable def childVertices (tree : FiniteTree V) (base u : V) : Finset V := by
@@ -78,8 +80,9 @@ omit [DecidableEq V] in
   classical
   simp [childVertices]
 
+omit [IsStrictOrderedRing K] in
 theorem stateScore_le_allStateValue {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u : V} {rightBase v : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u : V} {rightBase v : W}
     {pairs : Mapping V W} {top : V × W}
     (h : StateValid left right leftBase rightBase u v pairs top) :
     stateScore left right weights penalty u v pairs top ≤ allStateValue left right weights penalty leftBase rightBase u v :=
@@ -87,8 +90,9 @@ theorem stateScore_le_allStateValue {left : FiniteTree V} {right : FiniteTree W}
     (f := fun w => stateScore left right weights penalty u v w.1 w.2)
     ((mem_stateFeasible left right leftBase rightBase u v (pairs,top)).mpr h)
 
+omit [IsStrictOrderedRing K] in
 theorem stateScore_le_skippedValue {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u : V} {rightBase v : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u : V} {rightBase v : W}
     {pairs : Mapping V W} {top : V × W}
     (h : StateValid left right leftBase rightBase u v pairs top) (hn : top ≠ (u,v)) :
     stateScore left right weights penalty u v pairs top ≤ skippedValue left right weights penalty leftBase rightBase u v :=
@@ -96,8 +100,9 @@ theorem stateScore_le_skippedValue {left : FiniteTree V} {right : FiniteTree W}
     (f := fun w => stateScore left right weights penalty u v w.1 w.2)
     ((mem_skippedFeasible left right leftBase rightBase u v (pairs,top)).mpr ⟨h, hn⟩)
 
+omit [IsStrictOrderedRing K] in
 theorem stateScore_le_mappedValue {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u : V} {rightBase v : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u : V} {rightBase v : W}
     {pairs : Mapping V W} {top : V × W}
     (h : StateValid left right leftBase rightBase u v pairs top) (he : top = (u,v)) :
     stateScore left right weights penalty u v pairs top ≤ mappedValue left right weights penalty leftBase rightBase u v :=
@@ -105,9 +110,10 @@ theorem stateScore_le_mappedValue {left : FiniteTree V} {right : FiniteTree W}
     (f := fun w => stateScore left right weights penalty u v w.1 w.2)
     ((mem_mappedFeasible left right leftBase rightBase u v (pairs,top)).mpr ⟨h, he⟩)
 
+omit [IsStrictOrderedRing K] in
 /-- Mapped-state maxima always have concrete witnesses, including bottom scores. -/
 theorem mappedValue_attained (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase u : V) (rightBase v : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase u : V) (rightBase v : W) :
     ∃ w : BoundaryWitness V W, StateValid left right leftBase rightBase u v w.1 w.2 ∧ w.2 = (u,v) ∧
       stateScore left right weights penalty u v w.1 w.2 = mappedValue left right weights penalty leftBase rightBase u v := by
   have hs := state_singleton_valid left right leftBase u rightBase v (u,v)
@@ -120,10 +126,11 @@ theorem mappedValue_attained (left : FiniteTree V) (right : FiniteTree W)
   exact ⟨w, hv.1, hv.2, le_antisymm (Finset.le_sup (s := mappedFeasible left right leftBase rightBase u v)
     (f := fun w => stateScore left right weights penalty u v w.1 w.2) hw) (Finset.sup_le hmax)⟩
 
+omit [IsStrictOrderedRing K] in
 /-- A non-bottom skipped maximum is attained, without inventing a witness for
 an empty child family. -/
 theorem skippedValue_attained_of_ne_bot (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase u : V) (rightBase v : W)
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase u : V) (rightBase v : W)
     (hnot : skippedValue left right weights penalty leftBase rightBase u v ≠ ⊥) :
     ∃ w : BoundaryWitness V W, StateValid left right leftBase rightBase u v w.1 w.2 ∧ w.2 ≠ (u,v) ∧
       stateScore left right weights penalty u v w.1 w.2 = skippedValue left right weights penalty leftBase rightBase u v := by
@@ -140,9 +147,10 @@ theorem skippedValue_attained_of_ne_bot (left : FiniteTree V) (right : FiniteTre
   exact ⟨w, hv.1, hv.2, le_antisymm (Finset.le_sup (s := skippedFeasible left right leftBase rightBase u v)
     (f := fun w => stateScore left right weights penalty u v w.1 w.2) hw) (Finset.sup_le hmax)⟩
 
+omit [IsStrictOrderedRing K] in
 /-- The two states exactly partition the independent boundary objective. -/
-theorem allStateValue_eq_max (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+theorem allStateValue_eq_max (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     allStateValue left right weights penalty leftBase rightBase u v =
       max (mappedValue left right weights penalty leftBase rightBase u v)
         (skippedValue left right weights penalty leftBase rightBase u v) := by
@@ -169,7 +177,7 @@ theorem allStateValue_eq_max (left : FiniteTree V) (right : FiniteTree W) (weigh
 
 /-- Addition distributes over finite maxima in the extended-real score domain,
 including the empty family whose maximum is negative infinity. -/
-theorem add_finset_sup {A : Type*} (s : Finset A) (f : A → WithBot ℝ) (a : WithBot ℝ) :
+theorem add_finset_sup {A : Type*} (s : Finset A) (f : A → WithBot K) (a : WithBot K) :
     a + s.sup f = s.sup (fun x => a + f x) := by
   classical
   induction s using Finset.induction_on with
@@ -178,8 +186,8 @@ theorem add_finset_sup {A : Type*} (s : Finset A) (f : A → WithBot ℝ) (a : W
 
 /-- 2018 Lemma 5's diamond recurrence. Each feasible skipped-root witness
 admits a child descent; every child witness lifts back with exactly one penalty. -/
-theorem skipped_recurrence (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
-    (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+theorem skipped_recurrence (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
+    (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     skippedValue left right weights penalty leftBase rightBase u v = skippedScore penalty 1 +
       max ((childVertices left leftBase u).sup (fun c => allStateValue left right weights penalty leftBase rightBase c v))
         ((childVertices right rightBase v).sup (fun d => allStateValue left right weights penalty leftBase rightBase u d)) := by
@@ -228,7 +236,7 @@ theorem skipped_recurrence (left : FiniteTree V) (right : FiniteTree W) (weights
 
 /-- The source's explicit mapped/skipped form of the diamond recurrence. -/
 theorem skipped_recurrence_two_state (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase : V) (rightBase : W) (u : V) (v : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftBase : V) (rightBase : W) (u : V) (v : W) :
     skippedValue left right weights penalty leftBase rightBase u v = skippedScore penalty 1 +
       max ((childVertices left leftBase u).sup (fun c =>
           max (mappedValue left right weights penalty leftBase rightBase c v)

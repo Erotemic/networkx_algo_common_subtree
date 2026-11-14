@@ -15,6 +15,8 @@ applies to arbitrary common-tree witnesses.
 
 namespace SubtreeProofs.Droschinsky2018.ScoreDecomposition
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {A V W : Type*} [Fintype A] [DecidableEq A] [DecidableEq V] [DecidableEq W]
@@ -43,9 +45,10 @@ theorem pulled_restrict (first : TopologicalEmbedding common left) (c : RootedDe
   funext a
   rfl
 
+omit [IsStrictOrderedRing K] in
 /-- Exact root/branch score partition of an arbitrary common-tree realization. -/
 theorem score_decomposition (first : TopologicalEmbedding common left) (second : TopologicalEmbedding common right)
-    (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (weights : Scoring V W K) (penalty : WithTop K) :
     realizationScore first second weights penalty = weights.node (first.map root) (second.map root) +
       ∑ c : RootedDecomposition.Index common root,
         (pathScore left right weights penalty s(first.map root, first.map c.val) s(second.map root, second.map c.val) +

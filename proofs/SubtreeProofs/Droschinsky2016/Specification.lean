@@ -6,6 +6,7 @@ public import Mathlib.Data.Finset.Image
 public import Mathlib.Data.Finset.Powerset
 public import Mathlib.Data.Finset.Max
 public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Order.Ring.Defs
 public import Mathlib.Algebra.Order.Monoid.WithTop
 import Mathlib.Tactic
 
@@ -14,14 +15,17 @@ import Mathlib.Tactic
 
 A witness is a nonempty finite partial bijection between connected induced
 subtrees and preserves adjacency in both directions. Unordered edge pairs are
-summed once using `Sym2`, without choosing a vertex order. Weights use `WithBot ℝ`
-so the source's negative infinity and negative optima remain visible. The
+summed once using `Sym2`, without choosing a vertex order. Weights use `WithBot K`
+for an ordered ring `K`, instantiated by real paper scores or exact integers.
+The source's negative infinity and negative optima remain visible. The
 empty-allowed implementation convention is a separate predicate.
 -/
 
 @[expose] public section
 
 namespace SubtreeProofs.Droschinsky2016
+
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
@@ -45,9 +49,9 @@ def ValidOrEmpty (left : FiniteTree V) (right : FiniteTree W) (pairs : Mapping V
   pairs = ∅ ∨ Valid left right pairs
 
 /-- Label or vertex-pair rewards, including source negative infinity. -/
-structure Scoring (V W : Type*) where
-  node : V → W → WithBot ℝ
-  edge : Sym2 V → Sym2 W → WithBot ℝ
+structure Scoring (V W K : Type*) where
+  node : V → W → WithBot K
+  edge : Sym2 V → Sym2 W → WithBot K
 
 /-- Adjacency of the left endpoints is well-defined on an unordered pair. -/
 def mappedAdj (left : FiniteTree V) : Sym2 (V × W) → Prop :=
@@ -61,12 +65,12 @@ noncomputable def mappedEdges (left : FiniteTree V) (pairs : Mapping V W) : Fins
   exact pairs.sym2.filter (mappedAdj left)
 
 /-- Independent score: each selected vertex and each unordered common edge once. -/
-noncomputable def score (left : FiniteTree V) (weights : Scoring V W) (pairs : Mapping V W) : WithBot ℝ :=
+noncomputable def score (left : FiniteTree V) (weights : Scoring V W K) (pairs : Mapping V W) : WithBot K :=
   (∑ p ∈ pairs, weights.node p.1 p.2) +
     ∑ e ∈ mappedEdges left pairs, weights.edge (e.map Prod.fst) (e.map Prod.snd)
 
 /-- Source optimum, with no recurrence or implementation in its definition. -/
-def IsMaximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
+def IsMaximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
     (pairs : Mapping V W) : Prop :=
   Valid left right pairs ∧ ∀ other, Valid left right other → score left weights other ≤ score left weights pairs
 
@@ -105,9 +109,9 @@ omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] in
   change ¬ left.graph.Adj u u
   simp
 
-omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] in
+omit [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W] [LinearOrder K] [IsStrictOrderedRing K] in
 /-- The source singleton score can be negative; it is not clamped to zero. -/
-@[simp] theorem score_singleton (left : FiniteTree V) (weights : Scoring V W) (u : V) (v : W) :
+@[simp] theorem score_singleton (left : FiniteTree V) (weights : Scoring V W K) (u : V) (v : W) :
     score left weights {(u,v)} = weights.node u v := by
   simp [score]
 
@@ -121,9 +125,10 @@ noncomputable def feasible (left : FiniteTree V) (right : FiniteTree W) : Finset
   classical
   simp [feasible]
 
+omit [IsStrictOrderedRing K] in
 /-- Every structurally feasible pair of trees has an attained optimum over its
 finite witness family. No zero clamp or sign hypothesis is needed. -/
-theorem exists_maximum_of_feasible (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)
+theorem exists_maximum_of_feasible (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K)
     (h : ∃ pairs, Valid left right pairs) : ∃ pairs, IsMaximum left right weights pairs := by
   classical
   obtain ⟨pairs, hpairs⟩ := h
@@ -132,9 +137,10 @@ theorem exists_maximum_of_feasible (left : FiniteTree V) (right : FiniteTree W) 
   exact ⟨best, (mem_feasible _ _ _).mp hbest,
     fun other hother => hmaximum other ((mem_feasible _ _ _).mpr hother)⟩
 
+omit [IsStrictOrderedRing K] in
 /-- The source optimum is attained for every pair of finite trees, without an
 extra feasibility or positivity hypothesis. -/
-theorem exists_maximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W) :
+theorem exists_maximum (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W K) :
     ∃ pairs, IsMaximum left right weights pairs := by
   obtain ⟨u⟩ := left.isTree.connected.nonempty
   obtain ⟨v⟩ := right.isTree.connected.nonempty

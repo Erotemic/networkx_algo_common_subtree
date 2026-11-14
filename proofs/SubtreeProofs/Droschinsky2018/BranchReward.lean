@@ -14,14 +14,17 @@ skipped-vertex boundary penalty. No initial-edge label is consulted then.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [DecidableEq V] [DecidableEq W]
 
+omit [IsStrictOrderedRing K] in
 /-- The path-score branch test is exactly the mapped-versus-skipped root test
 at the immediate input-child pair. -/
 theorem connecting_path_score {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u c : V} {rightBase v d : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u c : V} {rightBase v d : W}
     (top : V × W) (hc : left.Child leftBase u c) (hd : right.Child rightBase v d)
     (hl : left.Ancestor leftBase c top.1) (hr : right.Ancestor rightBase d top.2) :
     pathScore left right weights penalty s(u,top.1) s(v,top.2) =
@@ -51,7 +54,7 @@ theorem connecting_path_score {left : FiniteTree V} {right : FiniteTree W}
 
 /-- Exact edge-plus-continuation score used by the mapped-root matching state. -/
 theorem connecting_reward_boundary {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u c : V} {rightBase v d : W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftBase u c : V} {rightBase v d : W}
     (pairs : Mapping V W) (top : V × W) (hc : left.Child leftBase u c) (hd : right.Child rightBase v d)
     (hl : left.Ancestor leftBase c top.1) (hr : right.Ancestor rightBase d top.2) :
     pathScore left right weights penalty s(u,top.1) s(v,top.2) + score left right weights penalty pairs =

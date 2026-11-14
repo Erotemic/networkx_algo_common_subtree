@@ -13,6 +13,8 @@ recursive optimum equations or Rust parent-array invariants.
 
 namespace SubtreeProofs.Droschinsky2016
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 variable {V W : Type*} [DecidableEq V] [DecidableEq W]
 
 /-- The selected left vertex represented by a concrete mapped pair. -/
@@ -321,11 +323,12 @@ theorem Valid.edge_sum_decomposition {A : Type*} [AddCommMonoid A]
   · intro first _ second _ he
     exact (Sym2.mkEmbedding root).injective he
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- The full independent vertex/edge score splits into the mapped root reward
 and the sum of its edge-plus-continuation branch rewards. -/
 theorem Valid.score_decomposition {left : FiniteTree V} {right : FiniteTree W}
     {pairs : Mapping V W} (h : Valid left right pairs) (root : V × W) (hr : root ∈ pairs)
-    (weights : Scoring V W) :
+    (weights : Scoring V W K) :
     score left weights pairs = weights.node root.1 root.2 +
       ∑ child ∈ childMapping left root.1 pairs,
         (weights.edge ((s(root,child)).map Prod.fst) ((s(root,child)).map Prod.snd) +

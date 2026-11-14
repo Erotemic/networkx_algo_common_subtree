@@ -14,6 +14,8 @@ score. This is the data used when assembling independently selected branches.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
@@ -76,10 +78,10 @@ theorem boundary_region (witness : PointedWitness left right leftBase rightBase 
   have htop := h.2.2.1 _ (witness.map_pair_mem a)
   exact ⟨left.ancestor_trans h.2.2.2.1 htop.1, right.ancestor_trans h.2.2.2.2 htop.2⟩
 
-omit [Fintype V] [Fintype W] in
+omit [Fintype V] [Fintype W] [IsStrictOrderedRing K] in
 /-- Pointing and realizing the common root preserves the full internal score. -/
 theorem score_eq (witness : PointedWitness left right leftBase rightBase pairs top)
-    (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (weights : Scoring V W K) (penalty : WithTop K) :
     realizationScore witness.first.toUnrooted witness.second.toUnrooted weights penalty =
       score left right weights penalty pairs := by
   rw [← score_pairedImage, witness.pairs_eq]

@@ -105,6 +105,8 @@ end SubtreeProofs.TopologicalEmbedding
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {A V W : Type*} [Fintype A] [DecidableEq V] [DecidableEq W]
@@ -218,15 +220,16 @@ theorem pairedImage_edges (first : TopologicalEmbedding common left)
 
 /-- The source-style score over explicit abstract vertices and edges. -/
 noncomputable def realizationScore (first : TopologicalEmbedding common left)
-    (second : TopologicalEmbedding common right) (weights : Scoring V W) (penalty : WithTop ℝ) : WithBot ℝ := by
+    (second : TopologicalEmbedding common right) (weights : Scoring V W K) (penalty : WithTop K) : WithBot K := by
   classical
   exact (∑ a, weights.node (first.map a) (second.map a)) +
     ∑ edge ∈ commonEdges common, pathScore left right weights penalty
       (edge.map first.map) (edge.map second.map)
 
+omit [IsStrictOrderedRing K] in
 /-- Vertex and unordered-edge scores agree exactly across witness formats. -/
 theorem score_pairedImage (first : TopologicalEmbedding common left)
-    (second : TopologicalEmbedding common right) (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (second : TopologicalEmbedding common right) (weights : Scoring V W K) (penalty : WithTop K) :
     score left right weights penalty (pairedImage first second) = realizationScore first second weights penalty := by
   classical
   have hinj : Function.Injective (fun a => (first.map a, second.map a)) :=
@@ -260,10 +263,11 @@ theorem pairedImage_precomposeIso {B : Type*} [Fintype B] (other : FiniteTree B)
     obtain ⟨b, rfl⟩ := iso.surjective a
     exact (mem_pairedImage _ _ p.1 p.2).mpr ⟨b, ha, hb⟩
 
+omit [IsStrictOrderedRing K] in
 /-- The abstract common-tree score is invariant under common-tree isomorphism. -/
 theorem realizationScore_precomposeIso {B : Type*} [Fintype B] (other : FiniteTree B)
     (iso : other.graph ≃g common.graph) (first : TopologicalEmbedding common left)
-    (second : TopologicalEmbedding common right) (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (second : TopologicalEmbedding common right) (weights : Scoring V W K) (penalty : WithTop K) :
     realizationScore (first.precompose iso) (second.precompose iso) weights penalty =
       realizationScore first second weights penalty := by
   calc
@@ -273,13 +277,14 @@ theorem realizationScore_precomposeIso {B : Type*} [Fintype B] (other : FiniteTr
       congrArg (score left right weights penalty) (pairedImage_precomposeIso other iso first second)
     _ = _ := score_pairedImage _ _ _ _
 
+omit [IsStrictOrderedRing K] in
 /-- Source Definition 1 embeddings in both input trees induce exactly the
 independent finite-pair witness and its vertex/path score. Root-to-root is
 optional, as in Definition 2's general CSE. -/
 theorem rooted_source_witness {commonRoot : A} {leftRoot : V} {rightRoot : W}
     (first : RootedTopologicalEmbedding common left commonRoot leftRoot)
     (second : RootedTopologicalEmbedding common right commonRoot rightRoot)
-    (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (weights : Scoring V W K) (penalty : WithTop K) :
     Valid left right (pairedImage first.toUnrooted second.toUnrooted) ∧
       score left right weights penalty (pairedImage first.toUnrooted second.toUnrooted) =
         realizationScore first.toUnrooted second.toUnrooted weights penalty :=

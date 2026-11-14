@@ -15,12 +15,15 @@ Neither identity claims the optimized unrooted paper algorithm.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
+omit [IsStrictOrderedRing K] in
 theorem rooted_score_le_value {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {leftRoot : V} {rightRoot : W} {pairs : Mapping V W}
+    (weights : Scoring V W K) (penalty : WithTop K) {leftRoot : V} {rightRoot : W} {pairs : Mapping V W}
     (h : RootedValid left right leftRoot rightRoot pairs) :
     score left right weights penalty pairs ≤ rootedValue left right weights penalty leftRoot rightRoot :=
   Finset.le_sup (s := rootedFeasible left right leftRoot rightRoot) (f := score left right weights penalty)
@@ -29,7 +32,7 @@ theorem rooted_score_le_value {left : FiniteTree V} {right : FiniteTree W}
 /-- The rooted source optimum is exactly the maximum mapped-state value in
 its supplied input orientations. Boundary skips above the common root are free. -/
 theorem rootedValue_eq_max_mapped (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftRoot : V) (rightRoot : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftRoot : V) (rightRoot : W) :
     rootedValue left right weights penalty leftRoot rightRoot =
       Finset.univ.sup (fun u => Finset.univ.sup (fun v => mappedValue left right weights penalty leftRoot rightRoot u v)) := by
   classical
@@ -60,18 +63,19 @@ theorem rootedValue_eq_max_mapped (left : FiniteTree V) (right : FiniteTree W)
 
 /-- Independent unrestricted unrooted optimum, with no zero clamp. -/
 noncomputable def unrootedValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) : WithBot ℝ :=
+    (weights : Scoring V W K) (penalty : WithTop K) : WithBot K :=
   (feasible left right).sup (score left right weights penalty)
 
+omit [IsStrictOrderedRing K] in
 theorem unrooted_score_le_value {left : FiniteTree V} {right : FiniteTree W}
-    (weights : Scoring V W) (penalty : WithTop ℝ) {pairs : Mapping V W} (h : Valid left right pairs) :
+    (weights : Scoring V W K) (penalty : WithTop K) {pairs : Mapping V W} (h : Valid left right pairs) :
     score left right weights penalty pairs ≤ unrootedValue left right weights penalty :=
   Finset.le_sup (s := feasible left right) (f := score left right weights penalty) ((mem_feasible _ _ _).mpr h)
 
 /-- Trying every root pair and keeping only its root-to-root mapped optimum
 solves the unrooted objective. This is the straightforward rerooting baseline. -/
 theorem unrootedValue_eq_max_rerooted_mapped (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) :
+    (weights : Scoring V W K) (penalty : WithTop K) :
     unrootedValue left right weights penalty =
       Finset.univ.sup (fun u => Finset.univ.sup (fun v => mappedValue left right weights penalty u v u v)) := by
   classical

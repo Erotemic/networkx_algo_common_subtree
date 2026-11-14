@@ -14,6 +14,8 @@ embeddings with the supplied roots, rather than assumed by an unrooted DP.
 
 namespace SubtreeProofs.Droschinsky2018
 
+variable {K : Type*} [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
 open Droschinsky2016
 
 variable {V W : Type*} [DecidableEq V] [DecidableEq W]
@@ -128,12 +130,13 @@ noncomputable def rootedFeasible (left : FiniteTree V) (right : FiniteTree W)
 
 /-- Independent rooted optimum, with no zero clamp and no recurrence in its definition. -/
 noncomputable def rootedValue (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftRoot : V) (rightRoot : W) : WithBot ℝ :=
+    (weights : Scoring V W K) (penalty : WithTop K) (leftRoot : V) (rightRoot : W) : WithBot K :=
   (rootedFeasible left right leftRoot rightRoot).sup (score left right weights penalty)
 
+omit [IsStrictOrderedRing K] in
 /-- The rooted score maximum is always attained by a nonempty source witness. -/
 theorem rootedValue_attained (left : FiniteTree V) (right : FiniteTree W)
-    (weights : Scoring V W) (penalty : WithTop ℝ) (leftRoot : V) (rightRoot : W) :
+    (weights : Scoring V W K) (penalty : WithTop K) (leftRoot : V) (rightRoot : W) :
     ∃ pairs, RootedValid left right leftRoot rightRoot pairs ∧
       score left right weights penalty pairs = rootedValue left right weights penalty leftRoot rightRoot := by
   have hn : (rootedFeasible left right leftRoot rightRoot).Nonempty :=
