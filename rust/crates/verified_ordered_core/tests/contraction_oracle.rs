@@ -1,5 +1,5 @@
 use std::collections::BTreeSet;
-use verified_ordered_core::{largest_common_embedding, BalancedWord};
+use verified_ordered_core::{largest_common_embedding, maximum_common_embedding, BalancedWord};
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd)]
 struct Tree(Vec<Tree>);
@@ -102,6 +102,10 @@ fn solver_matches_independent_tree_contractions_through_six_edges() {
                 .unwrap();
             let result = largest_common_embedding(&as_word(&left.0), &as_word(&right.0))
                 .expect("tiny scores fit u32");
+            let memoized = maximum_common_embedding(&as_word(&left.0), &as_word(&right.0))
+                .expect("tiny memoized scores fit u32");
+            assert_eq!(memoized.edges, result.edges);
+            assert_eq!(word_encoding(&memoized.word), word_encoding(&result.word));
             let witness = word_encoding(&result.word);
             assert_eq!(result.edges as usize, expected, "pair {i}, {j}");
             assert_eq!(witness.len() / 2, expected);

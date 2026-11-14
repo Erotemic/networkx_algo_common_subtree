@@ -12,6 +12,18 @@ Detailed work packages live in:
 - [Droschinsky, Kriege, Mutzel (2016 and 2018) plan](droschinsky_2016_2018_verified_rust_lean.md)
 - [Planning index and evidence map](README.md)
 
+## Verified Rust memoization: 2026-11-14
+
+The actual owned-memo Rust entry point now has a compiled end-to-end optimum
+and exact-score theorem (`Rust.MemoizedOrderedSolver.maximum_common_embedding_of_trees`).
+Its returned cache equals the numeric memo model after erasing witnesses;
+cache keys are unique and bounded by the proved D-product. Both Rust solvers
+pass all 38,809 ordered pairs through six edges. The linked-list table has
+linear scans and copied witnesses; efficient dictionary/representation cost,
+input-index mappings, ordered isomorphism and Python integration remain open.
+See [proof status](../../proofs/PROOF_STATUS.md) and
+[shape benchmarks](../../dev/benchmarks/2026-11-14-ordered-memo.md).
+
 ## 2004 proof tranche accepted: 2026-11-14
 
 The operational Lemma 8 recurrence now has a general constructive correctness
@@ -23,8 +35,8 @@ containment. Exact endpoints and all remaining obligations are in the
 [paper statement crosswalk](paper_statement_crosswalk.md).
 
 This closes the ordered LCBE mathematical optimum and state-bound chain.
-Memoization/cost semantics, input-index witness reconstruction, the distinct
-ordered-isomorphism contract and actual Rust solver refinement remain open.
+Full implementation cost, input-index witness reconstruction, the distinct
+ordered-isomorphism contract and Python integration remain open.
 A fresh source-only checkout reproduced the previous full library build.
 
 ## Accepted increment: 2026-11-14

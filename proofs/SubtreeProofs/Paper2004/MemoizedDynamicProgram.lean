@@ -155,6 +155,27 @@ decreasing_by
   all_goals simp only [DyckWord.semilength_add] at *
   all_goals omega
 
+
+/-- A cache hit preserves the table exactly. -/
+theorem memoLcs_hit_table (left right : DyckWord) (table : MemoTable) (value : Nat)
+    (h : memoLookup (left,right) table = some value) : (memoLcs left right table).table = table := by
+  rw [memoLcs]
+  simp only [memoFind_value, h]
+
+/-- On a nonempty miss, the final insertion has the independently proved
+recurrence value and follows the four threaded child computations. -/
+theorem memoLcs_miss_table (left right : DyckWord) (table : MemoTable) (hs : MemoSound table)
+    (h : memoLookup (left,right) table = none) (hl : left ≠ 0) (hr : right ≠ 0) :
+    (memoLcs left right table).table = ((left,right), paperLcs left right) ::
+      (memoLcs left (right.insidePart + right.outsidePart)
+        (memoLcs (left.insidePart + left.outsidePart) right
+          (memoLcs left.outsidePart right.outsidePart
+            (memoLcs left.insidePart right.insidePart table).table).table).table).table := by
+  have hv := (memoLcs_correct left right table hs).1
+  rw [memoLcs] at hv ⊢
+  simp only [memoFind_value, h, hl, hr, ↓reduceDIte] at hv ⊢
+  rw [hv]
+
 /-- Empty-table execution equals the independent maximum common balanced score. -/
 theorem memoLcs_optimum (left right : DyckWord) :
     (∃ candidate, CommonBalanced candidate left right ∧

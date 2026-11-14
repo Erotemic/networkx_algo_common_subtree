@@ -42,8 +42,10 @@ efficient verified matching algorithm remain open.
 `verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first
 operation refines a genuine tree contraction's edge count. `Rust/OrderedSolver` further verifies the real structural-witness solver
 against the independent maximum for inputs below 2^32 edges per tree. This
-reference Rust recursion is exponential; efficient Rust memoization, index
-witnesses and API conversion remain open.
+reference Rust recursion is exponential. `Rust/MemoizedOrderedSolver` also
+proves the actual memoized entry point correct and its cache equal to the numeric
+Lean model, transferring cache uniqueness and state bounds. Efficient dictionary
+and representation cost, index witnesses and API conversion remain open.
 
 Build the full maintained proof chain with:
 

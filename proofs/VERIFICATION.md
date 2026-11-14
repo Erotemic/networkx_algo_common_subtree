@@ -71,8 +71,11 @@ actual structural-witness solver: `largest_common_embedding_of_trees`
 proves successful execution, an independent maximum tree, and the exact
 edge score whenever both input trees have fewer than 2^32 edges. Rust
 representation/Dyck-word round trips are proved. Its reference recursion
-is exponential; Rust memoization, index witnesses, adapter verification
-and performance refinement remain open. The Aeneas model abstracts
+is exponential. `Rust/MemoizedOrderedSolver.lean` additionally verifies the
+actual owned-memo entry point and the exact returned-cache correspondence,
+including uniqueness and state bounds. Its association-list scans and payload
+copies remain representation costs to refine; index witnesses, adapter
+verification and efficient dictionary performance are open. The Aeneas model abstracts
 allocation and recursive stack resources, so the theorem is a functional
 correctness result rather than a platform memory-budget guarantee.
 Rust compilation, Charon/Aeneas translation, and the models of supported Rust

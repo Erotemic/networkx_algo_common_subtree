@@ -7,3 +7,7 @@ publish = false
 
 [lib]
 path = "src/lib.rs"
+
+[[bench]]
+name = "ordered_shapes"
+harness = false

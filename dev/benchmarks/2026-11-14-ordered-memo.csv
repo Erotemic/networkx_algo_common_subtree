@@ -1,0 +1,7 @@
+case,left_edges,right_edges,seconds,score,cache_entries
+chain12,12,12,0.000431670,12,169
+chain24,24,24,0.007907299,24,625
+star24,24,24,0.007836542,24,625
+chain_star24,24,24,0.010460458,1,625
+balanced_height4,30,30,0.010441228,30,961
+balanced_height5,62,62,0.366556223,62,3969

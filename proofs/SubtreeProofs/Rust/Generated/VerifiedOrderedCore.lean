@@ -132,4 +132,155 @@ def largest_common_embedding
                   ok (some ce1)
 partial_fixpoint
 
+/-- [verified_ordered_core::words_equal]:
+    Source: 'src/lib.rs', lines 109:0-117:1
+    Visibility: public -/
+def words_equal
+  (first : BalancedWord) (second : BalancedWord) : Result Bool := do
+  match first with
+  | BalancedWord.Empty =>
+    match second with
+    | BalancedWord.Empty => ok true
+    | BalancedWord.Pair _ _ => ok false
+  | BalancedWord.Pair fh ft =>
+    match second with
+    | BalancedWord.Empty => ok false
+    | BalancedWord.Pair sh st =>
+      let b ← words_equal fh sh
+      if b
+      then words_equal ft st
+      else ok false
+partial_fixpoint
+
+/-- [verified_ordered_core::copy_result]:
+    Source: 'src/lib.rs', lines 119:0-124:1
+    Visibility: public -/
+def copy_result (result : CommonEmbedding) : Result CommonEmbedding := do
+  let bw ← copy_word result.word
+  ok { result with word := bw }
+
+/-- [verified_ordered_core::MemoEntry]
+    Source: 'src/lib.rs', lines 126:0-130:1
+    Visibility: public -/
+structure MemoEntry where
+  left : BalancedWord
+  right : BalancedWord
+  result : CommonEmbedding
+
+/-- [verified_ordered_core::MemoTable]
+    Source: 'src/lib.rs', lines 134:0-137:1
+    Visibility: public -/
+@[discriminant isize]
+inductive MemoTable where
+| Empty : MemoTable
+| Entry : MemoEntry → MemoTable → MemoTable
+
+/-- [verified_ordered_core::memo_lookup]:
+    Source: 'src/lib.rs', lines 139:0-154:1
+    Visibility: public -/
+def memo_lookup
+  (table : MemoTable) (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  match table with
+  | MemoTable.Empty => ok none
+  | MemoTable.Entry entry rest =>
+    let b ← words_equal left entry.left
+    if b
+    then
+      let b1 ← words_equal right entry.right
+      if b1
+      then let ce ← copy_result entry.result
+           ok (some ce)
+      else memo_lookup rest left right
+    else memo_lookup rest left right
+partial_fixpoint
+
+/-- [verified_ordered_core::memo_insert]:
+    Source: 'src/lib.rs', lines 156:0-170:1
+    Visibility: public -/
+def memo_insert
+  (table : MemoTable) (left : BalancedWord) (right : BalancedWord)
+  (result : CommonEmbedding) :
+  Result MemoTable
+  := do
+  let bw ← copy_word left
+  let bw1 ← copy_word right
+  let ce ← copy_result result
+  ok (MemoTable.Entry { left := bw, right := bw1, result := ce } table)
+
+/-- [verified_ordered_core::memoized_common_embedding]:
+    Source: 'src/lib.rs', lines 174:0-231:1
+    Visibility: public -/
+def memoized_common_embedding
+  (left : BalancedWord) (right : BalancedWord) (table : MemoTable) :
+  Result ((Option CommonEmbedding) × MemoTable)
+  := do
+  let o ← memo_lookup table left right
+  match o with
+  | none =>
+    match left with
+    | BalancedWord.Empty =>
+      let table1 ←
+        memo_insert table BalancedWord.Empty right
+          { word := BalancedWord.Empty, edges := 0#u32 }
+      ok (some { word := BalancedWord.Empty, edges := 0#u32 }, table1)
+    | BalancedWord.Pair lh lt =>
+      match right with
+      | BalancedWord.Empty =>
+        let table1 ←
+          memo_insert table left BalancedWord.Empty
+            { word := BalancedWord.Empty, edges := 0#u32 }
+        ok (some { word := BalancedWord.Empty, edges := 0#u32 }, table1)
+      | BalancedWord.Pair rh rt =>
+        let (heads, table1) ← memoized_common_embedding lh rh table
+        match heads with
+        | none => ok (none, table1)
+        | some value =>
+          let (tails, table2) ← memoized_common_embedding lt rt table1
+          match tails with
+          | none => ok (none, table2)
+          | some value1 =>
+            let o1 ← lift (U32.checked_add value.edges value1.edges)
+            match o1 with
+            | none => ok (none, table2)
+            | some value2 =>
+              let o2 ← lift (U32.checked_add value2 1#u32)
+              match o2 with
+              | none => ok (none, table2)
+              | some value3 =>
+                let contracted_left ← concatenate lh lt
+                let (drop_left, table3) ←
+                  memoized_common_embedding contracted_left right table2
+                match drop_left with
+                | none => ok (none, table3)
+                | some value4 =>
+                  let contracted_right ← concatenate rh rt
+                  let (drop_right, table4) ←
+                    memoized_common_embedding left contracted_right table3
+                  match drop_right with
+                  | none => ok (none, table4)
+                  | some value5 =>
+                    let ce ←
+                      choose_longer
+                        {
+                          word := (BalancedWord.Pair value.word value1.word),
+                          edges := value3
+                        } value4
+                    let result ← choose_longer ce value5
+                    let table5 ← memo_insert table4 left right result
+                    ok (some result, table5)
+  | some _ => ok (o, table)
+partial_fixpoint
+
+/-- [verified_ordered_core::maximum_common_embedding]:
+    Source: 'src/lib.rs', lines 234:0-239:1
+    Visibility: public -/
+def maximum_common_embedding
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  let (o, _) ← memoized_common_embedding left right MemoTable.Empty
+  ok o
+
 end verified_ordered_core

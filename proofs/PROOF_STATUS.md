@@ -68,8 +68,8 @@ New compiled endpoints (same ordered-tree prefix):
 The witness recursion computes an optimum tree. The separate memoized numerical
 algorithm below shares states and has actual operation counts; full runtime
 refinement remains open.
-The distinct ordered-isomorphism contract, memoized cost model, index mapping
-witnesses, actual Rust solver refinement and integration remain open.
+The distinct ordered-isomorphism contract, full implementation cost model,
+index mapping witnesses and Python integration remain open.
 
 ## Memoization accepted: 2026-11-14
 
@@ -110,6 +110,23 @@ no dependencies outside the reviewed baseline. An independent Rust oracle
 checks all 38,809 ordered pairs of the 197 trees through six edges, including
 returned-witness feasibility and exact scores. The OS-level
 allocator/stack budget is outside the Aeneas functional semantics.
+
+## Actual Rust memoization accepted: 2026-11-14
+
+`Rust.MemoizedOrderedSolver.maximum_common_embedding_of_trees` proves the
+memoized entry point returns an independent maximum common tree and exact
+score under the same u32 input bounds. The supporting invariant certifies
+cached witnesses, source equality/copying/lookup/insertion, and termination.
+Its returned cache refines the separately verified numeric memo table exactly;
+`memoized_common_embedding_cache_bound` proves actual cache-key uniqueness
+and the D-product size bound. No caller-supplied cache assumption is needed
+for the public empty-cache entry point.
+
+Both Rust solvers pass the full 38,809-pair six-edge contraction oracle.
+Deterministic shape benchmarks and the remaining comparison/copy costs are
+recorded in `dev/benchmarks/2026-11-14-ordered-memo.md`. The source algorithm
+is now memoized but its linked-list table still pays a linear scan factor.
+End-to-end Rust bit/word cost and expected-hashing complexity remain open.
 
 ## Unordered graph foundations accepted: 2026-11-14
 
@@ -160,7 +177,7 @@ specifications and finite-existence results are not proofs of those algorithms.
 | Lemma 8 recurrence optimum and tree witness | Proved; input-index reconstruction still open |
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
-| Translated Rust ordered reference solver | Proved for structural tree witnesses and u32 input bounds; memoized optimization, input-index witness maps and API conversion still open |
+| Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Open; finite exhaustive matching is proved |
 | 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; rooted/source completeness and DP/optimization proofs open |
 | Verified Python adapters and qualified performance evidence | Open |
