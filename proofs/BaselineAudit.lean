@@ -104,3 +104,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SparseSearch.body_preserves_spec
 
 #print axioms SubtreeProofs.Rust.SparseSearch.find_sparse_augmenting_path_spec
+
+#print axioms SubtreeProofs.Assignment.exists_ranked_augmentation

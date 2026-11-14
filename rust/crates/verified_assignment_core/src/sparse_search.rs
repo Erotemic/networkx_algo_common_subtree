@@ -1,7 +1,7 @@
 //! Reference alternating search using actual optional-edge cut steps.
 //!
-//! The cut/update primitive has a maintained source proof. Refinement of this
-//! complete search and its subsequent path flip is developed separately. Each
+//! The complete search has a maintained source proof. Refinement of the
+//! path flip and augmentation wrapper is developed separately. Each
 //! cut is scanned from the matrix; this is not the paper's priority-queue cost.
 
 use crate::{sparse::advance_sparse_cut, unused_columns, zeros_usize, AssignmentError};
@@ -14,6 +14,11 @@ pub struct SparseSearch {
     pub discovery: Vec<usize>,
     pub target: usize,
     pub steps: usize,
+}
+
+pub struct SparseAugmentation {
+    pub column_for_row: Vec<usize>,
+    pub search: SparseSearch,
 }
 
 /// Validate and invert a completed permutation, including the temporary edge.
@@ -109,4 +114,99 @@ pub fn find_sparse_augmenting_path(
         Some(error) => Err(error),
         None => Ok(SparseSearch { rows, columns, predecessor_row, discovery, target, steps }),
     }
+}
+
+fn copy_indices(values: &[usize]) -> Vec<usize> {
+    let mut result = Vec::new();
+    let mut index = 0;
+    while index < values.len() {
+        result.push(values[index]);
+        index += 1;
+    }
+    result
+}
+
+/// Flip a ranked predecessor path, retaining all original coordinates.
+///
+/// The completed input is a permutation with a temporary root-to-target edge.
+/// Every nonroot predecessor follows its old assignment column with a strictly
+/// smaller positive discovery rank. Other rows retain their old assignment.
+/// Shape, root/target, predecessor, parent and rank checks reject malformed
+/// paths. The sparse search supplies the allowed/tight-edge certificate.
+pub fn flip_sparse_path(
+    completed: &[usize],
+    predecessor_row: &[usize],
+    discovery: &[usize],
+    root: usize,
+    target: usize,
+) -> Result<Vec<usize>, AssignmentError> {
+    let n = completed.len();
+    if predecessor_row.len() != n || discovery.len() != n {
+        return Err(AssignmentError::NonSquare);
+    }
+    if n > u32::MAX as usize {
+        return Err(AssignmentError::TooLarge);
+    }
+    if root >= n || target >= n {
+        return Err(AssignmentError::InvariantViolation);
+    }
+    if completed[root] != target {
+        return Err(AssignmentError::InvariantViolation);
+    }
+    let mut assignment = copy_indices(completed);
+    let mut column = target;
+    let mut path_length = 0;
+    let mut finished = false;
+    let mut failure = None;
+    while !finished && failure.is_none() {
+        if path_length >= n {
+            failure = Some(AssignmentError::InvariantViolation);
+        }
+        if failure.is_none() {
+            path_length += 1;
+            let row = predecessor_row[column];
+            if row >= n || discovery[column] == 0 {
+                failure = Some(AssignmentError::InvariantViolation);
+            } else {
+                assignment[row] = column;
+                if row == root {
+                    finished = true;
+                } else {
+                    let parent = completed[row];
+                    if parent >= n {
+                        failure = Some(AssignmentError::InvariantViolation);
+                    } else if discovery[parent] == 0 || discovery[parent] >= discovery[column] {
+                        failure = Some(AssignmentError::InvariantViolation);
+                    } else {
+                        column = parent;
+                    }
+                }
+            }
+        }
+    }
+    match failure {
+        Some(error) => Err(error),
+        None => Ok(assignment),
+    }
+}
+
+/// Reference one-path augmentation of a feasible tight single-deficit seed.
+/// The complete source-level proof of search is maintained; refinement of the
+/// path flip and this wrapper is a separate current obligation.
+pub fn augment_sparse_permutation(
+    cost: &[Vec<Option<i64>>],
+    rows: Vec<i128>,
+    columns: Vec<i128>,
+    completed: &[usize],
+    root: usize,
+) -> Result<SparseAugmentation, AssignmentError> {
+    let search = match find_sparse_augmenting_path(cost, rows, columns, completed, root) {
+        Ok(value) => value,
+        Err(error) => return Err(error),
+    };
+    let column_for_row = match flip_sparse_path(completed, &search.predecessor_row, &search.discovery, root, search.target) {
+        Ok(value) => value,
+        Err(error) => return Err(error),
+    };
+    Ok(SparseAugmentation { column_for_row, search })
 }

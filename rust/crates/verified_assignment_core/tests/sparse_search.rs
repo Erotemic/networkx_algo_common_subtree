@@ -1,4 +1,4 @@
-use verified_assignment_core::{sparse_search::find_sparse_augmenting_path, AssignmentError};
+use verified_assignment_core::{sparse_search::{augment_sparse_permutation, find_sparse_augmenting_path, flip_sparse_path}, AssignmentError};
 
 fn minimum_permutation_cost(cost: &[Vec<Option<i64>>]) -> i128 {
     fn visit(cost: &[Vec<Option<i64>>], used: &mut [bool], row: usize, total: i128, best: &mut Option<i128>) {
@@ -39,7 +39,7 @@ fn sparse_search_paths_are_ranked_tight_and_globally_optimal() {
                         Some((rows[row]+columns[column]+slack) as i64)
                     } else { None }
                 }).collect()).collect();
-                let search = match find_sparse_augmenting_path(&cost, rows, columns, &completed, root) {
+                let search = match find_sparse_augmenting_path(&cost, rows.clone(), columns.clone(), &completed, root) {
                     Ok(search) => search,
                     Err(_) => panic!("constructed feasible single-deficit state must succeed"),
                 };
@@ -61,6 +61,14 @@ fn sparse_search_paths_are_ranked_tight_and_globally_optimal() {
                     column = completed[row];
                 }
                 let mut sorted = repaired.clone();
+                assert!(matches!(flip_sparse_path(&completed, &search.predecessor_row, &search.discovery, root, search.target), Ok(actual) if actual == repaired));
+                let augmented = match augment_sparse_permutation(&cost, rows, columns, &completed, root) {
+                    Ok(value) => value,
+                    Err(_) => panic!("public one-path augmentation must succeed"),
+                };
+                assert_eq!(augmented.column_for_row, repaired);
+                assert_eq!(augmented.search.rows, search.rows);
+                assert_eq!(augmented.search.columns, search.columns);
                 sorted.sort_unstable();
                 assert_eq!(sorted, (0..n).collect::<Vec<_>>());
                 let mut actual_cost = 0;
@@ -90,4 +98,17 @@ fn sparse_search_reports_invalid_shape_permutations_root_and_no_cut() {
     assert!(matches!(find_sparse_augmenting_path(&[vec![Some(0)]], vec![0], vec![0], &[0], 1), Err(AssignmentError::InvariantViolation)));
     assert!(matches!(find_sparse_augmenting_path(&vec![vec![Some(0);2];2], vec![0;2], vec![0;2], &[0,0], 0), Err(AssignmentError::InvariantViolation)));
     assert!(matches!(find_sparse_augmenting_path(&[vec![None]], vec![0], vec![0], &[0], 0), Err(AssignmentError::InvariantViolation)));
+}
+
+#[test]
+fn sparse_flip_rejects_invalid_path_bounds_and_non_decreasing_ranks() {
+    assert!(matches!(flip_sparse_path(&[1,0], &[0,1], &[1,2], 0, 1), Ok(result) if result == [0,1]));
+    assert!(matches!(flip_sparse_path(&[1,0], &[0], &[1,2], 0, 1), Err(AssignmentError::NonSquare)));
+    assert!(matches!(flip_sparse_path(&[1,0], &[0,1], &[1,2], 2, 1), Err(AssignmentError::InvariantViolation)));
+    assert!(matches!(flip_sparse_path(&[1,0], &[0,1], &[1,2], 0, 0), Err(AssignmentError::InvariantViolation)));
+    assert!(matches!(flip_sparse_path(&[1,0], &[0,2], &[1,2], 0, 1), Err(AssignmentError::InvariantViolation)));
+    assert!(matches!(flip_sparse_path(&[1,0], &[0,1], &[1,0], 0, 1), Err(AssignmentError::InvariantViolation)));
+    assert!(matches!(flip_sparse_path(&[1,0], &[0,1], &[2,2], 0, 1), Err(AssignmentError::InvariantViolation)));
+    assert!(matches!(flip_sparse_path(&[1,0], &[1,1], &[1,2], 0, 1), Err(AssignmentError::InvariantViolation)));
+    assert!(matches!(flip_sparse_path(&[1,2], &[0,1], &[1,2], 0, 1), Err(AssignmentError::InvariantViolation)));
 }

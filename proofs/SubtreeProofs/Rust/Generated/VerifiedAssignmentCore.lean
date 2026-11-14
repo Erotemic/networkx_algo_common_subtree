@@ -1887,8 +1887,15 @@ structure sparse_search.SparseSearch where
   target : Std.Usize
   steps : Std.Usize
 
+/-- [verified_assignment_core::sparse_search::SparseAugmentation]
+    Source: 'src/sparse_search.rs', lines 19:0-22:1
+    Visibility: public -/
+structure sparse_search.SparseAugmentation where
+  column_for_row : alloc.vec.Vec Std.Usize
+  search : sparse_search.SparseSearch
+
 /-- [verified_assignment_core::sparse_search::inverse_completed]: loop body 0:
-    Source: 'src/sparse_search.rs', lines 26:4-37:5 -/
+    Source: 'src/sparse_search.rs', lines 31:4-42:5 -/
 @[rust_loop_body]
 def sparse_search.inverse_completed_loop.body
   (completed : Slice Std.Usize) (n : Std.Usize)
@@ -1930,7 +1937,7 @@ def sparse_search.inverse_completed_loop.body
   else ok (done (inverse, failure))
 
 /-- [verified_assignment_core::sparse_search::inverse_completed]: loop 0:
-    Source: 'src/sparse_search.rs', lines 26:4-37:5 -/
+    Source: 'src/sparse_search.rs', lines 31:4-42:5 -/
 @[rust_loop]
 def sparse_search.inverse_completed_loop
   (completed : Slice Std.Usize) (n : Std.Usize)
@@ -1945,7 +1952,7 @@ def sparse_search.inverse_completed_loop
     (inverse, seen, failure, row)
 
 /-- [verified_assignment_core::sparse_search::inverse_completed]:
-    Source: 'src/sparse_search.rs', lines 20:0-42:1 -/
+    Source: 'src/sparse_search.rs', lines 25:0-47:1 -/
 def sparse_search.inverse_completed
   (completed : Slice Std.Usize) :
   Result (core.result.Result (alloc.vec.Vec Std.Usize) AssignmentError)
@@ -1960,7 +1967,7 @@ def sparse_search.inverse_completed
   | some error => ok (core.result.Result.Err error)
 
 /-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]: loop body 0:
-    Source: 'src/sparse_search.rs', lines 82:4-107:5
+    Source: 'src/sparse_search.rs', lines 87:4-112:5
     Visibility: public -/
 @[rust_loop_body]
 def sparse_search.find_sparse_augmenting_path_loop.body
@@ -2044,7 +2051,7 @@ def sparse_search.find_sparse_augmenting_path_loop.body
   else ok (done (rows, columns, predecessor_row, discovery, steps, failure))
 
 /-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]: loop 0:
-    Source: 'src/sparse_search.rs', lines 82:4-107:5
+    Source: 'src/sparse_search.rs', lines 87:4-112:5
     Visibility: public -/
 @[rust_loop]
 def sparse_search.find_sparse_augmenting_path_loop
@@ -2069,7 +2076,7 @@ def sparse_search.find_sparse_augmenting_path_loop
       discovery, steps, searching, failure)
 
 /-- [verified_assignment_core::sparse_search::find_sparse_augmenting_path]:
-    Source: 'src/sparse_search.rs', lines 52:0-112:1
+    Source: 'src/sparse_search.rs', lines 57:0-117:1
     Visibility: public -/
 def sparse_search.find_sparse_augmenting_path
   (cost : Slice (alloc.vec.Vec (Option Std.I64)))
@@ -2125,5 +2132,196 @@ def sparse_search.find_sparse_augmenting_path
                   })
               | some error => ok (core.result.Result.Err error)
             | core.result.Result.Err error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::sparse_search::copy_indices]: loop body 0:
+    Source: 'src/sparse_search.rs', lines 122:4-125:5 -/
+@[rust_loop_body]
+def sparse_search.copy_indices_loop.body
+  (values : Slice Std.Usize) (result : alloc.vec.Vec Std.Usize)
+  (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize) (alloc.vec.Vec
+    Std.Usize))
+  := do
+  let i := Slice.len values
+  if index < i
+  then
+    let i1 ← Slice.index_usize values index
+    let result1 ← alloc.vec.Vec.push result i1
+    let index1 ← index + 1#usize
+    ok (cont (result1, index1))
+  else ok (done result)
+
+/-- [verified_assignment_core::sparse_search::copy_indices]: loop 0:
+    Source: 'src/sparse_search.rs', lines 122:4-125:5 -/
+@[rust_loop]
+def sparse_search.copy_indices_loop
+  (values : Slice Std.Usize) (result : alloc.vec.Vec Std.Usize)
+  (index : Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  loop
+    (fun (result1, index1) => sparse_search.copy_indices_loop.body values
+      result1 index1)
+    (result, index)
+
+/-- [verified_assignment_core::sparse_search::copy_indices]:
+    Source: 'src/sparse_search.rs', lines 119:0-127:1 -/
+@[reducible]
+def sparse_search.copy_indices
+  (values : Slice Std.Usize) : Result (alloc.vec.Vec Std.Usize) := do
+  sparse_search.copy_indices_loop values (alloc.vec.Vec.new Std.Usize) 0#usize
+
+/-- [verified_assignment_core::sparse_search::flip_sparse_path]: loop body 0:
+    Source: 'src/sparse_search.rs', lines 161:4-186:5
+    Visibility: public -/
+@[rust_loop_body]
+def sparse_search.flip_sparse_path_loop.body
+  (completed : Slice Std.Usize) (predecessor_row : Slice Std.Usize)
+  (discovery : Slice Std.Usize) (root : Std.Usize) (n : Std.Usize)
+  (assignment : alloc.vec.Vec Std.Usize) (column : Std.Usize)
+  (path_length : Std.Usize) (finished : Bool)
+  (failure : Option AssignmentError) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize × Std.Usize ×
+    Bool × (Option AssignmentError)) ((alloc.vec.Vec Std.Usize) × (Option
+    AssignmentError)))
+  := do
+  if finished
+  then ok (done (assignment, failure))
+  else
+    let b := core.option.Option.is_none failure
+    if b
+    then
+      let failure1 ←
+        if path_length >= n
+        then ok (some AssignmentError.InvariantViolation)
+        else ok failure
+      let b1 := core.option.Option.is_none failure1
+      if b1
+      then
+        let path_length1 ← path_length + 1#usize
+        let row ← Slice.index_usize predecessor_row column
+        if row >= n
+        then
+          ok (cont (assignment, column, path_length1, finished, some
+            AssignmentError.InvariantViolation))
+        else
+          let i ← Slice.index_usize discovery column
+          if i = 0#usize
+          then
+            ok (cont (assignment, column, path_length1, finished, some
+              AssignmentError.InvariantViolation))
+          else
+            let (_, index_mut_back) ←
+              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                Std.Usize) assignment row
+            if row = root
+            then
+              let assignment1 := index_mut_back column
+              ok (cont (assignment1, column, path_length1, true, failure1))
+            else
+              let parent ← Slice.index_usize completed row
+              if parent >= n
+              then
+                let assignment1 := index_mut_back column
+                ok (cont (assignment1, column, path_length1, finished, some
+                  AssignmentError.InvariantViolation))
+              else
+                let i1 ← Slice.index_usize discovery parent
+                if i1 = 0#usize
+                then
+                  let assignment1 := index_mut_back column
+                  ok (cont (assignment1, column, path_length1, finished, some
+                    AssignmentError.InvariantViolation))
+                else
+                  if i1 >= i
+                  then
+                    let assignment1 := index_mut_back column
+                    ok (cont (assignment1, column, path_length1, finished, some
+                      AssignmentError.InvariantViolation))
+                  else
+                    let assignment1 := index_mut_back column
+                    ok (cont (assignment1, parent, path_length1, finished,
+                      failure1))
+      else ok (cont (assignment, column, path_length, finished, failure1))
+    else ok (done (assignment, failure))
+
+/-- [verified_assignment_core::sparse_search::flip_sparse_path]: loop 0:
+    Source: 'src/sparse_search.rs', lines 161:4-186:5
+    Visibility: public -/
+@[rust_loop]
+def sparse_search.flip_sparse_path_loop
+  (completed : Slice Std.Usize) (predecessor_row : Slice Std.Usize)
+  (discovery : Slice Std.Usize) (root : Std.Usize) (n : Std.Usize)
+  (assignment : alloc.vec.Vec Std.Usize) (column : Std.Usize)
+  (path_length : Std.Usize) (finished : Bool)
+  (failure : Option AssignmentError) :
+  Result ((alloc.vec.Vec Std.Usize) × (Option AssignmentError))
+  := do
+  loop
+    (fun (assignment1, column1, path_length1, finished1, failure1) =>
+      sparse_search.flip_sparse_path_loop.body completed predecessor_row
+      discovery root n assignment1 column1 path_length1 finished1 failure1)
+    (assignment, column, path_length, finished, failure)
+
+/-- [verified_assignment_core::sparse_search::flip_sparse_path]:
+    Source: 'src/sparse_search.rs', lines 136:0-191:1
+    Visibility: public -/
+def sparse_search.flip_sparse_path
+  (completed : Slice Std.Usize) (predecessor_row : Slice Std.Usize)
+  (discovery : Slice Std.Usize) (root : Std.Usize) (target : Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.Usize) AssignmentError)
+  := do
+  let n := Slice.len completed
+  let i := Slice.len predecessor_row
+  if i != n
+  then ok (core.result.Result.Err AssignmentError.NonSquare)
+  else
+    let i1 := Slice.len discovery
+    if i1 != n
+    then ok (core.result.Result.Err AssignmentError.NonSquare)
+    else
+      let i2 ← lift (UScalar.cast .Usize core.num.U32.MAX)
+      if n > i2
+      then ok (core.result.Result.Err AssignmentError.TooLarge)
+      else
+        if root >= n
+        then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+        else
+          if target >= n
+          then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+          else
+            let i3 ← Slice.index_usize completed root
+            if i3 != target
+            then ok (core.result.Result.Err AssignmentError.InvariantViolation)
+            else
+              let assignment ← sparse_search.copy_indices completed
+              let (assignment1, failure) ←
+                sparse_search.flip_sparse_path_loop completed predecessor_row
+                  discovery root n assignment target 0#usize false none
+              match failure with
+              | none => ok (core.result.Result.Ok assignment1)
+              | some error => ok (core.result.Result.Err error)
+
+/-- [verified_assignment_core::sparse_search::augment_sparse_permutation]:
+    Source: 'src/sparse_search.rs', lines 196:0-212:1
+    Visibility: public -/
+def sparse_search.augment_sparse_permutation
+  (cost : Slice (alloc.vec.Vec (Option Std.I64)))
+  (rows : alloc.vec.Vec Std.I128) (columns : alloc.vec.Vec Std.I128)
+  (completed : Slice Std.Usize) (root : Std.Usize) :
+  Result (core.result.Result sparse_search.SparseAugmentation AssignmentError)
+  := do
+  let r ←
+    sparse_search.find_sparse_augmenting_path cost rows columns completed root
+  match r with
+  | core.result.Result.Ok value =>
+    let s := alloc.vec.Vec.deref value.predecessor_row
+    let s1 := alloc.vec.Vec.deref value.discovery
+    let r1 ← sparse_search.flip_sparse_path completed s s1 root value.target
+    match r1 with
+    | core.result.Result.Ok value1 =>
+      ok (core.result.Result.Ok { column_for_row := value1, search := value })
+    | core.result.Result.Err error => ok (core.result.Result.Err error)
+  | core.result.Result.Err error => ok (core.result.Result.Err error)
 
 end verified_assignment_core

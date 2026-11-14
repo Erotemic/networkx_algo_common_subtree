@@ -191,3 +191,6 @@ public import SubtreeProofs.Rust.SparseSearchPreservation
 public import SubtreeProofs.Rust.SparseSearchLoop
 public import SubtreeProofs.Rust.SparseSearchInitialization
 public import SubtreeProofs.Rust.SparseSearchEntrypoint
+public import SubtreeProofs.Rust.SparsePathCopy
+public import SubtreeProofs.Shared.AssignmentRankedTrace
+public import SubtreeProofs.Shared.AssignmentRankedAugmentation

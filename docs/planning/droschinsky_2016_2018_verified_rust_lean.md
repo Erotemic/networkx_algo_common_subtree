@@ -14,6 +14,33 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Ranked augmentation mathematics and actual path-flip reference: 2026-11-14
+
+`Shared/AssignmentRankedTrace.exists_ranked_predecessor_trace` constructs a
+finite simple original-column trace from positive strictly decreasing ranks.
+`PredecessorTrace.formPerm` proves that Mathlib's canonical list-cycle
+permutation follows the original matched column of each predecessor row,
+closing at the free target. `AssignmentRankedAugmentation` uses the inverse
+column cycle to assign every predecessor row to its discovered column and
+retains all other old nonroot edges.
+
+`exists_ranked_augmentation` derives an independently minimum compatible
+assignment from a feasible dual, allowed/tight old nonroot matching edges,
+tight real predecessor edges and decreasing positive ranks. No repaired
+optimum or separately supplied path is assumed. It also proves unchanged
+assignments outside the trace. This is independent augmentation mathematics;
+the maintained Rust flip loop's refinement is still open.
+
+The actual Rust `flip_sparse_path` and `augment_sparse_permutation` reference
+now exist and translate. The flip checks shape, root/target, predecessor/parent
+bounds, positive decreasing ranks and the visit bound. The thirteen-test
+exact-core suite passes, comparing both public routines against the independent
+path flip and exhaustive permutation optima on the 120 constructed sparse
+states, with additional malformed-path/rank checks. `Rust/SparsePathCopy`
+proves its actual copy loop preserves every original assignment index in
+order for every represented slice. The actual flip's permutation/optimality
+refinement, deletion driver and optimized runtime remain open.
+
 ## Actual sparse augmenting-path search verified end to end: 2026-11-14
 
 `Rust/SparseSearchEntrypoint.find_sparse_augmenting_path_spec` proves the
