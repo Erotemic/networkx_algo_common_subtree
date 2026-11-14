@@ -9,7 +9,10 @@
 use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 
-use crate::matching::max_weight_bipartite_matching;
+use crate::matching::{
+    max_weight_bipartite_matching, max_weight_bipartite_matching_with_right_deletions,
+    WeightedMatching,
+};
 use crate::Weight;
 
 fn finite_weight(weight: Weight) -> Weight {
@@ -329,7 +332,15 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             return Some(SolverResult::singleton(root_weight, state.u, state.v));
         }
         let left_children = Self::child_edges(self.left, state.u, state.parent_u);
-        let right_children = Self::child_edges(self.right, state.v, state.parent_v);
+        // Nonroot left subtrees recur under several right parent choices.
+        // Reuse one full-neighborhood matrix and repair its deleted columns.
+        // Tiny right degrees keep the simpler single-instance path.
+        let family = state.parent_u.is_some() && self.right.neighbors(state.v).len() >= 4;
+        let right_children = Self::child_edges(
+            self.right,
+            state.v,
+            if family { None } else { state.parent_v },
+        );
 
         let mut matrix = vec![vec![None; right_children.len()]; left_children.len()];
         let mut child_results = vec![vec![None; right_children.len()]; left_children.len()];
@@ -362,7 +373,45 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             }
         }
 
+        if family {
+            let matchings = max_weight_bipartite_matching_with_right_deletions(&matrix);
+            let whole = State {
+                parent_v: None,
+                ..state
+            };
+            let full =
+                Self::combine_rooted_matches(whole, root_weight, &matchings.base, &child_results);
+            self.iso_memo.insert(whole.key(), Some(full.clone()));
+            for (edge, changed) in right_children.iter().zip(&matchings.deletions) {
+                let partial = State {
+                    parent_v: Some(edge.to),
+                    ..state
+                };
+                let result = match changed {
+                    None => full.clone(),
+                    Some(matching) => {
+                        Self::combine_rooted_matches(partial, root_weight, matching, &child_results)
+                    }
+                };
+                self.iso_memo.insert(partial.key(), Some(result));
+            }
+            return self.iso_memo[&state.key()].clone();
+        }
         let matching = max_weight_bipartite_matching(&matrix);
+        Some(Self::combine_rooted_matches(
+            state,
+            root_weight,
+            &matching,
+            &child_results,
+        ))
+    }
+
+    fn combine_rooted_matches(
+        state: State,
+        root_weight: Weight,
+        matching: &WeightedMatching,
+        child_results: &[Vec<Option<SolverResult>>],
+    ) -> SolverResult {
         let pairs_needed = 1 + matching
             .pairs
             .iter()
@@ -374,18 +423,19 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
             .sum::<usize>();
         let mut node_pairs = Vec::with_capacity(pairs_needed);
         node_pairs.push((state.u, state.v));
-        for (i, j) in matching.pairs {
-            if let Some(child) = child_results[i][j].take() {
-                node_pairs.extend(child.node_pairs.iter().copied());
-            }
+        for &(i, j) in &matching.pairs {
+            let child = child_results[i][j]
+                .as_ref()
+                .expect("matched branch has a witness");
+            node_pairs.extend(child.node_pairs.iter().copied());
         }
         node_pairs.sort_unstable();
         node_pairs.dedup();
 
-        Some(SolverResult {
+        SolverResult {
             weight: finite_weight(root_weight + matching.weight),
             node_pairs: Rc::new(node_pairs),
-        })
+        }
     }
 
     // Type wedge in Lemma 5: both roots are mapped. In particular this state

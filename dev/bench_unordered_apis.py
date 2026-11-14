@@ -22,11 +22,14 @@ from networkx_algo_common_subtree import _rust
 
 
 def tree(shape, n, seed):
+    if shape not in {"chain", "star", "balanced", "random", "double-star"}:
+        raise ValueError(f"unknown tree shape: {shape!r}")
     graph = nx.Graph()
     graph.add_nodes_from(range(n))
     rng = random.Random(seed)
     for u in range(1, n):
-        parent = {"chain": u - 1, "star": 0, "balanced": (u - 1) // 2}.get(shape)
+        parent = {"chain": u - 1, "star": 0, "balanced": (u - 1) // 2,
+                  "double-star": 0 if u == 1 else u % 2}.get(shape)
         graph.add_edge(u, rng.randrange(u) if parent is None else parent)
     return graph
 
@@ -45,7 +48,7 @@ def measure(call, repeat, warmup):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sizes", default="4,8,16,32")
-    parser.add_argument("--shapes", default="chain,star,balanced,random")
+    parser.add_argument("--shapes", default="chain,star,balanced,random,double-star,chain-star")
     parser.add_argument("--repeat", type=int, default=5)
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--oracle-max-size", type=int, default=4)
@@ -60,7 +63,8 @@ def main():
         for shape in args.shapes.split(","):
             for asymmetric in [False, True]:
                 m = max(1, n // 2) if asymmetric else n
-                workloads.append((shape, tree(shape, n, args.seed), tree(shape, m, args.seed + 1), {}))
+                ls, rs = ("chain", "star") if shape == "chain-star" else (shape, shape)
+                workloads.append((shape, tree(ls, n, args.seed), tree(rs, m, args.seed + 1), {}))
     if args.module_trees:
         from networkx_algo_common_subtree.pytorch_sized_trees import make_benchmark_tree_pairs
         def graph(module):

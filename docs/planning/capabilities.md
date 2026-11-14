@@ -103,6 +103,16 @@ proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-
 
 ## Immediate implementation queue
 
+2016 high-degree nonroot states now reuse a full child matching and repair
+each matched right-parent deletion with one Hungarian augmentation. Independent
+exhaustive checks pass; all **44 graph Rust** and **163 installed Python tests**
+pass, including the identical ABI3 wheel on each CPython 3.10–3.14. On 32/32
+trees, chain-versus-star improves **2.74×** and double-star **1.69×**. Two module
+workloads regress 16–30%; eager parent caching and full per-state witnesses
+remain optimization targets. Dense family arithmetic is O(k²l); full graph
+runtime/source proofs and 2018's optimized schedule remain open.
+[Evidence](../../dev/benchmarks/2026-11-14-matching-families.md).
+
 Balanced token support now covers hashable objects without an ordering and
 Python Unicode strings with lone surrogates. Python/Cython embedding compares
 objective values without lexicographically comparing token payloads, and Rust

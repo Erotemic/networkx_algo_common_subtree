@@ -205,3 +205,36 @@ def test_signed_optional_callback_tables_against_exhaustive_objectives():
                 assert result.weight == oracle.weight
                 scoring = {k: v for k, v in kwargs.items() if k != "allow_empty"}
                 assert scorer(left, right, result, **scoring, **extra) == result.weight
+
+
+@pytest.mark.parametrize("leaves", [2, 5])
+def test_high_degree_parent_deletion_preserves_original_matching_indices(leaves):
+    if "rust" not in common.available_unordered_backends():
+        if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
+            pytest.fail("required weighted graph Rust bindings are missing")
+        pytest.skip("optional weighted graph Rust bindings are missing")
+    left = nx.Graph()
+    left.add_nodes_from(range(2 + 2 * leaves))
+    left.add_edge(0, 1)
+    left.add_edges_from((0, 2 + i) for i in range(leaves))
+    left.add_edges_from((1, 2 + leaves + i) for i in range(leaves))
+    right = nx.star_graph(4)
+    def weight(u, v):
+        if (u, v) == (1, 1):
+            return 10
+        if (u, v) == (0, 0) or (2 <= u < 2 + leaves and v > 0):
+            return 1
+        return None
+    result = common.maximum_common_subtree_isomorphism(left, right, node_weight=weight, impl="rust")
+    # At most one vertex pair weighs 10; every other vertex/edge weighs at
+    # most one. Injectivity bounds the retained count, giving this independent
+    # upper bound, attained by the returned connected witness.
+    retained = min(leaves + 2, len(right))
+    optimum = 10 + 2 * (retained - 1)
+    assert result.weight == optimum
+    assert len(result.node_pairs) == retained
+    assert result.mapping[1] == 1
+    assert common.score_common_subtree_isomorphism(left, right, result, node_weight=weight) == optimum
+    if leaves == 2:
+        exhaustive = common.maximum_common_subtree_isomorphism(left, right, node_weight=weight, impl="python")
+        assert exhaustive.weight == optimum

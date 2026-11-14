@@ -19,3 +19,7 @@ harness = false
 [[bench]]
 name = "graph_allocations"
 harness = false
+
+[[bench]]
+name = "matching_families"
+harness = false

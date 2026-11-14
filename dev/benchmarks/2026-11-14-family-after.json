@@ -1,0 +1,3669 @@
+{
+  "python": "3.13.2 (main, Mar 17 2025, 21:02:54) [Clang 20.1.0 ]",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "package_path": "/tmp/common-subtree-tree-family-install/networkx_algo_common_subtree/__init__.py",
+  "extension_path": "/tmp/common-subtree-tree-family-install/networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-gnu.so",
+  "extension_sha256": "e3d61741cdc86da33ddc930e0ad65fa35cca49328b36f1c4d35f5c826ee5f15e",
+  "configuration": {
+    "sizes": "4,8,16,32",
+    "shapes": "chain,star,balanced,random,double-star,chain-star",
+    "repeat": 5,
+    "warmup": 1,
+    "oracle_max_size": 4,
+    "seed": 2018,
+    "module_trees": true,
+    "json": "/home/joncrall/code/networkx_algo_common_subtree/dev/benchmarks/2026-11-14-family-after.json"
+  },
+  "rows": [
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        6.3258e-05,
+        5.8617e-05,
+        3.7751e-05,
+        3.6017e-05,
+        3.6532e-05
+      ],
+      "median_seconds": 3.7751e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        9.87e-06,
+        9.2e-06,
+        8.83e-06,
+        8.747e-06,
+        8.24e-06
+      ],
+      "median_seconds": 8.83e-06,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.00034054,
+        0.000325591,
+        0.000379272,
+        0.000332983,
+        0.00033115
+      ],
+      "median_seconds": 0.000332983,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        6.029e-05,
+        5.0153e-05,
+        4.6648e-05,
+        4.5652e-05,
+        4.4929e-05
+      ],
+      "median_seconds": 4.6648e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.9817e-05,
+        1.9744e-05,
+        1.9252e-05,
+        1.8937e-05,
+        1.9511e-05
+      ],
+      "median_seconds": 1.9511e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.00112303,
+        0.001160411,
+        0.001150214,
+        0.001120209,
+        0.001122458
+      ],
+      "median_seconds": 0.00112303,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        2.9662e-05,
+        2.671e-05,
+        3.8017e-05,
+        2.3574e-05,
+        2.3845e-05
+      ],
+      "median_seconds": 2.671e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.519e-06,
+        3.241e-06,
+        3.155e-06,
+        3.029e-06,
+        3.052e-06
+      ],
+      "median_seconds": 3.155e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000127287,
+        0.000105978,
+        0.000105306,
+        0.000103743,
+        0.00011289
+      ],
+      "median_seconds": 0.000105978,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.1476e-05,
+        2.7806e-05,
+        3.0535e-05,
+        2.8503e-05,
+        2.7939e-05
+      ],
+      "median_seconds": 2.8503e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.13e-06,
+        6.152e-06,
+        5.974e-06,
+        5.854e-06,
+        6.072e-06
+      ],
+      "median_seconds": 6.072e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000187049,
+        0.000183526,
+        0.000181886,
+        0.000182184,
+        0.000185138
+      ],
+      "median_seconds": 0.000183526,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.767e-05,
+        3.0833e-05,
+        3.3426e-05,
+        3.2686e-05,
+        2.9207e-05
+      ],
+      "median_seconds": 3.2686e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        7.306e-06,
+        7.097e-06,
+        6.649e-06,
+        6.682e-06,
+        6.733e-06
+      ],
+      "median_seconds": 6.733e-06,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.000412091,
+        0.00042871,
+        0.000407439,
+        0.000401281,
+        0.000396682
+      ],
+      "median_seconds": 0.000407439,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        6.1285e-05,
+        4.9144e-05,
+        5.056e-05,
+        4.8172e-05,
+        4.9298e-05
+      ],
+      "median_seconds": 4.9298e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        2.3016e-05,
+        2.3021e-05,
+        2.2056e-05,
+        2.3525e-05,
+        2.2517e-05
+      ],
+      "median_seconds": 2.3016e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.000928153,
+        0.000985073,
+        0.00094379,
+        0.000926097,
+        0.000953727
+      ],
+      "median_seconds": 0.00094379,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        2.6895e-05,
+        2.7968e-05,
+        2.4226e-05,
+        2.287e-05,
+        9.7288e-05
+      ],
+      "median_seconds": 2.6895e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.464e-06,
+        3.29e-06,
+        3.173e-06,
+        3.118e-06,
+        2.94e-06
+      ],
+      "median_seconds": 3.173e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000116888,
+        0.000125728,
+        0.000107205,
+        0.000164296,
+        0.000139844
+      ],
+      "median_seconds": 0.000125728,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.4274e-05,
+        3.0048e-05,
+        2.9831e-05,
+        2.9654e-05,
+        2.9122e-05
+      ],
+      "median_seconds": 2.9831e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.974e-06,
+        6.824e-06,
+        6.67e-06,
+        6.6e-06,
+        6.653e-06
+      ],
+      "median_seconds": 6.67e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000183226,
+        0.00018135,
+        0.000177374,
+        0.000198326,
+        0.000205224
+      ],
+      "median_seconds": 0.000183226,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        3.881e-05,
+        3.5675e-05,
+        3.826e-05,
+        3.4301e-05,
+        3.4573e-05
+      ],
+      "median_seconds": 3.5675e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        8.811e-06,
+        8.885e-06,
+        8.388e-06,
+        8.373e-06,
+        8.504e-06
+      ],
+      "median_seconds": 8.504e-06,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.00034444,
+        0.000332381,
+        0.000363649,
+        0.000336097,
+        0.000330671
+      ],
+      "median_seconds": 0.000336097,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.9704e-05,
+        5.2164e-05,
+        4.4581e-05,
+        4.5031e-05,
+        5.6892e-05
+      ],
+      "median_seconds": 4.9704e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.4788e-05,
+        3.4065e-05,
+        1.9464e-05,
+        1.8697e-05,
+        1.8379e-05
+      ],
+      "median_seconds": 1.9464e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.001119466,
+        0.001150089,
+        0.00122593,
+        0.00116933,
+        0.001219522
+      ],
+      "median_seconds": 0.00116933,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        2.8689e-05,
+        2.6064e-05,
+        2.4742e-05,
+        2.4087e-05,
+        2.3705e-05
+      ],
+      "median_seconds": 2.4742e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.373e-06,
+        3.266e-06,
+        3.204e-06,
+        3.065e-06,
+        3.018e-06
+      ],
+      "median_seconds": 3.204e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000159954,
+        0.000122408,
+        0.000103857,
+        0.000105141,
+        0.000103694
+      ],
+      "median_seconds": 0.000105141,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.2418e-05,
+        2.9251e-05,
+        2.8336e-05,
+        2.8566e-05,
+        3.1013e-05
+      ],
+      "median_seconds": 2.9251e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.559e-06,
+        6.348e-06,
+        6.297e-06,
+        1.19e-05,
+        6.114e-06
+      ],
+      "median_seconds": 6.348e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000186435,
+        0.000183606,
+        0.00018226,
+        0.000180993,
+        0.000221504
+      ],
+      "median_seconds": 0.000183606,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        3.6036e-05,
+        3.2553e-05,
+        3.1963e-05,
+        3.1037e-05,
+        3.1501e-05
+      ],
+      "median_seconds": 3.1963e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        8.393e-06,
+        1.0522e-05,
+        8.024e-06,
+        8.009e-06,
+        7.729e-06
+      ],
+      "median_seconds": 8.024e-06,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.000378706,
+        0.000364825,
+        0.000374764,
+        0.000335511,
+        0.00032948
+      ],
+      "median_seconds": 0.000364825,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.9265e-05,
+        4.5246e-05,
+        6.6928e-05,
+        6.1762e-05,
+        4.5196e-05
+      ],
+      "median_seconds": 4.9265e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.8853e-05,
+        1.9302e-05,
+        1.8936e-05,
+        1.8832e-05,
+        1.8224e-05
+      ],
+      "median_seconds": 1.8853e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.001116129,
+        0.001111547,
+        0.001155924,
+        0.001168585,
+        0.00113799
+      ],
+      "median_seconds": 0.00113799,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        2.8585e-05,
+        2.58e-05,
+        2.4868e-05,
+        2.9704e-05,
+        2.6179e-05
+      ],
+      "median_seconds": 2.6179e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.519e-06,
+        3.322e-06,
+        3.191e-06,
+        3.032e-06,
+        3.39e-06
+      ],
+      "median_seconds": 3.322e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000102704,
+        0.00010699,
+        0.000100967,
+        0.000137075,
+        0.000101791
+      ],
+      "median_seconds": 0.000102704,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.1919e-05,
+        2.77e-05,
+        2.7393e-05,
+        2.6445e-05,
+        2.7125e-05
+      ],
+      "median_seconds": 2.7393e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.153e-06,
+        6.308e-06,
+        5.988e-06,
+        5.84e-06,
+        5.799e-06
+      ],
+      "median_seconds": 5.988e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000191347,
+        0.000190749,
+        0.000188738,
+        0.000182846,
+        0.000182954
+      ],
+      "median_seconds": 0.000188738,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        3.732e-05,
+        4.0468e-05,
+        3.3153e-05,
+        3.5077e-05,
+        3.3569e-05
+      ],
+      "median_seconds": 3.5077e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        8.529e-06,
+        8.232e-06,
+        7.801e-06,
+        7.664e-06,
+        7.743e-06
+      ],
+      "median_seconds": 7.801e-06,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.000330486,
+        0.000346539,
+        0.00035885,
+        0.000324495,
+        0.000374275
+      ],
+      "median_seconds": 0.000346539,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        5.4576e-05,
+        4.7312e-05,
+        4.4403e-05,
+        4.3479e-05,
+        4.3088e-05
+      ],
+      "median_seconds": 4.4403e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.956e-05,
+        1.9793e-05,
+        1.918e-05,
+        1.9613e-05,
+        1.9096e-05
+      ],
+      "median_seconds": 1.956e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.001140435,
+        0.001079031,
+        0.001102027,
+        0.00111594,
+        0.001173058
+      ],
+      "median_seconds": 0.00111594,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        2.7333e-05,
+        2.4886e-05,
+        2.4032e-05,
+        3.9423e-05,
+        2.9332e-05
+      ],
+      "median_seconds": 2.7333e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.413e-06,
+        3.286e-06,
+        3.163e-06,
+        3.085e-06,
+        3.106e-06
+      ],
+      "median_seconds": 3.163e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000102722,
+        0.000103304,
+        9.9415e-05,
+        9.9093e-05,
+        9.8752e-05
+      ],
+      "median_seconds": 9.9415e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.0021e-05,
+        2.7407e-05,
+        2.7137e-05,
+        2.6294e-05,
+        2.6867e-05
+      ],
+      "median_seconds": 2.7137e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.434e-06,
+        6.159e-06,
+        6.073e-06,
+        6.137e-06,
+        5.997e-06
+      ],
+      "median_seconds": 6.137e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000188772,
+        0.000183074,
+        0.000182533,
+        0.000203276,
+        0.000235832
+      ],
+      "median_seconds": 0.000188772,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        3.7297e-05,
+        3.2654e-05,
+        3.0619e-05,
+        3.0872e-05,
+        3.0033e-05
+      ],
+      "median_seconds": 3.0872e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        7.586e-06,
+        7.652e-06,
+        7.56e-06,
+        7.369e-06,
+        7.458e-06
+      ],
+      "median_seconds": 7.56e-06,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.000346932,
+        0.000338834,
+        0.000342015,
+        0.000346966,
+        0.000337647
+      ],
+      "median_seconds": 0.000342015,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.9758e-05,
+        4.5039e-05,
+        4.2986e-05,
+        6.5889e-05,
+        5.5939e-05
+      ],
+      "median_seconds": 4.9758e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.9518e-05,
+        1.965e-05,
+        1.9471e-05,
+        1.9186e-05,
+        1.9233e-05
+      ],
+      "median_seconds": 1.9471e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 4,
+      "backend": "python",
+      "samples_seconds": [
+        0.001147291,
+        0.001075776,
+        0.001046544,
+        0.001116989,
+        0.001141945
+      ],
+      "median_seconds": 0.001116989,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.0088e-05,
+        2.5317e-05,
+        2.5533e-05,
+        2.529e-05,
+        2.4582e-05
+      ],
+      "median_seconds": 2.5317e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.514e-06,
+        3.349e-06,
+        3.195e-06,
+        3.238e-06,
+        3.301e-06
+      ],
+      "median_seconds": 3.301e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.000158769,
+        0.000120617,
+        0.000103425,
+        0.000109215,
+        0.000113612
+      ],
+      "median_seconds": 0.000113612,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "rust",
+      "samples_seconds": [
+        3.4738e-05,
+        2.8752e-05,
+        2.75e-05,
+        2.6708e-05,
+        2.8892e-05
+      ],
+      "median_seconds": 2.8752e-05,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.308e-06,
+        5.965e-06,
+        6.014e-06,
+        5.887e-06,
+        5.838e-06
+      ],
+      "median_seconds": 5.965e-06,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 4,
+      "right_size": 2,
+      "backend": "python",
+      "samples_seconds": [
+        0.00018482,
+        0.000217686,
+        0.000190781,
+        0.000182194,
+        0.000180223
+      ],
+      "median_seconds": 0.00018482,
+      "weight": 3.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        8.4792e-05,
+        0.000115382,
+        9.814e-05,
+        8.4745e-05,
+        7.7608e-05
+      ],
+      "median_seconds": 8.4792e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        4.0724e-05,
+        3.9588e-05,
+        3.8656e-05,
+        3.7968e-05,
+        3.8067e-05
+      ],
+      "median_seconds": 3.8656e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000246204,
+        0.000166306,
+        0.000157971,
+        0.000157655,
+        0.000152938
+      ],
+      "median_seconds": 0.000157971,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000117899,
+        0.000117724,
+        0.000115323,
+        0.000114307,
+        0.000115083
+      ],
+      "median_seconds": 0.000115323,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        5.1596e-05,
+        5.4677e-05,
+        4.9088e-05,
+        4.6254e-05,
+        5.4182e-05
+      ],
+      "median_seconds": 5.1596e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.8222e-05,
+        1.7116e-05,
+        1.7181e-05,
+        1.6974e-05,
+        1.6825e-05
+      ],
+      "median_seconds": 1.7116e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        8.1653e-05,
+        7.8504e-05,
+        7.9686e-05,
+        7.8353e-05,
+        7.6174e-05
+      ],
+      "median_seconds": 7.8504e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        4.8237e-05,
+        4.7706e-05,
+        4.9425e-05,
+        4.8381e-05,
+        5.3499e-05
+      ],
+      "median_seconds": 4.8381e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        6.4775e-05,
+        6.4731e-05,
+        6.1177e-05,
+        6.0042e-05,
+        6.053e-05
+      ],
+      "median_seconds": 6.1177e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.1775e-05,
+        3.0557e-05,
+        3.0709e-05,
+        3.6886e-05,
+        4.1533e-05
+      ],
+      "median_seconds": 3.1775e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000329033,
+        0.000359352,
+        0.000326277,
+        0.00030262,
+        0.000342267
+      ],
+      "median_seconds": 0.000329033,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000287622,
+        0.000296335,
+        0.00028261,
+        0.000289135,
+        0.000303037
+      ],
+      "median_seconds": 0.000289135,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.6895e-05,
+        4.2145e-05,
+        3.9795e-05,
+        4.2662e-05,
+        4.0976e-05
+      ],
+      "median_seconds": 4.2145e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.408e-05,
+        1.3629e-05,
+        1.3125e-05,
+        1.266e-05,
+        1.294e-05
+      ],
+      "median_seconds": 1.3125e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000109148,
+        0.000104877,
+        0.000109218,
+        0.000104403,
+        0.000110427
+      ],
+      "median_seconds": 0.000109148,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        7.3719e-05,
+        7.2505e-05,
+        7.4007e-05,
+        7.3887e-05,
+        7.2935e-05
+      ],
+      "median_seconds": 7.3719e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        8.5518e-05,
+        8.0184e-05,
+        8.2007e-05,
+        7.3315e-05,
+        6.9505e-05
+      ],
+      "median_seconds": 8.0184e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.7287e-05,
+        3.701e-05,
+        3.5846e-05,
+        3.584e-05,
+        5.0646e-05
+      ],
+      "median_seconds": 3.701e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000212809,
+        0.000209208,
+        0.000179174,
+        0.000172692,
+        0.000173344
+      ],
+      "median_seconds": 0.000179174,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000141106,
+        0.000139137,
+        0.000136554,
+        0.000135597,
+        0.000133795
+      ],
+      "median_seconds": 0.000136554,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        5.002e-05,
+        4.4937e-05,
+        5.7779e-05,
+        4.4157e-05,
+        4.3041e-05
+      ],
+      "median_seconds": 4.4937e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.6219e-05,
+        1.6407e-05,
+        1.595e-05,
+        1.601e-05,
+        1.5618e-05
+      ],
+      "median_seconds": 1.601e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        8.5309e-05,
+        8.2189e-05,
+        8.5926e-05,
+        0.000100577,
+        0.000105553
+      ],
+      "median_seconds": 8.5926e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        5.1716e-05,
+        4.9659e-05,
+        5.0457e-05,
+        4.9647e-05,
+        4.9585e-05
+      ],
+      "median_seconds": 4.9659e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        7.2279e-05,
+        7.2469e-05,
+        6.8402e-05,
+        6.8847e-05,
+        7.1785e-05
+      ],
+      "median_seconds": 7.1785e-05,
+      "weight": 11.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.713e-05,
+        4.3222e-05,
+        3.509e-05,
+        3.4723e-05,
+        3.4176e-05
+      ],
+      "median_seconds": 3.509e-05,
+      "weight": 11.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000194153,
+        0.00019369,
+        0.000192935,
+        0.000193583,
+        0.00018196
+      ],
+      "median_seconds": 0.000193583,
+      "weight": 11.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000144789,
+        0.000148713,
+        0.000200367,
+        0.000139511,
+        0.00014064
+      ],
+      "median_seconds": 0.000144789,
+      "weight": 11.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        5.439e-05,
+        4.8297e-05,
+        4.9157e-05,
+        4.5959e-05,
+        4.6689e-05
+      ],
+      "median_seconds": 4.8297e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.0886e-05,
+        1.6681e-05,
+        1.6663e-05,
+        1.6313e-05,
+        1.6205e-05
+      ],
+      "median_seconds": 1.6663e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        8.5696e-05,
+        8.0052e-05,
+        8.1124e-05,
+        7.7835e-05,
+        7.7247e-05
+      ],
+      "median_seconds": 8.0052e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        5.5615e-05,
+        7.435e-05,
+        6.5089e-05,
+        5.6064e-05,
+        4.9847e-05
+      ],
+      "median_seconds": 5.6064e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        7.0898e-05,
+        6.5167e-05,
+        6.3852e-05,
+        6.2268e-05,
+        6.6162e-05
+      ],
+      "median_seconds": 6.5167e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.0101e-05,
+        2.9048e-05,
+        2.9038e-05,
+        2.9482e-05,
+        5.1246e-05
+      ],
+      "median_seconds": 2.9482e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00021697,
+        0.000214492,
+        0.000207646,
+        0.000218545,
+        0.000205379
+      ],
+      "median_seconds": 0.000214492,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000169154,
+        0.000175673,
+        0.00017244,
+        0.000163381,
+        0.000164124
+      ],
+      "median_seconds": 0.000169154,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.7493e-05,
+        4.3597e-05,
+        4.147e-05,
+        4.4049e-05,
+        4.1862e-05
+      ],
+      "median_seconds": 4.3597e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.5386e-05,
+        1.4505e-05,
+        1.432e-05,
+        1.6348e-05,
+        1.6417e-05
+      ],
+      "median_seconds": 1.5386e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        8.9318e-05,
+        8.8665e-05,
+        0.000103605,
+        8.6055e-05,
+        0.000114732
+      ],
+      "median_seconds": 8.9318e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        5.6338e-05,
+        7.7478e-05,
+        5.6373e-05,
+        6.1688e-05,
+        5.5852e-05
+      ],
+      "median_seconds": 5.6373e-05,
+      "weight": 7.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        6.9366e-05,
+        6.6322e-05,
+        6.3515e-05,
+        6.2356e-05,
+        6.7568e-05
+      ],
+      "median_seconds": 6.6322e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        3.1907e-05,
+        3.2605e-05,
+        3.1321e-05,
+        3.1022e-05,
+        3.0721e-05
+      ],
+      "median_seconds": 3.1321e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000203465,
+        0.000179623,
+        0.0001984,
+        0.000187103,
+        0.000209897
+      ],
+      "median_seconds": 0.0001984,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000142646,
+        0.000144641,
+        0.000174555,
+        0.000180538,
+        0.000151824
+      ],
+      "median_seconds": 0.000151824,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        4.9479e-05,
+        4.5564e-05,
+        4.4053e-05,
+        4.3791e-05,
+        4.2575e-05
+      ],
+      "median_seconds": 4.4053e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        1.6983e-05,
+        1.67e-05,
+        1.6811e-05,
+        1.6344e-05,
+        1.611e-05
+      ],
+      "median_seconds": 1.67e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "rust",
+      "samples_seconds": [
+        7.8477e-05,
+        7.5238e-05,
+        9.8415e-05,
+        9.2196e-05,
+        8.5634e-05
+      ],
+      "median_seconds": 8.5634e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 8,
+      "right_size": 4,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        4.6203e-05,
+        4.5747e-05,
+        4.5117e-05,
+        4.6407e-05,
+        4.4745e-05
+      ],
+      "median_seconds": 4.5747e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000331051,
+        0.00025661,
+        0.000255322,
+        0.000284384,
+        0.000255154
+      ],
+      "median_seconds": 0.00025661,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000231294,
+        0.000222608,
+        0.000189614,
+        0.0001882,
+        0.000188087
+      ],
+      "median_seconds": 0.000189614,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000710927,
+        0.000677435,
+        0.000695221,
+        0.000660115,
+        0.000643609
+      ],
+      "median_seconds": 0.000677435,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000639461,
+        0.000624611,
+        0.000575129,
+        0.000618035,
+        0.00062344
+      ],
+      "median_seconds": 0.00062344,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000142005,
+        0.000138309,
+        0.000132409,
+        0.000131958,
+        0.000129449
+      ],
+      "median_seconds": 0.000132409,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000100682,
+        9.4205e-05,
+        8.9999e-05,
+        8.7012e-05,
+        8.6255e-05
+      ],
+      "median_seconds": 8.9999e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000354544,
+        0.000303733,
+        0.000296543,
+        0.000324522,
+        0.000378263
+      ],
+      "median_seconds": 0.000324522,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000265022,
+        0.000273276,
+        0.000270777,
+        0.000282398,
+        0.000267329
+      ],
+      "median_seconds": 0.000270777,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000180179,
+        0.000213304,
+        0.000189683,
+        0.000189597,
+        0.000187212
+      ],
+      "median_seconds": 0.000189597,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000129092,
+        0.000122111,
+        0.000121926,
+        0.00012087,
+        0.000119516
+      ],
+      "median_seconds": 0.000121926,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.005319059,
+        0.005326267,
+        0.005275735,
+        0.005102681,
+        0.005051887
+      ],
+      "median_seconds": 0.005275735,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.005031105,
+        0.005330097,
+        0.005112977,
+        0.005297621,
+        0.005126471
+      ],
+      "median_seconds": 0.005126471,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000109488,
+        0.000100531,
+        0.000104346,
+        0.000128994,
+        0.000106676
+      ],
+      "median_seconds": 0.000106676,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.0438e-05,
+        5.8929e-05,
+        5.7824e-05,
+        7.3145e-05,
+        6.0677e-05
+      ],
+      "median_seconds": 6.0438e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001165951,
+        0.00115534,
+        0.001086678,
+        0.001099823,
+        0.001100712
+      ],
+      "median_seconds": 0.001100712,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001065062,
+        0.001138114,
+        0.001040016,
+        0.001047964,
+        0.001066478
+      ],
+      "median_seconds": 0.001065062,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000265225,
+        0.000273291,
+        0.000342139,
+        0.000263419,
+        0.000260973
+      ],
+      "median_seconds": 0.000265225,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000190778,
+        0.000194711,
+        0.000221573,
+        0.000219559,
+        0.000220828
+      ],
+      "median_seconds": 0.000219559,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000854086,
+        0.000842434,
+        0.000849516,
+        0.000872824,
+        0.000849638
+      ],
+      "median_seconds": 0.000849638,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000841533,
+        0.000743548,
+        0.000757088,
+        0.000737044,
+        0.000749812
+      ],
+      "median_seconds": 0.000749812,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000164586,
+        0.000159022,
+        0.000174746,
+        0.000145719,
+        0.000139854
+      ],
+      "median_seconds": 0.000159022,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        9.0354e-05,
+        9.5485e-05,
+        0.000102554,
+        9.5632e-05,
+        8.6232e-05
+      ],
+      "median_seconds": 9.5485e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00041096,
+        0.000374633,
+        0.000395416,
+        0.000399966,
+        0.000354597
+      ],
+      "median_seconds": 0.000395416,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000329128,
+        0.000381244,
+        0.000327434,
+        0.000351175,
+        0.00035503
+      ],
+      "median_seconds": 0.000351175,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000246384,
+        0.000244194,
+        0.000249933,
+        0.000221459,
+        0.000219668
+      ],
+      "median_seconds": 0.000244194,
+      "weight": 25.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000190427,
+        0.000177077,
+        0.000175259,
+        0.000172752,
+        0.000172341
+      ],
+      "median_seconds": 0.000175259,
+      "weight": 25.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000969241,
+        0.000948416,
+        0.000956441,
+        0.00092265,
+        0.000938391
+      ],
+      "median_seconds": 0.000948416,
+      "weight": 25.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000879625,
+        0.000835477,
+        0.000814373,
+        0.000876651,
+        0.000815495
+      ],
+      "median_seconds": 0.000835477,
+      "weight": 25.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000154896,
+        0.000167537,
+        0.000130801,
+        0.000121398,
+        0.000121542
+      ],
+      "median_seconds": 0.000130801,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        8.5478e-05,
+        8.0543e-05,
+        8.7369e-05,
+        7.7856e-05,
+        9.567e-05
+      ],
+      "median_seconds": 8.5478e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000524183,
+        0.000497509,
+        0.000458182,
+        0.000432025,
+        0.000450128
+      ],
+      "median_seconds": 0.000458182,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000410355,
+        0.000407935,
+        0.000364043,
+        0.000435165,
+        0.000381324
+      ],
+      "median_seconds": 0.000407935,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000227706,
+        0.000202299,
+        0.000194352,
+        0.000199758,
+        0.000200666
+      ],
+      "median_seconds": 0.000200666,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000131933,
+        0.000133038,
+        0.00013142,
+        0.000128267,
+        0.00013507
+      ],
+      "median_seconds": 0.000131933,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00183656,
+        0.001896342,
+        0.001808423,
+        0.001915159,
+        0.001818514
+      ],
+      "median_seconds": 0.00183656,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001778773,
+        0.001827931,
+        0.002027231,
+        0.002021242,
+        0.00194734
+      ],
+      "median_seconds": 0.00194734,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000183072,
+        0.000215494,
+        0.000126064,
+        0.000112007,
+        0.000107656
+      ],
+      "median_seconds": 0.000126064,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.4569e-05,
+        6.3435e-05,
+        8.543e-05,
+        7.288e-05,
+        7.3085e-05
+      ],
+      "median_seconds": 7.288e-05,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000651826,
+        0.000669115,
+        0.000600881,
+        0.000658273,
+        0.000620829
+      ],
+      "median_seconds": 0.000651826,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.00055834,
+        0.00057992,
+        0.000505052,
+        0.000585252,
+        0.000500928
+      ],
+      "median_seconds": 0.00055834,
+      "weight": 15.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000241023,
+        0.000177383,
+        0.000200238,
+        0.000169867,
+        0.000168551
+      ],
+      "median_seconds": 0.000177383,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000125259,
+        0.000122589,
+        0.000124572,
+        0.000124369,
+        0.000123557
+      ],
+      "median_seconds": 0.000124369,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001188188,
+        0.001190367,
+        0.001208814,
+        0.001165111,
+        0.001202782
+      ],
+      "median_seconds": 0.001190367,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001119322,
+        0.001073448,
+        0.00115797,
+        0.0011156,
+        0.00111208
+      ],
+      "median_seconds": 0.0011156,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000126381,
+        0.000120057,
+        0.000103203,
+        0.000100226,
+        0.000100498
+      ],
+      "median_seconds": 0.000103203,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        6.4967e-05,
+        6.9483e-05,
+        6.3994e-05,
+        6.9334e-05,
+        6.2479e-05
+      ],
+      "median_seconds": 6.4967e-05,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000362687,
+        0.000376578,
+        0.000366713,
+        0.000372612,
+        0.000363637
+      ],
+      "median_seconds": 0.000366713,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 16,
+      "right_size": 8,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.00034399,
+        0.000341273,
+        0.000317059,
+        0.000327337,
+        0.000338316
+      ],
+      "median_seconds": 0.000338316,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001082701,
+        0.000998027,
+        0.000987713,
+        0.001020989,
+        0.001073287
+      ],
+      "median_seconds": 0.001020989,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000968259,
+        0.000959088,
+        0.000923908,
+        0.000909716,
+        0.000911004
+      ],
+      "median_seconds": 0.000923908,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00320405,
+        0.003434865,
+        0.003145703,
+        0.003294876,
+        0.003043528
+      ],
+      "median_seconds": 0.00320405,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.003114564,
+        0.003111767,
+        0.003019702,
+        0.003141897,
+        0.002940812
+      ],
+      "median_seconds": 0.003111767,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00053455,
+        0.000531998,
+        0.000481606,
+        0.000558986,
+        0.000504344
+      ],
+      "median_seconds": 0.000531998,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000499589,
+        0.000474057,
+        0.000460791,
+        0.00045471,
+        0.000446793
+      ],
+      "median_seconds": 0.000460791,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001334187,
+        0.001369823,
+        0.001545963,
+        0.001519648,
+        0.001428452
+      ],
+      "median_seconds": 0.001428452,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.00130643,
+        0.001229162,
+        0.001264882,
+        0.001227399,
+        0.001240335
+      ],
+      "median_seconds": 0.001240335,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00071201,
+        0.000663108,
+        0.000608549,
+        0.000684987,
+        0.000622472
+      ],
+      "median_seconds": 0.000663108,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000553319,
+        0.000522202,
+        0.000508156,
+        0.000580765,
+        0.000505898
+      ],
+      "median_seconds": 0.000522202,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.123635077,
+        0.124670471,
+        0.123276774,
+        0.123649421,
+        0.122752418
+      ],
+      "median_seconds": 0.123635077,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.121665273,
+        0.123939818,
+        0.123115317,
+        0.121957218,
+        0.122039083
+      ],
+      "median_seconds": 0.122039083,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000320704,
+        0.000334226,
+        0.00031495,
+        0.000298323,
+        0.000298342
+      ],
+      "median_seconds": 0.00031495,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000237957,
+        0.000239297,
+        0.000244481,
+        0.000242487,
+        0.000235321
+      ],
+      "median_seconds": 0.000239297,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.022912763,
+        0.023125301,
+        0.023670219,
+        0.023097598,
+        0.023771949
+      ],
+      "median_seconds": 0.023125301,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.023471478,
+        0.022856587,
+        0.022651577,
+        0.023043053,
+        0.023209443
+      ],
+      "median_seconds": 0.023043053,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001098921,
+        0.001021534,
+        0.001004755,
+        0.001054533,
+        0.001040264
+      ],
+      "median_seconds": 0.001040264,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000895496,
+        0.000881931,
+        0.000915354,
+        0.000930549,
+        0.000848139
+      ],
+      "median_seconds": 0.000895496,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.003952714,
+        0.003697542,
+        0.003731029,
+        0.003666267,
+        0.003722534
+      ],
+      "median_seconds": 0.003722534,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.003991384,
+        0.003610829,
+        0.003595126,
+        0.003744249,
+        0.003458445
+      ],
+      "median_seconds": 0.003610829,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00059926,
+        0.000577692,
+        0.000588143,
+        0.000759652,
+        0.000755162
+      ],
+      "median_seconds": 0.00059926,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000689348,
+        0.000676944,
+        0.00051634,
+        0.000515284,
+        0.000495659
+      ],
+      "median_seconds": 0.00051634,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.001735431,
+        0.001635164,
+        0.001649576,
+        0.001771098,
+        0.00182947
+      ],
+      "median_seconds": 0.001735431,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "balanced",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001539407,
+        0.001542951,
+        0.001566419,
+        0.001630324,
+        0.001649688
+      ],
+      "median_seconds": 0.001566419,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000853908,
+        0.000935821,
+        0.000894903,
+        0.000865693,
+        0.000887003
+      ],
+      "median_seconds": 0.000887003,
+      "weight": 47.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000684581,
+        0.000735593,
+        0.000800662,
+        0.000751071,
+        0.00068835
+      ],
+      "median_seconds": 0.000735593,
+      "weight": 47.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.004080064,
+        0.004265194,
+        0.004115015,
+        0.004177086,
+        0.004206634
+      ],
+      "median_seconds": 0.004177086,
+      "weight": 47.75
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.004023565,
+        0.004385547,
+        0.004116883,
+        0.004091438,
+        0.003911122
+      ],
+      "median_seconds": 0.004091438,
+      "weight": 47.75
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000463363,
+        0.000492028,
+        0.000494511,
+        0.000474565,
+        0.000430347
+      ],
+      "median_seconds": 0.000474565,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000373976,
+        0.000367158,
+        0.00042519,
+        0.000398322,
+        0.00038024
+      ],
+      "median_seconds": 0.00038024,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00194862,
+        0.00192939,
+        0.001990524,
+        0.001961893,
+        0.001860944
+      ],
+      "median_seconds": 0.00194862,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "random",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.001706775,
+        0.001902616,
+        0.00198622,
+        0.001829072,
+        0.001910024
+      ],
+      "median_seconds": 0.001902616,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000672149,
+        0.000671225,
+        0.000675385,
+        0.000654563,
+        0.000635427
+      ],
+      "median_seconds": 0.000671225,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000593033,
+        0.000616447,
+        0.00060428,
+        0.000623445,
+        0.000556616
+      ],
+      "median_seconds": 0.00060428,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.028454104,
+        0.0289174,
+        0.02884539,
+        0.028479476,
+        0.029457041
+      ],
+      "median_seconds": 0.02884539,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.028467796,
+        0.028699902,
+        0.028356445,
+        0.029158899,
+        0.028469388
+      ],
+      "median_seconds": 0.028469388,
+      "weight": 63.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000407513,
+        0.000396519,
+        0.000325473,
+        0.00036807,
+        0.000328598
+      ],
+      "median_seconds": 0.00036807,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000247114,
+        0.000245896,
+        0.000244811,
+        0.000282281,
+        0.000252575
+      ],
+      "median_seconds": 0.000247114,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.006769216,
+        0.0068014,
+        0.006788717,
+        0.006592815,
+        0.006517376
+      ],
+      "median_seconds": 0.006769216,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "double-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.006837509,
+        0.006615485,
+        0.006652824,
+        0.006434501,
+        0.006438185
+      ],
+      "median_seconds": 0.006615485,
+      "weight": 31.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000624193,
+        0.000619113,
+        0.000605906,
+        0.000694265,
+        0.000657902
+      ],
+      "median_seconds": 0.000624193,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000554214,
+        0.000509553,
+        0.00050376,
+        0.000525135,
+        0.000549173
+      ],
+      "median_seconds": 0.000525135,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "rust",
+      "samples_seconds": [
+        0.00917139,
+        0.009109693,
+        0.00917706,
+        0.009247261,
+        0.00890757
+      ],
+      "median_seconds": 0.00917139,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 32,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.009061275,
+        0.009063667,
+        0.008712729,
+        0.009246323,
+        0.00941716
+      ],
+      "median_seconds": 0.009063667,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.000341668,
+        0.000327582,
+        0.000369313,
+        0.000321026,
+        0.000317418
+      ],
+      "median_seconds": 0.000327582,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.000277331,
+        0.00027459,
+        0.000299131,
+        0.000259665,
+        0.000287683
+      ],
+      "median_seconds": 0.000277331,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "rust",
+      "samples_seconds": [
+        0.002516206,
+        0.002520471,
+        0.002515647,
+        0.002433728,
+        0.002403185
+      ],
+      "median_seconds": 0.002515647,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "chain-star",
+      "left_size": 32,
+      "right_size": 16,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.002597837,
+        0.002343978,
+        0.002492801,
+        0.005337464,
+        0.003572234
+      ],
+      "median_seconds": 0.002597837,
+      "weight": 5.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "rust",
+      "samples_seconds": [
+        0.010216416,
+        0.008585639,
+        0.009024153,
+        0.008803845,
+        0.012101233
+      ],
+      "median_seconds": 0.009024153,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.007682786,
+        0.007537731,
+        0.007497729,
+        0.007392946,
+        0.007435085
+      ],
+      "median_seconds": 0.007497729,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "rust",
+      "samples_seconds": [
+        0.181459332,
+        0.183167932,
+        0.217323249,
+        0.185941274,
+        0.182351023
+      ],
+      "median_seconds": 0.183167932,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_identical",
+      "left_size": 166,
+      "right_size": 166,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.186952843,
+        0.17819938,
+        0.18147881,
+        0.178899652,
+        0.179322523
+      ],
+      "median_seconds": 0.179322523,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "rust",
+      "samples_seconds": [
+        0.009155833,
+        0.009181514,
+        0.009954234,
+        0.009152738,
+        0.009098572
+      ],
+      "median_seconds": 0.009155833,
+      "weight": 235.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.008879168,
+        0.008825115,
+        0.008986572,
+        0.008971203,
+        0.008761217
+      ],
+      "median_seconds": 0.008879168,
+      "weight": 235.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "rust",
+      "samples_seconds": [
+        0.245027173,
+        0.264191781,
+        0.203224406,
+        0.205478807,
+        0.202037385
+      ],
+      "median_seconds": 0.205478807,
+      "weight": 271.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_wrapped_convolutions",
+      "left_size": 166,
+      "right_size": 214,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.220421784,
+        0.222518558,
+        0.225295763,
+        0.255114006,
+        0.212833077
+      ],
+      "median_seconds": 0.222518558,
+      "weight": 271.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "rust",
+      "samples_seconds": [
+        0.015057136,
+        0.014493539,
+        0.015159431,
+        0.013838278,
+        0.013613648
+      ],
+      "median_seconds": 0.014493539,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "maximum_common_subtree_isomorphism",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.012976049,
+        0.01399356,
+        0.013154811,
+        0.014183622,
+        0.013614955
+      ],
+      "median_seconds": 0.013614955,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "rust",
+      "samples_seconds": [
+        0.422496132,
+        0.41789353,
+        0.409688614,
+        0.410960273,
+        0.421757118
+      ],
+      "median_seconds": 0.41789353,
+      "weight": 331.0
+    },
+    {
+      "algorithm": "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "shape": "resnet50_vs_resnet101",
+      "left_size": 166,
+      "right_size": 319,
+      "backend": "raw-pyo3",
+      "samples_seconds": [
+        0.41879523,
+        0.413798418,
+        0.432334711,
+        0.409612793,
+        0.433016744
+      ],
+      "median_seconds": 0.41879523,
+      "weight": 331.0
+    }
+  ],
+  "process_peak_rss_bytes": 176181248
+}

@@ -1,4 +1,6 @@
-use common_subtree_algorithms::max_weight_bipartite_matching;
+use common_subtree_algorithms::{
+    max_weight_bipartite_matching, max_weight_bipartite_matching_with_right_deletions,
+};
 
 const EPS: f64 = 1.0e-9;
 
@@ -152,9 +154,11 @@ fn rectangular_matching_exhaustive_two_by_three_and_transpose() {
                 code /= 5;
             }
         }
-        let transpose = (0..3)
+        let transpose: Vec<Vec<Option<f64>>> = (0..3)
             .map(|j| (0..2).map(|i| weights[i][j]).collect())
             .collect();
+        check_deletion_family(&weights);
+        check_deletion_family(&transpose);
         check_against_bruteforce(weights);
         check_against_bruteforce(transpose);
     }
@@ -191,4 +195,113 @@ fn matching_rejects_ragged_matrix_even_when_first_row_is_empty() {
 #[should_panic(expected = "matching total weight overflow")]
 fn matching_rejects_an_unrepresentable_total_weight() {
     max_weight_bipartite_matching(&[vec![Some(f64::MAX), None], vec![None, Some(f64::MAX)]]);
+}
+
+fn check_deletion_family(weights: &[Vec<Option<f64>>]) {
+    let family = max_weight_bipartite_matching_with_right_deletions(weights);
+    let right = weights.first().map_or(0, Vec::len);
+    assert_eq!(family.right_size(), right);
+    assert_close(family.base.weight, brute_force_matching_weight(weights));
+    assert!(family.without_right(right).is_none());
+    for deleted in 0..right {
+        let induced: Vec<Vec<_>> = weights
+            .iter()
+            .map(|row| {
+                row.iter()
+                    .enumerate()
+                    .filter(|&(j, _)| j != deleted)
+                    .map(|(_, &weight)| weight)
+                    .collect()
+            })
+            .collect();
+        let found = family.without_right(deleted).unwrap();
+        assert_eq!(
+            found.weight,
+            brute_force_matching_weight(&induced),
+            "deleted {deleted} from {weights:?}"
+        );
+        let mut used_left = vec![false; weights.len()];
+        let mut used_right = vec![false; right];
+        let mut score = 0.0;
+        for &(i, j) in &found.pairs {
+            assert!(i < weights.len() && j < right && j != deleted);
+            assert!(!used_left[i] && !used_right[j]);
+            used_left[i] = true;
+            used_right[j] = true;
+            let weight = weights[i][j].expect("matching edge must be compatible");
+            assert!(weight > 0.0);
+            score += weight;
+        }
+        assert_eq!(found.weight, score);
+    }
+}
+
+#[test]
+fn matching_deletion_families_match_independent_partial_injections() {
+    let values = [
+        None,
+        Some(-3.0),
+        Some(0.0),
+        Some(0.125),
+        Some(1.5),
+        Some(4.0),
+    ];
+    let mut seed = 0x2016_u64;
+    for left in 0..=5 {
+        for right in 0..=5 {
+            for _ in 0..64 {
+                let mut weights = vec![vec![None; right]; left];
+                for row in &mut weights {
+                    for value in row {
+                        seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+                        *value = values[(seed >> 32) as usize % values.len()];
+                    }
+                }
+                check_deletion_family(&weights);
+            }
+        }
+    }
+}
+
+#[test]
+fn matching_deletion_family_preserves_tiny_edges_and_original_indices() {
+    for weights in [
+        vec![
+            vec![Some(1e150), None, None],
+            vec![None, None, Some(5e-200)],
+        ],
+        vec![
+            vec![Some(1e150), None],
+            vec![None, None],
+            vec![None, Some(5e-200)],
+        ],
+    ] {
+        let family = max_weight_bipartite_matching_with_right_deletions(&weights);
+        let last = weights.len() - 1;
+        let last_right = weights[0].len() - 1;
+        assert_eq!(family.base.pairs, vec![(0, 0), (last, last_right)]);
+        let without_big = family.without_right(0).unwrap();
+        assert_eq!(without_big.pairs, vec![(last, last_right)]);
+        assert_eq!(without_big.weight, 5e-200);
+        assert_eq!(
+            family,
+            max_weight_bipartite_matching_with_right_deletions(&weights)
+        );
+    }
+}
+
+#[test]
+fn matching_deletion_family_rejects_invalid_input() {
+    for weights in [
+        vec![vec![], vec![Some(1.0)]],
+        vec![vec![Some(f64::NAN)]],
+        vec![vec![Some(f64::INFINITY)]],
+    ] {
+        assert!(
+            std::panic::catch_unwind(|| max_weight_bipartite_matching_with_right_deletions(
+                &weights
+            ))
+            .is_err()
+        );
+    }
 }

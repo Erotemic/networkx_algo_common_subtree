@@ -45,6 +45,15 @@ proofs are preserved; full mathematical, production-source and applicable
 complexity verification still blocks the final verified release. Development
 wheels and implemented algorithm use do not depend on finishing these proofs.
 
+The production f64 2016 solver now reuses related child matchings through a
+right-deletion family kernel. Independent injection enumeration checks deletion
+objectives and original indices; 44 graph Rust and 163 installed Python tests
+pass, including five ABI3 runtimes. Dense family arithmetic is O(k²l), but no
+new Lean recurrence, refinement or runtime theorem is claimed. Its f64 dual
+repair is distinct from the source-proved exact sparse augmentation and
+partially verified exact deletion caller below. Full graph witness
+materialization and 2018 optimized scheduling remain open.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

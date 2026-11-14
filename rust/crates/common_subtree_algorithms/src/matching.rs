@@ -19,6 +19,159 @@ pub struct WeightedMatching {
     pub weight: Weight,
 }
 
+/// One optimum and optima after deleting each original right vertex.
+/// Unmatched deletions share `base`; repaired witnesses retain original indices.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct WeightedMatchingFamily {
+    pub base: WeightedMatching,
+    pub(crate) deletions: Vec<Option<WeightedMatching>>,
+}
+
+impl WeightedMatchingFamily {
+    pub fn right_size(&self) -> usize {
+        self.deletions.len()
+    }
+
+    /// Return the optimum excluding `deleted`, or `None` for an invalid index.
+    pub fn without_right(&self, deleted: usize) -> Option<&WeightedMatching> {
+        self.deletions
+            .get(deleted)
+            .map(|changed| changed.as_ref().unwrap_or(&self.base))
+    }
+}
+
+fn matching_from_pairs(
+    weights: &[Vec<Option<Weight>>],
+    pairs: impl Iterator<Item = (usize, usize)>,
+) -> WeightedMatching {
+    let mut pairs: Vec<_> = pairs
+        .filter(|&(u, v)| weights[u][v].is_some_and(|w| w > 0.0))
+        .collect();
+    pairs.sort_unstable();
+    let mut weight = 0.0;
+    for &(u, v) in &pairs {
+        weight += weights[u][v].unwrap();
+        assert!(weight.is_finite(), "matching total weight overflow");
+    }
+    WeightedMatching { pairs, weight }
+}
+
+/// Compute a related family without independently solving each deleted matrix.
+///
+/// The smaller side is covered using zero-profit dummy columns. Unmatched
+/// right vertices reuse the optimum; each matched deletion uses one Hungarian
+/// augmentation. Larger-side deletions remove a column. Smaller-side deletions
+/// replace the deleted row by a zero-cost dummy on the old occupied columns:
+/// an optimum of the surviving rows exists within those columns (alternating
+/// components starting at old unoccupied columns cannot improve an old optimum).
+///
+/// For nonempty sides k=min(left,right), l=max(left,right), dense arithmetic is
+/// O(k^2*l), including all deletions. Only k deletions can require repair.
+/// Scratch space is linear; returned repaired pairs occupy at most O(k^2)
+/// space plus the right-index table. This f64 implementation is tested, not
+/// covered by the separate exact-integer source proof. Panics follow the
+/// finite/shape/overflow contract of `max_weight_bipartite_matching`.
+pub fn max_weight_bipartite_matching_with_right_deletions(
+    weights: &[Vec<Option<Weight>>],
+) -> WeightedMatchingFamily {
+    let (left, right) = validate_weights(weights);
+    if left == 0 || right == 0 {
+        return WeightedMatchingFamily::default();
+    }
+    if !weights.iter().flatten().flatten().any(|&w| w > 0.0) {
+        return WeightedMatchingFamily {
+            base: WeightedMatching::default(),
+            deletions: vec![None; right],
+        };
+    }
+    let transposed = left > right;
+    let rows = left.min(right);
+    let real_columns = left.max(right);
+    let columns = left
+        .checked_add(right)
+        .expect("matching dimension overflow");
+    let cost = |i: usize, j: usize| {
+        if j >= real_columns {
+            0.0
+        } else {
+            let value = if transposed {
+                weights[j][i]
+            } else {
+                weights[i][j]
+            };
+            -value.unwrap_or(0.0).max(0.0)
+        }
+    };
+    let state = AssignmentState::solve(rows, columns, &cost);
+    let occupied = state.columns();
+    let base = matching_from_pairs(
+        weights,
+        occupied
+            .iter()
+            .enumerate()
+            .filter(|&(_, &j)| j < real_columns)
+            .map(|(i, &j)| if transposed { (j, i) } else { (i, j) }),
+    );
+    let mut matched_right = vec![false; right];
+    for &(_, j) in &base.pairs {
+        matched_right[j] = true;
+    }
+    let mut deletions = Vec::with_capacity(right);
+    let mut repair = AssignmentState::new(rows, if transposed { rows } else { columns - 1 });
+    for deleted in 0..right {
+        if !matched_right[deleted] {
+            deletions.push(None);
+            continue;
+        }
+        repair.u.clone_from(&state.u);
+        if !transposed {
+            let original = |j: usize| if j < deleted { j } else { j + 1 };
+            for j in 0..columns - 1 {
+                repair.p[j + 1] = state.p[original(j) + 1];
+                repair.v[j + 1] = state.v[original(j) + 1];
+            }
+            let free_row = state.p[deleted + 1] - 1;
+            repair.augment_row(free_row, &|i, j| cost(i, original(j)));
+            let result = matching_from_pairs(
+                weights,
+                (1..repair.p.len())
+                    .filter(|&j| repair.p[j] != 0 && original(j - 1) < right)
+                    .map(|j| (repair.p[j] - 1, original(j - 1))),
+            );
+            deletions.push(Some(result));
+        } else {
+            // Occupied columns are in original row order, so the old matching
+            // is diagonal in these compact coordinates. Leave the new dummy
+            // row free and choose a feasible potential for its zero costs.
+            for j in 0..rows {
+                repair.p[j + 1] = if j == deleted { 0 } else { j + 1 };
+                repair.v[j + 1] = state.v[occupied[j] + 1];
+            }
+            repair.u[deleted + 1] = repair.v[1..]
+                .iter()
+                .map(|v| -v)
+                .fold(f64::INFINITY, f64::min);
+            repair.augment_row(deleted, &|i, j| {
+                if i == deleted {
+                    0.0
+                } else {
+                    cost(i, occupied[j])
+                }
+            });
+            let result = matching_from_pairs(
+                weights,
+                (1..repair.p.len())
+                    .filter(|&j| {
+                        repair.p[j] != 0 && repair.p[j] - 1 != deleted && occupied[j - 1] < left
+                    })
+                    .map(|j| (occupied[j - 1], repair.p[j] - 1)),
+            );
+            deletions.push(Some(result));
+        }
+    }
+    WeightedMatchingFamily { base, deletions }
+}
+
 /// Solve a maximum-weight bipartite matching problem.
 ///
 /// `weights[i][j] == None` means left vertex `i` cannot be matched to right
@@ -41,19 +194,11 @@ pub struct WeightedMatching {
 /// and linear auxiliary space, excluding the input and returned pairs.
 /// This bound does not establish the faster paper-level tree algorithms.
 pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> WeightedMatching {
-    let left = weights.len();
-    let right = weights.first().map_or(0, Vec::len);
-    for row in weights {
-        assert_eq!(
-            row.len(),
-            right,
-            "all rows in a matching weight matrix must have the same length"
-        );
-        for w in row.iter().flatten() {
-            assert!(w.is_finite(), "matching weights must be finite");
-        }
-    }
+    let (left, right) = validate_weights(weights);
     if left == 0 || right == 0 {
+        return WeightedMatching::default();
+    }
+    if !weights.iter().flatten().flatten().any(|&w| w > 0.0) {
         return WeightedMatching::default();
     }
 
@@ -105,43 +250,63 @@ pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> Weighte
     WeightedMatching { pairs, weight }
 }
 
-/// Rectangular Hungarian assignment: rows <= columns, row -> column.
-/// Costs are read on demand; scratch buffers are reused between augmentations.
-fn min_cost_assignment_rectangular(
-    rows: usize,
-    columns: usize,
-    cost: impl Fn(usize, usize) -> Weight,
-) -> Vec<usize> {
-    let row_extent = rows.checked_add(1).expect("matching dimension overflow");
-    let column_extent = columns.checked_add(1).expect("matching dimension overflow");
-    let mut u = vec![0.0; row_extent];
-    let mut v = vec![0.0; column_extent];
-    let mut p = vec![0usize; column_extent];
-    let mut way = vec![0usize; column_extent];
-    let mut minv = vec![f64::INFINITY; column_extent];
-    let mut used = vec![false; column_extent];
+/// Rectangular Hungarian state; column/row zero are path sentinels.
+/// Keeping the duals and assignment permits a single warm augmentation.
+struct AssignmentState {
+    u: Vec<Weight>,
+    v: Vec<Weight>,
+    p: Vec<usize>,
+    way: Vec<usize>,
+    minv: Vec<Weight>,
+    used: Vec<bool>,
+}
 
-    for i in 1..=rows {
-        p[0] = i;
+impl AssignmentState {
+    fn new(rows: usize, columns: usize) -> Self {
+        let row_extent = rows.checked_add(1).expect("matching dimension overflow");
+        let column_extent = columns.checked_add(1).expect("matching dimension overflow");
+        Self {
+            u: vec![0.0; row_extent],
+            v: vec![0.0; column_extent],
+            p: vec![0; column_extent],
+            way: vec![0; column_extent],
+            minv: vec![f64::INFINITY; column_extent],
+            used: vec![false; column_extent],
+        }
+    }
+
+    fn solve(rows: usize, columns: usize, cost: &impl Fn(usize, usize) -> Weight) -> Self {
+        let mut state = Self::new(rows, columns);
+        for row in 0..rows {
+            state.augment_row(row, cost);
+        }
+        state
+    }
+
+    /// All other rows are matched tightly under a feasible dual. This fills
+    /// the unique free row, using the existing free columns and potentials.
+    fn augment_row(&mut self, row: usize, cost: &impl Fn(usize, usize) -> Weight) {
+        let columns = self.p.len() - 1;
+        self.p[0] = row + 1;
         let mut j0 = 0usize;
-        minv.fill(f64::INFINITY);
-        used.fill(false);
-        way.fill(0);
+        self.minv.fill(f64::INFINITY);
+        self.used.fill(false);
+        self.way.fill(0);
         loop {
-            used[j0] = true;
-            let i0 = p[j0];
+            self.used[j0] = true;
+            let i0 = self.p[j0];
             let mut delta = f64::INFINITY;
             let mut j1 = 0usize;
             for j in 1..=columns {
-                if !used[j] {
-                    let cur = cost(i0 - 1, j - 1) - u[i0] - v[j];
+                if !self.used[j] {
+                    let cur = cost(i0 - 1, j - 1) - self.u[i0] - self.v[j];
                     assert!(cur.is_finite(), "matching reduced-cost arithmetic overflow");
-                    if cur < minv[j] {
-                        minv[j] = cur;
-                        way[j] = j0;
+                    if cur < self.minv[j] {
+                        self.minv[j] = cur;
+                        self.way[j] = j0;
                     }
-                    if minv[j] < delta {
-                        delta = minv[j];
+                    if self.minv[j] < delta {
+                        delta = self.minv[j];
                         j1 = j;
                     }
                 }
@@ -151,43 +316,70 @@ fn min_cost_assignment_rectangular(
                 "matching augmentation requires a finite cost"
             );
             for j in 0..=columns {
-                if used[j] {
-                    u[p[j]] += delta;
+                if self.used[j] {
+                    self.u[self.p[j]] += delta;
                     // Column zero is only a path sentinel. Its unused dual
                     // objective can overflow even if every real potential is
                     // finite; the actual selected total is checked separately.
                     if j != 0 {
-                        v[j] -= delta;
+                        self.v[j] -= delta;
                     }
                     assert!(
-                        u[p[j]].is_finite() && v[j].is_finite(),
+                        self.u[self.p[j]].is_finite() && self.v[j].is_finite(),
                         "matching potential arithmetic overflow"
                     );
                 } else {
-                    minv[j] -= delta;
+                    self.minv[j] -= delta;
                 }
             }
             j0 = j1;
-            if p[j0] == 0 {
+            if self.p[j0] == 0 {
                 break;
             }
         }
         loop {
-            let j1 = way[j0];
-            p[j0] = p[j1];
+            let j1 = self.way[j0];
+            self.p[j0] = self.p[j1];
             j0 = j1;
             if j0 == 0 {
                 break;
             }
         }
     }
-    let mut assignment = vec![0usize; rows];
-    for j in 1..=columns {
-        if p[j] != 0 {
-            assignment[p[j] - 1] = j - 1;
+
+    fn columns(&self) -> Vec<usize> {
+        let mut assignment = vec![0usize; self.u.len() - 1];
+        for j in 1..self.p.len() {
+            if self.p[j] != 0 {
+                assignment[self.p[j] - 1] = j - 1;
+            }
+        }
+        assignment
+    }
+}
+
+fn min_cost_assignment_rectangular(
+    rows: usize,
+    columns: usize,
+    cost: impl Fn(usize, usize) -> Weight,
+) -> Vec<usize> {
+    AssignmentState::solve(rows, columns, &cost).columns()
+}
+
+fn validate_weights(weights: &[Vec<Option<Weight>>]) -> (usize, usize) {
+    let left = weights.len();
+    let right = weights.first().map_or(0, Vec::len);
+    for row in weights {
+        assert_eq!(
+            row.len(),
+            right,
+            "all rows in a matching weight matrix must have the same length"
+        );
+        for w in row.iter().flatten() {
+            assert!(w.is_finite(), "matching weights must be finite");
         }
     }
-    assignment
+    (left, right)
 }
 
 #[cfg(test)]

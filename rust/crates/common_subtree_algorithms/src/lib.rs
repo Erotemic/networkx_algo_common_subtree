@@ -18,7 +18,10 @@ pub mod matching;
 pub mod model_trees;
 pub mod tree;
 
-pub use matching::{max_weight_bipartite_matching, WeightedMatching};
+pub use matching::{
+    max_weight_bipartite_matching, max_weight_bipartite_matching_with_right_deletions,
+    WeightedMatching, WeightedMatchingFamily,
+};
 pub use model_trees::{
     label_name, make_benchmark_tree_pairs, make_resnet_module_tree, BenchmarkTreePair, ModuleTree,
     ModuleTreeSpec,
