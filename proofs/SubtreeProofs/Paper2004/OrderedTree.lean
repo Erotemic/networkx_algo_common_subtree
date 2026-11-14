@@ -79,32 +79,87 @@ end
 @[simp] theorem leafCount_oneEdge : leafCount oneEdge = 1 := rfl
 @[simp] theorem leafCount_fork : leafCount fork = 2 := rfl
 
-/-- Contract the root-child edge at a specified position, or recurse into a
-child while preserving every sibling and its relative position. -/
-inductive ContractStep : OrderedTree → OrderedTree → Prop where
-  | atRoot (left right : List OrderedTree) (child : OrderedTree) :
-      ContractStep
-        (.node (left ++ [child] ++ right))
-        (.node (left ++ children child ++ right))
-  | below (left right : List OrderedTree) {before after : OrderedTree}
-      (step : ContractStep before after) :
-      ContractStep
-        (.node (left ++ [before] ++ right))
-        (.node (left ++ [after] ++ right))
+/-- An ordered tree with one hole.  Replacing the hole by a tree preserves
+all the surrounding ancestors and the ordering of their children. -/
+inductive Context where
+  | hole : Context
+  | under (left right : List OrderedTree) (inner : Context) : Context
+
+namespace Context
+
+/-- Fill a single hole in an ordered tree context. -/
+def plug : Context -> OrderedTree -> OrderedTree
+  | .hole, t => t
+  | .under left right inner, t =>
+      .node (left ++ [plug inner t] ++ right)
+
+/-- Edges contributed by a context, including the edge leading to its hole. -/
+def edgeOverhead : Context -> Nat
+  | .hole => 0
+  | .under left right inner =>
+      forestEdgeCount left + 1 + forestEdgeCount right + edgeOverhead inner
+
+/-- Substituting a tree into a context adds a fixed number of edges. -/
+theorem edgeCount_plug (ctx : Context) (t : OrderedTree) :
+    edgeCount (ctx.plug t) = edgeCount t + ctx.edgeOverhead := by
+  induction ctx with
+  | hole => simp [plug, edgeOverhead]
+  | under left right inner ih =>
+      simp only [plug, edgeCount_node, forestEdgeCount_append,
+        forestEdgeCount_cons, forestEdgeCount_nil, edgeOverhead, ih]
+      omega
+
+end Context
+
+/-- A single edge contraction at any depth. The witness specifies the enclosing
+context, the sibling lists, and the child whose incoming edge is contracted. -/
+def ContractStep (before after : OrderedTree) : Prop :=
+  Exists fun (ctx : Context) =>
+  Exists fun (left : List OrderedTree) =>
+  Exists fun (right : List OrderedTree) =>
+  Exists fun (child : OrderedTree) =>
+    before = ctx.plug (.node (left ++ [child] ++ right)) /\
+    after = ctx.plug (.node (left ++ children child ++ right))
+
+/-- Contract an edge incident to the root. -/
+theorem ContractStep.atRoot (left right : List OrderedTree) (child : OrderedTree) :
+    ContractStep
+      (.node (left ++ [child] ++ right))
+      (.node (left ++ children child ++ right)) := by
+  exact ⟨Context.hole, left, right, child, rfl, rfl⟩
+
+/-- Lift any contraction into a child without disturbing its siblings. -/
+theorem ContractStep.below (left right : List OrderedTree) {before after : OrderedTree}
+    (step : ContractStep before after) :
+    ContractStep
+      (.node (left ++ [before] ++ right))
+      (.node (left ++ [after] ++ right)) := by
+  rcases step with ⟨ctx, innerLeft, innerRight, child, hb, ha⟩
+  refine ⟨Context.under left right ctx, innerLeft, innerRight, child, ?_, ?_⟩
+  · change .node (left ++ [before] ++ right) =
+        .node (left ++ [ctx.plug (.node (innerLeft ++ [child] ++ innerRight))] ++ right)
+    rw [← hb]
+  · change .node (left ++ [after] ++ right) =
+        .node (left ++ [ctx.plug (.node (innerLeft ++ children child ++ innerRight))] ++ right)
+    rw [← ha]
 
 /-- Every single edge contraction removes exactly one edge. -/
 theorem ContractStep.edgeCount_decreases {before after : OrderedTree}
     (h : ContractStep before after) :
     edgeCount before = edgeCount after + 1 := by
-  induction h with
-  | atRoot left right child =>
-      cases child with
-      | node grandchildren =>
-          simp only [edgeCount_node, forestEdgeCount_append,
-            forestEdgeCount_cons, forestEdgeCount_nil, children] <;> omega
-  | below left right step ih =>
-      simp only [edgeCount_node, forestEdgeCount_append,
-        forestEdgeCount_cons, forestEdgeCount_nil] <;> omega
+  rcases h with ⟨ctx, left, right, child, hb, ha⟩
+  have hroot :
+      edgeCount (.node (left ++ [child] ++ right)) =
+        edgeCount (.node (left ++ children child ++ right)) + 1 := by
+    cases child with
+    | node grandchildren =>
+        simp only [children, edgeCount_node, forestEdgeCount_append,
+          forestEdgeCount_cons, forestEdgeCount_nil]
+        omega
+  have hbefore := Context.edgeCount_plug ctx (.node (left ++ [child] ++ right))
+  have hafter := Context.edgeCount_plug ctx (.node (left ++ children child ++ right))
+  rw [hb, ha]
+  omega
 
 /-- `small` is obtainable from `large` by zero or more edge contractions.
 This relation is specified solely in terms of trees. -/
