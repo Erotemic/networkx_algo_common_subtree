@@ -85,3 +85,6 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SparseCut.minimum_sparse_cut_adjustment_spec
 
 #print axioms SubtreeProofs.Rust.SparseAssignmentAdjustment.adjust_potentials_sparse_safe_spec
+
+#print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.deleted_bi_state
+#print axioms SubtreeProofs.Rust.SparseBiAdjustment.adjust_potentials_bi_safe_spec

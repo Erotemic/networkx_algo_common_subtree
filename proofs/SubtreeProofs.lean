@@ -171,3 +171,6 @@ public import SubtreeProofs.Rust.SparseCutEntrypoint
 public import SubtreeProofs.Rust.SparseCutCandidates
 public import SubtreeProofs.Rust.SparseCutAdjustment
 public import SubtreeProofs.Rust.SparseAssignmentAdjustment
+public import SubtreeProofs.Shared.AssignmentBiEnvelope
+public import SubtreeProofs.Shared.CopiedMatchingEnvelope
+public import SubtreeProofs.Rust.SparseBiAdjustment

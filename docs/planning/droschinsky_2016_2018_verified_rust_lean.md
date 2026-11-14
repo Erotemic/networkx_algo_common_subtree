@@ -14,6 +14,33 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Two-sided copied-graph potential safety: 2026-11-14
+
+`Shared/AssignmentBiEnvelope` tracks independent initial row and column
+potentials, proves preservation by cut updates, and derives the cumulative
+bound `n * (costUpper + 2 * initialBound)` by sparse weak duality. Its deletion
+lemma restricts both potential families and subtracts the exact removed
+contributions from the cumulative increment. Both removed baseline values
+must be zero; feasibility on a zero-cost identity edge makes the new
+increment nonnegative.
+
+`Shared/CopiedMatchingEnvelope.initial_bi_state` instantiates the envelope
+and feasibility with the paper's actual row-maximum initial potentials on
+both sides. `deleted_bi_state` proves that deleting a right vertex and its
+copy preserves sparse feasibility, the two-sided envelope and exact dual
+accounting, with increment at most `2 * survivingDimension * weightBound`.
+The compatible perfect assignment needed for this budget is constructed
+from surviving identity-copy edges; no repaired optimum is assumed.
+
+`Rust/SparseBiAdjustment.adjust_potentials_bi_safe_spec` verifies the actual
+shared Rust potential-update routine under these two-sided invariants for
+nonpositive allowed costs and initial potentials in `[-2^63, 0]`. It derives
+every checked arithmetic range, preserves sparse feasibility and the
+two-sided envelope, and proves exact objective/reserved-slot accounting.
+This extends the earlier zero-initial-column update theorem to the genuine
+paper initialization. The sparse augmenting-search caller and efficient
+deletion-repair implementation remain open.
+
 ## Actual shared potential updates with sparse feasibility: 2026-11-14
 
 `Rust.SparseAssignmentAdjustment.adjust_potentials_sparse_safe_spec` extends
