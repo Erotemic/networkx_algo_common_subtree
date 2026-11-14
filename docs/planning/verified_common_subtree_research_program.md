@@ -12,6 +12,20 @@ Detailed work packages live in:
 - [Droschinsky, Kriege, Mutzel (2016 and 2018) plan](droschinsky_2016_2018_verified_rust_lean.md)
 - [Planning index and evidence map](README.md)
 
+## Actual original-token Rust API verified: 2026-11-14
+
+The flat Boolean `maximum_common_token_embedding` API now has a compiled total
+correctness theorem over every represented input pair. Success returns exact
+original token positions whose readback spells an independent maximum common
+balanced contraction; malformed/oversized inputs report the excluded side with
+left precedence. The parser, indexed optimizer, reconstruction and coordinate
+emitter are actual extracted Rust calls. All eight ordered-core integration
+tests pass, including all 38,809 small tree pairs. This supersedes earlier
+original-token witness gaps below; typed external tokens and Python/NetworkX
+conversion remain open, as do efficient dictionary/witness costs and the paper
+runtime. Separate ordered-isomorphism reference solvers are already verified;
+their original-index witnesses remain open.
+
 ## Verified Rust memoization: 2026-11-14
 
 The actual owned-memo Rust entry point now has a compiled end-to-end optimum

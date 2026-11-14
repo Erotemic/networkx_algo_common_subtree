@@ -438,6 +438,38 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual flat-token optimum and retained-token witnesses: 2026-11-14
+
+`Rust.TokenMatching.maximum_common_token_embedding_total_spec` proves total
+correctness of the actual public `maximum_common_token_embedding` Rust API on
+every represented pair of Boolean token slices. Independently balanced inputs
+with fewer than 2^32 pairs succeed; excluded inputs return their original parser
+error with left-input precedence. Internal solver/index errors are unreachable.
+
+Success satisfies `Paper2004.TokenEncoding.MaximumTokenEmbedding`: both actual
+output index lists are ordered sublists of the original full token ranges;
+reading them from the original inputs spells exactly the same balanced word;
+that word attains the independent tree-contraction optimum with its exact pair
+score. Distinctness, bounds and two returned tokens per scored pair follow from
+this contract. No input parser, optimum or index-validity certificate is a public
+endpoint premise.
+
+`CanonicalTokenPositions` proves the exact canonical original pair-coordinate
+table expands to the complete original token range. `TokenReading` proves
+original-array readback survives arbitrary indexed pair deletions. The actual
+`emit_tokens` refinement derives all source casts, coordinate reads and output
+capacity bounds from parser correctness and indexed retention, then composes
+with the actual memoized optimizer and complete reconstruction proofs.
+
+The native oracle tests the flat API on all 38,809 pairs of the 197 ordered trees
+through six edges against independent arbitrary tree-contraction closures,
+checking exact score, both readback sequences, original ordering and lengths.
+All eight ordered-core integration tests pass. Source extraction is regenerated
+from the maintained Rust. This remains an unweighted Boolean reference adapter:
+backtracking witness reconstruction has no paper running-time claim. Typed
+external tokens, Python/NetworkX conversion, optimized reconstruction and full
+implementation costs remain open.
+
 ## Actual flat-token parser total correctness: 2026-11-14
 
 `Rust.TokenParser.parse_balanced_tokens_total_spec` proves the actual public

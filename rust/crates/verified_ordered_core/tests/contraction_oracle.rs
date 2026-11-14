@@ -344,3 +344,50 @@ fn indexed_numbering_checks_offset_overflow() {
         u32::MAX
     );
 }
+
+#[test]
+fn flat_token_adapter_matches_independent_tree_contractions_through_six_edges() {
+    use verified_ordered_core::token_matching::maximum_common_token_embedding;
+    let inputs: Vec<_> = (0..=6).flat_map(trees).collect();
+    let words: Vec<Vec<bool>> = inputs
+        .iter()
+        .map(|tree| {
+            tree_encoding(tree)
+                .into_iter()
+                .map(|token| token != 0)
+                .collect()
+        })
+        .collect();
+    let candidates: Vec<_> = inputs.iter().map(closure).collect();
+    for i in 0..inputs.len() {
+        for j in 0..inputs.len() {
+            let result = match maximum_common_token_embedding(&words[i], &words[j]) {
+                Ok(value) => value,
+                Err(_) => panic!("tiny valid input rejected: {i}, {j}"),
+            };
+            assert!(result.left.windows(2).all(|pair| pair[0] < pair[1]));
+            assert!(result.right.windows(2).all(|pair| pair[0] < pair[1]));
+            let left: Vec<_> = result
+                .left
+                .iter()
+                .map(|index| words[i][*index] as u8)
+                .collect();
+            let right: Vec<_> = result
+                .right
+                .iter()
+                .map(|index| words[j][*index] as u8)
+                .collect();
+            assert_eq!(left, right);
+            assert!(candidates[i].contains(&left));
+            assert!(candidates[j].contains(&right));
+            let expected = candidates[i]
+                .intersection(&candidates[j])
+                .map(|word| word.len() / 2)
+                .max()
+                .unwrap();
+            assert_eq!(result.edges as usize, expected);
+            assert_eq!(result.left.len(), 2 * expected);
+            assert_eq!(result.right.len(), 2 * expected);
+        }
+    }
+}

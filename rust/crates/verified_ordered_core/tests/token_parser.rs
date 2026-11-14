@@ -80,3 +80,21 @@ fn explicit_unmatched_token_errors() {
         Err(TokenError::MissingClose)
     ));
 }
+
+#[test]
+fn flat_token_adapter_preserves_input_error_side_and_precedence() {
+    use verified_ordered_core::token_matching::{
+        maximum_common_token_embedding, TokenMatchingError,
+    };
+    assert!(matches!(
+        maximum_common_token_embedding(&[true], &[false]),
+        Err(TokenMatchingError::LeftInput(TokenError::UnexpectedClose))
+    ));
+    assert!(matches!(
+        maximum_common_token_embedding(&[false, true], &[false]),
+        Err(TokenMatchingError::RightInput(TokenError::MissingClose))
+    ));
+    assert!(
+        matches!(maximum_common_token_embedding(&[], &[]), Ok(result) if result.left.is_empty() && result.right.is_empty() && result.edges == 0)
+    );
+}

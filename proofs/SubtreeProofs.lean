@@ -143,3 +143,8 @@ public import SubtreeProofs.Rust.TokenParserSpecification
 public import SubtreeProofs.Rust.TokenParserAccepted
 public import SubtreeProofs.Rust.TokenParserTotal
 public import SubtreeProofs.Rust.TokenParserEntrypoint
+public import SubtreeProofs.Paper2004.CanonicalTokenPositions
+public import SubtreeProofs.Paper2004.TokenReading
+public import SubtreeProofs.Paper2004.TokenMaximum
+public import SubtreeProofs.Rust.TokenEmission
+public import SubtreeProofs.Rust.TokenMatchingEntrypoint

@@ -516,21 +516,6 @@ def largest_common_embedding
                   ok (some ce1)
 partial_fixpoint
 
-/-- [verified_ordered_core::tokens::PairPositions]
-    Source: 'src/tokens.rs', lines 8:0-11:1
-    Visibility: public -/
-structure tokens.PairPositions where
-  «open» : Std.Usize
-  close : Std.Usize
-
-/-- [verified_ordered_core::tokens::ParsedForest]
-    Source: 'src/tokens.rs', lines 13:0-18:1
-    Visibility: public -/
-structure tokens.ParsedForest where
-  word : BalancedWord
-  next : Std.Usize
-  positions : alloc.vec.Vec tokens.PairPositions
-
 /-- [verified_ordered_core::tokens::TokenError]
     Source: 'src/tokens.rs', lines 20:0-24:1
     Visibility: public -/
@@ -539,6 +524,67 @@ inductive tokens.TokenError where
 | UnexpectedClose : tokens.TokenError
 | MissingClose : tokens.TokenError
 | TooLarge : tokens.TokenError
+
+/-- [verified_ordered_core::token_matching::TokenMatchingError]
+    Source: 'src/token_matching.rs', lines 8:0-13:1
+    Visibility: public -/
+@[discriminant isize]
+inductive token_matching.TokenMatchingError where
+| LeftInput : tokens.TokenError → token_matching.TokenMatchingError
+| RightInput : tokens.TokenError → token_matching.TokenMatchingError
+| SolverFailure : token_matching.TokenMatchingError
+| InvalidIndex : token_matching.TokenMatchingError
+
+/-- [verified_ordered_core::token_matching::TokenCommonEmbedding]
+    Source: 'src/token_matching.rs', lines 15:0-19:1
+    Visibility: public -/
+structure token_matching.TokenCommonEmbedding where
+  left : alloc.vec.Vec Std.Usize
+  right : alloc.vec.Vec Std.Usize
+  edges : Std.U32
+
+/-- [verified_ordered_core::tokens::PairPositions]
+    Source: 'src/tokens.rs', lines 8:0-11:1
+    Visibility: public -/
+structure tokens.PairPositions where
+  «open» : Std.Usize
+  close : Std.Usize
+
+/-- [verified_ordered_core::token_matching::emit_tokens]:
+    Source: 'src/token_matching.rs', lines 21:0-44:1 -/
+def token_matching.emit_tokens
+  (word : indexed.IndexedWord) (coordinates : Slice tokens.PairPositions)
+  (output : alloc.vec.Vec Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.Usize)
+    token_matching.TokenMatchingError)
+  := do
+  match word with
+  | indexed.IndexedWord.Empty => ok (core.result.Result.Ok output)
+  | indexed.IndexedWord.Pair index head tail =>
+    let pair ← lift (UScalar.cast .Usize index)
+    let i := Slice.len coordinates
+    if pair >= i
+    then
+      ok (core.result.Result.Err
+        token_matching.TokenMatchingError.InvalidIndex)
+    else
+      let pp ← Slice.index_usize coordinates pair
+      let output1 ← alloc.vec.Vec.push output pp.open
+      let r ← token_matching.emit_tokens head coordinates output1
+      match r with
+      | core.result.Result.Ok value =>
+        let value1 ← alloc.vec.Vec.push value pp.close
+        token_matching.emit_tokens tail coordinates value1
+      | core.result.Result.Err _ => ok r
+partial_fixpoint
+
+/-- [verified_ordered_core::tokens::ParsedForest]
+    Source: 'src/tokens.rs', lines 13:0-18:1
+    Visibility: public -/
+structure tokens.ParsedForest where
+  word : BalancedWord
+  next : Std.Usize
+  positions : alloc.vec.Vec tokens.PairPositions
 
 /-- [verified_ordered_core::tokens::parse_forest]:
     Source: 'src/tokens.rs', lines 26:0-73:1 -/
@@ -613,5 +659,48 @@ def tokens.parse_balanced_tokens
     then ok (core.result.Result.Err tokens.TokenError.UnexpectedClose)
     else ok r
   | core.result.Result.Err _ => ok r
+
+/-- [verified_ordered_core::token_matching::maximum_common_token_embedding]:
+    Source: 'src/token_matching.rs', lines 53:0-82:1
+    Visibility: public -/
+def token_matching.maximum_common_token_embedding
+  (left : Slice Bool) (right : Slice Bool) :
+  Result (core.result.Result token_matching.TokenCommonEmbedding
+    token_matching.TokenMatchingError)
+  := do
+  let r ← tokens.parse_balanced_tokens left
+  match r with
+  | core.result.Result.Ok value =>
+    let r1 ← tokens.parse_balanced_tokens right
+    match r1 with
+    | core.result.Result.Ok value1 =>
+      let o ← indexed.maximum_common_embedding_indexed value.word value1.word
+      match o with
+      | none =>
+        ok (core.result.Result.Err
+          token_matching.TokenMatchingError.SolverFailure)
+      | some value2 =>
+        let s := alloc.vec.Vec.deref value.positions
+        let r2 ←
+          token_matching.emit_tokens value2.left s (alloc.vec.Vec.new
+            Std.Usize)
+        match r2 with
+        | core.result.Result.Ok value3 =>
+          let s1 := alloc.vec.Vec.deref value1.positions
+          let r3 ←
+            token_matching.emit_tokens value2.right s1 (alloc.vec.Vec.new
+              Std.Usize)
+          match r3 with
+          | core.result.Result.Ok value4 =>
+            ok (core.result.Result.Ok
+              { left := value3, right := value4, edges := value2.edges })
+          | core.result.Result.Err error => ok (core.result.Result.Err error)
+        | core.result.Result.Err error => ok (core.result.Result.Err error)
+    | core.result.Result.Err error =>
+      ok (core.result.Result.Err (token_matching.TokenMatchingError.RightInput
+        error))
+  | core.result.Result.Err error =>
+    ok (core.result.Result.Err (token_matching.TokenMatchingError.LeftInput
+      error))
 
 end verified_ordered_core
