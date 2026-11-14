@@ -1,7 +1,7 @@
 # Verified common-subtree algorithms: research program and engineering charter
 
 Status: active; ordered reference Rust solver verified; optimized and unordered work open  
-Updated: 2026-11-13 (after the successful local Lean 4.35.0 build was reported)  
+Updated: 2026-11-14 (executed local Lean and Rust verification)  
 Project: `networkx_algo_common_subtree`
 
 This document records the intended destination and the decisions behind it. It
@@ -304,22 +304,29 @@ Do not import the retired proof architecture.
 ### 2016: matching optimality versus faster matching
 
 An ordinary Hungarian-style child-matching DP can be a correct reference
-while failing to achieve the paper's advertised `O(n^2 Delta)` bound. Prove
-the matching recurrence and then the faster relationship/reuse between
-matching instances, including its own cost model. Score-only results are
-insufficient; returned partial mappings must be feasible and optimal.
+while failing to achieve the v4 bound
+`O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))`. The older
+`O(n^2 Delta)` abbreviation needs qualification when degree bounds differ.
+The rooted recurrence, actual exact assignment/partial-matching APIs and a
+complete reference deletion-family API are now proved. Matched deletions still
+run full reference solves; one-augmentation repair, the optimized graph schedule
+and source cost bounds remain open. Score-only results are insufficient;
+returned partial mappings must be feasible and optimal.
 
-### 2018: published scoring and feasibility differ from current code
+### 2018: published scoring and the corrected reference implementations
 
 The earlier audit identified that a mapped skeleton edge realized by a path
 of length greater than one **does not receive the direct edge-pair similarity
 reward** under the paper's convention; it instead incurs the applicable
-skipped-vertex penalty. Existing Rust/Python reference implementations
-award an initial-edge match and can also reject permitted longer-path
-embeddings based on that edge label. See the dedicated [Droschinsky plan](droschinsky_2016_2018_verified_rust_lean.md)
-for two discriminating regression cases. This is a semantic blocker, not a
-performance issue. The paper's rule is authoritative for the verified
-paper solver; any alternative objective gets its own name and tests.
+skipped-vertex penalty. The Rust/Python graph reference implementations have
+been corrected: longer mapped paths receive the skipped-vertex penalty rather
+than the direct edge reward, and an edge-label mismatch does not forbid a
+permitted longer-path embedding. Discriminating regression cases pass; see the
+[Droschinsky plan](droschinsky_2016_2018_verified_rust_lean.md). The independent
+mathematical scoring correspondence and rooted recurrences are proved. Actual
+Rust graph refinement and equivalence between floating execution and exact
+mathematical scores remain open. The paper's rule remains authoritative; any
+alternative objective needs its own name and tests.
 
 ## 7. Testing and independent evidence
 
