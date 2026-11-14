@@ -438,6 +438,33 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## One-cycle optimal repair of the paper copied graph: 2026-11-14
+
+`Shared/AssignmentCycleRepair` reuses Mathlib permutation cycles to prove the
+one-augmentation structural argument independently of an implementation. A
+completed near-perfect assignment has compatible tight old edges except at
+one free row. Under a feasible sparse dual, replacing only the difference cycle
+through that row costs no more than any compatible perfect replacement: all
+other replacement cycles contribute nonnegative slack over old tight edges.
+An independently optimal compatible assignment exists by finite minimization,
+so `Assignment.exists_single_cycle_repair` derives an optimal one-cycle repair
+without accepting an optimal replacement as an endpoint premise.
+
+`AssignmentDeletedPermutation` bypasses the removed vertex in its original
+permutation cycle, restricts to the actual surviving subtype and identifies the
+unique temporary free-row/free-column edge. Every other old assignment edge
+is unchanged. `CopiedMatchingRepair.matched_single_cycle_repair` instantiates
+this with the actual paper graph, original feasible/tight potentials and a
+matched original right vertex. Feasibility of the deleted graph is constructed
+from its surviving identity-copy edges. It yields a global perfect optimum
+changing only the one repair cycle, with all other old edges preserved.
+
+This establishes optimal repair by a single alternating cycle; removing its
+temporary completion edge gives the intended augmenting-path interpretation.
+It does not yet implement the sparse path search, potential updates, fast
+priority queue or the paper operation bound. Decoding the repaired induced-graph
+optimum, executable repair and optimized source refinement remain open.
+
 ## Actual final-cache owned word payload: 2026-11-14
 
 `Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_payload_of_trees`

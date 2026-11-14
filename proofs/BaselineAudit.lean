@@ -74,3 +74,6 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_cache_of_trees
 
 #print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_payload_of_trees
+
+#print axioms SubtreeProofs.Assignment.exists_single_cycle_repair
+#print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.matched_single_cycle_repair

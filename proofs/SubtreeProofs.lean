@@ -160,3 +160,6 @@ public import SubtreeProofs.Rust.GuidedCacheGrowth
 public import SubtreeProofs.Paper2004.ContractionMeasures
 public import SubtreeProofs.Rust.GuidedTreeCacheBound
 public import SubtreeProofs.Rust.GuidedOwnedPayload
+public import SubtreeProofs.Shared.AssignmentCycleRepair
+public import SubtreeProofs.Shared.AssignmentDeletedPermutation
+public import SubtreeProofs.Shared.CopiedMatchingRepair

@@ -14,6 +14,33 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## One-cycle optimal repair of the paper copied graph: 2026-11-14
+
+`Shared/AssignmentCycleRepair` reuses Mathlib permutation cycles to prove the
+one-augmentation structural argument independently of an implementation. A
+completed near-perfect assignment has compatible tight old edges except at
+one free row. Under a feasible sparse dual, replacing only the difference cycle
+through that row costs no more than any compatible perfect replacement: all
+other replacement cycles contribute nonnegative slack over old tight edges.
+An independently optimal compatible assignment exists by finite minimization,
+so `Assignment.exists_single_cycle_repair` derives an optimal one-cycle repair
+without accepting an optimal replacement as an endpoint premise.
+
+`AssignmentDeletedPermutation` bypasses the removed vertex in its original
+permutation cycle, restricts to the actual surviving subtype and identifies the
+unique temporary free-row/free-column edge. Every other old assignment edge
+is unchanged. `CopiedMatchingRepair.matched_single_cycle_repair` instantiates
+this with the actual paper graph, original feasible/tight potentials and a
+matched original right vertex. Feasibility of the deleted graph is constructed
+from its surviving identity-copy edges. It yields a global perfect optimum
+changing only the one repair cycle, with all other old edges preserved.
+
+This establishes optimal repair by a single alternating cycle; removing its
+temporary completion edge gives the intended augmenting-path interpretation.
+It does not yet implement the sparse path search, potential updates, fast
+priority queue or the paper operation bound. Decoding the repaired induced-graph
+optimum, executable repair and optimized source refinement remain open.
+
 ## Sparse copied-graph duality and tight normalization: 2026-11-14
 
 `AssignmentDualityOn` proves independent weak duality and feasible/tight
@@ -1010,7 +1037,7 @@ brute-force testing and require a passing `cargo test` in CI.
 
 **M16-C: faster algorithm.** Work through the paper's shared/reused matching
 instances, prove their relation and the optimized update rules, and establish
-the published `O(n^2 Delta)` operation bound under explicit arithmetic and
+the published `O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))` operation bound under explicit arithmetic and
 container assumptions. The existing repeated Hungarian approach cannot be
 claimed to meet this theorem merely because the recurrence is correct.
 
@@ -1070,7 +1097,7 @@ upstream compatibility is the limiting issue.
 | D2 | Partial weighted matching spec, exhaustive oracle, reduction | D1 | Matching theorem plus independent negative/forbidden/unmatched tests |
 | D3 | Fix 2018 paper scoring and feasibility oracle | D1 | Gate D18-S and exhaustive path cases |
 | D4 | 2016 rooted/unrooted recurrence and witness proof | D2 | Executable mathematical DP equals independent optimum |
-| D5 | 2016 optimized matching updates and operation bound | D4 | Verified paper-specific `O(n^2 Delta)` assumptions and actual work |
+| D5 | 2016 optimized matching updates and operation bound | D4 | Verified paper-specific `O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))` assumptions and actual work |
 | D6 | 2018 path/branch recurrence, witness and optimum | D3, D2 | Executable paper recurrence equals independent maximum |
 | D7 | 2018 optimized method and complexity | D6 | Exact paper bound proved or documented correction |
 | D8 | Aeneas translation/refinement for verified Rust matching and DP(s) | D2, D4/D6; translation spike parallel | Theorem about actual translated Rust entry point, generated Lean reproducible |
