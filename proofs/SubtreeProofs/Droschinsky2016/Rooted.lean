@@ -75,6 +75,24 @@ noncomputable def rootedValue (left : FiniteTree V) (right : FiniteTree W)
     (weights : Scoring V W) (leftBase : V) (rightBase : W) (u : V) (v : W) : WithBot ℝ :=
   (rootedFeasible left right leftBase rightBase u v).sup (score left weights)
 
+theorem rooted_score_le_value {left : FiniteTree V} {right : FiniteTree W}
+    (weights : Scoring V W) {leftBase u : V} {rightBase v : W} {pairs : Mapping V W}
+    (h : RootedValid left right leftBase rightBase u v pairs) :
+    score left weights pairs ≤ rootedValue left right weights leftBase rightBase u v :=
+  Finset.le_sup (f := score left weights) ((mem_rootedFeasible _ _ _ _ _ _ _).mpr h)
+
+/-- Every rooted optimum has a concrete independently valid witness. -/
+theorem rootedValue_attained (left : FiniteTree V) (right : FiniteTree W)
+    (weights : Scoring V W) (leftBase u : V) (rightBase v : W) :
+    ∃ pairs, RootedValid left right leftBase rightBase u v pairs ∧
+      score left weights pairs = rootedValue left right weights leftBase rightBase u v := by
+  have hn : (rootedFeasible left right leftBase rightBase u v).Nonempty :=
+    ⟨{(u,v)}, (mem_rootedFeasible _ _ _ _ _ _ _).mpr (rooted_singleton_valid _ _ _ _ _ _)⟩
+  obtain ⟨pairs, hp, hmax⟩ := Finset.exists_max_image
+    (rootedFeasible left right leftBase rightBase u v) (score left weights) hn
+  refine ⟨pairs, (mem_rootedFeasible _ _ _ _ _ _ _).mp hp, ?_⟩
+  exact le_antisymm (Finset.le_sup (f := score left weights) hp) (Finset.sup_le hmax)
+
 /-- Exact independent unrestricted optimum. -/
 noncomputable def unrootedValue (left : FiniteTree V) (right : FiniteTree W)
     (weights : Scoring V W) : WithBot ℝ :=

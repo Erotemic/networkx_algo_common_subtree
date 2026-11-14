@@ -285,6 +285,7 @@ theorem Valid.edge_partition {left : FiniteTree V} {right : FiniteTree W}
         ⟨((mem_branchMapping left root.1 child.1 pairs p).mp hp).1,
          ((mem_branchMapping left root.1 child.1 pairs q).mp hq).1, hadj⟩
 
+omit [DecidableEq V] [DecidableEq W] in
 theorem mappedEdges_disjoint (left : FiniteTree V) {first second : Mapping V W}
     (hd : Disjoint first second) : Disjoint (mappedEdges left first) (mappedEdges left second) := by
   classical

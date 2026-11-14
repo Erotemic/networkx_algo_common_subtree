@@ -4,6 +4,16 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Rooted matching recurrence accepted: 2026-11-14
+
+`Droschinsky2016.rooted_matching_recurrence` proves Eq. (1) against the
+independent optimum, with valid witness decomposition and converse assembly,
+exact vertex/edge score identities and certified optimal child matching.
+It preserves signed and negative-infinity weights. The matcher is an exhaustive
+oracle and continuation values are independent finite optima; efficient
+recursive evaluation, Hungarian refinement, Rust verification and runtime
+claims are still open.
+
 ## Fixed-root reduction accepted: 2026-11-14
 
 `Droschinsky2016.fixedRootValue_eq_unrootedValue` proves 2016 Lemma 2

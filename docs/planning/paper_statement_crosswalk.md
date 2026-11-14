@@ -63,7 +63,7 @@ algorithm; its repeated matching calls do not establish this bound.
 | Source | Target | State |
 | --- | --- | --- |
 | Section 2, definitions | Finite weighted connected subtree isomorphism; rooted/root-to-root restrictions | Proved independent `Droschinsky2016.Valid`, exact unordered-edge score, `Valid.inducedIso`, and unconditional finite `exists_maximum`; rooted descendant-subproblem spec proved; branch recurrence open |
-| Proposition 1 / Eq. (1) | Rooted recurrence and its operation bound | Independent witness/score decomposition proved by `Valid.score_decomposition`, including connected child witnesses and exact unordered-edge partition. Converse assembly, matching optimum, algorithm and operation bound open |
+| Proposition 1 / Eq. (1) | Rooted recurrence and its operation bound | Proved `rooted_matching_recurrence` for independent connected-isomorphism optima, using both structural decomposition and assembly plus a certified exhaustive child matcher. Recursive evaluation, efficient matching and operation bound open |
 | Lemma 2 | Fixed-root family suffices for the unrestricted optimum | Proved `Droschinsky2016.fixedRootValue_eq_unrootedValue`, using canonical-path ancestry and the unique top vertex of every connected selected subtree |
 | Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Open |
 | Theorem 4 | Optimized unrestricted-weight MCSI bound above | Open |

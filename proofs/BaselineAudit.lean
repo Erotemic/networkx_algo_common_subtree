@@ -24,3 +24,4 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.WeightedMatching.AssignmentReduction.minimum_assignment_decodes
 #print axioms SubtreeProofs.Droschinsky2016.fixedRootValue_eq_unrootedValue
+#print axioms SubtreeProofs.Droschinsky2016.rooted_matching_recurrence

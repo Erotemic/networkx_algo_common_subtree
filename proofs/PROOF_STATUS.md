@@ -197,6 +197,22 @@ It holds for signed and negative-infinity scores.
 This proves the decomposition direction behind 2016 Eq. (1). Converse assembly,
 optimal child selection, recursive evaluation and the cost theorem remain open.
 
+## Rooted matching equality accepted: 2026-11-14
+
+`BranchFamily.assemble_valid` proves the converse structural direction: any
+injective child matching of independently valid descendant continuations
+assembles into a nonempty connected induced isomorphism. Its branch restrictions
+recover the exact supplied continuations, and `score_assemble` proves their
+complete score. `rootedValue_attained` gives actual optimal rooted witnesses.
+
+`Droschinsky2016.rooted_matching_recurrence` proves 2016 Eq. (1) against the
+independent optimum for arbitrary finite rooted input trees and `WithBot ℝ`
+scores. Forbidden non-neighbor pairs, unmatched children, signed weights and
+negative-infinity optima are included. The supporting matching optimizer is the
+certified finite exhaustive oracle; the continuation values are independently
+specified optima, not an implemented recursive DP. Efficient evaluation,
+state representation, Rust refinement and Proposition 1's runtime remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
