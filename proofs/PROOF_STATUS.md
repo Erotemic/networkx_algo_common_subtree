@@ -404,6 +404,22 @@ are Bellman identities; continuation values remain finite witness optima and
 the matching oracle remains exhaustive. Executable recursive evaluation,
 optimized matching, cost bounds and actual graph Rust refinement remain open.
 
+## Overall objectives and rooted evaluation order accepted: 2026-11-14
+
+`Droschinsky2018.rootedValue_eq_max_mapped` equates the independent rooted
+source optimum with the largest mapped-state entry in the supplied orientations.
+`unrootedValue_eq_max_rerooted_mapped` proves the straightforward unrooted
+baseline that tries every root pair. Both preserve nonempty negative/bottom
+optima and charge no boundary skips above the chosen common root.
+
+`Shared.RootedEvaluationOrder.wellFounded` derives the rooted recurrence order
+from actual canonical path depths and their finite maxima. One-child and
+two-child dependencies strictly decrease the rank. This discharges rooted
+termination/order without a supplied DAG hypothesis. It does not establish
+the optimized unrooted matching-reuse order or any computation's time bound.
+Executable evaluation, optimized matching, numerical/Rust refinement and the
+published cost theorems remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

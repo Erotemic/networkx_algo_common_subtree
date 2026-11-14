@@ -81,6 +81,15 @@ theorem pathLength_child_step {root u c v : V} (hc : tree.Child root u c)
   rw [tree.pathLength_adj hc.1] at he
   omega
 
+/-- Child edges increase depth in the fixed ambient orientation by exactly one. -/
+theorem child_depth {root u c : V} (hc : tree.Child root u c) :
+    tree.pathLength root c = tree.pathLength root u + 1 := by
+  have he := congrArg SimpleGraph.Walk.length (tree.path_append_of_ancestor hc.2)
+  rw [SimpleGraph.Walk.length_append] at he
+  change tree.pathLength root u + tree.pathLength u c = tree.pathLength root c at he
+  rw [tree.pathLength_adj hc.1] at he
+  exact he.symm
+
 /-- A path starting at a parent stays in its chosen child branch after leaving
 that parent. -/
 theorem path_in_child_branch [DecidableEq V] {root u c v x : V} (hc : tree.Child root u c)

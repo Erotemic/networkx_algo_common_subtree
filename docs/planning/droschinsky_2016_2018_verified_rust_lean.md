@@ -4,6 +4,14 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Overall optima and rooted order accepted: 2026-11-14
+
+The independent rooted 2018 optimum equals the maximum mapped-state entry.
+Trying all ambient root pairs gives a correct unrooted baseline. The rooted
+recurrence dependency order is derived from actual finite tree depths.
+The optimized unrooted schedule, executable evaluation, matching implementation,
+Rust refinement and cost theorems remain open.
+
 ## Full two-state recurrence accepted: 2026-11-14
 
 `Droschinsky2018.mapped_recurrence` and `skipped_recurrence_two_state` now

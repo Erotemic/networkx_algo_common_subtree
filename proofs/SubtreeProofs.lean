@@ -41,3 +41,5 @@ public import SubtreeProofs.Droschinsky2018.BranchOptimum
 public import SubtreeProofs.Droschinsky2018.MatchingAssembly
 public import SubtreeProofs.Droschinsky2018.ScoreDecomposition
 public import SubtreeProofs.Droschinsky2018.MappedDecomposition
+public import SubtreeProofs.Droschinsky2018.OverallOptima
+public import SubtreeProofs.Shared.RootedEvaluationOrder
