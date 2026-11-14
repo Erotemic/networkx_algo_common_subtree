@@ -84,8 +84,11 @@ if(BUILD_RUST_EXTENSIONS)
     set(_cargo_lib_path "${_cargo_target_dir}/${_cargo_profile_dir}/${_cargo_lib_name}")
     set(_rust_ext_path "${CMAKE_CURRENT_BINARY_DIR}/_rust${PYTHON_EXT_SUFFIX}")
 
-    file(GLOB _verified_ordered_sources CONFIGURE_DEPENDS
-      "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_ordered_core/src/*.rs")
+    file(GLOB_RECURSE _rust_sources CONFIGURE_DEPENDS
+      "${CMAKE_CURRENT_SOURCE_DIR}/rust/src/*.rs"
+      "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_ordered_core/src/*.rs"
+      "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_assignment_core/src/*.rs"
+      "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/common_subtree_algorithms/src/*.rs")
 
     add_custom_command(
       OUTPUT "${_rust_ext_path}"
@@ -104,7 +107,9 @@ if(BUILD_RUST_EXTENSIONS)
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/build.rs"
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/Cargo.lock"
         "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_ordered_core/Cargo.toml"
-        ${_verified_ordered_sources}
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/verified_assignment_core/Cargo.toml"
+        "${CMAKE_CURRENT_SOURCE_DIR}/rust/crates/common_subtree_algorithms/Cargo.toml"
+        ${_rust_sources}
       COMMENT "Building Rust extension module with cargo"
       VERBATIM
     )

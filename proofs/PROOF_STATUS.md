@@ -1,5 +1,22 @@
 # Common-subtree proof status
 
+## Python integration and software-first sequencing: 2026-11-14
+
+The existing graph Rust DPs for both Droschinsky families are now exposed
+through public NetworkX APIs, with original-node/path witnesses, signed and
+callback weights, empty/nonempty objectives and independent exhaustive Python
+references/rescorers. The public exact assignment and partial-matching APIs
+call the actual source-proved integer cores. Python conversions, callback
+tables and PyO3 wrappers are tested boundaries, not Lean-proved boundaries.
+The floating-point graph algorithms are not covered by those exact integer
+source proofs, and their optimized schedules/runtime proofs remain open.
+
+Substantial remaining formalization is deferred until public functionality,
+independent correctness and measured efficiency are established. All existing
+proofs are preserved; full mathematical, production-source and applicable
+complexity verification still blocks the final verified release. Development
+wheels and implemented algorithm use do not depend on finishing these proofs.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

@@ -3,6 +3,8 @@ use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple};
 use rustc_hash::FxHashMap as HashMap;
 use std::sync::Arc;
 
+mod graph_bindings;
+
 #[derive(Clone, Debug, Default)]
 struct MatchResult {
     val: f64,
@@ -619,6 +621,7 @@ fn maximum_common_token_embedding(
 
 #[pymodule]
 fn _rust(_py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
+    graph_bindings::register(module)?;
     module.add_function(wrap_pyfunction!(maximum_common_token_embedding, module)?)?;
     module.add_function(wrap_pyfunction!(longest_common_balanced_embedding, module)?)?;
     module.add_function(wrap_pyfunction!(longest_common_balanced_isomorphism, module)?)?;

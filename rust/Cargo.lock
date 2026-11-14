@@ -15,6 +15,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
+name = "common_subtree_algorithms"
+version = "0.1.0"
+
+[[package]]
 name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -48,9 +52,11 @@ dependencies = [
 name = "networkx_algo_common_subtree_rust"
 version = "0.1.0"
 dependencies = [
+ "common_subtree_algorithms",
  "pyo3",
  "pyo3-build-config",
  "rustc-hash",
+ "verified_assignment_core",
  "verified_ordered_core",
 ]
 
@@ -187,6 +193,10 @@ name = "unindent"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7264e107f553ccae879d21fbea1d6724ac785e8c3bfc762137959b5802826ef3"
+
+[[package]]
+name = "verified_assignment_core"
+version = "0.1.0"
 
 [[package]]
 name = "verified_ordered_core"

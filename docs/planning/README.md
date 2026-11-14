@@ -28,6 +28,15 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
+Both Droschinsky Rust families and the verified exact assignment/partial
+matching cores are now callable through public Python APIs. A fresh installed
+wheel passes all 130 tests with native backends mandatory. Independent graph
+witness rescoring and exhaustive optimum comparisons are included. Installed
+API measurements identify high-degree matching as the next graph performance
+bottleneck; these reference DPs do not yet reproduce the published optimized
+schedules. See the capability matrix and benchmark evidence before continuing
+the remaining ordered coverage, correctness and optimization tasks.
+
 ## Verified actual one-path sparse augmentation: 2026-11-14
 
 The actual signed-integer sparse search and checked path flip now have an

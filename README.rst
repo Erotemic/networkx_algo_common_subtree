@@ -5,7 +5,69 @@ The networkx_algo_common_subtree Module
 
 Networkx algorithms for maximum common ordered subtree minors (or embedding)
 and maximum common subtree isomorphism. Contains pure python and cython
-optimized versions.
+optimized versions, plus Rust/PyO3 backends. Weighted unordered isomorphism
+(Droschinsky 2016), distance-penalized embedding (2018), and exact integer
+assignment/partial matching are also available from Python.
+
+Weighted unordered trees
+------------------------
+
+Install with ``python -m pip install .`` (Rust/Cargo and a C/C++ toolchain are
+needed for source builds). The default build includes Rust and Cython.
+
+.. code:: python
+
+    import networkx as nx
+    import networkx_algo_common_subtree as common
+
+    left, right = nx.path_graph(3), nx.path_graph(4)
+    result = common.maximum_common_subtree_isomorphism(left, right, impl="rust")
+    assert result.weight == 5  # three vertices plus two edges
+    assert common.score_common_subtree_isomorphism(left, right, result) == 5
+    print(result.mapping)  # original input vertices
+
+    embedded = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+        left, right, skip_vertex_penalty=0.25, impl="rust")
+    print(embedded.edge_paths)  # aligned paths, including skipped vertices
+
+Inputs are undirected simple connected NetworkX trees, or empty graphs.
+``node_label="name"`` and ``edge_label="name"`` require equality of the named
+attributes; omitted labels allow any pair. ``node_weight`` and ``edge_weight``
+accept finite signed numbers or callbacks on original nodes/endpoint pairs;
+a callback may return ``None`` to forbid a pair. Callbacks are evaluated once
+per compatible pair before the Rust solver. ``allow_empty=False`` preserves
+negative nonempty optima and returns ``None`` when no nonempty solution exists.
+The default ``impl="auto"`` selects Rust if installed; ``impl="python"`` is
+an independent exhaustive reference suitable for small inputs.
+
+The 2018 objective rewards and checks edge labels only when both matched paths
+are single edges. Longer paths incur penalties for their skipped vertices.
+The independent ``score_common_subtree_embedding`` validates the mapping and
+paths and recomputes this objective. Ties are deterministic within a backend
+for fixed input iteration order; witnesses can differ between backends.
+Graph weights use f64, with nonfinite inputs/overflow rejected. These graph
+Rust implementations are tested reference dynamic programs; their production
+source refinement and published optimized complexity are still pending.
+
+Exact weighted matching
+-----------------------
+
+.. code:: python
+
+    optimum = common.min_cost_assignment([[3, -2], [0, 4]])
+    assert optimum.cost == -2
+    assert optimum.column_for_row == (1, 0)
+    matching = common.max_weight_partial_matching([[None, 5], [-2, 3]])
+    assert matching.pairs == ((0, 1),)
+    assert matching.weight == 5
+
+These Rust-only APIs accept i64 integer entries and return exact checked i128
+totals as Python integers. Assignment requires a square matrix and returns
+attaining dual potentials; partial matching permits rectangular matrices,
+forbidden ``None`` edges and unmatched vertices. The actual integer Rust cores
+have Lean correctness/refinement proofs. The Python conversion and wrappers
+are tested, and the floating-point matching used inside the graph algorithms
+has a separate assurance boundary.
 
 
 At its core the ``maximum_common_ordered_subtree_embedding`` function is an implementation of:

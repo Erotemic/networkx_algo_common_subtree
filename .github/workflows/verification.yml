@@ -65,5 +65,5 @@ jobs:
       - name: Exercise the installed wheel outside the source tree
         working-directory: ${{ runner.temp }}
         run: |
-          python -c 'from networkx_algo_common_subtree import _rust; assert hasattr(_rust, "maximum_common_token_embedding")'
-          COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 python -m pytest "${{ github.workspace }}/tests/test_verified_rust_backend.py" "${{ github.workspace }}/tests/test_rust_backend.py" "${{ github.workspace }}/tests/test_backend_differential.py"
+          python -c 'from networkx_algo_common_subtree import _rust; assert all(hasattr(_rust, name) for name in ["maximum_common_token_embedding", "maximum_common_subtree_isomorphism", "largest_weight_common_subtree_embedding_with_distance_penalty", "min_cost_assignment", "max_weight_partial_matching"])'
+          COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 python -m pytest "${{ github.workspace }}/tests"
