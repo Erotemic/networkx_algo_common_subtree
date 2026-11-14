@@ -347,6 +347,22 @@ These identities include infinite penalties and signed/bottom weights.
 Combining finite branch witness choices with optimal matching, proving the
 full mapped-root recurrence, evaluation/optimization and Rust refinement remain open.
 
+## Concrete mapped-parent assembly and branch optima accepted: 2026-11-14
+
+`StateValid.pointed` realizes a boundary witness with its specified top pair
+as the explicit common root, preserving every mapped pair and its complete
+internal score. `BoundaryFamily.state_valid` constructs the actual parent
+mapping from any injective child matching and valid boundary continuations;
+`score_eq` and `boundary_score_eq` prove its full score exactly.
+
+`matchingBranchValue_attained` proves each derived child-matching weight is
+attained by an actual boundary witness; `connecting_reward_le_branchValue`
+proves the opposite bound on every independent continuation. Mapped-state
+maxima always have witnesses, including bottom scores. Skipped maxima are
+used only when non-bottom, so empty skipped families do not acquire invented
+witnesses. The full mapped-state recurrence still requires optimal matching
+assembly and decomposition of arbitrary mapped-root witnesses.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

@@ -20,8 +20,6 @@ open Droschinsky2016
 
 variable {V W : Type*} [Fintype V] [Fintype W] [DecidableEq V] [DecidableEq W]
 
-abbrev BoundaryWitness (V W : Type*) := Mapping V W × (V × W)
-
 noncomputable def stateFeasible (left : FiniteTree V) (right : FiniteTree W)
     (leftBase : V) (rightBase : W) (u : V) (v : W) : Finset (BoundaryWitness V W) := by
   classical
@@ -97,6 +95,50 @@ theorem stateScore_le_skippedValue {left : FiniteTree V} {right : FiniteTree W}
   Finset.le_sup (s := skippedFeasible left right leftBase rightBase u v)
     (f := fun w => stateScore left right weights penalty u v w.1 w.2)
     ((mem_skippedFeasible left right leftBase rightBase u v (pairs,top)).mpr ⟨h, hn⟩)
+
+theorem stateScore_le_mappedValue {left : FiniteTree V} {right : FiniteTree W}
+    (weights : Scoring V W) (penalty : WithTop ℝ) {leftBase u : V} {rightBase v : W}
+    {pairs : Mapping V W} {top : V × W}
+    (h : StateValid left right leftBase rightBase u v pairs top) (he : top = (u,v)) :
+    stateScore left right weights penalty u v pairs top ≤ mappedValue left right weights penalty leftBase rightBase u v :=
+  Finset.le_sup (s := mappedFeasible left right leftBase rightBase u v)
+    (f := fun w => stateScore left right weights penalty u v w.1 w.2)
+    ((mem_mappedFeasible left right leftBase rightBase u v (pairs,top)).mpr ⟨h, he⟩)
+
+/-- Mapped-state maxima always have concrete witnesses, including bottom scores. -/
+theorem mappedValue_attained (left : FiniteTree V) (right : FiniteTree W)
+    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase u : V) (rightBase v : W) :
+    ∃ w : BoundaryWitness V W, StateValid left right leftBase rightBase u v w.1 w.2 ∧ w.2 = (u,v) ∧
+      stateScore left right weights penalty u v w.1 w.2 = mappedValue left right weights penalty leftBase rightBase u v := by
+  have hs := state_singleton_valid left right leftBase u rightBase v (u,v)
+    (left.ancestor_refl _ _) (right.ancestor_refl _ _)
+  have hn : (mappedFeasible left right leftBase rightBase u v).Nonempty :=
+    ⟨({(u,v)},(u,v)), (mem_mappedFeasible _ _ _ _ _ _ _).mpr ⟨hs, rfl⟩⟩
+  obtain ⟨w, hw, hmax⟩ := Finset.exists_max_image (mappedFeasible left right leftBase rightBase u v)
+    (fun w => stateScore left right weights penalty u v w.1 w.2) hn
+  have hv := (mem_mappedFeasible _ _ _ _ _ _ _).mp hw
+  exact ⟨w, hv.1, hv.2, le_antisymm (Finset.le_sup (s := mappedFeasible left right leftBase rightBase u v)
+    (f := fun w => stateScore left right weights penalty u v w.1 w.2) hw) (Finset.sup_le hmax)⟩
+
+/-- A non-bottom skipped maximum is attained, without inventing a witness for
+an empty child family. -/
+theorem skippedValue_attained_of_ne_bot (left : FiniteTree V) (right : FiniteTree W)
+    (weights : Scoring V W) (penalty : WithTop ℝ) (leftBase u : V) (rightBase v : W)
+    (hnot : skippedValue left right weights penalty leftBase rightBase u v ≠ ⊥) :
+    ∃ w : BoundaryWitness V W, StateValid left right leftBase rightBase u v w.1 w.2 ∧ w.2 ≠ (u,v) ∧
+      stateScore left right weights penalty u v w.1 w.2 = skippedValue left right weights penalty leftBase rightBase u v := by
+  have hn : (skippedFeasible left right leftBase rightBase u v).Nonempty := by
+    by_contra hempty
+    have he := Finset.not_nonempty_iff_eq_empty.mp hempty
+    apply hnot
+    unfold skippedValue
+    rw [he]
+    rfl
+  obtain ⟨w, hw, hmax⟩ := Finset.exists_max_image (skippedFeasible left right leftBase rightBase u v)
+    (fun w => stateScore left right weights penalty u v w.1 w.2) hn
+  have hv := (mem_skippedFeasible _ _ _ _ _ _ _).mp hw
+  exact ⟨w, hv.1, hv.2, le_antisymm (Finset.le_sup (s := skippedFeasible left right leftBase rightBase u v)
+    (f := fun w => stateScore left right weights penalty u v w.1 w.2) hw) (Finset.sup_le hmax)⟩
 
 /-- The two states exactly partition the independent boundary objective. -/
 theorem allStateValue_eq_max (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)

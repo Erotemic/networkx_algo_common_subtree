@@ -91,6 +91,14 @@ def embedding : RootedTopologicalEmbedding (TreeGraft.tree trees roots) target n
 @[simp] theorem embedding_root :
     (embedding parent embeddings children hchildren hadj hregion).map none = parent := rfl
 
+/-- Restriction to one graft branch recovers exactly its supplied realization. -/
+theorem restrict_eq (i : I) :
+    ((embedding parent embeddings children hchildren hadj hregion).toUnrooted.precomposeHom
+      (TreeGraft.includeHom trees roots i) (TreeGraft.branchVertex_injective i)) = (embeddings i).toUnrooted := by
+  apply TopologicalEmbedding.ext
+  funext a
+  rfl
+
 end SubtreeProofs.GraftedEmbedding
 
 end

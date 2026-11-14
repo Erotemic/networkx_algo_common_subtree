@@ -197,6 +197,10 @@ def toUnrooted (embedding : RootedTopologicalEmbedding common target commonRoot 
         intro he
         exact hn (Sym2.eq_swap.trans (he.trans Sym2.eq_swap))
 
+@[simp] theorem toUnrooted_map
+    (embedding : RootedTopologicalEmbedding common target commonRoot targetRoot) (a : A) :
+    embedding.toUnrooted.map a = embedding.map a := rfl
+
 end SubtreeProofs.RootedTopologicalEmbedding
 
 namespace SubtreeProofs.TopologicalEmbedding

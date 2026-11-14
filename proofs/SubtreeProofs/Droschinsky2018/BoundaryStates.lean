@@ -20,6 +20,8 @@ open Droschinsky2016
 
 variable {V W : Type*} [DecidableEq V] [DecidableEq W]
 
+abbrev BoundaryWitness (V W : Type*) := Mapping V W × (V × W)
+
 /-- Feasibility inside the descendant subtrees at a boundary pair. The common
 root is `top`, and the input orientations stay fixed throughout recursion. -/
 def StateValid (left : FiniteTree V) (right : FiniteTree W) (leftBase : V) (rightBase : W)
@@ -27,6 +29,16 @@ def StateValid (left : FiniteTree V) (right : FiniteTree W) (leftBase : V) (righ
   Valid left right pairs ∧ top ∈ pairs ∧
     (∀ p ∈ pairs, left.Ancestor leftBase top.1 p.1 ∧ right.Ancestor rightBase top.2 p.2) ∧
     left.Ancestor leftBase u top.1 ∧ right.Ancestor rightBase v top.2
+
+/-- A selected singleton is feasible at any boundary above its mapped pair. -/
+theorem state_singleton_valid (left : FiniteTree V) (right : FiniteTree W)
+    (leftBase u : V) (rightBase v : W) (top : V × W)
+    (hl : left.Ancestor leftBase u top.1) (hr : right.Ancestor rightBase v top.2) :
+    StateValid left right leftBase rightBase u v {top} top := by
+  refine ⟨singleton_valid left right top.1 top.2, by simp, ?_, hl, hr⟩
+  intro p hp
+  obtain rfl := Finset.mem_singleton.mp hp
+  exact ⟨left.ancestor_refl _ _, right.ancestor_refl _ _⟩
 
 /-- Boundary path lengths count one skipped vertex per child descent. -/
 noncomputable def stateScore (left : FiniteTree V) (right : FiniteTree W) (weights : Scoring V W)

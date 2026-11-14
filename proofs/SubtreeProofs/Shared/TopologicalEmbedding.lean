@@ -31,6 +31,12 @@ namespace TopologicalEmbedding
 variable {A B V : Type*} [DecidableEq V]
   {first : FiniteTree A} {second : FiniteTree B} {target : FiniteTree V}
 
+@[ext] theorem ext {one two : TopologicalEmbedding first target} (he : one.map = two.map) : one = two := by
+  cases one
+  cases two
+  cases he
+  rfl
+
 /-- Restriction along any injective graph map between common trees. -/
 def precomposeHom (embedding : TopologicalEmbedding second target) (f : first.graph →g second.graph)
     (hinj : Function.Injective f) : TopologicalEmbedding first target where

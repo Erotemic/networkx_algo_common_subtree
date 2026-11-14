@@ -36,3 +36,5 @@ public import SubtreeProofs.Shared.TreeGraft
 public import SubtreeProofs.Shared.GraftedEmbedding
 public import SubtreeProofs.Droschinsky2018.GraftScore
 public import SubtreeProofs.Droschinsky2018.BranchReward
+public import SubtreeProofs.Droschinsky2018.MappedAssembly
+public import SubtreeProofs.Droschinsky2018.BranchOptimum
