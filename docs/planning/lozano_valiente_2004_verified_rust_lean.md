@@ -6,6 +6,35 @@ Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtr
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Actual combined guided-cache bound: 2026-11-14
+
+The actual `maximum_common_embedding_indexed_guided_with_cache` entry point
+returns the independently maximum original-index matching, its real final memo
+and a u64 reconstruction-call counter. The ordinary guided entry point discards
+this instrumentation and returns the same matching. Its compiled universal
+source contract is
+`Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_with_cache_spec`.
+It derives all cache properties from the initially empty table, without a public
+cache or optimum certificate.
+
+For original words L/R and the actual returned shape P, the final memo has unique
+keys contained in `D(L)×D(R) ∪ D(P)×D(L) ∪ D(P)×D(R)`.
+`CorrectGuided.cache_bound` consequently bounds the actual number of records by
+`|D(L)|*|D(R)| + |D(P)|*(|D(L)|+|D(R)|)`. The actual total recorded reconstruction
+calls are at most `2*(pairs(L)+pairs(R))+2`, including both sides and with checked
+u64 safety derived. This closes the missing feasibility-cache family observed
+in the indexed benchmark; the initial optimizer's single product was insufficient.
+
+`MemoGrowth` composes actual numerical memo growth and key uniqueness across
+query families. `GuidedCacheGrowth` proves every actual guard and recursive
+helper only adds its enclosing pattern/input decomposition product. The final
+source proof conjoins this independent growth theorem with complete functional
+reconstruction and composes the original optimization plus both real witness
+runs. The returned pattern is not assumed to be an original decomposition state.
+This bounds stored records, not total allocation, structural word copies, cache
+comparison work or wall-clock time. A bound solely in original tree parameters
+and a complete representation/dictionary cost theorem remain open.
+
 ## Guided/reference witness measurements: 2026-11-14
 
 [The indexed witness benchmark](../../dev/benchmarks/2026-11-14-indexed-witnesses.md)

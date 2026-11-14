@@ -374,6 +374,22 @@ def guided.reconstruct_guided
             | some value2 => ok (some { value1 with calls := value2 })
 partial_fixpoint
 
+/-- [verified_ordered_core::indexed::IndexedCommonEmbedding]
+    Source: 'src/indexed.rs', lines 23:0-27:1
+    Visibility: public -/
+structure indexed.IndexedCommonEmbedding where
+  left : indexed.IndexedWord
+  right : indexed.IndexedWord
+  edges : Std.U32
+
+/-- [verified_ordered_core::guided::GuidedCommonEmbedding]
+    Source: 'src/guided.rs', lines 137:0-141:1
+    Visibility: public -/
+structure guided.GuidedCommonEmbedding where
+  matching : indexed.IndexedCommonEmbedding
+  table : MemoTable
+  calls : Std.U64
+
 /-- [verified_ordered_core::indexed::NumberedWord]
     Source: 'src/indexed.rs', lines 16:0-19:1
     Visibility: public -/
@@ -411,20 +427,12 @@ def indexed.number_word
             })
 partial_fixpoint
 
-/-- [verified_ordered_core::indexed::IndexedCommonEmbedding]
-    Source: 'src/indexed.rs', lines 23:0-27:1
+/-- [verified_ordered_core::guided::maximum_common_embedding_indexed_guided_with_cache]:
+    Source: 'src/guided.rs', lines 145:0-192:1
     Visibility: public -/
-structure indexed.IndexedCommonEmbedding where
-  left : indexed.IndexedWord
-  right : indexed.IndexedWord
-  edges : Std.U32
-
-/-- [verified_ordered_core::guided::maximum_common_embedding_indexed_guided]:
-    Source: 'src/guided.rs', lines 138:0-177:1
-    Visibility: public -/
-def guided.maximum_common_embedding_indexed_guided
+def guided.maximum_common_embedding_indexed_guided_with_cache
   (left : BalancedWord) (right : BalancedWord) :
-  Result (Option indexed.IndexedCommonEmbedding)
+  Result (Option guided.GuidedCommonEmbedding)
   := do
   let (matching, table) ←
     memoized_common_embedding left right MemoTable.Empty
@@ -454,8 +462,31 @@ def guided.maximum_common_embedding_indexed_guided
               match value5.word with
               | none => ok none
               | some value6 =>
-                ok (some
-                  { left := value4, right := value6, edges := value.edges })
+                let o4 ← lift (U64.checked_add value3.calls value5.calls)
+                match o4 with
+                | none => ok none
+                | some value7 =>
+                  ok (some
+                    {
+                      matching :=
+                        { left := value4, right := value6, edges := value.edges
+                        },
+                      table := value5.table,
+                      calls := value7
+                    })
+
+/-- [verified_ordered_core::guided::maximum_common_embedding_indexed_guided]:
+    Source: 'src/guided.rs', lines 196:0-204:1
+    Visibility: public -/
+def guided.maximum_common_embedding_indexed_guided
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option indexed.IndexedCommonEmbedding)
+  := do
+  let o ←
+    guided.maximum_common_embedding_indexed_guided_with_cache left right
+  match o with
+  | none => ok none
+  | some value => ok (some value.matching)
 
 /-- [verified_ordered_core::indexed::reconstruct_embedding]:
     Source: 'src/indexed.rs', lines 83:0-105:1

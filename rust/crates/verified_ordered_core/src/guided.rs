@@ -133,12 +133,19 @@ pub fn reconstruct_guided(
     }
 }
 
+/// Instrumented result with the actual final cache and witness-call count.
+pub struct GuidedCommonEmbedding {
+    pub matching: IndexedCommonEmbedding,
+    pub table: MemoTable,
+    pub calls: u64,
+}
+
 /// Maximum common indexed contraction using shared memoized feasibility and
 /// guided reconstruction. The older reference entry point remains available.
-pub fn maximum_common_embedding_indexed_guided(
+pub fn maximum_common_embedding_indexed_guided_with_cache(
     left: &BalancedWord,
     right: &BalancedWord,
-) -> Option<IndexedCommonEmbedding> {
+) -> Option<GuidedCommonEmbedding> {
     let (matching, table) = memoized_common_embedding(left, right, MemoTable::Empty);
     let matching = match matching {
         Some(value) => value,
@@ -169,9 +176,29 @@ pub fn maximum_common_embedding_indexed_guided(
         Some(value) => value,
         None => return None,
     };
-    Some(IndexedCommonEmbedding {
-        left: left_word,
-        right: right_word,
-        edges: matching.edges,
+    let calls = match left_result.calls.checked_add(right_result.calls) {
+        Some(value) => value,
+        None => return None,
+    };
+    Some(GuidedCommonEmbedding {
+        matching: IndexedCommonEmbedding {
+            left: left_word,
+            right: right_word,
+            edges: matching.edges,
+        },
+        table: right_result.table,
+        calls,
     })
+}
+
+/// The ordinary indexed API discards instrumentation after constructing the
+/// same maximum witness; the cache-returning entry point supports cost analysis.
+pub fn maximum_common_embedding_indexed_guided(
+    left: &BalancedWord,
+    right: &BalancedWord,
+) -> Option<IndexedCommonEmbedding> {
+    match maximum_common_embedding_indexed_guided_with_cache(left, right) {
+        Some(value) => Some(value.matching),
+        None => None,
+    }
 }

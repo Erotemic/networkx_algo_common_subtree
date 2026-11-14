@@ -66,3 +66,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.GuidedReconstruction.reconstruct_guided_spec
 #print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_of_trees
+
+#print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_with_cache_spec
+#print axioms SubtreeProofs.Rust.GuidedReconstruction.CorrectGuided.cache_bound

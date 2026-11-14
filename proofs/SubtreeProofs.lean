@@ -155,3 +155,5 @@ public import SubtreeProofs.Paper2004.EmbeddingFeasibility
 public import SubtreeProofs.Rust.GuidedFeasibility
 public import SubtreeProofs.Rust.GuidedReconstruction
 public import SubtreeProofs.Rust.GuidedIndexedEntrypoint
+public import SubtreeProofs.Paper2004.MemoGrowth
+public import SubtreeProofs.Rust.GuidedCacheGrowth

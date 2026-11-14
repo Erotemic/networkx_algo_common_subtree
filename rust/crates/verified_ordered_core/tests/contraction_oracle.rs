@@ -323,11 +323,16 @@ fn indexed_witnesses_match_independent_labeled_contractions_through_six_edges() 
             }
             let common =
                 maximum_common_embedding_indexed(&word, &pattern).expect("tiny indexed scores fit");
-            let guided_common =
-                verified_ordered_core::guided::maximum_common_embedding_indexed_guided(
+            let guided_stats =
+                verified_ordered_core::guided::maximum_common_embedding_indexed_guided_with_cache(
                     &word, &pattern,
                 )
                 .expect("tiny guided indexed scores fit");
+            assert!(
+                guided_stats.calls
+                    <= 2 * (indexed.next as u64 + tree_encoding(other).len() as u64 / 2) + 2
+            );
+            let guided_common = guided_stats.matching;
             assert_eq!(guided_common.edges, common.edges);
             assert!(tagged_output(&guided_common.left) == tagged_output(&common.left));
             assert!(tagged_output(&guided_common.right) == tagged_output(&common.right));
