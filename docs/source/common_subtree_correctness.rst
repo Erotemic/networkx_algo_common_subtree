@@ -6,9 +6,13 @@ paper-derived weighted common subtree algorithms in
 ``rust/crates/common_subtree_algorithms`` and
 ``networkx_algo_common_subtree.common_subtree_reference``.
 
-The goal is not yet a machine-checked proof.  The goal is to make a convincing,
-auditable case that each implementation agrees with the mathematical problem it
-claims to solve, while leaving clear seams for future Lean formalization.
+Independent Lean graph/path specifications and mathematical recurrence proofs
+now exist, as do source-refinement proofs for the separate exact integer
+assignment/partial-matching core. The production floating-point graph DPs,
+Python conversions and optimized paper runtime still require further proof
+work. Independent exhaustive objectives and witness validation establish the
+software baseline without claiming that these tests are formal verification.
+The precise current ledger is ``proofs/PROOF_STATUS.md``.
 
 Problem scope
 -------------

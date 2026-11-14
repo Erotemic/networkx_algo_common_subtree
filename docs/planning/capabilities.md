@@ -113,6 +113,14 @@ version-specific wheels on the measured workloads. Manylinux repair,
 macOS/Windows and architecture validation remain open. See
 [packaging commands and evidence](../packaging.md).
 
+Fresh source-only → sdist → both wheel modes is validated at `3d68c00`:
+423 tracked paths, no prebuilt shared libraries, 149 tests per installed mode,
+strict native parity for the normal wheel and strict ABI auditing for the
+stable wheel. The stable Rust binary matches the checkout build exactly.
+Public Sphinx pages now expose the graph/matching APIs and precise assurance
+boundaries instead of describing the crate as inaccessible. Strict HTML
+documentation builds pass with warnings treated as errors.
+
 Ordered input/scoring validation now rejects typed unbalanced sequences on
 either side (including against empty input), cycles/disconnected cyclic
 components and multiple-parent graph inputs. Rust preserves errors from

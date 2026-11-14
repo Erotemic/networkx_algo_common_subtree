@@ -28,13 +28,21 @@ view.
 New Droschinsky-Kriege-Mutzel weighted-tree algorithms
 ------------------------------------------------------
 
-The experimental ``common_subtree_algorithms`` Rust crate targets the graph-only
+The ``common_subtree_algorithms`` Rust crate and public NetworkX/PyO3 APIs implement graph-only
 algorithms described by Droschinsky, Kriege, and Mutzel:
 
 * "Faster Algorithms for the Maximum Common Subtree Isomorphism Problem",
   arXiv:1602.07210.
 * "Largest Weight Common Subtree Embeddings with Distance Penalties",
   arXiv:1805.00821.
+
+Python entry points are ``maximum_common_subtree_isomorphism`` and
+``largest_weight_common_subtree_embedding_with_distance_penalty``. Both return
+``CommonSubtreeResult`` with a weight, original-node pairs and aligned paths.
+``score_common_subtree_isomorphism`` and ``score_common_subtree_embedding``
+independently validate and rescore those witnesses. Rust is the default when
+installed; the Python backend is exhaustive and intended for small references.
+See :mod:`networkx_algo_common_subtree.unordered` for scoring and label options.
 
 The key modeling differences are:
 

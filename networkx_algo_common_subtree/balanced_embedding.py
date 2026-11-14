@@ -24,7 +24,8 @@ def longest_common_balanced_embedding(
     Finds the longest common balanced sequence embedding between two sequences
 
     This is used as a subproblem to solve the maximum common embedded subtree
-    problem described in [1].
+    problem described in [1]_. The containment used here is operational balanced
+    pair deletion.
 
     Parameters
     ----------

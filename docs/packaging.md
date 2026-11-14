@@ -51,6 +51,15 @@ raw ABI audit. CI now builds/audits one wheel and tests it across the same
 runtime matrix; the existing separate job requires Rust **and Cython** parity.
 Remote execution of the new CI configuration remains pending.
 
+A source-only archive of `3d68c00` matches all 423 tracked paths and contains
+no shared libraries. Building an sdist from it, then building both wheel modes
+from the unpacked sdist, succeeds without checkout build artifacts. The normal
+wheel passes 149 tests with Rust/Cython mandatory; the stable wheel passes 149
+on Python 3.10 and strict ABI auditing. Its Rust binary is byte-identical to
+the checkout build. Source/wheel hashes are in the same evidence file. This
+establishes a source-build path; bit-for-bit reproducibility of complete wheel
+archives across build environments remains a separate release requirement.
+
 Installed Python 3.13 API timings use the existing repeated workload suites:
 [ordered fractional affinities](../dev/benchmarks/2026-11-14-abi3-ordered-weighted.json)
 and [unordered graph APIs](../dev/benchmarks/2026-11-14-abi3-unordered.json).

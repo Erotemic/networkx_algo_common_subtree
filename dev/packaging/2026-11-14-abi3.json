@@ -105,5 +105,42 @@
       "tests_passed": 149,
       "tests_skipped": 0
     }
-  ]
+  ],
+  "source_build": {
+    "revision": "3d68c00",
+    "tracked_paths": 423,
+    "source_archive_had_shared_libraries": false,
+    "sdist_sha256": "0e4c3102810fee36875a29b14b91550d843e097e390de7c3b0328052bfc0b19e",
+    "default_wheel_sha256": "06b3ab97a33bab805bf879b8350c76801f10c8f6281e381e80963bb126f4d355",
+    "abi3_wheel_sha256": "863ef78a89504992c03a9b040c91cde430a27c5356e1ba5f8e5a253406e290dd",
+    "abi3_extension_identical": true,
+    "default_tests_passed": 149,
+    "default_required_backends": [
+      "rust",
+      "cython"
+    ],
+    "abi3_tests_python": "3.10.20",
+    "abi3_tests_passed": 149,
+    "tests_skipped": 0,
+    "abi3audit": {
+      "specs": {
+        "/tmp/common-subtree-sdist-abi3-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-linux_x86_64.whl": {
+          "kind": "wheel",
+          "wheel": [
+            {
+              "name": "_rust.abi3.so",
+              "result": {
+                "is_abi3": true,
+                "is_abi3_baseline_compatible": true,
+                "baseline": "3.10",
+                "computed": "3.10",
+                "non_abi3_symbols": [],
+                "future_abi3_objects": {}
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
 }

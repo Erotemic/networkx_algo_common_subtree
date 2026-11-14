@@ -14,6 +14,8 @@ Submodules
    networkx_algo_common_subtree.balanced_sequence
    networkx_algo_common_subtree.tree_embedding
    networkx_algo_common_subtree.tree_isomorphism
+   networkx_algo_common_subtree.unordered
+   networkx_algo_common_subtree.matching
    networkx_algo_common_subtree.utils
 
 Module contents
