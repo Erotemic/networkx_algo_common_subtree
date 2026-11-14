@@ -28,6 +28,14 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
+Implementation stability comes from exhaustive/differential objectives, independent
+witness checks and native tests, plus short representative performance checks.
+Use small workloads and about three timed samples during development; accept
+some timing variance. Commit coherent implementation milestones before the
+long final benchmark campaign. The new [complexity-library reuse audit](lean_complexity_library_reuse_audit_2026_11_14.md)
+recommends a limited arlib experiment with a real memo-lookup bridge before
+adopting any dependency; existing Mathlib/Aeneas proofs remain the foundation.
+
 ## Initial proof scope: arithmetic boundary
 
 Per the author's 2026-11-14 instruction, **IEEE-754 correctness is deliberately
