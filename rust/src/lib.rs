@@ -555,11 +555,13 @@ impl<'py> Solver<'py> {
         };
 
         if template.is_instance_of::<PyString>() {
-            let mut out = String::new();
-            for &i in idxs {
-                out.push_str(&seq[i as usize].bind(self.py).extract::<String>()?);
-            }
-            Ok(PyString::new_bound(self.py, &out).into_any().unbind())
+            // Python Unicode permits lone surrogates, which Rust UTF-8 does
+            // not. Reconstruct original token objects after the Rust solve.
+            let items = idxs.iter().map(|&i| seq[i as usize].bind(self.py));
+            let tokens = PyList::new_bound(self.py, items);
+            Ok(PyString::new_bound(self.py, "")
+                .call_method1("join", (tokens,))?
+                .unbind())
         } else if template.is_instance_of::<PyTuple>() {
             let items = idxs.iter().map(|&i| seq[i as usize].bind(self.py));
             Ok(PyTuple::new_bound(self.py, items).into_any().unbind())

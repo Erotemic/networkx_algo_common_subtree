@@ -32,6 +32,13 @@ ABI3 runtime matrix. This weighted production implementation is still outside
 the existing structural unweighted `Rust.OrderedIsomorphism` source proofs;
 no new source-refinement or runtime theorem is claimed by the API exposure.
 
+The balanced API's token boundary now supports hashable token objects without ordering
+and all Python Unicode, including lone surrogates. Python/Cython tie selection
+uses only the objective, and legacy Rust joins original Python token objects
+after solving. Independent token-subset/roundtrip tests pass in the 161-test
+normal and ABI3 suites (each CPython 3.10–3.14). These are tested runtime/FFI
+changes; the existing Boolean-token source proof and its boundary are unchanged.
+
 Substantial remaining formalization is deferred until public functionality,
 independent correctness and measured efficiency are established. All existing
 proofs are preserved; full mathematical, production-source and applicable

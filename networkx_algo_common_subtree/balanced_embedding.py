@@ -30,7 +30,10 @@ def longest_common_balanced_embedding(
     Parameters
     ----------
     seq1, seq2: Sequence[TokT]
-        two input balanced sequences
+        Two balanced strings or tuples of hashable tokens. Tokens do not need
+        to define an ordering. String witnesses preserve Python Unicode,
+        including lone surrogates. Ties are deterministic within a backend;
+        different backends may return different optimal witnesses.
 
     open_to_close : Dict[TokT, TokT]
         a mapping from opening to closing tokens in the balanced sequence
@@ -442,7 +445,13 @@ def _lcse_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
                 cand3 = (-1, None)
 
             # We solved the frame
-            _results[key] = max(cand1, cand2, cand3)
+            # Compare the objective only: hashable tokens need not be ordered.
+            selected = cand1
+            if cand2[0] > selected[0]:
+                selected = cand2
+            if cand3[0] > selected[0]:
+                selected = cand3
+            _results[key] = selected
         stack.pop()
 
     found = _results[key0]

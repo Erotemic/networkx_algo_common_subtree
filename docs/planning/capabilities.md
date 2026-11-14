@@ -103,6 +103,14 @@ proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-
 
 ## Immediate implementation queue
 
+Balanced token support now covers hashable objects without an ordering and
+Python Unicode strings with lone surrogates. Python/Cython embedding compares
+objective values without lexicographically comparing token payloads, and Rust
+reconstructs original Unicode at the output boundary. Independent subset tests
+cover feasible optima and deterministic ties; all **161 installed tests pass
+with zero skips**, including the identical ABI3 wheel on each CPython 3.10–3.14.
+[Correctness and measured conversion/tie costs](../../dev/benchmarks/2026-11-14-ordered-token-contract.md).
+
 Root-preserving ordered isomorphism is now usable through Python/Cython/Rust,
 including affinity scoring and original-vertex graph witnesses. Fresh normal
 and ABI3 wheels pass **153 tests, zero skips**; the identical ABI3 artifact

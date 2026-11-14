@@ -7,7 +7,7 @@ import pytest
 from networkx_algo_common_subtree import balanced_embedding, balanced_isomorphism
 from networkx_algo_common_subtree import maximum_common_ordered_subtree_embedding, maximum_common_ordered_subtree_isomorphism
 from networkx_algo_common_subtree.balanced_sequence import UnbalancedException
-from test_backend_differential import _backends
+from test_backend_differential import _backends, _subset_witnesses
 
 
 @pytest.fixture(params=["embedding", "isomorphism"])
@@ -90,3 +90,29 @@ def test_rooted_ordered_graph_witnesses_retain_original_roots_and_scores():
             assert set(first.edges) <= set(left.edges)
             assert set(second.edges) <= set(right.edges)
             assert sum(weights[u, v] for u, v in zip(first.nodes, second.nodes)) == score
+
+
+def test_hashable_tokens_need_no_ordering_for_ties(algorithm):
+    kind, solve = algorithm
+    a, b, c, d = object(), object(), object(), object()
+    left, right, pairs = (a, b, c, d), (c, d, a, b), {a: b, c: d}
+    common = ({record[0] for record in _subset_witnesses(left, pairs, kind)}
+              & {record[0] for record in _subset_witnesses(right, pairs, kind)})
+    optimum = max(len(witness) // 2 for witness in common)
+    for impl in _backends(kind, unweighted=False):
+        result, score = solve(left, right, pairs, impl=impl)
+        assert result[0] in common and result[1] == result[0]
+        assert score == optimum == 1
+        assert (result, score) == solve(left, right, pairs, impl=impl)
+
+
+@pytest.mark.parametrize("opening,closing", [("é", "ø"), ("🌳", "🌲"), (chr(0xd800), chr(0xd801))])
+def test_full_python_unicode_witness_roundtrip(algorithm, opening, closing):
+    kind, solve = algorithm
+    word = opening + closing
+    for impl in _backends(kind, unweighted=True):
+        for rooted in ([False, True] if kind == "isomorphism" else [False]):
+            options = {"rooted": rooted} if kind == "isomorphism" else {}
+            result, score = solve(word, word, {opening: closing}, node_affinity=None, impl=impl, **options)
+            assert result == (word, word)
+            assert score == 1

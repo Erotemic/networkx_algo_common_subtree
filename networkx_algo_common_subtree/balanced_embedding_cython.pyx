@@ -233,7 +233,13 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
                 cand3 = (-1, None)
 
             # We solved the frame
-            _results[key] = max(cand1, cand2, cand3)
+            # Objective ties do not impose an ordering on arbitrary tokens.
+            selected = cand1
+            if cand2[0] > selected[0]:
+                selected = cand2
+            if cand3[0] > selected[0]:
+                selected = cand3
+            _results[key] = selected
         stack.pop()
 
     found = _results[key0]

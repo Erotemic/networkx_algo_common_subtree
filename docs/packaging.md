@@ -51,6 +51,12 @@ raw ABI audit. CI now builds/audits one wheel and tests it across the same
 runtime matrix; the existing separate job requires Rust **and Cython** parity.
 Remote execution of the new CI configuration remains pending.
 
+Subsequent root-preserving isomorphism and token/Unicode updates pass **161
+tests, zero skips** in the normal wheel and on each ABI3 runtime. Their wheel,
+binary and audit records are appended under `rooted_api_update` and
+`token_api_update` in the evidence file; the initial measurements above remain
+recorded as the original packaging baseline.
+
 A source-only archive of `3d68c00` matches all 423 tracked paths and contains
 no shared libraries. Building an sdist from it, then building both wheel modes
 from the unpacked sdist, succeeds without checkout build artifacts. The normal

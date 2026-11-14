@@ -39,7 +39,10 @@ def longest_common_balanced_isomorphism(
     Parameters
     ----------
     seq1, seq2: Sequence[TokT]
-        two input balanced sequences
+        Two balanced strings or tuples of hashable tokens. Tokens do not need
+        to define an ordering. String witnesses preserve Python Unicode,
+        including lone surrogates. Ties are deterministic within a backend;
+        different backends may return different optimal witnesses.
 
     open_to_close : Dict[TokT, TokT]
         a mapping from opening to closing tokens in the balanced sequence
