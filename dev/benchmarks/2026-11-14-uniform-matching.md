@@ -33,6 +33,13 @@ outside the initial proof scope. After the implementation commit, a source-only 
 passes all 228 tests on glibc 2.28 and every CPython 3.10–3.14, with strict
 auditing clean. Exact source/binary hashes are in the packaging ledger.
 
+The subsequent `Shared/UniformMatchingDeletion.lean` development proves the
+complete concrete right-deletion family's independent optimality and original-
+coordinate feasibility, including unchanged, replacement and removal cases.
+Its full main Lean build passes 3,715 jobs. Rust and Python code stayed fixed;
+this strengthens mathematical assurance without changing the measured target
+or asserting an actual-source/runtime theorem.
+
 ## Measurements already collected
 
 The primary before/after runs contain 204 rows each, using sizes 64/128/256/512,

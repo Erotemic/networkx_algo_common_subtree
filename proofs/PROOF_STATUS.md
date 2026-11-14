@@ -17,6 +17,25 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Complete uniform right-deletion family mathematics: 2026-11-14
+
+`Shared/UniformMatchingDeletion.lean` now proves
+`uniformRightDeletion_isMaximum` for every finite complete uniform instance,
+nonnegative exact weight and deleted original right vertex. The concrete
+construction follows the production cases: retain the base for unused columns,
+replace a used column by the first unused original column when the right side
+is larger, or discard its diagonal pair when the right side is smaller/equal.
+Both projections remain injective, deleted vertices are absent, and optima are
+over independently valid partial matchings. A generic surviving-cardinality
+bound is derived, not supplied as an optimum premise.
+
+The full main Lean build passes 3,715 jobs. Rust/Python sources are unchanged
+from the tested/benchmarked implementation, so no extra performance campaign
+or wheel rebuild was needed. These are mathematical construction and witness
+proofs over exact ordered-ring weights; actual Rust/FFI refinement, nonuniform
+matching correctness and total time/space correspondence remain separate.
+IEEE-754 correctness remains deliberately outside the initial proof scope.
+
 ## Optional arlib operation-count experiment: 2026-11-14
 
 The isolated project `experiments/arlib_cost` pins arlib to `8d08f89a` and

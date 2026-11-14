@@ -29,7 +29,7 @@ root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.
 
 The last executed native suites pass **50 graph**, **10 ordered-core** and
-**15 exact-assignment** tests. The last full Lean build passes **3,714 jobs**
+**15 exact-assignment** tests. The last full Lean build passes **3,715 jobs**
 and both existing example suites. Existing mathematical and source proofs
 survive regenerated semantics for the new indexed-isomorphism functions, whose
 own refinement remains open. The production f64 graph crate is outside the
@@ -42,8 +42,8 @@ is deliberately excluded from the initial proof scope; [arithmetic boundary](REA
   including all right deletions; other matrices retain Hungarian matching.
   Native uniform32 families improve 23.4×; installed star512 APIs improve
   3.30×/3.90× for 2016/2018. All 50 native and 228 normal-wheel tests pass.
-  Exact ordered-ring diagonal optimality is proved separately; the f64 source
-  refinement is still open. [Evidence](../../dev/benchmarks/2026-11-14-uniform-matching.md).
+  Exact ordered-ring diagonal and complete deletion-family optimality/witnesses
+  are now proved. Production source/resource refinement remains open. [Evidence](../../dev/benchmarks/2026-11-14-uniform-matching.md).
 
 - **Structural isomorphism reference** now runs from both Python interfaces,
   with original token/vertex witnesses and rooted/general modes. Independent
