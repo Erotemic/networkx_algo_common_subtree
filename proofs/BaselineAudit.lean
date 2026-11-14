@@ -80,3 +80,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Assignment.exists_cut_adjustment_on
 #print axioms SubtreeProofs.Assignment.ideal_adjustment_increment_bound_on
+
+#print axioms SubtreeProofs.Rust.SparseCut.minimum_sparse_cut_edges_spec
+#print axioms SubtreeProofs.Rust.SparseCut.minimum_sparse_cut_adjustment_spec

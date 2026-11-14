@@ -164,3 +164,9 @@ public import SubtreeProofs.Shared.AssignmentCycleRepair
 public import SubtreeProofs.Shared.AssignmentDeletedPermutation
 public import SubtreeProofs.Shared.CopiedMatchingRepair
 public import SubtreeProofs.Shared.AssignmentSparsePotentials
+public import SubtreeProofs.Rust.SparseCutSelection
+public import SubtreeProofs.Rust.SparseCutRowSpecification
+public import SubtreeProofs.Rust.SparseCutRow
+public import SubtreeProofs.Rust.SparseCutEntrypoint
+public import SubtreeProofs.Rust.SparseCutCandidates
+public import SubtreeProofs.Rust.SparseCutAdjustment

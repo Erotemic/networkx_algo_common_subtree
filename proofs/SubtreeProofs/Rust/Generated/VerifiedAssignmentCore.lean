@@ -1508,4 +1508,211 @@ def deletion.max_weight_matching_deletions
       (alloc.vec.Vec.new matching.PartialMatching) 0#usize
   | core.result.Result.Err error => ok (core.result.Result.Err error)
 
+/-- [verified_assignment_core::sparse::SparseCut]
+    Source: 'src/sparse.rs', lines 5:0-9:1
+    Visibility: public -/
+structure sparse.SparseCut where
+  row : Std.Usize
+  column : Std.Usize
+  delta : Std.I128
+
+/-- [verified_assignment_core::sparse::select_cut]:
+    Source: 'src/sparse.rs', lines 12:0-23:1 -/
+def sparse.select_cut
+  (previous : Option sparse.SparseCut) (candidate : sparse.SparseCut) :
+  Result sparse.SparseCut
+  := do
+  match previous with
+  | none => ok candidate
+  | some old => if candidate.delta < old.delta
+                then ok candidate
+                else ok old
+
+/-- [verified_assignment_core::sparse::square_shape]: loop body 0:
+    Source: 'src/sparse.rs', lines 27:4-34:1 -/
+@[rust_loop_body]
+def sparse.square_shape_loop.body
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i := Slice.len cost
+  if row < i
+  then
+    let v ← Slice.index_usize cost row
+    let i1 := alloc.vec.Vec.len v
+    let i2 := Slice.len cost
+    if i1 != i2
+    then ok (done false)
+    else let row1 ← row + 1#usize
+         ok (cont row1)
+  else ok (done true)
+
+/-- [verified_assignment_core::sparse::square_shape]: loop 0:
+    Source: 'src/sparse.rs', lines 27:4-34:1 -/
+@[rust_loop]
+def sparse.square_shape_loop
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun row1 => sparse.square_shape_loop.body cost row1)
+    row
+
+/-- [verified_assignment_core::sparse::square_shape]:
+    Source: 'src/sparse.rs', lines 25:0-34:1 -/
+@[reducible]
+def sparse.square_shape
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) : Result Bool := do
+  sparse.square_shape_loop cost 0#usize
+
+/-- [verified_assignment_core::sparse::minimum_sparse_row]: loop body 0:
+    Source: 'src/sparse.rs', lines 45:4-66:1 -/
+@[rust_loop_body]
+def sparse.minimum_sparse_row_loop.body
+  (cost : Slice (Option Std.I64)) (row_potential : Std.I128)
+  (columns : Slice Std.I128) (selected_columns : Slice Bool) (row : Std.Usize)
+  (best : Option sparse.SparseCut) (column : Std.Usize) :
+  Result (ControlFlow ((Option sparse.SparseCut) × Std.Usize)
+    (core.result.Result (Option sparse.SparseCut) AssignmentError))
+  := do
+  let i := Slice.len cost
+  if column < i
+  then
+    let b ← Slice.index_usize selected_columns column
+    if b
+    then let column1 ← column + 1#usize
+         ok (cont (best, column1))
+    else
+      let edge ← Slice.index_usize cost column
+      match edge with
+      | none => let column1 ← column + 1#usize
+                ok (cont (best, column1))
+      | some value =>
+        let i1 ← lift (IScalar.cast .I128 value)
+        let o ← lift (I128.checked_sub i1 row_potential)
+        match o with
+        | none =>
+          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow))
+        | some value1 =>
+          let i2 ← Slice.index_usize columns column
+          let o1 ← lift (I128.checked_sub value1 i2)
+          match o1 with
+          | none =>
+            ok (done (core.result.Result.Err
+              AssignmentError.ArithmeticOverflow))
+          | some value2 =>
+            let sc ← sparse.select_cut best { row, column, delta := value2 }
+            let column1 ← column + 1#usize
+            ok (cont (some sc, column1))
+  else ok (done (core.result.Result.Ok best))
+
+/-- [verified_assignment_core::sparse::minimum_sparse_row]: loop 0:
+    Source: 'src/sparse.rs', lines 45:4-66:1 -/
+@[rust_loop]
+def sparse.minimum_sparse_row_loop
+  (cost : Slice (Option Std.I64)) (row_potential : Std.I128)
+  (columns : Slice Std.I128) (selected_columns : Slice Bool) (row : Std.Usize)
+  (best : Option sparse.SparseCut) (column : Std.Usize) :
+  Result (core.result.Result (Option sparse.SparseCut) AssignmentError)
+  := do
+  loop
+    (fun (best1, column1) => sparse.minimum_sparse_row_loop.body cost
+      row_potential columns selected_columns row best1 column1)
+    (best, column)
+
+/-- [verified_assignment_core::sparse::minimum_sparse_row]:
+    Source: 'src/sparse.rs', lines 36:0-66:1 -/
+@[reducible]
+def sparse.minimum_sparse_row
+  (cost : Slice (Option Std.I64)) (row_potential : Std.I128)
+  (columns : Slice Std.I128) (selected_columns : Slice Bool) (row : Std.Usize)
+  (best : Option sparse.SparseCut) :
+  Result (core.result.Result (Option sparse.SparseCut) AssignmentError)
+  := do
+  sparse.minimum_sparse_row_loop cost row_potential columns selected_columns
+    row best 0#usize
+
+/-- [verified_assignment_core::sparse::minimum_sparse_cut]: loop body 0:
+    Source: 'src/sparse.rs', lines 97:4-114:1
+    Visibility: public -/
+@[rust_loop_body]
+def sparse.minimum_sparse_cut_loop.body
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (rows : Slice Std.I128)
+  (columns : Slice Std.I128) (selected_rows : Slice Bool)
+  (selected_columns : Slice Bool) (n : Std.Usize)
+  (best : Option sparse.SparseCut) (row : Std.Usize) :
+  Result (ControlFlow ((Option sparse.SparseCut) × Std.Usize)
+    (core.result.Result (Option sparse.SparseCut) AssignmentError))
+  := do
+  if row < n
+  then
+    let b ← Slice.index_usize selected_rows row
+    if b
+    then
+      let v ← Slice.index_usize cost row
+      let s := alloc.vec.Vec.deref v
+      let i ← Slice.index_usize rows row
+      let r ← sparse.minimum_sparse_row s i columns selected_columns row best
+      match r with
+      | core.result.Result.Ok value =>
+        let row1 ← row + 1#usize
+        ok (cont (value, row1))
+      | core.result.Result.Err _ => ok (done r)
+    else let row1 ← row + 1#usize
+         ok (cont (best, row1))
+  else ok (done (core.result.Result.Ok best))
+
+/-- [verified_assignment_core::sparse::minimum_sparse_cut]: loop 0:
+    Source: 'src/sparse.rs', lines 97:4-114:1
+    Visibility: public -/
+@[rust_loop]
+def sparse.minimum_sparse_cut_loop
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (rows : Slice Std.I128)
+  (columns : Slice Std.I128) (selected_rows : Slice Bool)
+  (selected_columns : Slice Bool) (n : Std.Usize)
+  (best : Option sparse.SparseCut) (row : Std.Usize) :
+  Result (core.result.Result (Option sparse.SparseCut) AssignmentError)
+  := do
+  loop
+    (fun (best1, row1) => sparse.minimum_sparse_cut_loop.body cost rows columns
+      selected_rows selected_columns n best1 row1)
+    (best, row)
+
+/-- [verified_assignment_core::sparse::minimum_sparse_cut]:
+    Source: 'src/sparse.rs', lines 74:0-114:1
+    Visibility: public -/
+def sparse.minimum_sparse_cut
+  (cost : Slice (alloc.vec.Vec (Option Std.I64))) (rows : Slice Std.I128)
+  (columns : Slice Std.I128) (selected_rows : Slice Bool)
+  (selected_columns : Slice Bool) :
+  Result (core.result.Result (Option sparse.SparseCut) AssignmentError)
+  := do
+  let n := Slice.len cost
+  let i := Slice.len rows
+  if i != n
+  then ok (core.result.Result.Err AssignmentError.NonSquare)
+  else
+    let i1 := Slice.len columns
+    if i1 != n
+    then ok (core.result.Result.Err AssignmentError.NonSquare)
+    else
+      let i2 := Slice.len selected_rows
+      if i2 != n
+      then ok (core.result.Result.Err AssignmentError.NonSquare)
+      else
+        let i3 := Slice.len selected_columns
+        if i3 != n
+        then ok (core.result.Result.Err AssignmentError.NonSquare)
+        else
+          let b ← sparse.square_shape cost
+          if b
+          then
+            let i4 ← lift (UScalar.cast .Usize core.num.U32.MAX)
+            if n > i4
+            then ok (core.result.Result.Err AssignmentError.TooLarge)
+            else
+              sparse.minimum_sparse_cut_loop cost rows columns selected_rows
+                selected_columns n none 0#usize
+          else ok (core.result.Result.Err AssignmentError.NonSquare)
+
 end verified_assignment_core

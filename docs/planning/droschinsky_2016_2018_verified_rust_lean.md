@@ -14,6 +14,40 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual Rust allowed-cut minimum and sparse dual bridge: 2026-11-14
+
+The exact assignment crate now has `sparse::minimum_sparse_cut`, a checked
+optional-edge cut primitive. Its real Rust source validates the square matrix
+and all state-vector lengths, rejects oversized extents, scans only selected
+rows/unselected columns with present edges, and returns an original attaining
+row/column and exact i128 reduced cost. Absence means no allowed crossing edge;
+checked arithmetic errors remain explicit. It is a full-matrix reference scan,
+not the paper's sparse priority-queue repair algorithm.
+
+`Rust.SparseCut.minimum_sparse_cut_edges_spec` proves safe terminating exact
+original-edge minimum selection for every represented input in its explicit
+shape/size/potential frame: matching square dimensions, extent at most u32 MAX,
+and potentials in [-2^96,2^96], the uniform exact-assignment state envelope.
+The source selector, shape loop, row loop, both checked subtractions, outer
+loop and original-coordinate readback are proved from extracted source.
+The minimum is related to an independent candidate enumeration and then to
+actual optional graph edges; no attaining edge or minimum certificate is supplied.
+
+`minimum_sparse_cut_adjustment_spec` additionally consumes the independently
+stated sparse APM invariants: feasible duals, a one-excess-row alternating cut
+and existence of a compatible perfect assignment. It rules out an absent cut
+and proves the actual returned delta is nonnegative, preserves the ideal
+sparse dual update and creates a tight allowed edge. Physical potential-vector
+updating, predecessor search, augmentation and the complete sparse solver remain
+open. The theorem does not cover arbitrary unbounded i128 state vectors.
+
+All eight exact-core tests pass, including 2,728 independent small cut-mask
+comparisons through side four and explicit malformed/overflow/absent-edge cases.
+Pinned extraction succeeds after factoring nested scans and copying an optional
+entry before matching it; maintained generated semantics are regenerated from
+source. No handwritten generated-code changes or new foreign operation model
+were introduced. Full sparse repair and the paper time bound are not claimed.
+
 ## Sparse cut progress and numeric envelope: 2026-11-14
 
 `AssignmentSparsePotentials.exists_allowed_crossing` derives a real allowed

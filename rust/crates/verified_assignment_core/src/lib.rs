@@ -2,8 +2,8 @@
 //!
 //! Costs are signed i64 values. Potentials and totals use checked i128
 //! arithmetic. Returned potentials expose the primal/dual optimality criterion.
-//! Rust tests and generated semantics are separate from the pending proof of
-//! the Hungarian loop's invariants and total correctness.
+//! The complete dense Hungarian API has a maintained Lean total-correctness
+//! proof; sparse repair primitives are developed separately.
 
 #[cfg_attr(test, derive(Clone, Debug, PartialEq, Eq))]
 pub struct Assignment {
@@ -410,3 +410,5 @@ pub fn min_cost_assignment(cost: &[Vec<i64>]) -> Result<Assignment, AssignmentEr
 mod tests;
 
 pub mod deletion;
+
+pub mod sparse;
