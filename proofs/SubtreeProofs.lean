@@ -130,3 +130,5 @@ public import SubtreeProofs.Shared.CopiedMatchingInitialization
 public import SubtreeProofs.Shared.AssignmentDualityOn
 public import SubtreeProofs.Shared.CopiedMatchingDuality
 public import SubtreeProofs.Paper2004.IndexedWord
+public import SubtreeProofs.Rust.IndexedWordRepresentation
+public import SubtreeProofs.Rust.IndexedWordNumbering

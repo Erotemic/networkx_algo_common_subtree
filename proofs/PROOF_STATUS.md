@@ -438,6 +438,32 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual Rust original-index numbering and structural helpers: 2026-11-14
+
+The ordered extraction crate now includes `indexed::maximum_common_embedding_indexed`:
+a tested/extracted reference that selects the already verified memoized optimum
+shape, numbers each original input independently, and reconstructs indexed
+contraction witnesses. Labels are zero-based opening/preorder pair indices,
+not Python vertex-pair token positions; the implicit tree root has no incoming
+pair. Reconstruction is explicit backtracking with no optimized cost claim.
+
+`Rust.IndexedOrderedSolver.copy_indexed_correct` and `append_indexed_correct`
+prove actual source helpers preserve all identities and structure.
+`number_word_refines` proves actual checked preorder numbering terminates,
+keeps the entire original shape, assigns precisely `List.range' next count`,
+and returns exactly `next+count`. Its only size premise is that this sum fits
+the specified u32 range; every local checked addition is derived to succeed.
+The model uses the independent Mathlib indexed-word specification.
+
+Independent Rust tests enumerate arbitrary actual labeled tree contractions.
+For every pair among all 197 ordered trees through six edges, they check
+reconstruction existence/nonexistence for the requested shape and exact retained
+identities, plus both public indexed optimum witnesses and their scores.
+Separate offset tests cover u32::MAX success/overflow boundaries. All four
+ordered-core tests pass, including previous embedding/memo and isomorphism
+oracles, and pinned extraction succeeds for both crates. Actual reconstruction
+soundness/completeness and the public indexed optimum refinement remain open.
+
 ## Independent original-index witness contract: 2026-11-14
 
 `Paper2004.IndexedWord` uses Mathlib binary trees whose nodes carry original

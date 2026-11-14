@@ -20,6 +20,61 @@ set_option maxRecDepth 2048
 
 namespace verified_ordered_core
 
+/-- [verified_ordered_core::indexed::IndexedWord]
+    Source: 'src/indexed.rs', lines 11:0-14:1
+    Visibility: public -/
+@[discriminant isize]
+inductive indexed.IndexedWord where
+| Empty : indexed.IndexedWord
+| Pair :
+  Std.U32 →
+  indexed.IndexedWord →
+  indexed.IndexedWord →
+  indexed.IndexedWord
+
+/-- [verified_ordered_core::indexed::NumberedWord]
+    Source: 'src/indexed.rs', lines 16:0-19:1
+    Visibility: public -/
+structure indexed.NumberedWord where
+  word : indexed.IndexedWord
+  next : Std.U32
+
+/-- [verified_ordered_core::indexed::IndexedCommonEmbedding]
+    Source: 'src/indexed.rs', lines 23:0-27:1
+    Visibility: public -/
+structure indexed.IndexedCommonEmbedding where
+  left : indexed.IndexedWord
+  right : indexed.IndexedWord
+  edges : Std.U32
+
+/-- [verified_ordered_core::indexed::copy_indexed]:
+    Source: 'src/indexed.rs', lines 29:0-38:1
+    Visibility: public -/
+def indexed.copy_indexed
+  (word : indexed.IndexedWord) : Result indexed.IndexedWord := do
+  match word with
+  | indexed.IndexedWord.Empty => ok indexed.IndexedWord.Empty
+  | indexed.IndexedWord.Pair index head tail =>
+    let iw ← indexed.copy_indexed head
+    let iw1 ← indexed.copy_indexed tail
+    ok (indexed.IndexedWord.Pair index iw iw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::indexed::append_indexed]:
+    Source: 'src/indexed.rs', lines 40:0-49:1
+    Visibility: public -/
+def indexed.append_indexed
+  (left : indexed.IndexedWord) (right : indexed.IndexedWord) :
+  Result indexed.IndexedWord
+  := do
+  match left with
+  | indexed.IndexedWord.Empty => indexed.copy_indexed right
+  | indexed.IndexedWord.Pair index head tail =>
+    let iw ← indexed.copy_indexed head
+    let iw1 ← indexed.append_indexed tail right
+    ok (indexed.IndexedWord.Pair index iw iw1)
+partial_fixpoint
+
 /-- [verified_ordered_core::BalancedWord]
     Source: 'src/lib.rs', lines 18:0-21:1
     Visibility: public -/
@@ -28,12 +83,159 @@ inductive BalancedWord where
 | Empty : BalancedWord
 | Pair : BalancedWord → BalancedWord → BalancedWord
 
+/-- [verified_ordered_core::indexed::number_word]:
+    Source: 'src/indexed.rs', lines 53:0-78:1
+    Visibility: public -/
+def indexed.number_word
+  (word : BalancedWord) (next : Std.U32) :
+  Result (Option indexed.NumberedWord)
+  := do
+  match word with
+  | BalancedWord.Empty => ok (some { word := indexed.IndexedWord.Empty, next })
+  | BalancedWord.Pair head tail =>
+    let o ← lift (U32.checked_add next 1#u32)
+    match o with
+    | none => ok none
+    | some value =>
+      let o1 ← indexed.number_word head value
+      match o1 with
+      | none => ok none
+      | some value1 =>
+        let o2 ← indexed.number_word tail value1.next
+        match o2 with
+        | none => ok none
+        | some value2 =>
+          ok (some
+            {
+              value2
+                with
+                word := (indexed.IndexedWord.Pair next value1.word value2.word)
+            })
+partial_fixpoint
+
+/-- [verified_ordered_core::indexed::reconstruct_embedding]:
+    Source: 'src/indexed.rs', lines 83:0-105:1
+    Visibility: public -/
+def indexed.reconstruct_embedding
+  (pattern : BalancedWord) (input : indexed.IndexedWord) :
+  Result (Option indexed.IndexedWord)
+  := do
+  match pattern with
+  | BalancedWord.Empty => ok (some indexed.IndexedWord.Empty)
+  | BalancedWord.Pair ph pt =>
+    match input with
+    | indexed.IndexedWord.Empty => ok none
+    | indexed.IndexedWord.Pair index head tail =>
+      let o ← indexed.reconstruct_embedding ph head
+      match o with
+      | none =>
+        let contracted ← indexed.append_indexed head tail
+        indexed.reconstruct_embedding pattern contracted
+      | some inside =>
+        let o1 ← indexed.reconstruct_embedding pt tail
+        match o1 with
+        | none =>
+          let contracted ← indexed.append_indexed head tail
+          indexed.reconstruct_embedding pattern contracted
+        | some outside =>
+          ok (some (indexed.IndexedWord.Pair index inside outside))
+partial_fixpoint
+
 /-- [verified_ordered_core::CommonEmbedding]
     Source: 'src/lib.rs', lines 45:0-48:1
     Visibility: public -/
 structure CommonEmbedding where
   word : BalancedWord
   edges : Std.U32
+
+/-- [verified_ordered_core::MemoEntry]
+    Source: 'src/lib.rs', lines 126:0-130:1
+    Visibility: public -/
+structure MemoEntry where
+  left : BalancedWord
+  right : BalancedWord
+  result : CommonEmbedding
+
+/-- [verified_ordered_core::MemoTable]
+    Source: 'src/lib.rs', lines 134:0-137:1
+    Visibility: public -/
+@[discriminant isize]
+inductive MemoTable where
+| Empty : MemoTable
+| Entry : MemoEntry → MemoTable → MemoTable
+
+/-- [verified_ordered_core::copy_word]:
+    Source: 'src/lib.rs', lines 24:0-31:1
+    Visibility: public -/
+def copy_word (word : BalancedWord) : Result BalancedWord := do
+  match word with
+  | BalancedWord.Empty => ok BalancedWord.Empty
+  | BalancedWord.Pair head tail =>
+    let bw ← copy_word head
+    let bw1 ← copy_word tail
+    ok (BalancedWord.Pair bw bw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::copy_result]:
+    Source: 'src/lib.rs', lines 119:0-124:1
+    Visibility: public -/
+def copy_result (result : CommonEmbedding) : Result CommonEmbedding := do
+  let bw ← copy_word result.word
+  ok { result with word := bw }
+
+/-- [verified_ordered_core::memo_insert]:
+    Source: 'src/lib.rs', lines 156:0-170:1
+    Visibility: public -/
+def memo_insert
+  (table : MemoTable) (left : BalancedWord) (right : BalancedWord)
+  (result : CommonEmbedding) :
+  Result MemoTable
+  := do
+  let bw ← copy_word left
+  let bw1 ← copy_word right
+  let ce ← copy_result result
+  ok (MemoTable.Entry { left := bw, right := bw1, result := ce } table)
+
+/-- [verified_ordered_core::words_equal]:
+    Source: 'src/lib.rs', lines 109:0-117:1
+    Visibility: public -/
+def words_equal
+  (first : BalancedWord) (second : BalancedWord) : Result Bool := do
+  match first with
+  | BalancedWord.Empty =>
+    match second with
+    | BalancedWord.Empty => ok true
+    | BalancedWord.Pair _ _ => ok false
+  | BalancedWord.Pair fh ft =>
+    match second with
+    | BalancedWord.Empty => ok false
+    | BalancedWord.Pair sh st =>
+      let b ← words_equal fh sh
+      if b
+      then words_equal ft st
+      else ok false
+partial_fixpoint
+
+/-- [verified_ordered_core::memo_lookup]:
+    Source: 'src/lib.rs', lines 139:0-154:1
+    Visibility: public -/
+def memo_lookup
+  (table : MemoTable) (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  match table with
+  | MemoTable.Empty => ok none
+  | MemoTable.Entry entry rest =>
+    let b ← words_equal left entry.left
+    if b
+    then
+      let b1 ← words_equal right entry.right
+      if b1
+      then let ce ← copy_result entry.result
+           ok (some ce)
+      else memo_lookup rest left right
+    else memo_lookup rest left right
+partial_fixpoint
 
 /-- [verified_ordered_core::choose_longer]:
     Source: 'src/lib.rs', lines 51:0-57:1
@@ -45,6 +247,122 @@ def choose_longer
   if first.edges < second.edges
   then ok second
   else ok first
+
+/-- [verified_ordered_core::concatenate]:
+    Source: 'src/lib.rs', lines 34:0-42:1
+    Visibility: public -/
+def concatenate
+  (left : BalancedWord) (right : BalancedWord) : Result BalancedWord := do
+  match left with
+  | BalancedWord.Empty => copy_word right
+  | BalancedWord.Pair head tail =>
+    let bw ← copy_word head
+    let bw1 ← concatenate tail right
+    ok (BalancedWord.Pair bw bw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::memoized_common_embedding]:
+    Source: 'src/lib.rs', lines 174:0-231:1
+    Visibility: public -/
+def memoized_common_embedding
+  (left : BalancedWord) (right : BalancedWord) (table : MemoTable) :
+  Result ((Option CommonEmbedding) × MemoTable)
+  := do
+  let o ← memo_lookup table left right
+  match o with
+  | none =>
+    match left with
+    | BalancedWord.Empty =>
+      let table1 ←
+        memo_insert table BalancedWord.Empty right
+          { word := BalancedWord.Empty, edges := 0#u32 }
+      ok (some { word := BalancedWord.Empty, edges := 0#u32 }, table1)
+    | BalancedWord.Pair lh lt =>
+      match right with
+      | BalancedWord.Empty =>
+        let table1 ←
+          memo_insert table left BalancedWord.Empty
+            { word := BalancedWord.Empty, edges := 0#u32 }
+        ok (some { word := BalancedWord.Empty, edges := 0#u32 }, table1)
+      | BalancedWord.Pair rh rt =>
+        let (heads, table1) ← memoized_common_embedding lh rh table
+        match heads with
+        | none => ok (none, table1)
+        | some value =>
+          let (tails, table2) ← memoized_common_embedding lt rt table1
+          match tails with
+          | none => ok (none, table2)
+          | some value1 =>
+            let o1 ← lift (U32.checked_add value.edges value1.edges)
+            match o1 with
+            | none => ok (none, table2)
+            | some value2 =>
+              let o2 ← lift (U32.checked_add value2 1#u32)
+              match o2 with
+              | none => ok (none, table2)
+              | some value3 =>
+                let contracted_left ← concatenate lh lt
+                let (drop_left, table3) ←
+                  memoized_common_embedding contracted_left right table2
+                match drop_left with
+                | none => ok (none, table3)
+                | some value4 =>
+                  let contracted_right ← concatenate rh rt
+                  let (drop_right, table4) ←
+                    memoized_common_embedding left contracted_right table3
+                  match drop_right with
+                  | none => ok (none, table4)
+                  | some value5 =>
+                    let ce ←
+                      choose_longer
+                        {
+                          word := (BalancedWord.Pair value.word value1.word),
+                          edges := value3
+                        } value4
+                    let result ← choose_longer ce value5
+                    let table5 ← memo_insert table4 left right result
+                    ok (some result, table5)
+  | some _ => ok (o, table)
+partial_fixpoint
+
+/-- [verified_ordered_core::maximum_common_embedding]:
+    Source: 'src/lib.rs', lines 234:0-239:1
+    Visibility: public -/
+def maximum_common_embedding
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option CommonEmbedding)
+  := do
+  let (o, _) ← memoized_common_embedding left right MemoTable.Empty
+  ok o
+
+/-- [verified_ordered_core::indexed::maximum_common_embedding_indexed]:
+    Source: 'src/indexed.rs', lines 113:0-142:1
+    Visibility: public -/
+def indexed.maximum_common_embedding_indexed
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option indexed.IndexedCommonEmbedding)
+  := do
+  let o ← maximum_common_embedding left right
+  match o with
+  | none => ok none
+  | some value =>
+    let o1 ← indexed.number_word left 0#u32
+    match o1 with
+    | none => ok none
+    | some value1 =>
+      let o2 ← indexed.number_word right 0#u32
+      match o2 with
+      | none => ok none
+      | some value2 =>
+        let o3 ← indexed.reconstruct_embedding value.word value1.word
+        match o3 with
+        | none => ok none
+        | some value3 =>
+          let o4 ← indexed.reconstruct_embedding value.word value2.word
+          match o4 with
+          | none => ok none
+          | some value4 =>
+            ok (some { left := value3, right := value4, edges := value.edges })
 
 /-- [verified_ordered_core::isomorphism::rooted_common_isomorphism]:
     Source: 'src/isomorphism.rs', lines 14:0-55:1
@@ -147,31 +465,6 @@ def remaining_edges_after_contraction
   else let i ← edges - 1#u32
        ok (some i)
 
-/-- [verified_ordered_core::copy_word]:
-    Source: 'src/lib.rs', lines 24:0-31:1
-    Visibility: public -/
-def copy_word (word : BalancedWord) : Result BalancedWord := do
-  match word with
-  | BalancedWord.Empty => ok BalancedWord.Empty
-  | BalancedWord.Pair head tail =>
-    let bw ← copy_word head
-    let bw1 ← copy_word tail
-    ok (BalancedWord.Pair bw bw1)
-partial_fixpoint
-
-/-- [verified_ordered_core::concatenate]:
-    Source: 'src/lib.rs', lines 34:0-42:1
-    Visibility: public -/
-def concatenate
-  (left : BalancedWord) (right : BalancedWord) : Result BalancedWord := do
-  match left with
-  | BalancedWord.Empty => copy_word right
-  | BalancedWord.Pair head tail =>
-    let bw ← copy_word head
-    let bw1 ← concatenate tail right
-    ok (BalancedWord.Pair bw bw1)
-partial_fixpoint
-
 /-- [verified_ordered_core::largest_common_embedding]:
     Source: 'src/lib.rs', lines 63:0-106:1
     Visibility: public -/
@@ -222,156 +515,5 @@ def largest_common_embedding
                   let ce1 ← choose_longer ce value5
                   ok (some ce1)
 partial_fixpoint
-
-/-- [verified_ordered_core::words_equal]:
-    Source: 'src/lib.rs', lines 109:0-117:1
-    Visibility: public -/
-def words_equal
-  (first : BalancedWord) (second : BalancedWord) : Result Bool := do
-  match first with
-  | BalancedWord.Empty =>
-    match second with
-    | BalancedWord.Empty => ok true
-    | BalancedWord.Pair _ _ => ok false
-  | BalancedWord.Pair fh ft =>
-    match second with
-    | BalancedWord.Empty => ok false
-    | BalancedWord.Pair sh st =>
-      let b ← words_equal fh sh
-      if b
-      then words_equal ft st
-      else ok false
-partial_fixpoint
-
-/-- [verified_ordered_core::copy_result]:
-    Source: 'src/lib.rs', lines 119:0-124:1
-    Visibility: public -/
-def copy_result (result : CommonEmbedding) : Result CommonEmbedding := do
-  let bw ← copy_word result.word
-  ok { result with word := bw }
-
-/-- [verified_ordered_core::MemoEntry]
-    Source: 'src/lib.rs', lines 126:0-130:1
-    Visibility: public -/
-structure MemoEntry where
-  left : BalancedWord
-  right : BalancedWord
-  result : CommonEmbedding
-
-/-- [verified_ordered_core::MemoTable]
-    Source: 'src/lib.rs', lines 134:0-137:1
-    Visibility: public -/
-@[discriminant isize]
-inductive MemoTable where
-| Empty : MemoTable
-| Entry : MemoEntry → MemoTable → MemoTable
-
-/-- [verified_ordered_core::memo_lookup]:
-    Source: 'src/lib.rs', lines 139:0-154:1
-    Visibility: public -/
-def memo_lookup
-  (table : MemoTable) (left : BalancedWord) (right : BalancedWord) :
-  Result (Option CommonEmbedding)
-  := do
-  match table with
-  | MemoTable.Empty => ok none
-  | MemoTable.Entry entry rest =>
-    let b ← words_equal left entry.left
-    if b
-    then
-      let b1 ← words_equal right entry.right
-      if b1
-      then let ce ← copy_result entry.result
-           ok (some ce)
-      else memo_lookup rest left right
-    else memo_lookup rest left right
-partial_fixpoint
-
-/-- [verified_ordered_core::memo_insert]:
-    Source: 'src/lib.rs', lines 156:0-170:1
-    Visibility: public -/
-def memo_insert
-  (table : MemoTable) (left : BalancedWord) (right : BalancedWord)
-  (result : CommonEmbedding) :
-  Result MemoTable
-  := do
-  let bw ← copy_word left
-  let bw1 ← copy_word right
-  let ce ← copy_result result
-  ok (MemoTable.Entry { left := bw, right := bw1, result := ce } table)
-
-/-- [verified_ordered_core::memoized_common_embedding]:
-    Source: 'src/lib.rs', lines 174:0-231:1
-    Visibility: public -/
-def memoized_common_embedding
-  (left : BalancedWord) (right : BalancedWord) (table : MemoTable) :
-  Result ((Option CommonEmbedding) × MemoTable)
-  := do
-  let o ← memo_lookup table left right
-  match o with
-  | none =>
-    match left with
-    | BalancedWord.Empty =>
-      let table1 ←
-        memo_insert table BalancedWord.Empty right
-          { word := BalancedWord.Empty, edges := 0#u32 }
-      ok (some { word := BalancedWord.Empty, edges := 0#u32 }, table1)
-    | BalancedWord.Pair lh lt =>
-      match right with
-      | BalancedWord.Empty =>
-        let table1 ←
-          memo_insert table left BalancedWord.Empty
-            { word := BalancedWord.Empty, edges := 0#u32 }
-        ok (some { word := BalancedWord.Empty, edges := 0#u32 }, table1)
-      | BalancedWord.Pair rh rt =>
-        let (heads, table1) ← memoized_common_embedding lh rh table
-        match heads with
-        | none => ok (none, table1)
-        | some value =>
-          let (tails, table2) ← memoized_common_embedding lt rt table1
-          match tails with
-          | none => ok (none, table2)
-          | some value1 =>
-            let o1 ← lift (U32.checked_add value.edges value1.edges)
-            match o1 with
-            | none => ok (none, table2)
-            | some value2 =>
-              let o2 ← lift (U32.checked_add value2 1#u32)
-              match o2 with
-              | none => ok (none, table2)
-              | some value3 =>
-                let contracted_left ← concatenate lh lt
-                let (drop_left, table3) ←
-                  memoized_common_embedding contracted_left right table2
-                match drop_left with
-                | none => ok (none, table3)
-                | some value4 =>
-                  let contracted_right ← concatenate rh rt
-                  let (drop_right, table4) ←
-                    memoized_common_embedding left contracted_right table3
-                  match drop_right with
-                  | none => ok (none, table4)
-                  | some value5 =>
-                    let ce ←
-                      choose_longer
-                        {
-                          word := (BalancedWord.Pair value.word value1.word),
-                          edges := value3
-                        } value4
-                    let result ← choose_longer ce value5
-                    let table5 ← memo_insert table4 left right result
-                    ok (some result, table5)
-  | some _ => ok (o, table)
-partial_fixpoint
-
-/-- [verified_ordered_core::maximum_common_embedding]:
-    Source: 'src/lib.rs', lines 234:0-239:1
-    Visibility: public -/
-def maximum_common_embedding
-  (left : BalancedWord) (right : BalancedWord) :
-  Result (Option CommonEmbedding)
-  := do
-  let (o, _) ← memoized_common_embedding left right MemoTable.Empty
-  ok o
 
 end verified_ordered_core

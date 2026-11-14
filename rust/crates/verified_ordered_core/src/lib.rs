@@ -239,3 +239,5 @@ pub fn maximum_common_embedding(
 }
 
 pub mod isomorphism;
+
+pub mod indexed;

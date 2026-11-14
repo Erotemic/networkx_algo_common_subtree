@@ -43,7 +43,17 @@ whole-tree pruning/descendant enumeration on all 38,809 pairs through six edges.
 The shared historical `CommonEmbedding` payload stores a word and score;
 the new APIs have their own independent isomorphism contracts.
 
-The witness is a tree, rather than a map to original input indices.
+`indexed::maximum_common_embedding_indexed` is a new tested/extracted reference
+that reconstructs the optimum shape in both original inputs. Its indexed words
+carry zero-based opening/preorder pair identities. Independent labeled-tree
+contraction tests validate all feasible/infeasible requested shapes and both
+public optimum witnesses on all 38,809 pairs through six edges. Copying,
+concatenation and exact checked preorder numbering have compiled source proofs;
+reconstruction completeness and the full public indexed refinement are pending.
+This is a backtracking reconstruction and makes no optimized cost claim.
+
+The established embedding/isomorphism entry points return tree witnesses;
+the new indexed reference additionally retains original input pair identities.
 The optimized existing PyO3 backend remains an independent baseline.
 The Aeneas allocation and recursive-call model does not establish an OS-level
 memory/stack budget. Performance refinement and the public input adapter remain

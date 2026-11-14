@@ -196,3 +196,151 @@ fn isomorphism_matches_independent_tree_selections_through_six_edges() {
         }
     }
 }
+
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd)]
+struct TaggedEdge {
+    original: u32,
+    children: Vec<TaggedEdge>,
+}
+
+fn tag_original(forest: &[Tree], next: &mut u32) -> Vec<TaggedEdge> {
+    forest
+        .iter()
+        .map(|child| {
+            let original = *next;
+            *next += 1;
+            TaggedEdge {
+                original,
+                children: tag_original(&child.0, next),
+            }
+        })
+        .collect()
+}
+
+fn tagged_output(word: &verified_ordered_core::indexed::IndexedWord) -> Vec<TaggedEdge> {
+    use verified_ordered_core::indexed::IndexedWord;
+    match word {
+        IndexedWord::Empty => vec![],
+        IndexedWord::Pair(index, head, tail) => {
+            let mut result = vec![TaggedEdge {
+                original: *index,
+                children: tagged_output(head),
+            }];
+            result.extend(tagged_output(tail));
+            result
+        }
+    }
+}
+
+fn strip_tags(forest: &[TaggedEdge]) -> Tree {
+    Tree(
+        forest
+            .iter()
+            .map(|child| strip_tags(&child.children))
+            .collect(),
+    )
+}
+
+// Independently contract every possible actual parent-child edge, preserving
+// each remaining edge's original identity. No first-return search is used.
+fn contract_tagged_once(forest: &[TaggedEdge]) -> Vec<Vec<TaggedEdge>> {
+    let mut result = Vec::new();
+    for (index, child) in forest.iter().enumerate() {
+        let mut spliced = forest[..index].to_vec();
+        spliced.extend_from_slice(&child.children);
+        spliced.extend_from_slice(&forest[index + 1..]);
+        result.push(spliced);
+        for smaller in contract_tagged_once(&child.children) {
+            let mut changed = forest.to_vec();
+            changed[index].children = smaller;
+            result.push(changed);
+        }
+    }
+    result
+}
+
+fn tagged_closure(original: &[TaggedEdge]) -> BTreeSet<Vec<TaggedEdge>> {
+    let mut result = BTreeSet::from([original.to_vec()]);
+    let mut pending = vec![original.to_vec()];
+    while let Some(current) = pending.pop() {
+        for smaller in contract_tagged_once(&current) {
+            if result.insert(smaller.clone()) {
+                pending.push(smaller);
+            }
+        }
+    }
+    result
+}
+
+#[test]
+fn indexed_witnesses_match_independent_labeled_contractions_through_six_edges() {
+    use verified_ordered_core::indexed::{
+        maximum_common_embedding_indexed, number_word, reconstruct_embedding,
+    };
+    let inputs: Vec<_> = (0..=6).flat_map(trees).collect();
+    let numbered: Vec<_> = inputs
+        .iter()
+        .map(|tree| tag_original(&tree.0, &mut 0))
+        .collect();
+    let candidates: Vec<_> = numbered
+        .iter()
+        .map(|forest| tagged_closure(forest))
+        .collect();
+    let shapes: Vec<BTreeSet<Vec<u8>>> = candidates
+        .iter()
+        .map(|choices| {
+            choices
+                .iter()
+                .map(|forest| tree_encoding(&strip_tags(forest)))
+                .collect()
+        })
+        .collect();
+    for (i, input) in inputs.iter().enumerate() {
+        let word = as_word(&input.0);
+        let indexed = number_word(&word, 0).expect("tiny input numbering fits");
+        assert!(tagged_output(&indexed.word) == numbered[i]);
+        assert_eq!(indexed.next as usize, tree_encoding(input).len() / 2);
+        for (j, other) in inputs.iter().enumerate() {
+            let pattern = as_word(&other.0);
+            let witness = reconstruct_embedding(&pattern, &indexed.word);
+            assert_eq!(
+                witness.is_some(),
+                shapes[i].contains(&tree_encoding(other)),
+                "pattern {j}, input {i}"
+            );
+            if let Some(witness) = witness {
+                let kept = tagged_output(&witness);
+                assert!(candidates[i].contains(&kept));
+                assert!(strip_tags(&kept) == *other);
+            }
+            let common =
+                maximum_common_embedding_indexed(&word, &pattern).expect("tiny indexed scores fit");
+            let left = tagged_output(&common.left);
+            let right = tagged_output(&common.right);
+            assert!(candidates[i].contains(&left));
+            assert!(candidates[j].contains(&right));
+            assert!(strip_tags(&left) == strip_tags(&right));
+            let expected = shapes[i]
+                .intersection(&shapes[j])
+                .map(|shape| shape.len() / 2)
+                .max()
+                .unwrap();
+            assert_eq!(common.edges as usize, expected);
+            assert_eq!(tree_encoding(&strip_tags(&left)).len() / 2, expected);
+        }
+    }
+}
+
+#[test]
+fn indexed_numbering_checks_offset_overflow() {
+    use verified_ordered_core::indexed::number_word;
+    let one = BalancedWord::Pair(Box::new(BalancedWord::Empty), Box::new(BalancedWord::Empty));
+    assert!(number_word(&one, u32::MAX).is_none());
+    let result = number_word(&one, u32::MAX - 1).unwrap();
+    assert_eq!(result.next, u32::MAX);
+    assert_eq!(tagged_output(&result.word)[0].original, u32::MAX - 1);
+    assert_eq!(
+        number_word(&BalancedWord::Empty, u32::MAX).unwrap().next,
+        u32::MAX
+    );
+}
