@@ -1,46 +1,57 @@
-# Proof status (new development)
+# Lozano-Valiente proof status
 
-The user's local `cd proofs && lake build` is **reported to pass** after the
-constructor-elaboration correction to `OrderedTree.lean`. Earlier failed builds
-are superseded. The exact successful log, a fresh-checkout build, and
-`#print axioms` output have not yet been captured here. These are provenance
-and assurance follow-ups, not known compilation blockers.
+The pre-existing `OrderedTree.lean` and `BalancedSequence.lean` foundation was
+reported to compile with Lean 4.35.0 / Mathlib `v4.35.0` after the earlier
+constructor-resolution fix. Its accepted mathematical semantics remain under
+review against the original paper.
 
-The reported build covers the fresh Lean source on the project's pinned
-Lean 4.35.0 / Mathlib version. Compilation checks elaborated definitions and
-theorem terms as stated; it does not establish their agreement with the 2004
-paper or verify the Rust algorithms.
+## Next development: encoding and one-way contraction correspondence
 
-| Declaration or deliverable | Status |
-| --- | --- |
-| `OrderedTree`, `edgeCount`, `leafCount` | Compiled in reported local build |
-| `Context`, `Context.plug`, `ContractStep` | Compiled in reported local build |
-| `Embeds`, `CommonEmbedding`, `IsMaximumCommon` | Compiled in reported local build; paper-level contraction convention still to establish |
-| `ContractStep.edgeCount_decreases` | Lean theorem accepted in reported local build; axiom audit pending |
-| `embeds_edgeCount_le` | Lean theorem accepted in reported local build; axiom audit pending |
-| `isMaximumCommon_self` | Lean theorem accepted in reported local build; axiom audit pending |
-| `encodeDyck` using Mathlib `DyckWord` | Compiled in reported local build |
-| `encodeDyck_semilength` | Lean theorem accepted in reported local build; axiom audit pending |
-| Tree/forest encoding bijection | Open |
-| Contraction/sequence-containment equivalence | Open |
-| Lozano-Valiente recurrence and independent optimum | Open |
-| Actual-leaf-sensitive decomposition cardinality theorem | Open |
-| Executable contraction oracle | Open |
-| Aeneas Rust translation/refinement | Open |
+The new files below have been authored as a single additive increment. **They
+have not yet been compiled in this execution environment**. Their proof status
+must be upgraded only after the maintainer runs `lake build` successfully.
 
-## Next checks
+| File and theorem | Status | Claim |
+| --- | --- | --- |
+| `EncodingEquivalence.toBinaryForest_fromBinaryForest` | Authored; build pending | Binary forest round trip |
+| `EncodingEquivalence.fromBinaryTree_toBinaryTree` | Authored; build pending | Ordered tree round trip |
+| `EncodingEquivalence.fromBinaryForest_toBinaryForest` | Authored; build pending | Ordered forest round trip |
+| `EncodingEquivalence.encodeDyck_eq_ofTree_toBinaryTree` | Authored; build pending | Existing recursive encoding agrees with Mathlib's binary encoding |
+| `EncodingEquivalence.decodeDyck_encodeDyck` | Authored; build pending | Decode after encode returns the original tree |
+| `EncodingEquivalence.encodeDyck_decodeDyck` | Authored; build pending | Encode after decode returns the original word |
+| `EncodingEquivalence.orderedTreeEquivDyck` | Authored; build pending | Bijection of rooted ordered trees and Dyck words |
+| `EncodingEquivalence.edgeCount_decodeDyck` | Authored; build pending | Decode preserves semilength as edge count |
+| `ContractionSoundness.encodeDyck_context_plug` | Authored; build pending | Tree context and balanced-word context substitution agree |
+| `ContractionSoundness.contractStep_encodeDyck` | Authored; build pending | One tree edge contraction removes a matching Dyck pair |
+| `ContractionSoundness.embeds_encodeDyck` | Authored; build pending | Every tree contraction sequence gives a sequence contraction |
+| Dyck contraction => tree contraction | Open | Completeness direction |
+| Full paper-specific balanced containment equivalence | Open | Establish and compare exact containment conventions |
+| DP optimality and witness correctness | Open | Compare against independent tree optimum |
+| Actual-leaf-sensitive complexity theorem | Open | Prove corrected combinatorial bound and cost model |
+| Rust/Aeneas refinement | Open | Verified executable source |
 
-From `proofs/`:
+No `sorry`, `admit`, or new `axiom` is used in the authored files. That textual
+check is not a substitute for the Lean kernel's acceptance of the proofs.
+
+## Local verification
 
 ```bash
+cd proofs
 lake build
 ```
 
-Preserve and commit the generated `lake-manifest.json` when appropriate, and
-reproduce the build from a fresh checkout in CI. Audit theorem dependencies
-using `#print axioms` on accepted public theorems, and record exact compiler
-output and dependency revisions. Continue with independent small-tree
-contraction tests and the mathematical tree/Dyck-word correspondence.
+After a successful build, audit the public theorems:
 
-The passing foundation build closes the initial compilation blocker; it does
-not close the paper's correctness and complexity proof obligations.
+```bash
+cat > /tmp/lozano-axioms.lean <<'LEAN'
+import SubtreeProofs.Paper2004.ContractionSoundness
+#print axioms SubtreeProofs.Paper2004.OrderedTree.decodeDyck_encodeDyck
+#print axioms SubtreeProofs.Paper2004.OrderedTree.encodeDyck_decodeDyck
+#print axioms SubtreeProofs.Paper2004.OrderedTree.contractStep_encodeDyck
+#print axioms SubtreeProofs.Paper2004.OrderedTree.embeds_encodeDyck
+LEAN
+lake env lean /tmp/lozano-axioms.lean
+```
+
+Record the exact build result and axiom report before treating this increment
+as verified. The inverse contraction theorem is the next mathematical target.

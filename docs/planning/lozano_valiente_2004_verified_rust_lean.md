@@ -33,6 +33,17 @@ reported local build result; a fresh-checkout reproducibility run, the exact
 build log, and theorem-axiom audit have not yet been recorded. Prior Mathlib
 module-system import warnings were nonfatal.
 
+**Next authored increment (pending local compilation):**
+`EncodingEquivalence.lean` supplies a first-child/next-sibling binary-tree bridge,
+explicit Dyck decoding, an equivalence with the existing encoding, and both
+round-trip theorems. `ContractionSoundness.lean` independently defines removal
+of a matching pair inside a Dyck-word context and proves that operational tree
+contractions map to that relation, even below the root. The reverse
+sequence-to-tree implication and reconciliation with the exact paper
+containment convention remain open. These new sources have *not* been included
+in the previously reported successful build; run `lake build` and inspect
+`proofs/PROOF_STATUS.md` before promoting their status to checked.
+
 **Next action:** preserve the working baseline and its dependency lockfile,
 run `#print axioms` on the accepted public theorems, add actual Lean CI and an
 independent tiny contraction oracle. A passing build establishes Lean

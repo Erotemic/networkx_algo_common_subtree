@@ -1,33 +1,32 @@
-# Lozano-Valiente 2004: fresh formalization
+# Lozano-Valiente (2004): modern Lean development
 
-This is the new Lean 4 development for maximum common embedded subtrees of
-finite, rooted, **ordered** trees, with the historical proof attempts excluded.
-The plan is in `../docs/planning/lozano_valiente_2004_verified_rust_lean.md`.
+The development formalizes finite rooted ordered trees, edge contractions and
+maximum common embedded subtrees independently of any algorithm. Its proofs
+build on Lean 4.35.0 and Mathlib.
 
-The first definitions in `SubtreeProofs/Paper2004/OrderedTree.lean` model
-ordered children and operational edge contraction at arbitrary depth, with
-a fixed root and splicing at the contracted edge. `Embeds` is the reflexive
-transitive closure of that operation. `IsMaximumCommon` is defined directly
-on trees and scores edges. The specification never refers to balanced
-sequences or a dynamic program.
+Modules in dependency order:
 
-`SubtreeProofs/Paper2004/BalancedSequence.lean` uses Mathlib's `DyckWord`
-for the standard balanced-sequence encoding and the relationship between
-semilength and edge count. The full contraction/sequence correspondence is
-the next mathematical proof milestone.
+- `Paper2004/OrderedTree.lean`: ordered-tree and contraction-based problem specification.
+- `Paper2004/BalancedSequence.lean`: recursive Dyck encoding and edge-count equation.
+- `Paper2004/EncodingEquivalence.lean`: first-child/next-sibling binary-tree
+  encoding, inverse decoding and two round-trip theorems. Reuses Mathlib's
+  `DyckWord.ofTree_toTree` and `DyckWord.toTree_ofTree`.
+- `Paper2004/ContractionSoundness.lean`: independent Dyck matching-pair deletion
+  contexts and the forward map from operational tree contractions to sequence
+  contractions.
 
-Pinned dependency target: Lean 4.35.0 / Mathlib `v4.35.0`, a stable release.
-A lockfile has not yet been generated. The source was authored in an environment
-without Lean/Lake and requires its first compilation pass. See
-`PROOF_STATUS.md` for precise verification state.
+The **reverse** sequence-to-tree contraction theorem is not yet proved.
+The paper's dynamic program, complexity bound and Rust refinement are later
+milestones; see `PROOF_STATUS.md` and the `docs/planning` roadmaps.
+
+The previous two modules compiled in the maintainer's local environment. The
+new round-trip and contraction modules are **authored, awaiting a `lake build`**.
+This workspace does not import the historical v3-v6 proofs.
 
 ```bash
 cd proofs
-lake update
-lake exe cache get
 lake build
 ```
 
-This work does not depend on TauCeti or Aeneas yet. Mathlib supplies Dyck
-words, the relation closure, and elementary tactics. TauCeti and Aeneas will
-be introduced only at boundaries where their features are required.
+Only mark the new theorems as accepted after the above passes. No binary
+assets or generated build products belong in the documentation overlay.
