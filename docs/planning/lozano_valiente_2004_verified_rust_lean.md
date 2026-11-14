@@ -1,7 +1,7 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: fresh Lean W1 sources drafted; compilation errors reported, clean build pending
-Last revised: 2026-11-13 (after initial Lean build feedback)
+Status: initial Lean foundation compiles in the user's local `lake build`; semantic correspondence and algorithmic proofs pending
+Last revised: 2026-11-13 (after successful local Lean build was reported)
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
@@ -24,20 +24,21 @@ The first drafted sources are:
   Mathlib `DyckWord` and a proposed semilength theorem.
 - `proofs/PROOF_STATUS.md`: intended theorem-level evidence inventory.
 
-**Observed build status:** a clean build has **not** been reported. Lean
-4.35.0 was successfully invoked, but the first builds failed on deriving
-`DecidableEq`, mutual syntax, a kernel-invalid mutual inductive relation,
-proof arithmetic, then `.node` elaboration inside `ContractStep.below`.
-The latest patch replaces the offending `change` expressions with
-simplification of `Context.plug`; there is no later user-provided build log
-confirming that repair. Mathlib module-system import warnings were nonfatal.
+**Observed build status:** the user reports that `cd proofs && lake build`
+**now succeeds** after the constructor-elaboration correction. The initial
+build failures (automatic `DecidableEq`, mutual syntax, the kernel-invalid
+mutual contraction relation, arithmetic and `.node` elaboration) have been
+resolved sufficiently for the current Lean sources to compile. This is a
+reported local build result; a fresh-checkout reproducibility run, the exact
+build log, and theorem-axiom audit have not yet been recorded. Prior Mathlib
+module-system import warnings were nonfatal.
 
-**Next action (before new theorems):** run `cd proofs && lake build` after the
-latest source overlay. Fix any remaining compilation errors, pin and commit
-the generated `lake-manifest.json`, record accepted theorem declarations and
-`#print axioms`, and add a tiny independent contraction oracle. A passing build
-validates elaboration and kernel checking of *those declarations*; it does not
-validate the 2004 paper, the recurrence, or any Rust code.
+**Next action:** preserve the working baseline and its dependency lockfile,
+run `#print axioms` on the accepted public theorems, add actual Lean CI and an
+independent tiny contraction oracle. A passing build establishes Lean
+acceptance of the current declarations; it does not establish the 2004
+paper's contraction/sequence equivalence, recurrence, complexity claim, or any
+Rust refinement.
 
 Do not conflate the existing `ContractStep` implementation with proof of
 agreement with the paper's exact root/edge contraction convention; that
@@ -218,11 +219,11 @@ Work can be parallel where dependencies permit, but **never let Rust implementat
 
 Track accepted claims in a small `proofs/PROOF_STATUS.md` once there are actual proof targets. Give exact theorem identifier, hypothesis list, source file, build command and classification: `specified`, `proved`, `conditional`, `extracted`, `tested`, or `open`. An item is `proved` only after the fresh Lake build and theorem-dependency review.
 
-Status following the first authored sources and user build logs (update after the next clean build):
+Status after the user-reported successful local `lake build` (dependency audit still pending):
 
 | Target | Status |
 | --- | --- |
-| Independent tree/embedded-subtree specification | authored; unbuilt in observed logs |
+| Independent tree/embedded-subtree specification | compiled in the reported local build; paper-semantics equivalence and axiom audit pending |
 | Tree-to-sequence correspondence and containment/contraction equivalence | open |
 | Paper combinatorial results and actual-leaf state bound | open |
 | LCBS DP optimality vs. independent optimum | open |
@@ -280,10 +281,10 @@ Keep CI proportional to real failures: target core invariants and regressions, a
 
 ## 9. First execution cycle: concrete acceptance checklist
 
-1. Apply the newest `OrderedTree.lean` elaboration correction. Run `lake build`
-   on Lean 4.35.0. Repair remaining failures, inspect all accepted theorem
-   dependencies with `#print axioms`, and refresh `PROOF_STATUS.md`. Keep the
-   current source/build failures visible until a real build passes.
+1. Preserve the passing `OrderedTree.lean` foundation. Reproduce `lake build`
+   on Lean 4.35.0 from a fresh checkout, inspect accepted theorem dependencies
+   with `#print axioms`, and keep `PROOF_STATUS.md` current. The first local
+   build success has been reported; clean-checkout reproducibility is still open.
 2. Pin toolchain and commit `lake-manifest.json`. Add a minimal CI job running
    the actual Lean build (not a test of file text or theorem names).
 3. Write a tiny **contraction-enumerating** oracle independent of the Dyck-word
@@ -305,9 +306,10 @@ Keep CI proportional to real failures: target core invariants and regressions, a
    integrated optimized baseline; prove its translated entry point correct,
    benchmark on adversarial and practical trees, then integrate deliberately.
 
-The next milestone is **successful compilation and an independent oracle**,
-not another unverified batch of Lean declarations. Avoid building higher proof
-layers atop an unresolved kernel/elaboration error.
+The next milestone is **an independent contraction oracle and a checked
+encoding/containment bridge**, with axiom auditing and clean-checkout CI for the
+now-compiling foundation. Build success alone leaves the central mathematical
+correspondence and the paper algorithm unproved.
 
 ## 10. Sources
 

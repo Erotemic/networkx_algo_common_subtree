@@ -16,11 +16,11 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
-## Starting point as of 2026-11-13
+## Starting point as of 2026-11-13 (after reported successful Lean build)
 
 | Priority | Immediate action | Evidence of completion |
 | --- | --- | --- |
-| 1 | Fix last Lean 4.35.0 `OrderedTree.lean` elaboration issue and rerun `lake build` | Clean build, committed Lake manifest, `proofs/PROOF_STATUS.md` updated to match accepted declarations |
+| 1 | Record the now-passing Lean 4.35.0 foundation build, check theorem axioms, pin the Lake manifest and add Lean CI | Reproducible build from a fresh checkout, accepted theorem inventory and dependency audit |
 | 2 | Pin ordered-tree contraction/root conventions and independently enumerate tiny tree contractions | Small examples and oracle agree with mathematically specified embeddings |
 | 3 | Prove encoding round trips and both directions of Dyck-word containment/contraction correspondence | Checked independent tree/sequence theorem |
 | 4 | Test a minimal Charon/Aeneas-generated Lean function against a mathematical specification | Translated real Rust source, matching toolchain pins and a checked refinement lemma |

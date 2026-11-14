@@ -1,7 +1,7 @@
 # Verified common-subtree algorithms: research program and engineering charter
 
 Status: active planning; formalization underway; no end-to-end verified solver yet  
-Updated: 2026-11-13 (after the first Lean 4.35.0 build attempts)  
+Updated: 2026-11-13 (after the successful local Lean 4.35.0 build was reported)  
 Project: `networkx_algo_common_subtree`
 
 This document records the intended destination and the decisions behind it. It
@@ -84,7 +84,7 @@ not claims about a subsequent local worktree or a fresh CI run.
 | Droschinsky 2016 isomorphism | Standalone graph-only Rust DP and Hungarian-style matching | Full parameter testing, verified recurrence and Rust code, specialized fast matching, Python adapter |
 | Droschinsky 2018 embedding | Experimental Rust and Python implementations | **Known paper-semantic scoring/feasibility discrepancy**, independent oracle, optimized paper algorithm, verification |
 | Weighted bipartite matching | Rust implementation with small exhaustive matrix tests | Formal matching specification, optimality of a verified implementation, reductions for forbidden/unmatched vertices |
-| New Lean foundation | Lean 4.35.0 / Mathlib project with `OrderedTree` and Dyck-word source | **First clean `lake build` not yet established in the reported logs**; no containment/optimality/complexity proof |
+| New Lean foundation | Lean 4.35.0 / Mathlib project with `OrderedTree` and Dyck-word source | **Local `lake build` now reported passing**; reproducible clean-checkout build and axiom audit outstanding; no containment/optimality/complexity proof |
 | Aeneas translation | Planned | No demonstrated checked Rust-to-Lean refinement in this project |
 | Benchmarks | Tree/model-like fixtures and benchmark drivers exist | Reproducible pinned baseline measurements and optimized-paper scaling evidence |
 
@@ -97,20 +97,20 @@ These numbers are an inventory of historical test coverage, not a certification
 of paper fidelity. The 2018 tests share the incorrect scoring convention with
 its implementation and thus do not resolve the known discrepancy.
 
-### First Lean build feedback
+### Initial Lean build and corrected foundation
 
-The initial `OrderedTree.lean` has already required several local repairs:
-unsupported automatic `DecidableEq` derivation, mutual declaration syntax,
-contraction induction/kernel declaration, edge-count arithmetic, and ambiguous
-`.node` elaboration. The chosen representation now uses an explicit one-hole
-ordered-tree context for a contraction at arbitrary depth. The latest supplied
-log still reported `.node` elaboration failures **before** the latest constructor
-patch; a passing build after that patch has not yet been reported.
+The initial `OrderedTree.lean` required repairs to automatic `DecidableEq`
+derivation, mutual declaration syntax, contraction induction/kernel declaration,
+edge-count arithmetic, and ambiguous `.node` elaboration. The resulting
+contraction representation uses an explicit one-hole ordered-tree context.
+**The user has now reported a successful local `lake build` after those repairs.**
+A fresh-checkout rerun and public theorem-axiom inventory are still needed.
 
-**Immediate priority:** obtain a complete `lake build` on the pinned Lean
-version, fix the smallest failing declaration, and then run theorem dependency
-checks. Do not add a large theorem layer on top of uncompiled source. Record
-verified status in `proofs/PROOF_STATUS.md`, not in optimistic file headers.
+**Immediate priority:** preserve the compiling baseline, commit the Lake
+manifest, audit accepted theorem dependencies, and set up actual Lean CI.
+Proceed with the small contraction oracle and the encoding/containment
+correspondence proofs; the foundation build is no longer a blocking error.
+Track claim-by-claim assurance in `proofs/PROOF_STATUS.md`.
 
 ## 4. Verification architecture
 
@@ -339,7 +339,7 @@ implementation mistakes.
 
 | Track | Early deliverable | Full completion criterion |
 | --- | --- | --- |
-| L0: build discipline | A clean Lean 4.35.0 build of the fresh foundation and theorem-status audit | Reproducible pinned mathematical project |
+| L0: build discipline | Local Lean 4.35.0 build reported passing; audit theorem axioms and reproduce in CI | Reproducible pinned mathematical project |
 | L1: 2004 semantics | Edge contraction, encoding round-trip, two-way containment theorem and a tiny oracle | Independent problem/representation bridge |
 | L2: 2004 algorithm | Paper decomposition and LCBE/LCBS DP optimality with a witness | Theorems for paper correctness and combinatorics |
 | L3: 2004 complexity | True-leaf state bound and computation-tied operation counter | Justified published or precisely corrected complexity bound |
@@ -351,7 +351,7 @@ implementation mistakes.
 | D3: 2018 algorithm | Branch/path recurrence, witness, optimized paper method, extracted Rust | Functional and computational correctness under published assumptions |
 | I: integration/evaluation | Baselines, test runner/CI, benchmarking and Python dispatch | Reproducible performance, verified adapter and release evidence |
 
-**Suggested execution order:** finish L0 first; then L1 and R0 in parallel;
+**Suggested execution order:** complete L0 reproducibility and axiom auditing while advancing L1 and R0 in parallel;
 start D0's mathematical matching groundwork independently. Do not let the
 2018 prototype's current scorer define D2, and do not wait for all paper
 proofs to finish before testing extraction feasibility. Put D1 ahead of D3
