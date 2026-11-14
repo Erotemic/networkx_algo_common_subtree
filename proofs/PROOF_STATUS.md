@@ -111,6 +111,26 @@ checks all 38,809 ordered pairs of the 197 trees through six edges, including
 returned-witness feasibility and exact scores. The OS-level
 allocator/stack budget is outside the Aeneas functional semantics.
 
+## Unordered graph foundations accepted: 2026-11-14
+
+`Shared.FiniteTree` uses Mathlib trees and proves canonical unique-path
+orientation/length/interior properties. `Droschinsky2016.exists_maximum`
+proves unconditional attainment for nonempty connected isomorphism witnesses,
+scoring vertices and unordered edges once over `WithBot ℝ`. `Valid.inducedIso`
+constructs the actual induced-graph isomorphism; both selected objects are trees.
+
+`Droschinsky2018.exists_maximum` proves finite attainment for independent
+unrooted skeletons whose paths have disjoint interiors. `pathScore_direct`
+and `one_two_path_score` capture Definition 4's two scoring branches;
+`maximum_score_antitone` proves the general finite-penalty monotonicity result.
+The source problem preserves negative and negative-infinity optima. The default
+reference APIs permit empty results; explicit nonempty Rust/Python entry points
+retain negative scores and distinguish infeasibility with `None`.
+
+Rooted ancestry, full source-witness correspondence, graph DP soundness/
+completeness, optimized matching and Rust refinements remain open. The new
+specifications and finite-existence results are not proofs of those algorithms.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
@@ -118,8 +138,8 @@ allocator/stack budget is outside the Aeneas functional semantics.
 - Lemma 8's numerical recurrence agrees with operational optima on 19,503
   unordered pairs from those trees. It disagrees with the literal printed
   objective on 7,554 pairs. This is finite evidence, not a general DP proof.
-- The Python test suite passes 52 tests, with two extension tests skipped.
-- The graph-only Rust crate passes 27 tests, including an exhaustive
+- The Python test suite passes 55 tests, with two extension tests skipped.
+- The graph-only Rust crate passes 30 tests, including an exhaustive
   partial-injection embedding oracle with independently reconstructed paths
   and scores. This tests signed weights and forbidden edge labels.
 - Both 2018 discriminator cases return 1.75 in Rust and Python. Skipped paths
@@ -142,7 +162,7 @@ allocator/stack budget is outside the Aeneas functional semantics.
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered reference solver | Proved for structural tree witnesses and u32 input bounds; memoized optimization, input-index witness maps and API conversion still open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Open; finite exhaustive matching is proved |
-| 2016/2018 graph/path Lean specifications and DP/optimization proofs | Open |
+| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; rooted/source completeness and DP/optimization proofs open |
 | Verified Python adapters and qualified performance evidence | Open |
 
 The overall program remains active. These results do not complete the paper

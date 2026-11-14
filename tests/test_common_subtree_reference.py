@@ -133,3 +133,30 @@ def test_embedding_rejects_invalid_penalty(penalty):
     with pytest.raises(ValueError, match="finite and nonnegative"):
         largest_weight_common_subtree_embedding_with_distance_penalty_reference(
             tree, tree, skip_vertex_penalty=penalty)
+
+
+@pytest.mark.parametrize("weight", [-2.0, 0.0])
+def test_nonempty_reference_retains_nonpositive_optima(weight):
+    from networkx_algo_common_subtree.common_subtree_reference import (
+        maximum_nonempty_common_subtree_isomorphism_reference,
+        largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference,
+    )
+    tree = ReferenceLabeledTree([1, 1], [(0, 1, 0)])
+    scoring = ExactLabelScoring(node_match_weight=weight, edge_match_weight=-1.0)
+    iso = maximum_nonempty_common_subtree_isomorphism_reference(tree, tree, scoring)
+    emb = largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference(
+        tree, tree, scoring, 0.25)
+    assert iso is not None and emb is not None
+    assert iso.weight == emb.weight == weight
+    assert len(iso.node_pairs) == len(emb.node_pairs) == 1
+    assert maximum_common_subtree_isomorphism_reference(tree, tree, scoring).node_pairs == ()
+
+
+def test_nonempty_reference_distinguishes_infeasible_mapping():
+    from networkx_algo_common_subtree.common_subtree_reference import (
+        maximum_nonempty_common_subtree_isomorphism_reference,
+        largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference,
+    )
+    left, right = ReferenceLabeledTree([1], []), ReferenceLabeledTree([2], [])
+    assert maximum_nonempty_common_subtree_isomorphism_reference(left, right) is None
+    assert largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference(left, right) is None

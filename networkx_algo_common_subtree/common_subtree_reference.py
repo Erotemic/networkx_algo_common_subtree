@@ -167,6 +167,51 @@ def maximum_common_subtree_isomorphism_reference(
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
 ) -> ReferenceCommonSubtree:
+    """Exhaustive connected isomorphism oracle, permitting an empty score-zero result."""
+    result = _maximum_common_subtree_isomorphism_reference(left, right, scoring)
+    assert result is not None
+    return result
+
+
+def maximum_nonempty_common_subtree_isomorphism_reference(
+    left: ReferenceLabeledTree,
+    right: ReferenceLabeledTree,
+    scoring: ExactLabelScoring | None = None,
+) -> ReferenceCommonSubtree | None:
+    """Nonempty source-style oracle; retain negative scores and report infeasibility."""
+    return _maximum_common_subtree_isomorphism_reference(left, right, scoring, allow_empty=False)
+
+
+def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
+    left: ReferenceLabeledTree,
+    right: ReferenceLabeledTree,
+    scoring: ExactLabelScoring | None = None,
+    skip_vertex_penalty: Weight = 0.0,
+) -> ReferenceCommonSubtree:
+    """Exhaustive topological-path oracle, permitting an empty score-zero result."""
+    result = _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
+        left, right, scoring, skip_vertex_penalty)
+    assert result is not None
+    return result
+
+
+def largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference(
+    left: ReferenceLabeledTree,
+    right: ReferenceLabeledTree,
+    scoring: ExactLabelScoring | None = None,
+    skip_vertex_penalty: Weight = 0.0,
+) -> ReferenceCommonSubtree | None:
+    """Nonempty topological-path oracle; retain negative scores and report infeasibility."""
+    return _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
+        left, right, scoring, skip_vertex_penalty, allow_empty=False)
+
+
+def _maximum_common_subtree_isomorphism_reference(
+    left: ReferenceLabeledTree,
+    right: ReferenceLabeledTree,
+    scoring: ExactLabelScoring | None = None,
+    allow_empty: bool = True,
+) -> ReferenceCommonSubtree | None:
     """Brute-force maximum common subtree isomorphism.
 
     This directly enumerates every connected vertex subset of each tree and
@@ -179,7 +224,7 @@ def maximum_common_subtree_isomorphism_reference(
     """
 
     scoring = ExactLabelScoring() if scoring is None else scoring
-    best = ReferenceCommonSubtree(0.0, ())
+    best = ReferenceCommonSubtree(0.0, ()) if allow_empty else None
     for left_subset in _connected_subsets(left):
         left_edges = _induced_edges(left, left_subset)
         for right_subset in _connected_subsets(right):
@@ -196,12 +241,13 @@ def maximum_common_subtree_isomorphism_reference(
     return best
 
 
-def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
+def _largest_weight_common_subtree_embedding_with_distance_penalty_reference(
     left: ReferenceLabeledTree,
     right: ReferenceLabeledTree,
     scoring: ExactLabelScoring | None = None,
     skip_vertex_penalty: Weight = 0.0,
-) -> ReferenceCommonSubtree:
+    allow_empty: bool = True,
+) -> ReferenceCommonSubtree | None:
     """Brute-force common subtree embedding with skipped-vertex penalties.
 
     The reference enumerates a set of mapped vertices in each input tree and a
@@ -220,7 +266,7 @@ def largest_weight_common_subtree_embedding_with_distance_penalty_reference(
 
     _validate_skip_penalty(skip_vertex_penalty)
     scoring = ExactLabelScoring() if scoring is None else scoring
-    best = ReferenceCommonSubtree(0.0, ())
+    best = ReferenceCommonSubtree(0.0, ()) if allow_empty else None
     for left_subset in _nonempty_subsets(left.n):
         left_skeleton = _embedding_skeleton_edges(left, left_subset)
         if left_skeleton is None:
@@ -532,9 +578,9 @@ def _normalized_edge(u: int, v: int) -> tuple[int, int]:
     return (u, v) if u < v else (v, u)
 
 
-def _keep_better(best: ReferenceCommonSubtree, candidate: ReferenceCommonSubtree) -> ReferenceCommonSubtree:
-    if candidate.weight <= _EPS:
-        return best
+def _keep_better(best: ReferenceCommonSubtree | None, candidate: ReferenceCommonSubtree) -> ReferenceCommonSubtree:
+    if best is None:
+        return candidate
     if candidate.weight > best.weight + _EPS:
         return candidate
     if abs(candidate.weight - best.weight) <= _EPS and candidate.node_pairs < best.node_pairs:
@@ -548,6 +594,8 @@ __all__ = [
     "ReferenceLabeledTree",
     "largest_weight_common_subtree_embedding_with_distance_penalty_reference",
     "maximum_common_subtree_isomorphism_reference",
+    "maximum_nonempty_common_subtree_isomorphism_reference",
+    "largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference",
     "score_embedding_witness",
     "score_subtree_isomorphism_witness",
 ]

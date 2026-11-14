@@ -62,7 +62,7 @@ algorithm; its repeated matching calls do not establish this bound.
 
 | Source | Target | State |
 | --- | --- | --- |
-| Section 2, definitions | Finite weighted connected subtree isomorphism; rooted/root-to-root restrictions | Python/Rust reference contracts exist; independent Lean graph witness spec open |
+| Section 2, definitions | Finite weighted connected subtree isomorphism; rooted/root-to-root restrictions | Proved independent `Droschinsky2016.Valid`, exact unordered-edge score, `Valid.inducedIso`, and unconditional finite `exists_maximum`; rooted branch spec/DP open |
 | Proposition 1 | Rooted recurrence and its operation bound | Open |
 | Lemma 2 | Fixed-root family suffices for the unrestricted optimum | Open |
 | Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Open |
@@ -87,9 +87,9 @@ bound; do not promote that assumption into an unconditional theorem.
 
 | Source | Target | State |
 | --- | --- | --- |
-| Definitions 1--2 | Topological path embeddings and rooted/root-to-root common skeletons | Independent Lean spec open |
+| Definitions 1--2 | Topological path embeddings and rooted/root-to-root common skeletons | Independent unrooted skeleton/path/score spec and finite optimum proved; rooted ancestry and source-embedding correspondence still open |
 | Theorem 3 | Prior Gupta--Nishimura result | Externally attributed prerequisite; not claimed as a new result by this paper |
-| Definition 4 | Direct path reward only for two single-edge paths; otherwise skipped-vertex penalties | Corrected independent Python enumerator and Rust reference DP; Lean path spec open |
+| Definition 4 | Direct path reward only for two single-edge paths; otherwise skipped-vertex penalties | Corrected Python/Rust references; Lean `pathScore_direct`, `one_two_path_score`, `maximum_score_antitone` and nonempty finite optimum proved |
 | Lemma 5 | Mapped/skipped two-state recurrence | Corrected Rust implementation independently tested; general proof open |
 | Theorem 6 | Rooted real-weight time and space; bounded-integer time improvement | Open; integer space qualification above |
 | Lemma 7 | Prior rectangular matching time/space bound | Externally attributed prerequisite; reusable matching proof remains required for implementation verification |
@@ -102,7 +102,10 @@ bound; do not promote that assumption into an unconditional theorem.
 | Lemma 14 | All vertex-deleted matchings in O(s^4+s^2*t), s<=t | Open |
 | Theorem 15 | Unrooted optimized time O(|T|*|T'|*Delta) and space O(|T|*|T'|) | Open |
 
-Rust and Python currently permit an empty result with score zero, use finite
+Default Rust and Python APIs permit an empty result with score zero; explicit
+nonempty entry points now preserve negative optima and return `None` for
+infeasibility. The independent Lean source specifications require nonempty
+connected common trees and retain negative-infinity weights. Rust/Python use finite
 floating weights with comparison tolerances, and require finite nonnegative
 penalties. These API conventions must be reconciled explicitly with the real
 weight mathematical statements during refinement. No existing test run is a

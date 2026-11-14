@@ -15,3 +15,7 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Paper2004.OrderedTree.decomposition_card_bound
 #print axioms SubtreeProofs.Paper2004.OrderedTree.paperCommon_tree_correct
 #print axioms SubtreeProofs.Rust.OrderedSolver.largest_common_embedding_of_trees
+#print axioms SubtreeProofs.Droschinsky2016.exists_maximum
+#print axioms SubtreeProofs.Droschinsky2016.Valid.inducedIso
+#print axioms SubtreeProofs.Droschinsky2018.exists_maximum
+#print axioms SubtreeProofs.Droschinsky2018.maximum_score_antitone

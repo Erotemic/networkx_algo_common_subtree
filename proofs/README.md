@@ -31,8 +31,12 @@ factor. Full word-representation and dictionary runtime refinement remains open.
 
 `Shared/WeightedMatching` specifies compatible partial matchings with integer
 weights, forbidden pairs and unmatched endpoints. Its executable exhaustive
-matrix optimizer is proved globally optimal. The graph-paper recurrences and
-an efficient verified matching algorithm remain open.
+matrix optimizer is proved globally optimal. `Shared/FiniteTree`, `Droschinsky2016/Specification` and `Witness` establish
+nonempty finite graph optima and concrete induced-tree isomorphisms.
+`Droschinsky2018/Specification` defines unrooted skeletons with disjoint path
+interiors and exact path penalties, and proves finite attainment and penalty
+monotonicity. The graph-paper recurrences, rooted correspondence and an
+efficient verified matching algorithm remain open.
 
 `Rust/Generated` contains unedited Charon/Aeneas output from the maintained
 `verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first

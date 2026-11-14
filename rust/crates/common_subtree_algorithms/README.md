@@ -89,7 +89,12 @@ penalties; edge compatibility and rewards apply only when both paths are
 single edges (Definition 4). Both paper discriminator fixtures return 1.75.
 The independent partial-injection test enumerates small mappings and reconstructs
 their paths, rather than using the solver recurrence or production scorer.
-The empty result has weight zero; negative or nonfinite penalties are rejected.
+The existing APIs permit an empty result of weight zero. Explicit
+`maximum_nonempty_common_subtree_isomorphism` and
+`largest_weight_nonempty_common_subtree_embedding_with_distance_penalty`
+entry points retain negative/zero nonempty optima and return `None` when no
+compatible vertex pair exists. Corresponding Python reference functions
+use the same explicit names. Negative or nonfinite penalties are rejected.
 The floating-weight implementation still uses numerical comparison tolerances.
 
 Lean proves independent exhaustive contraction and partial-matching oracles.

@@ -19,3 +19,7 @@ public import SubtreeProofs.Paper2004.DynamicProgram
 public import SubtreeProofs.Paper2004.LinearEncoding
 public import SubtreeProofs.Paper2004.MemoizedDynamicProgram
 public import SubtreeProofs.Rust.OrderedSolver
+public import SubtreeProofs.Shared.FiniteTree
+public import SubtreeProofs.Droschinsky2016.Specification
+public import SubtreeProofs.Droschinsky2016.Witness
+public import SubtreeProofs.Droschinsky2018.Specification

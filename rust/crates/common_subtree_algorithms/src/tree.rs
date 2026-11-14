@@ -417,13 +417,6 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         })
     }
 
-    fn keep_better(best: &mut Option<CommonSubtree>, candidate: CommonSubtree) {
-        if candidate.weight <= EPS {
-            return;
-        }
-        Self::keep_candidate(best, candidate);
-    }
-
     fn keep_candidate(best: &mut Option<CommonSubtree>, candidate: CommonSubtree) {
         match best {
             None => *best = Some(candidate),
@@ -451,8 +444,20 @@ pub fn maximum_common_subtree_isomorphism<S: Scoring>(
     right: &LabeledTree,
     scoring: &S,
 ) -> CommonSubtree {
+    maximum_nonempty_common_subtree_isomorphism(left, right, scoring)
+        .filter(|result| result.weight > EPS)
+        .unwrap_or_default()
+}
+
+/// Source-style nonempty optimum, retaining negative scores. `None` means no
+/// compatible vertex mapping exists (including inputs with no vertices).
+pub fn maximum_nonempty_common_subtree_isomorphism<S: Scoring>(
+    left: &LabeledTree,
+    right: &LabeledTree,
+    scoring: &S,
+) -> Option<CommonSubtree> {
     if left.is_empty() || right.is_empty() {
-        return CommonSubtree::default();
+        return None;
     }
 
     let mut solver = RootedSolver::new(left, right, scoring);
@@ -466,11 +471,11 @@ pub fn maximum_common_subtree_isomorphism<S: Scoring>(
                 parent_v: None,
             };
             if let Some(candidate) = solver.rooted_isomorphism(state) {
-                RootedSolver::<S>::keep_better(&mut best, candidate);
+                RootedSolver::<S>::keep_candidate(&mut best, candidate);
             }
         }
     }
-    best.unwrap_or_default()
+    best
 }
 
 /// Experimental distance-penalized common subtree embedding between two labeled
@@ -490,12 +495,33 @@ pub fn largest_weight_common_subtree_embedding_with_distance_penalty<S: Scoring>
     scoring: &S,
     skip_vertex_penalty: Weight,
 ) -> CommonSubtree {
+    largest_weight_nonempty_common_subtree_embedding_with_distance_penalty(
+        left,
+        right,
+        scoring,
+        skip_vertex_penalty,
+    )
+    .filter(|result| result.weight > EPS)
+    .unwrap_or_default()
+}
+
+/// Nonempty form of the distance-penalized optimum, retaining negative scores.
+/// Returns `None` when there is no compatible mapped vertex pair.
+///
+/// # Panics
+/// Panics if the penalty is negative or nonfinite.
+pub fn largest_weight_nonempty_common_subtree_embedding_with_distance_penalty<S: Scoring>(
+    left: &LabeledTree,
+    right: &LabeledTree,
+    scoring: &S,
+    skip_vertex_penalty: Weight,
+) -> Option<CommonSubtree> {
     assert!(
         skip_vertex_penalty.is_finite() && skip_vertex_penalty >= 0.0,
         "skip vertex penalty must be finite and nonnegative"
     );
     if left.is_empty() || right.is_empty() {
-        return CommonSubtree::default();
+        return None;
     }
 
     let mut solver = RootedSolver::with_skip_penalty(left, right, scoring, skip_vertex_penalty);
@@ -509,11 +535,11 @@ pub fn largest_weight_common_subtree_embedding_with_distance_penalty<S: Scoring>
                 parent_v: None,
             };
             if let Some(candidate) = solver.rooted_embedding(state) {
-                RootedSolver::<S>::keep_better(&mut best, candidate);
+                RootedSolver::<S>::keep_candidate(&mut best, candidate);
             }
         }
     }
-    best.unwrap_or_default()
+    best
 }
 
 #[cfg(test)]

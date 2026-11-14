@@ -1,8 +1,25 @@
 # Droschinsky, Kriege, Mutzel (2016 and 2018): verified Rust and Lean plan
 
-Status: paper references and Rust reference code available; mathematical formalization not started  
-Updated: 2026-11-13  
+Status: independent graph/path specifications and finite optima proved; reference semantics tested; paper DP/optimization proofs open
+Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
+
+## Graph foundations accepted: 2026-11-14
+
+`Droschinsky2016.Specification` defines nonempty connected partial-bijection
+witnesses, unordered-edge scores over real weights with negative infinity,
+and proves an attained optimum for every finite-tree pair. `Witness` builds
+a genuine induced-graph isomorphism and proves both selected objects are trees.
+`Droschinsky2018.Specification` defines unrooted skeletons with disjoint path
+interiors, exact Definition 4 path contributions, finite optima and general
+penalty monotonicity. Rooted ancestry, source-embedding correspondence, paper
+DP proofs and faster matching work remain open.
+
+Rust/Python now expose explicit nonempty reference APIs retaining negative
+optima and returning `None` for incompatible inputs. Existing APIs retain their
+explicit empty-allowed convention. Rust passes 30 graph tests; Python passes
+55 tests with two extension skips. These are reference implementation tests,
+not refinements of the graph Rust code to the new Lean specification.
 
 ## Accepted increment: 2026-11-14
 
