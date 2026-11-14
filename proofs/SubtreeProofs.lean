@@ -183,3 +183,4 @@ public import SubtreeProofs.Shared.AssignmentSparseSearch
 public import SubtreeProofs.Rust.SparseSearchInverse
 public import SubtreeProofs.Rust.SparseSearchFlags
 public import SubtreeProofs.Rust.SparseSearchInvariant
+public import SubtreeProofs.Rust.SparseSearchBody

@@ -14,6 +14,20 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Actual sparse alternating-search loop body: 2026-11-14
+
+`Rust/SparseSearchBody.body_step_spec` proves one complete actual active Rust
+iteration from the combined independent invariant. The visit guard, counter
+increment, attained cut/update, predecessor/rank writes, inverse-table read
+and both selected-flag writes all succeed. Its exact `afterStep` frame records
+the real terminal/nonterminal branch and all returned vectors, original-index
+predecessors and discovery ranks. Every source error branch in that iteration
+is ruled out from the input/state hypotheses.
+
+This is a source loop-body refinement. Preservation of the entire combined
+invariant by its exact returned state, the finite complete-loop theorem,
+entry-point initialization and executable path flipping remain open.
+
 ## Actual search flags and combined invariant: 2026-11-14
 
 `Rust/SparseSearchFlags` proves that zero-based Boolean-vector writes
