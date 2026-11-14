@@ -123,3 +123,4 @@ public import SubtreeProofs.Rust.MatchingDeletionRepresentation
 public import SubtreeProofs.Rust.MatchingDeletionCorrectness
 public import SubtreeProofs.Rust.MatchingDeletionInvariant
 public import SubtreeProofs.Rust.MatchingDeletionEntrypoint
+public import SubtreeProofs.Shared.CopiedAssignmentReduction

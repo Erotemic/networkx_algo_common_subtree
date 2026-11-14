@@ -524,6 +524,30 @@ formalizations, published optimized algorithms, or end-to-end Rust graph verific
 
 
 
+## Paper copied-graph assignment reduction: 2026-11-14
+
+`WeightedMatching.CopiedAssignmentReduction` now specifies the exact copied
+bipartite construction used by 2016 Lemma 5: nonnegative compatible original
+edges, reversed copied edges with the same weight, zero identity copy edges,
+and forbidden off-diagonal same-side pairs. Its perfect assignments differ
+from those of the dense dummy adapter currently used by the Rust reference.
+
+`assignmentWeight_split` and `assignmentWeight_decode` prove the doubled
+objective equals the sum of the original and copy decoded matching weights.
+`extend_allowed` constructs an actual allowed perfect assignment from any
+nonnegative compatible partial matching. The empty matching always extends,
+including empty sides. `IsMaximum.selected_nonnegative` proves dropping
+negative edges is sound for every independent maximum. Using an independently
+finite exhaustive maximum, `dominates_allowed_decodes` proves that any
+assignment dominating all allowed perfect assignments decodes to independent
+maximum matchings in both components. All statements are generic over the
+ordered ring, including exact integers and reals, with no finite infinity
+sentinel or supplied original-matching optimum premise.
+
+This verifies the source copied-graph reduction, not its optimized execution.
+The paper's initial dual/large-side tight matching, one-augmentation deletion
+repair, sparse/rectangular Rust implementation and runtime bounds remain open.
+
 ## Actual public matching deletion-family total correctness: 2026-11-14
 
 `Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`

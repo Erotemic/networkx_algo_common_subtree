@@ -81,7 +81,7 @@ algorithm; its repeated matching calls do not establish this bound.
 | Lemma 2 | Fixed-root family suffices for the unrestricted optimum | Proved `Droschinsky2016.fixedRootValue_eq_unrootedValue`, using canonical-path ancestry and the unique top vertex of every connected selected subtree |
 | Proposition 3 / Algorithm 1 | Reference unrooted algorithm correctness and bound | Executable rerooting baseline is correct by `RootedDP.unrootedOptimum_correct`; exact paper schedule and operation bound open |
 | Theorem 4 | Optimized unrestricted-weight MCSI bound above | Open |
-| Lemma 5 | Rectangular matching work O(k*l*(k+log l)), k<=l | Open cost/rectangular optimization; exhaustive finite matching and actual square signed-i64 assignment total correctness (`Rust.AssignmentEntrypoint.min_cost_assignment_total_spec`) proved separately |
+| Lemma 5 | Rectangular matching work O(k*l*(k+log l)), k<=l | Exact source copied-graph reduction proved by `WeightedMatching.CopiedAssignmentReduction.dominates_allowed_decodes`; separate actual signed-i64 assignment/partial-matching references proved. Source initial dual, sparse/rectangular optimization and runtime open |
 | Lemma 6 | All one-vertex-deleted matching instances in O(k*l*(min(k,l)+log(max(k,l)))) | Unmatched reuse and affected-vertex count proved by `WeightedMatching.IsMaximum.deleteRight` / `deletion_repair_card_bound`; independent reference family and complete actual Rust reference family API proved (`Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`). One-augmentation repair and runtime open |
 | Theorem 7 | Total matching work in Algorithm 1 | Open |
 | Proposition 8 | Faster unrestricted-weight MCSI implies subcubic dense assignment | Open reduction |
