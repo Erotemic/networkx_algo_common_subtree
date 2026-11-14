@@ -37,6 +37,12 @@ Current assurance is deliberately narrower than the crate's eventual target:
   specification and actual `augment_matching_ranked_tight_spec` show that
   augmentation adds the fresh row, preserves unique earlier-row coverage,
   and retains tightness from tight predecessor edges.
+- `Rust.AssignmentReconstruction` proves the actual complete decoder returns
+  the inverse permutation, exact cost and copied potentials. Both source loops
+  are verified; selected-cost sum safety follows from i64 values and the accepted
+  dimension. `reconstruct_assignment_minimum_spec` proves the actual result is
+  globally optimal from independent complete matching, feasible potentials and
+  tight matched edges. The search and driver must still establish those premises.
 - `Shared.AssignmentDuality` proves the independent feasible/tight optimality
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.

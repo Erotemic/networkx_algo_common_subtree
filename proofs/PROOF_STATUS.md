@@ -467,6 +467,32 @@ formalizations, published optimized algorithms, or end-to-end Rust verification.
 
 
 
+## Actual complete Rust assignment reconstruction: 2026-11-14
+
+`Shared.AssignmentPointerDecoding.PartialRows.exists_permutation` derives an
+inverse permutation from independent complete row coverage and injectivity;
+`full_positive` proves no real column remains unmatched. The pointer tightness
+specification connects to the existing finite assignment tightness criterion.
+
+`Rust.AssignmentInverseReconstruction.reconstruct_inverse_loop_spec` proves
+the actual first reconstruction loop safely writes the complete zero-based
+inverse table and leaves its failure flag absent. The second actual loop,
+`AssignmentCostReconstruction.reconstruct_cost_loop_spec`, returns the exact
+independent selected-cost sum and precise real potential lists. Its arithmetic
+proof bounds every selected-cost prefix by the count times 2^63; count at
+most `u32::MAX` makes every actual checked i128 sum succeed, even at extreme
+signed i64 costs. Arithmetic safety is derived rather than assumed for sums.
+
+`Rust.AssignmentReconstruction.reconstruct_assignment_spec` combines both
+actual loops. `reconstruct_assignment_minimum_spec` derives successful actual
+reconstruction, exact cost and potentials, equality with the feasible dual
+objective, and global minimum cost from independent complete pointer matching,
+feasibility and matched-edge tightness. This verifies final decoding from
+those input invariants, including empty assignments. Establishing them from
+the actual alternating-tree search and full driver, deriving all search
+arithmetic bounds, and cost refinement remain open. The full library builds
+with the four new maintained modules.
+
 ## Actual Rust augmentation and partial matching: 2026-11-14
 
 `Rust.AssignmentAugmentation.augment_matching_spec` proves successful,

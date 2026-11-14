@@ -67,3 +67,7 @@ public import SubtreeProofs.Rust.AssignmentAugmentation
 public import SubtreeProofs.Rust.AssignmentPredecessorPaths
 public import SubtreeProofs.Rust.AssignmentAugmentationPath
 public import SubtreeProofs.Rust.AssignmentAugmentationMatching
+public import SubtreeProofs.Shared.AssignmentPointerDecoding
+public import SubtreeProofs.Rust.AssignmentInverseReconstruction
+public import SubtreeProofs.Rust.AssignmentCostReconstruction
+public import SubtreeProofs.Rust.AssignmentReconstruction
