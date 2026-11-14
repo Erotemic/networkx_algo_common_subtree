@@ -6,6 +6,28 @@ Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtr
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Actual guided-cache bound in original tree parameters: 2026-11-14
+
+`ContractionMeasures` proves that independent edge contractions cannot increase
+actual leaf count or root-to-leaf vertex depth, including contractions at
+arbitrary depth and the singleton boundary. Context monotonicity and the
+independent contraction closure supply both general measure inequalities.
+Together with the proved edge inequality, they imply monotonicity of the
+repaired decomposition bound
+`B(T)=edges(T)*(min(depth(T),actualLeaves(T))+1)+1`.
+
+`Rust.GuidedReconstruction.CorrectGuided.original_cache_bound` now bounds the
+actual complete guided memo by `3*B(left)*B(right)`. The proof uses the actual
+optimal output's independent contractions to bound its decomposition family by
+each original input bound, then accounts for all three real query products.
+`maximum_common_embedding_indexed_guided_cache_of_trees` covers every admitted
+independent tree pair through the actual cache-returning Rust endpoint, with
+only the input edge bounds. No output-size or free cache assumption is needed.
+
+The cache record bound is now entirely in original tree sizes, depths and true
+leaf counts. Stored owned-word payload size, structural comparison/copy costs,
+intermediate allocation and full running-time bounds remain separate work.
+
 ## Actual combined guided-cache bound: 2026-11-14
 
 The actual `maximum_common_embedding_indexed_guided_with_cache` entry point

@@ -157,3 +157,5 @@ public import SubtreeProofs.Rust.GuidedReconstruction
 public import SubtreeProofs.Rust.GuidedIndexedEntrypoint
 public import SubtreeProofs.Paper2004.MemoGrowth
 public import SubtreeProofs.Rust.GuidedCacheGrowth
+public import SubtreeProofs.Paper2004.ContractionMeasures
+public import SubtreeProofs.Rust.GuidedTreeCacheBound
