@@ -5,3 +5,4 @@ public import SubtreeProofs.Paper2004.BalancedSequence
 public import SubtreeProofs.Paper2004.EncodingEquivalence
 public import SubtreeProofs.Paper2004.ContractionSoundness
 public import SubtreeProofs.Paper2004.ContractionCompleteness
+public import SubtreeProofs.Paper2004.PaperContainment
