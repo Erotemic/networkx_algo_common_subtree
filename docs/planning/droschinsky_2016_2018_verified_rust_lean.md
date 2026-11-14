@@ -4,6 +4,30 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+
+## Executable rooted 2018 evaluator: 2026-11-14
+
+`Droschinsky2018.RootedDP.solve_correct` proves that the executable finite
+association table contains both independent mapped/skipped witness optima.
+`rootedOptimum_correct` proves the returned rooted score equals the source
+nonempty optimum. Inputs supply complete finite vertex lists and child lists
+representing the actual oriented tree edges; no optimum, acyclicity or
+evaluation-order certificate is supplied. Fuel is computed as the two input
+list lengths; canonical-path ranks prove that this suffices.
+
+The evaluator supports exact integer arithmetic as well as the abstract real
+model, and handles signed/bottom weights and finite/infinite penalties. The
+matching proof now needs enumeration only of allowed pairs, so each update
+enumerates its child product. Four compiled kernel-evaluated regressions
+(`lake env lean Tests/RootedDynamicProgram.lean`) cover the scaled 1-edge/2-edge
+discriminator (7), infinite penalty (4), negative singleton (-4), and forbidden
+singleton (bottom). `lake build` succeeds (3,549 jobs).
+
+This is a score-table reference with repeated synchronous rounds, linear
+table lookup and exhaustive matching. Returned input-index witnesses,
+representation validation, actual Rust graph refinement, optimized matching
+and published time/space bounds remain outstanding.
+
 ## Overall optima and rooted order accepted: 2026-11-14
 
 The independent rooted 2018 optimum equals the maximum mapped-state entry.

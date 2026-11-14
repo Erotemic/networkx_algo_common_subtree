@@ -21,7 +21,9 @@ jobs:
         run: dev/regenerate_rust_lean.sh --check
       - name: Compile all maintained mathematical and refinement modules
         working-directory: proofs
-        run: lake build
+        run: |
+          lake build
+          lake env lean Tests/RootedDynamicProgram.lean
   rust:
     runs-on: ubuntu-latest
     steps:

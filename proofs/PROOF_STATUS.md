@@ -451,11 +451,35 @@ published cost theorems remain open.
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed-real dummy reduction proved; Hungarian loop, numeric refinement and complexity open |
-| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and algorithm/optimization proofs open |
+| 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and both 2018 boundary recurrences proved; executable rooted 2018 score evaluator proved; optimized algorithms and actual Rust graph refinement open |
 | Verified Python adapters and qualified performance evidence | Open |
 
 The overall program remains active. These results do not complete the paper
 formalizations, published optimized algorithms, or end-to-end Rust verification.
+
+
+## Executable rooted 2018 evaluator: 2026-11-14
+
+`Droschinsky2018.RootedDP.solve_correct` proves that the executable finite
+association table contains both independent mapped/skipped witness optima.
+`rootedOptimum_correct` proves the returned rooted score equals the source
+nonempty optimum. Inputs supply complete finite vertex lists and child lists
+representing the actual oriented tree edges; no optimum, acyclicity or
+evaluation-order certificate is supplied. Fuel is computed as the two input
+list lengths; canonical-path ranks prove that this suffices.
+
+The evaluator supports exact integer arithmetic as well as the abstract real
+model, and handles signed/bottom weights and finite/infinite penalties. The
+matching proof now needs enumeration only of allowed pairs, so each update
+enumerates its child product. Four compiled kernel-evaluated regressions
+(`lake env lean Tests/RootedDynamicProgram.lean`) cover the scaled 1-edge/2-edge
+discriminator (7), infinite penalty (4), negative singleton (-4), and forbidden
+singleton (bottom). `lake build` succeeds (3,549 jobs).
+
+This is a score-table reference with repeated synchronous rounds, linear
+table lookup and exhaustive matching. Returned input-index witnesses,
+representation validation, actual Rust graph refinement, optimized matching
+and published time/space bounds remain outstanding.
 
 ## Shared real and integer scoring: 2026-11-14
 

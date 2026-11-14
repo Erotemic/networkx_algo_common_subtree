@@ -23,6 +23,19 @@ noncomputable def maxDepth (root : V) : Nat := Finset.univ.sup (tree.pathLength 
 theorem depth_le_maxDepth (root u : V) : tree.pathLength root u ≤ tree.maxDepth root :=
   Finset.le_sup (s := Finset.univ) (f := tree.pathLength root) (Finset.mem_univ u)
 
+/-- A simple canonical path visits fewer edges than the total vertex count. -/
+theorem pathLength_lt_card (u v : V) : tree.pathLength u v < Fintype.card V :=
+  (tree.path u v).property.length_lt
+
+theorem maxDepth_lt_card (root : V) : tree.maxDepth root < Fintype.card V := by
+  have hpos : 0 < Fintype.card V := Fintype.card_pos_iff.mpr ⟨root⟩
+  have hbound : tree.maxDepth root ≤ Fintype.card V - 1 := by
+    apply Finset.sup_le
+    intro u _
+    have h := tree.pathLength_lt_card root u
+    omega
+  omega
+
 noncomputable def depthRank (root u : V) : Nat := tree.maxDepth root - tree.pathLength root u
 
 /-- A concrete child dependency strictly decreases the derived rank. -/
@@ -42,6 +55,14 @@ variable {V W : Type*} [Fintype V] [Fintype W]
 
 noncomputable def rank (pair : V × W) : Nat :=
   left.depthRank leftBase pair.1 + right.depthRank rightBase pair.2
+
+/-- Input vertex counts provide a computable upper bound for all ranks. -/
+theorem rank_lt_size (pair : V × W) :
+    rank left right leftBase rightBase pair < Fintype.card V + Fintype.card W := by
+  have hl := left.maxDepth_lt_card leftBase
+  have hr := right.maxDepth_lt_card rightBase
+  unfold rank FiniteTree.depthRank
+  omega
 
 /-- Dependencies of the pair of mapped/skipped values: descend in one input
 or in both inputs while preserving the two ambient orientations. -/

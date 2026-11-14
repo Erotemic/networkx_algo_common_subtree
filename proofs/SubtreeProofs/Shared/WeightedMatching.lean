@@ -100,16 +100,30 @@ theorem mem_candidates (allPairs : List (L × R)) (weights : L → R → Option 
     exact List.mem_toFinset.mpr (complete p)
   simp [hsub]
 
+omit [AddCommMonoid W] [LinearOrder W] in
+/-- Forbidden pairs need not be enumerated. Completeness on compatible pairs
+suffices to enumerate every independently feasible matching. -/
+theorem mem_candidates_of_allowed_complete (allPairs : List (L × R)) (weights : L → R → Option W)
+    (complete : ∀ p, weights p.1 p.2 ≠ none → p ∈ allPairs) (pairs : Finset (L × R)) :
+    pairs ∈ candidates allPairs weights ↔ Valid weights pairs := by
+  simp only [candidates, List.mem_filter, decide_eq_true_eq, mem_subsets_iff]
+  constructor
+  · exact And.right
+  · intro hv
+    refine ⟨?_, hv⟩
+    intro p hp
+    exact List.mem_toFinset.mpr (complete p (hv.1 p hp))
+
 /-- Executable exhaustive optimizer with deterministic list tie choices. -/
 def exhaustive (allPairs : List (L × R)) (weights : L → R → Option W) : Finset (L × R) :=
   ((candidates allPairs weights).argmax (weight weights)).getD ∅
 
-/-- Global optimality of the executable exhaustive matching oracle. -/
-theorem exhaustive_correct (allPairs : List (L × R)) (weights : L → R → Option W)
-    (complete : ∀ p, p ∈ allPairs) :
+/-- Global optimality needs enumeration of compatible pairs only. -/
+theorem exhaustive_correct_of_allowed_complete (allPairs : List (L × R)) (weights : L → R → Option W)
+    (complete : ∀ p, weights p.1 p.2 ≠ none → p ∈ allPairs) :
     IsMaximum weights (exhaustive allPairs weights) := by
   have hempty : (∅ : Finset (L × R)) ∈ candidates allPairs weights :=
-    (mem_candidates allPairs weights complete ∅).mpr (valid_empty weights)
+    (mem_candidates_of_allowed_complete allPairs weights complete ∅).mpr (valid_empty weights)
   have hnonempty : candidates allPairs weights ≠ [] := by
     intro h
     simp [h] at hempty
@@ -121,9 +135,22 @@ theorem exhaustive_correct (allPairs : List (L × R)) (weights : L → R → Opt
   have hout : exhaustive allPairs weights = best := by simp [exhaustive, hbest]
   rw [hout]
   constructor
-  · exact (mem_candidates allPairs weights complete best).mp (List.argmax_mem hmem)
+  · exact (mem_candidates_of_allowed_complete allPairs weights complete best).mp (List.argmax_mem hmem)
   · intro other hother
-    exact List.le_of_mem_argmax ((mem_candidates allPairs weights complete other).mpr hother) hmem
+    exact List.le_of_mem_argmax ((mem_candidates_of_allowed_complete allPairs weights complete other).mpr hother) hmem
+
+/-- Global optimality when the supplied enumeration contains every pair. -/
+theorem exhaustive_correct (allPairs : List (L × R)) (weights : L → R → Option W)
+    (complete : ∀ p, p ∈ allPairs) :
+    IsMaximum weights (exhaustive allPairs weights) :=
+  exhaustive_correct_of_allowed_complete allPairs weights (fun p _ => complete p)
+
+omit [DecidableEq L] [DecidableEq R] in
+/-- Any two global maximizers have the same objective value. -/
+theorem IsMaximum.weight_eq {weights : L → R → Option W} {first second : Finset (L × R)}
+    (hfirst : IsMaximum weights first) (hsecond : IsMaximum weights second) :
+    weight weights first = weight weights second :=
+  le_antisymm (hsecond.2 first hfirst.1) (hfirst.2 second hsecond.1)
 
 /-- A rectangular finite matrix supplies its allPairs without hypotheses. -/
 def solveMatrix (n m : Nat) (weights : Fin n → Fin m → Option W) : Finset (Fin n × Fin m) :=
