@@ -29,3 +29,4 @@ public import SubtreeProofs.Droschinsky2016.Rooted
 public import SubtreeProofs.Droschinsky2016.BranchDecomposition
 public import SubtreeProofs.Droschinsky2016.RootedRecurrence
 public import SubtreeProofs.Droschinsky2018.Witness
+public import SubtreeProofs.Droschinsky2018.Reconstruction

@@ -87,7 +87,7 @@ bound; do not promote that assumption into an unconditional theorem.
 
 | Source | Target | State |
 | --- | --- | --- |
-| Definitions 1--2 | Topological path embeddings and rooted/root-to-root common skeletons | Independent unrooted skeleton/path/score spec and finite optimum proved. `Valid.rooted_realizations` constructs the common tree and source-style root-to-root embeddings at corresponding chosen roots, using proved path lifting/ancestry. Fixed ambient roots and converse source correspondence open |
+| Definitions 1--2 | Topological path embeddings and rooted/root-to-root common skeletons | Independent unrooted skeleton/path/score spec and finite optimum proved. `Valid.rooted_realizations` constructs the common tree and source-style root-to-root embeddings at corresponding chosen roots, using proved path lifting/ancestry. `pairedImage_valid` proves the reverse bridge for explicit unrooted path realizations, with exact `score_pairedImage` and pair round trip. Fixed ambient roots and converse from the two local rooted source clauses remain open |
 | Theorem 3 | Prior Gupta--Nishimura result | Externally attributed prerequisite; not claimed as a new result by this paper |
 | Definition 4 | Direct path reward only for two single-edge paths; otherwise skipped-vertex penalties | Corrected Python/Rust references; Lean `pathScore_direct`, `one_two_path_score`, `maximum_score_antitone` and nonempty finite optimum proved |
 | Lemma 5 | Mapped/skipped two-state recurrence | Corrected Rust implementation independently tested; general proof open |

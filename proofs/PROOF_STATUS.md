@@ -231,6 +231,23 @@ the converse from arbitrary source embeddings, score equivalence and the
 mapped/skipped recurrence remain open. The chosen-root result does not justify
 the 2016 fixed-root shortcut for topological embeddings.
 
+## Explicit-realization reconstruction accepted: 2026-11-14
+
+`TopologicalEmbedding.selectedIso` proves that the selected-image skeleton of
+an explicit independent path realization is exactly its abstract common tree.
+Its tree and interior-disjointness invariants follow from the realization;
+they are not additional hypotheses. `Droschinsky2018.pairedImage_valid` proves
+two realizations yield a valid finite pair witness, and
+`Valid.realizations_roundtrip` proves extraction/reconstruction preserves all
+pairs. `score_pairedImage` equates the finite-pair score with the independent
+sum over the abstract common tree's vertices and unordered edges, for every
+finite or infinite penalty and signed/bottom scores.
+
+The finite skeleton and explicit unrooted path-realization formats now agree
+in both directions with exact scores. The converse from the source's two local
+rooted clauses to the global path-realization invariant, admissibility for fixed
+ambient roots, and the two-state algorithm are still open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

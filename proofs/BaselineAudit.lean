@@ -26,3 +26,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Droschinsky2016.fixedRootValue_eq_unrootedValue
 #print axioms SubtreeProofs.Droschinsky2016.rooted_matching_recurrence
 #print axioms SubtreeProofs.Droschinsky2018.Valid.rooted_realizations
+#print axioms SubtreeProofs.Droschinsky2018.pairedImage_valid
+#print axioms SubtreeProofs.Droschinsky2018.score_pairedImage
