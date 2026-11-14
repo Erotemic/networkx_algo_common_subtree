@@ -100,3 +100,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SparseSearch.inverse_completed_spec
 
 #print axioms SubtreeProofs.Rust.SparseSearch.body_step_spec
+
+#print axioms SubtreeProofs.Rust.SparseSearch.body_preserves_spec

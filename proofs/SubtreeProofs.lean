@@ -184,3 +184,7 @@ public import SubtreeProofs.Rust.SparseSearchInverse
 public import SubtreeProofs.Rust.SparseSearchFlags
 public import SubtreeProofs.Rust.SparseSearchInvariant
 public import SubtreeProofs.Rust.SparseSearchBody
+public import SubtreeProofs.Rust.SparseSearchTightness
+public import SubtreeProofs.Rust.SparseSearchGrowth
+public import SubtreeProofs.Rust.SparseSearchRanks
+public import SubtreeProofs.Rust.SparseSearchPreservation

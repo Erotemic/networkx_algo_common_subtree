@@ -38,6 +38,26 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## Complete sparse search-body invariant preservation: 2026-11-14
+
+`Rust/SparseSearchPreservation.body_preserves_spec` proves that an actual
+active Rust iteration preserves the entire independent search invariant and
+strictly decreases `n + 1 - steps`. The exact output frame is supplied by the
+previous loop-body refinement; no post-state invariant is a premise.
+
+`SparseSearchTightness` retains old real matching and discovered predecessor
+edges under the physical potential update. `SparseSearchGrowth` covers both
+terminal and nonterminal flag branches, free-target preservation and exact
+visit accounting. `SparseSearchRanks` proves the actual vector writes record
+the next positive discovery count, preserve earlier edges and ranks, and make
+every new predecessor either the root or point to a strictly earlier discovered
+matched column. `afterStep_invariant` combines those results with the proved
+feasibility, two-sided envelope and objective accounting of the returned
+potential vectors.
+
+The complete finite-loop theorem, source entry-point initialization/output
+refinement, path flip and deletion driver remain open.
+
 ## Actual sparse alternating-search loop body: 2026-11-14
 
 `Rust/SparseSearchBody.body_step_spec` proves one complete actual active Rust
