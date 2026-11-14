@@ -31,20 +31,21 @@ namespace TopologicalEmbedding
 variable {A B V : Type*} [DecidableEq V]
   {first : FiniteTree A} {second : FiniteTree B} {target : FiniteTree V}
 
-/-- Reindexing the abstract common tree preserves its path realization. -/
-def precompose (embedding : TopologicalEmbedding second target) (iso : first.graph ≃g second.graph) :
-    TopologicalEmbedding first target where
-  map := embedding.map ∘ iso
-  injective := embedding.injective.comp iso.injective
-  avoids_vertices := fun a b hab c => embedding.avoids_vertices (iso a) (iso b)
-    ((iso.map_rel_iff).mpr hab) (iso c)
+/-- Restriction along any injective graph map between common trees. -/
+def precomposeHom (embedding : TopologicalEmbedding second target) (f : first.graph →g second.graph)
+    (hinj : Function.Injective f) : TopologicalEmbedding first target where
+  map := embedding.map ∘ f
+  injective := embedding.injective.comp hinj
+  avoids_vertices := fun a b hab c => embedding.avoids_vertices (f a) (f b) (f.map_rel hab) (f c)
   interior_disjoint := by
     intro a b hab c d hcd hn
-    apply embedding.interior_disjoint (iso a) (iso b) ((iso.map_rel_iff).mpr hab)
-      (iso c) (iso d) ((iso.map_rel_iff).mpr hcd)
+    apply embedding.interior_disjoint (f a) (f b) (f.map_rel hab) (f c) (f d) (f.map_rel hcd)
     intro he
-    apply hn
-    exact Sym2.map.injective iso.injective he
+    exact hn (Sym2.map.injective hinj he)
+
+/-- Reindexing the abstract common tree preserves its path realization. -/
+def precompose (embedding : TopologicalEmbedding second target) (iso : first.graph ≃g second.graph) :
+    TopologicalEmbedding first target := embedding.precomposeHom iso.toHom iso.injective
 
 /-- Every abstract edge has a nontrivial target path. -/
 theorem edge_length_pos (embedding : TopologicalEmbedding first target) {a b : A}

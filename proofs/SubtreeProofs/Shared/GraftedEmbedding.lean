@@ -41,6 +41,7 @@ theorem branch_index {i j : I} (a : A i) (b : A j)
   rw [he] at hi
   exact hchildren (target.child_branches_disjoint (hadj i).1 (hadj j).1 hi hj)
 
+omit [Fintype I] [∀ i, Fintype (A i)] in
 include hchildren hadj hregion in
 theorem map_injective : Function.Injective (map parent embeddings) := by
   intro first second he

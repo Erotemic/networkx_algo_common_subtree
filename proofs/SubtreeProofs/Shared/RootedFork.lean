@@ -59,6 +59,12 @@ theorem mem_path_of_adj {a b c : V} (ha : tree.graph.Adj a b) :
   rw [he]
   rfl
 
+@[simp] theorem pathLength_eq_zero (a b : V) : tree.pathLength a b = 0 ↔ a = b := by
+  constructor
+  · exact SimpleGraph.Walk.eq_of_length_eq_zero
+  · rintro rfl
+    exact tree.pathLength_self _
+
 theorem pathLength_adj {a b : V} (ha : tree.graph.Adj a b) : tree.pathLength a b = 1 := by
   have he := congrArg Subtype.val (tree.path_unique (tree.path a b) (SimpleGraph.Path.singleton ha))
   unfold pathLength

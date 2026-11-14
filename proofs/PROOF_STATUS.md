@@ -9,10 +9,10 @@ not a maintainer-reported build. All maintained modules are imported by
 `SubtreeProofs.lean`. Reproduction commands, pins, translation boundaries,
 and bind-mount instructions are in [VERIFICATION.md](VERIFICATION.md).
 
-The opt-in `BaselineAudit.lean` endpoint review established the initial
-allowed set `propext`, `Classical.choice`, `Quot.sound`; no endpoint adds a
-dependency outside that set. Raw output was captured during validation.
-Routine development checks are targeted compilation, not repeated audits.
+The prior opt-in `BaselineAudit.lean` endpoint review established the initial
+allowed set `propext`, `Classical.choice`, `Quot.sound`; raw output was captured.
+The opt-in module also names newer endpoints for a later final dependency
+review. Routine development checks are targeted compilation, not repeated audits.
 
 All ordered-tree declarations below have prefix
 `SubtreeProofs.Paper2004.OrderedTree`.
@@ -332,6 +332,20 @@ and exact branch-path intersections are derived from those concrete hypotheses.
 at their parent. This supplies the structural assembly direction for a mapped
 2018 state. The score identity, matching optimum and full mapped recurrence
 remain open.
+
+## Mapped-branch score identities accepted: 2026-11-14
+
+`Droschinsky2018.realizationScore_graft` proves the exact abstract-tree score
+of a graft: the parent vertex once, one connecting path pair per branch, and
+each branch's internal score once. `connecting_path_score` proves that the
+connecting path is direct exactly when the common branch root is the immediate
+input-child pair. `connecting_reward_boundary` equates its complete reward
+with the mapped edge-plus-boundary value in that case and the skipped boundary
+value otherwise. Longer paths consult no edge reward or compatibility.
+
+These identities include infinite penalties and signed/bottom weights.
+Combining finite branch witness choices with optimal matching, proving the
+full mapped-root recurrence, evaluation/optimization and Rust refinement remain open.
 
 ## Executed independent evidence
 
