@@ -1,5 +1,22 @@
 # Common-subtree proof status
 
+## Initial proof scope: IEEE-754 deliberately excluded
+
+Author instruction, 2026-11-14: IEEE-754 correctness is outside the initial
+proof scope. Numerical rounding, floating-point stability and overflow
+correspondence are not required initial proof endpoints. Existing historical
+entries listing floating arithmetic equivalence as open describe an unproved
+boundary; they do not override this scope decision.
+
+Mathematical correctness, matching and witness correctness, production
+algorithm/schedule correspondence and applicable complexity proofs remain
+required. Each correspondence theorem must disclose its arithmetic model and
+preconditions. A theorem in exact/abstract ordered arithmetic is not a theorem
+about actual `f64` execution. Existing exact integer source proofs keep their
+checked-arithmetic safety guarantees. Runtime finite-value, precision and
+overflow behavior remains tested independently. No theorem or assumption was
+added or changed to implement this scope decision.
+
 ## Python integration and software-first sequencing: 2026-11-14
 
 The existing graph Rust DPs for both Droschinsky families are now exposed

@@ -14,6 +14,13 @@ work. Independent exhaustive objectives and witness validation establish the
 software baseline without claiming that these tests are formal verification.
 The precise current ledger is ``proofs/PROOF_STATUS.md``.
 
+IEEE-754 correctness is deliberately outside the initial proof scope.
+Mathematical and production-structure correspondence theorems must state their
+arithmetic model explicitly; idealized arithmetic proofs do not establish
+actual floating-point rounding or overflow correctness. Those numerical
+behaviors retain software regression tests. Algorithmic, witness and applicable
+complexity verification remain required.
+
 Problem scope
 -------------
 

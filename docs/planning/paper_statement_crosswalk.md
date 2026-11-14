@@ -67,6 +67,10 @@ ring `K`. Real instantiation gives the source scores; integer instantiation
 shares the same witness and optimum proofs for the exact implementation track.
 Negative infinity and infinite penalties remain explicit. This does not
 identify IEEE floating arithmetic with exact real arithmetic.
+IEEE-754 correctness is deliberately excluded from the initial proof scope
+(author instruction, 2026-11-14); see the
+[arithmetic scope decision](README.md#initial-proof-scope-arithmetic-boundary).
+Algorithm, witness, production-structure and complexity proofs remain required.
 
 The precise v4 unrestricted-weight bound is
 `O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))`.

@@ -28,6 +28,25 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
+## Initial proof scope: arithmetic boundary
+
+Per the author's 2026-11-14 instruction, **IEEE-754 correctness is deliberately
+excluded from the initial proof scope**. Prove the mathematical algorithms,
+matching, witnesses, optimized schedules and applicable complexity results.
+Rust correspondence must state its arithmetic model and any arithmetic
+preconditions explicitly. Exact integer-core proofs retain their existing
+checked-arithmetic guarantees. Do not identify idealized ordered-ring/real
+operations with actual `f64` operations or claim an end-to-end IEEE-754 proof.
+
+Floating-point rounding, numerical stability and overflow correspondence are
+not initial proof-completion gates. Keep finite-input, overflow and precision
+regressions as software tests. This exclusion does not remove the remaining
+algorithmic, witness, production-structure or complexity proof obligations.
+The [proof ledger](../../proofs/PROOF_STATUS.md) must distinguish those open
+obligations from this intentionally excluded numerical scope. This decision
+supersedes earlier planning text listing floating arithmetic equivalence as
+required proof work.
+
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
 wheel passes all 199 tests with native backends mandatory. Independent graph

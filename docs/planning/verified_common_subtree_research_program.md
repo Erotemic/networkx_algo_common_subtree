@@ -338,8 +338,10 @@ than the direct edge reward, and an edge-label mismatch does not forbid a
 permitted longer-path embedding. Discriminating regression cases pass; see the
 [Droschinsky plan](droschinsky_2016_2018_verified_rust_lean.md). The independent
 mathematical scoring correspondence and rooted recurrences are proved. Actual
-Rust graph refinement and equivalence between floating execution and exact
-mathematical scores remain open. The paper's rule remains authoritative; any
+Rust graph refinement remains open. Equivalence between IEEE-754 execution
+and exact mathematical scores is deliberately excluded from the initial
+proof scope; see the [arithmetic scope decision](README.md#initial-proof-scope-arithmetic-boundary).
+The paper's rule remains authoritative; any
 alternative objective needs its own name and tests.
 
 ## 7. Testing and independent evidence
