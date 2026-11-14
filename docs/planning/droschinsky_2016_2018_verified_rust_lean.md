@@ -14,6 +14,32 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Sparse alternating-search reference and verified inverse initializer: 2026-11-14
+
+The maintained Rust `sparse_search::find_sparse_augmenting_path` now performs
+an alternating search with the proved allowed-edge cut/update primitive. It
+takes a completed permutation whose root edge is temporary, preserves the
+remaining assignment during search, and records original-coordinate
+predecessor rows and positive column discovery ranks. It checks dimensions,
+permutation validity and root bounds, and reports exhausted/absent cuts and
+arithmetic errors explicitly. Its full-matrix cut scans make this a reference
+search, without the paper's sparse priority-queue runtime claim.
+
+`Rust/SparseSearchInverse.inverse_completed_spec` proves the actual seed
+validator/inverse-table loops succeed for every represented permutation and
+return its exact inverse, including all checked array writes and termination.
+The complete alternating loop's feasibility/tightness, predecessor-rank,
+termination and output-path refinement remain open; native results do not
+substitute for that Lean endpoint.
+
+The twelve-test exact-core suite passes. New independent tests exercise 120
+single-deficit sparse states through dimension five, including nonidentity
+completed permutations and nonzero feasible potentials on both sides. They
+follow the returned predecessor rows, check strictly decreasing positive
+discovery ranks, flip the resulting path, and compare the complete tight
+assignment and dual objective against exhaustive permutation optima. Malformed
+shapes/permutations, an invalid root and an absent cut are also covered.
+
 ## Alternating sparse-cut growth and old-edge tightness: 2026-11-14
 
 `Shared/AssignmentSparseSearch` describes a deficient matching by completing

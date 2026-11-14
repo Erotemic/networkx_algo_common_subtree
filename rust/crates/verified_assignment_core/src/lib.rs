@@ -412,3 +412,5 @@ mod tests;
 pub mod deletion;
 
 pub mod sparse;
+
+pub mod sparse_search;

@@ -180,3 +180,4 @@ public import SubtreeProofs.Rust.SparseCutUpdateSafety
 public import SubtreeProofs.Rust.SparseCutBiInput
 public import SubtreeProofs.Rust.SparseCutStep
 public import SubtreeProofs.Shared.AssignmentSparseSearch
+public import SubtreeProofs.Rust.SparseSearchInverse
