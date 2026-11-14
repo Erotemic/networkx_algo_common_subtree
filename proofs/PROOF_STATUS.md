@@ -96,6 +96,13 @@ path witnesses. This enables independently rescored 512-node benchmarks but
 adds no Lean validation, source-refinement or asymptotic proof. The native
 solver binaries and all mathematical/source proof endpoints are unchanged.
 
+2018 now omits global-left-root deletion matchings and skipped messages that
+neither structural optimum case queries. Independent forbidden-root path and
+parent-deletion regressions still pass (44 native, 176 installed tests, all
+five ABI3 runtimes). Star512 improves 5.10× in repeated installed measurements.
+This is tested production optimization; the dependency argument, skipped-
+highest decomposition and actual source refinement still need Lean proofs.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

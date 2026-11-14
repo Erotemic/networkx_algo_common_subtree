@@ -51,8 +51,12 @@ crate is outside the current extraction boundary. No new end audit was run.
 - **Independent rescoring** validates supplied paths directly, preserves the
   separate exhaustive bare-pair checker, and improves 64-node embedding
   validation 70–342×. The complete 2018 96-row scaling run now reaches 512
-  vertices: chains 0.125 s, stars 1.182 s, witness validation about 5 ms.
+  vertices, with witness validation about 5 ms.
   [Evidence and limits](../../dev/benchmarks/2026-11-14-path-rescoring.md).
+- **Unused global-root work** is removed from 2018 while retaining the skipped-
+  highest path case. Star512 improves **1.182→0.232 s (5.10×)**; double-star512
+  improves **1.69×**. All 44 native and 176 installed tests pass.
+  [Repeated scaling evidence](../../dev/benchmarks/2026-11-14-embedding-root-matching.md).
 - **Ordered APIs** retain all weighted/rooted/native modes and original vertices,
   opaque hashable tokens and full Python Unicode. Installed equality/fractional/
   unweighted comparisons cover Python, Cython, legacy and verified Rust.
@@ -69,8 +73,7 @@ crate is outside the current extraction boundary. No new end audit was run.
 
 1. Finish any remaining intended ordered variants/extensions, notably original-
    index exposure of the existing verified structural isomorphism core.
-2. Continue measured optimization, including unnecessary global-root matching
-   families on large 2018 stars and applicable bounded-integer improvements.
+2. Continue measured optimization, including applicable bounded-integer improvements.
    Preserve independent oracles and default-backend feature/performance gates.
 3. Validate portable wheel builds and CI, then finish mathematical/production
    refinement, witnesses, affinity extensions and formal time/space proofs.

@@ -526,5 +526,53 @@
         }
       }
     }
+  },
+  "global_root_matching_update": {
+    "abi3_wheel_sha256": "82502e3848e6331412fa70ff263691ff3fc34a67e92ee4aef54673d304af1d63",
+    "normal_wheel_sha256": "fa01910c00280c85add6ac9c74df788b22d988c5e98fea1485dd971567a2b41b",
+    "extension_sha256": "f4cbf06bf448c58559c6aca348ca2727f77b7003d79da6f35f2eae5d4649b091",
+    "tests_per_runtime": {
+      "3.10": {
+        "passed": 176,
+        "skipped": 0
+      },
+      "3.11": {
+        "passed": 176,
+        "skipped": 0
+      },
+      "3.12": {
+        "passed": 176,
+        "skipped": 0
+      },
+      "3.13": {
+        "passed": 176,
+        "skipped": 0
+      },
+      "3.14": {
+        "passed": 176,
+        "skipped": 0
+      }
+    },
+    "normal_required_native_tests_passed": 176,
+    "abi3audit": {
+      "specs": {
+        "/tmp/common-subtree-root-embedding-abi3-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-linux_x86_64.whl": {
+          "kind": "wheel",
+          "wheel": [
+            {
+              "name": "_rust.abi3.so",
+              "result": {
+                "is_abi3": true,
+                "is_abi3_baseline_compatible": true,
+                "baseline": "3.10",
+                "computed": "3.10",
+                "non_abi3_symbols": [],
+                "future_abi3_objects": {}
+              }
+            }
+          ]
+        }
+      }
+    }
   }
 }

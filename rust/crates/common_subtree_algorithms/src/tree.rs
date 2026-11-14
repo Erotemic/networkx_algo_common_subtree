@@ -620,6 +620,14 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                 }
             }
         }
+        // The global left root has no parent caller. M1 uses only its whole
+        // right views, while M2 reads its children, so no deletion is needed.
+        if state.parent_u.is_none() {
+            let matching = max_weight_bipartite_matching(&matrix);
+            let full = self.combine_rooted_matches(state, root_weight, &matching, &child_results);
+            self.embedding_memo.insert(state, Some(full));
+            return;
+        }
         let matchings = max_weight_bipartite_matching_with_right_deletions(&matrix);
         let full = self.combine_rooted_matches(state, root_weight, &matchings.base, &child_results);
         self.embedding_memo.insert(state, Some(full));
@@ -659,6 +667,10 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     },
                     &left_children,
                 );
+            }
+            // No higher left subtree can query these root-level skip messages.
+            if parents[u].is_none() {
+                continue;
             }
             // Maxima from skipping u to one left child, for every right view.
             let mut left_best = vec![None; stride];
