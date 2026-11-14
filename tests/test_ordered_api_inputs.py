@@ -63,3 +63,30 @@ def test_ordered_graphs_reject_cycles_and_multiple_parents(solve):
     for graph in invalid:
         with pytest.raises(TypeError, match="forest"):
             solve(graph, valid)
+
+
+def test_rooted_isomorphism_does_not_promote_a_descendant_root():
+    solve = balanced_isomorphism.longest_common_balanced_isomorphism
+    for impl in _backends("isomorphism", unweighted=False):
+        general, score = solve("([])", "[]", {"(": ")", "[": "]"}, impl=impl)
+        assert general == ("[]", "[]") and score == 1
+        rooted, score = solve("([])", "[]", {"(": ")", "[": "]"}, impl=impl, rooted=True)
+        assert rooted == ("", "") and score == 0
+        with pytest.raises(TypeError, match="rooted"):
+            solve("()", "()", {"(": ")"}, impl=impl, rooted="yes")
+
+
+def test_rooted_ordered_graph_witnesses_retain_original_roots_and_scores():
+    left, right = nx.DiGraph([("a", "b")]), nx.DiGraph([("x", "y")])
+    weights = {("a", "x"): 1, ("b", "y"): 2.5, ("b", "x"): 10}
+    for impl in _backends("isomorphism", unweighted=False):
+        for item_type in ["chr", "number"]:
+            options = dict(impl=impl, item_type=item_type, node_affinity=lambda a, b: weights.get((a, b), 0))
+            _, _, general_score = maximum_common_ordered_subtree_isomorphism(left, right, **options)
+            first, second, score = maximum_common_ordered_subtree_isomorphism(left, right, rooted=True, **options)
+            assert score == 3.5 and general_score == 10
+            assert list(first.nodes) == ["a", "b"]
+            assert list(second.nodes) == ["x", "y"]
+            assert set(first.edges) <= set(left.edges)
+            assert set(second.edges) <= set(right.edges)
+            assert sum(weights[u, v] for u, v in zip(first.nodes, second.nodes)) == score

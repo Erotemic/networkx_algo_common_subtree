@@ -6,7 +6,7 @@ from ._types import OrderedDiGraph
 
 
 def maximum_common_ordered_subtree_isomorphism(
-    tree1, tree2, node_affinity="auto", impl="auto", item_type="auto"
+    tree1, tree2, node_affinity="auto", impl="auto", item_type="auto", *, rooted=False
 ):
     """
     Finds the maximum common subtree-isomorphism between two ordered trees.
@@ -45,6 +45,11 @@ def maximum_common_ordered_subtree_isomorphism(
         Determines the backend data structure used to encode the tree as a
         balanced sequence. Defaults to "auto", other valid options are "chr"
         and "number".
+
+    rooted : bool
+        Preserve the input forest's root level. For connected input trees,
+        every nonempty output must retain both original roots. The default
+        general mode may select descendant roots.
 
     Returns
     -------
@@ -103,6 +108,7 @@ def maximum_common_ordered_subtree_isomorphism(
         open_to_node=open_to_node,
         node_affinity=node_affinity,
         impl=impl,
+        rooted=rooted,
     )
     subseq1, subseq2 = best
 

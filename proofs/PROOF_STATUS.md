@@ -24,6 +24,14 @@ API. Strict binary auditing and 149 tests on each CPython 3.10–3.14 validate
 packaging/runtime behavior; they add no Lean claim about Python/FFI conversion
 or the floating-point graph production implementations.
 
+The public ordered isomorphism APIs also expose their existing root-preserving
+level state as `rooted=True`. Independent parent-preserving subset enumeration
+checks optimum, original indices and fractional witness scores across Python,
+Cython and legacy PyO3 Rust. All 153 installed-wheel tests pass, including the
+ABI3 runtime matrix. This weighted production implementation is still outside
+the existing structural unweighted `Rust.OrderedIsomorphism` source proofs;
+no new source-refinement or runtime theorem is claimed by the API exposure.
+
 Substantial remaining formalization is deferred until public functionality,
 independent correctness and measured efficiency are established. All existing
 proofs are preserved; full mathematical, production-source and applicable

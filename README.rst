@@ -88,6 +88,12 @@ At its core the ``maximum_common_ordered_subtree_embedding`` function is an impl
 And ``maximum_common_ordered_subtree_isomorphism`` is a variant of the above
 algorithm that returns common subtree ismorphism instead of subtree minors.
 
+For ordered isomorphism, ``rooted=True`` preserves the input root level:
+every nonempty result for connected input trees retains both original roots.
+The default allows descendant roots. The balanced-sequence isomorphism API
+accepts the same option to preserve its implicit forest parent. Both modes
+support the existing affinity scoring and original-node mappings.
+
 
 Demo
 ----

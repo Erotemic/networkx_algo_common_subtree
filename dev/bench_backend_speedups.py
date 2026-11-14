@@ -151,7 +151,7 @@ def available_impls(kind: str, *, include_restricted: bool = False) -> list[str]
     raise KeyError(kind)
 
 
-def call_backend(kind: str, case: Case, impl: str, *, node_affinity):
+def call_backend(kind: str, case: Case, impl: str, *, node_affinity, rooted=False):
     if kind == "embedding":
         return balanced_embedding.longest_common_balanced_embedding(
             case.seq1,
@@ -167,6 +167,7 @@ def call_backend(kind: str, case: Case, impl: str, *, node_affinity):
             case.open_to_close,
             node_affinity=node_affinity,
             impl=impl,
+            rooted=rooted,
         )
     raise KeyError(kind)
 
@@ -180,6 +181,7 @@ def main(argv=None) -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--labels", type=int, default=3, choices=[1, 2, 3])
     parser.add_argument("--shapes", default="random,chain,star,balanced,asymmetric,chain-star")
+    parser.add_argument("--rooted-isomorphism", action="store_true", help="Measure the root-preserving level state for isomorphism")
     parser.add_argument(
         "--functions",
         default="embedding,isomorphism",
@@ -218,6 +220,8 @@ def main(argv=None) -> int:
 
     sizes = [int(p) for p in args.sizes.split(",") if p]
     kinds = [p.strip() for p in args.functions.split(",") if p.strip()]
+    if args.rooted_isomorphism and "isomorphism" not in kinds:
+        parser.error("--rooted-isomorphism requires --functions to include isomorphism")
     cases = make_cases(
         sizes=sizes,
         cases_per_size=args.cases,
@@ -273,6 +277,7 @@ def main(argv=None) -> int:
                     return call_backend(
                         kind, case, impl,
                         node_affinity=affinity,
+                        rooted=args.rooted_isomorphism,
                     )
 
                 try:
@@ -284,6 +289,7 @@ def main(argv=None) -> int:
                 except Exception as ex:
                     row = {
                         "kind": kind,
+                        "rooted": kind == "isomorphism" and args.rooted_isomorphism,
                         "node_affinity": args.node_affinity,
                         "case": case.name,
                         "pairs1": len(case.seq1) // 2,
@@ -305,6 +311,7 @@ def main(argv=None) -> int:
 
                 row = {
                     "kind": kind,
+                    "rooted": kind == "isomorphism" and args.rooted_isomorphism,
                     "node_affinity": args.node_affinity,
                     "case": case.name,
                     "pairs1": len(case.seq1) // 2,

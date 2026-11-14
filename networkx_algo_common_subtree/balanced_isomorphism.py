@@ -30,7 +30,7 @@ def available_impls_longest_common_balanced_isomorphism():
 
 
 def longest_common_balanced_isomorphism(
-    seq1, seq2, open_to_close, open_to_node=None, node_affinity="auto", impl="auto"
+    seq1, seq2, open_to_close, open_to_node=None, node_affinity="auto", impl="auto", *, rooted=False
 ):
     r"""
     Finds the longest common balanced sequence isomorphism between two
@@ -73,6 +73,13 @@ def longest_common_balanced_isomorphism(
         :func:`available_impls_longest_common_balanced_isomorphism`.
         The default is "auto", which chooses "iter-rust" if available,
         then "iter-cython", otherwise "iter".
+
+    rooted : bool
+        Preserve the implicit parent of the balanced forest. Top-level output
+        vertices must be top-level input vertices, and skipped subtrees never
+        promote descendants. The default general mode may choose a forest
+        below any original parent. Weights, mapping and witness formats are
+        identical in both modes.
 
     Returns
     -------
@@ -120,6 +127,8 @@ def longest_common_balanced_isomorphism(
     subseq1 = '{([(){()}])}'
     >>> assert value == 6
     """
+    if not isinstance(rooted, bool):
+        raise TypeError("rooted must be a bool")
     if impl == "auto":
         if _rust_lcsi_backend(error="ignore"):
             impl = "iter-rust"
@@ -158,7 +167,7 @@ def longest_common_balanced_isomorphism(
         )
     elif impl == "iter-rust":
         val_any, best_any, val_lvl, best_lvl = _lcsi_iter_rust(
-            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, rooted=rooted
         )
     elif impl == "recurse":
         _memo = {}
@@ -175,8 +184,8 @@ def longest_common_balanced_isomorphism(
     else:
         raise KeyError(impl)
 
-    best = best_any
-    value = val_any
+    best = best_lvl if rooted else best_any
+    value = val_lvl if rooted else val_any
     if not isfinite(value):
         raise ValueError("ordered affinity total overflow: score must be finite")
     return best, value
@@ -195,11 +204,11 @@ def _rust_lcsi_backend(error="ignore"):
     return _backend(error=error)
 
 
-def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
+def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, *, rooted=False):
     from .balanced_isomorphism_rust import _lcsi_iter_rust as _backend
 
     best, value = _backend(
-        full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, rooted=rooted
     )
     return value, best, value, best
 

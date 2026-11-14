@@ -14,7 +14,7 @@ def _rust_lcsi_backend(error="ignore"):
     return _rust
 
 
-def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
+def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, *, rooted=False):
     backend = _rust_lcsi_backend(error="raise")
     subseq1, subseq2, value = backend.longest_common_balanced_isomorphism(
         full_seq1,
@@ -22,5 +22,6 @@ def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_
         open_to_close,
         open_to_node=open_to_node,
         node_affinity=node_affinity,
+        rooted=rooted,
     )
     return (subseq1, subseq2), value

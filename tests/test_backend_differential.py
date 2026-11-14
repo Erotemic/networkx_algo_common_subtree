@@ -65,7 +65,7 @@ def _embedding_oracle(left: str, right: str, alphabet):
 
 
 @lru_cache(maxsize=None)
-def _isomorphism_closure(word: str, alphabet):
+def _isomorphism_closure(word: str, alphabet, rooted=False):
     """Enumerate adjacency-preserving selections with one common parent.
 
     Parse the original parent relation, then inspect every vertex subset.
@@ -87,7 +87,7 @@ def _isomorphism_closure(word: str, alphabet):
     for mask in range(1, 1 << len(parents)):
         selected = {i for i in range(len(parents)) if mask & (1 << i)}
         external_parents = {parents[i] for i in selected if parents[i] not in selected}
-        if len(external_parents) == 1:
+        if len(external_parents) == 1 and (not rooted or external_parents == {-1}):
             result.add("".join(token for token, i in zip(word, pair_ids) if i in selected))
     return frozenset(result)
 
@@ -108,23 +108,25 @@ def _backends(kind: str, unweighted: bool):
     return enabled
 
 
-def _solve(kind: str, left: str, right: str, alphabet, affinity: str | None, impl: str):
+def _solve(kind: str, left: str, right: str, alphabet, affinity: str | None, impl: str, *, rooted=False):
     solver = (
         balanced_embedding.longest_common_balanced_embedding
         if kind == "embedding"
         else balanced_isomorphism.longest_common_balanced_isomorphism
     )
-    return solver(left, right, dict(alphabet), node_affinity=affinity, impl=impl)
+    options = {"rooted": rooted} if kind == "isomorphism" else {}
+    return solver(left, right, dict(alphabet), node_affinity=affinity, impl=impl, **options)
 
 
-def _check_case(kind: str, left: str, right: str, alphabet, affinity: str | None):
+def _check_case(kind: str, left: str, right: str, alphabet, affinity: str | None, *, rooted=False):
     backends = _backends(kind, unweighted=affinity is None)
     scores = {}
     closure = _deletion_closure if kind == "embedding" else _isomorphism_closure
-    left_closure = closure(left, alphabet)
-    right_closure = closure(right, alphabet)
+    options = {"rooted": rooted} if kind == "isomorphism" else {}
+    left_closure = closure(left, alphabet, **options)
+    right_closure = closure(right, alphabet, **options)
     for impl in backends:
-        (out_left, out_right), score = _solve(kind, left, right, alphabet, affinity, impl)
+        (out_left, out_right), score = _solve(kind, left, right, alphabet, affinity, impl, rooted=rooted)
         assert out_left in left_closure, (kind, impl, left, out_left)
         assert out_right in right_closure, (kind, impl, right, out_right)
         assert len(out_left) == len(out_right) == 2 * score, (kind, impl, score, out_left, out_right)
@@ -145,6 +147,14 @@ def test_exhaustive_single_label_through_four_edges(kind):
     for left in words:
         for right in words:
             _check_case(kind, left, right, alphabet, None)
+
+
+def test_exhaustive_rooted_isomorphism_through_four_pairs():
+    alphabet = BRACKETS[:1]
+    words = [word for n in range(5) for word in _dyck_words(n, alphabet)]
+    for left in words:
+        for right in words:
+            _check_case("isomorphism", left, right, alphabet, None, rooted=True)
 
 
 @pytest.mark.parametrize("kind", ["embedding", "isomorphism"])
@@ -178,7 +188,7 @@ def _indexed_word(word, offset):
     return tuple(sequence), mapping
 
 
-def _subset_witnesses(sequence, pairs, kind):
+def _subset_witnesses(sequence, pairs, kind, *, rooted=False):
     """Original-index subsets and their shape, with explicit parent checks."""
     stack, parents, ids = [], {}, []
     for token in sequence:
@@ -193,7 +203,8 @@ def _subset_witnesses(sequence, pairs, kind):
     for mask in range(1 << len(vertices)):
         selected = {v for i, v in enumerate(vertices) if mask & (1 << i)}
         if kind == "isomorphism" and selected:
-            if len({parents[v] for v in selected if parents[v] not in selected}) != 1:
+            external = {parents[v] for v in selected if parents[v] not in selected}
+            if len(external) != 1 or (rooted and external != {None}):
                 continue
         witness = tuple(token for token, v in zip(sequence, ids) if v in selected)
         shape = tuple(token in pairs for token in witness)
@@ -201,8 +212,10 @@ def _subset_witnesses(sequence, pairs, kind):
     return records
 
 
-@pytest.mark.parametrize("kind", ["embedding", "isomorphism"])
+@pytest.mark.parametrize("kind", ["embedding", "isomorphism", "rooted-isomorphism"])
 def test_fractional_affinity_optima_original_indices_and_rescoring(kind):
+    rooted = kind == "rooted-isomorphism"
+    oracle_kind = "embedding" if kind == "embedding" else "isomorphism"
     rng = random.Random(20042016)
     words = [w for n in range(5) for w in _dyck_words(n, BRACKETS[:1])]
     for _ in range(80):
@@ -213,8 +226,8 @@ def test_fractional_affinity_optima_original_indices_and_rescoring(kind):
         nodes = {v: ("original", v) for v in pairs}
         weights = {(nodes[u], nodes[v]): rng.choice([0, .125, 1.0, 3.75]) for u in lp for v in rp}
         affinity = lambda u, v: weights[u, v]
-        ls = _subset_witnesses(left, pairs, kind)
-        rs = _subset_witnesses(right, pairs, kind)
+        ls = _subset_witnesses(left, pairs, oracle_kind, rooted=rooted)
+        rs = _subset_witnesses(right, pairs, oracle_kind, rooted=rooted)
         optimum = 0
         for _, lshape, lvertices in ls:
             for _, rshape, rvertices in rs:
@@ -225,8 +238,9 @@ def test_fractional_affinity_optima_original_indices_and_rescoring(kind):
         solver = (balanced_embedding.longest_common_balanced_embedding if kind == "embedding" else
                   balanced_isomorphism.longest_common_balanced_isomorphism)
         for impl in _backends(kind, unweighted=False):
+            options = {"rooted": rooted} if oracle_kind == "isomorphism" else {}
             (out_left, out_right), score = solver(left, right, pairs, open_to_node=nodes,
-                                                 node_affinity=affinity, impl=impl)
+                                                 node_affinity=affinity, impl=impl, **options)
             assert out_left in {x[0] for x in ls}, (kind, impl, left, out_left)
             assert out_right in {x[0] for x in rs}, (kind, impl, right, out_right)
             assert tuple(t in pairs for t in out_left) == tuple(t in pairs for t in out_right)

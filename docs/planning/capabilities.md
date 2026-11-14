@@ -10,6 +10,7 @@ milestones; full verification remains a final verified-release requirement.
 | Ordered embedding, equality/custom affinity | `maximum_common_ordered_subtree_embedding`, `balanced_embedding.longest_common_balanced_embedding`; `auto` prefers legacy Rust, then Cython, then Python | Python iterative/recursive, Cython, memoized/interned PyO3 Rust; exhaustive pair-deletion oracle and differential tests | Installed balanced API: legacy Rust median 4.43x/3.25x over Python/Cython for equality, 3.87x/3.12x for fractional affinities. Production affinity implementation not source verified |
 | Ordered embedding, unweighted | Same APIs with `node_affinity=None`; opt-in `impl="verified-rust"` | Also actual verified flat-token Rust core, original-index token readback and graph adapter tests | Lean proves core optimum, witnesses, parser, memo bounds and guided reconstruction. Installed API verified backend is 6.99x slower than legacy Rust at median (1.28–137x range); it remains opt-in. Full production runtime proof open |
 | Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; independent original-parent subset enumeration checks adjacency-preserving forest feasibility and optima | Single-label exhaustive cases, multicolor equality and fractional original-node affinity comparisons pass. Verified structural reference Rust core exists but original-index verified Python backend is missing |
+| Root-preserving ordered isomorphism | Both isomorphism APIs accept `rooted=True`; same backends/default | Exposes the already-computed level state; 529 exhaustive small pairs, 80 fractional original-index cases, graph root retention and independent rescoring | Installed Rust median 2.16x/1.57x faster than Python/Cython on the rooted weighted suite. Existing unweighted root-pruning math/source reference is distinct from this weighted legacy production implementation; its refinement remains open |
 | Droschinsky 2016 weighted unordered isomorphism | Public `maximum_common_subtree_isomorphism`; `auto` selects Rust, Python exhaustive fallback | Existing Rust DP bound through PyO3; signed/fractional scalar or callback weights, optional label equality, empty/nonempty objectives, original-node/path witnesses and independent rescorer | Installed API/raw-binding benchmark covers chains, stars, balanced/random and asymmetric trees. Mathematical recurrence proofs exist; graph Rust refinement and published optimized matching runtime remain open |
 | Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Existing Rust DP; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Installed API benchmark exists; optimized schedule/runtime and graph Rust refinement remain open |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching`, exhaustive injection tests | Used internally by graph DP. Signed optional weights; f64 arithmetic, not an exact-integer proof |
@@ -101,6 +102,13 @@ exists only in a separate benchmark executable; the math/production-source
 proof boundary is unchanged. [Evidence and limits](../../dev/benchmarks/2026-11-14-graph-shared-witness.md).
 
 ## Immediate implementation queue
+
+Root-preserving ordered isomorphism is now usable through Python/Cython/Rust,
+including affinity scoring and original-vertex graph witnesses. Fresh normal
+and ABI3 wheels pass **153 tests, zero skips**; the identical ABI3 artifact
+passes the full suite on each CPython 3.10–3.14 and strict symbol auditing.
+The benchmark distinguishes rooted/general mathematical contracts explicitly.
+[Rooted validation/performance evidence](../../dev/benchmarks/2026-11-14-ordered-rooted-weighted.md).
 
 An opt-in Rust-only **cp310-abi3** build now enables PyO3's actual limited API,
 rejects incompatible Cython configurations, and passes strict symbol auditing

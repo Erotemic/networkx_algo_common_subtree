@@ -30,13 +30,19 @@ inventory and evidence are in [capabilities.md](capabilities.md).
 
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
-wheel passes all 139 tests with native backends mandatory. Independent graph
+wheel passes all 153 tests with native backends mandatory. Independent graph
 witness rescoring and exhaustive optimum comparisons are included. Installed
 API measurements identify high-degree matching as the next graph performance
 bottleneck. Rectangular matching already improves 32-vertex stars by
 2.68x/2.20x for the two families; these DPs do not yet reproduce the published optimized
 schedules. See the capability matrix and benchmark evidence before continuing
 the remaining ordered coverage, correctness and optimization tasks.
+
+The ordered isomorphism APIs now expose the existing root-preserving level
+state with `rooted=True`, alongside the default general state. Independent
+parent-preserving subset enumeration validates both contracts and fractional
+affinities. Normal and genuine Rust-only ABI3 wheels are tested; the latter
+passes the complete 153-test API suite on each CPython 3.10–3.14.
 
 ## Verified actual one-path sparse augmentation: 2026-11-14
 

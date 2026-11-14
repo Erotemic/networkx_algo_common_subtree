@@ -604,7 +604,7 @@ fn longest_common_balanced_embedding(
     Ok((best1, best2, out.val).into_py(py))
 }
 
-#[pyfunction(signature = (seq1, seq2, open_to_close, open_to_node=None, node_affinity=None))]
+#[pyfunction(signature = (seq1, seq2, open_to_close, open_to_node=None, node_affinity=None, *, rooted=false))]
 fn longest_common_balanced_isomorphism(
     py: Python<'_>,
     seq1: PyObject,
@@ -612,6 +612,7 @@ fn longest_common_balanced_isomorphism(
     open_to_close: PyObject,
     open_to_node: Option<PyObject>,
     node_affinity: Option<PyObject>,
+    rooted: bool,
 ) -> PyResult<PyObject> {
     let mut solver = Solver::new(
         py,
@@ -624,7 +625,8 @@ fn longest_common_balanced_isomorphism(
 
     let s1 = 0u32;
     let s2 = 0u32;
-    let out = solver.iso(s1, s2)?.any;
+    let result = solver.iso(s1, s2)?;
+    let out = if rooted { result.lvl } else { result.any };
     if !out.val.is_finite() {
         return Err(pyo3::exceptions::PyValueError::new_err(
             "ordered affinity total overflow: score must be finite",
