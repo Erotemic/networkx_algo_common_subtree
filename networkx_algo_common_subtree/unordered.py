@@ -87,9 +87,15 @@ class _Scoring(reference.ExactLabelScoring):
         return super().node_weight(left, u, right, v)
 
     def edge_weight(self, left, u, uc, right, v, vc):
+        a = self.left_edges.get(frozenset((u, uc)))
+        b = self.right_edges.get(frozenset((v, vc)))
+        if a is None or b is None:
+            return None
         if self.edge_table is not None:
-            return self.edge_table[self.left_edges[frozenset((u, uc))]][self.right_edges[frozenset((v, vc))]]
-        return super().edge_weight(left, u, uc, right, v, vc)
+            return self.edge_table[a][b]
+        if left.edges[a][2] == right.edges[b][2]:
+            return self.edge_match_weight
+        return None
 
 
 class _Problem:
@@ -199,49 +205,104 @@ def largest_weight_common_subtree_embedding_with_distance_penalty(
     return _solve(problem, impl, allow_empty, skip_vertex_penalty)
 
 
+def _score_path_witness(problem, left, right, indexed, paths, li, ri, penalty):
+    """Check supplied paths directly, independently of the optimization DP."""
+    if len(paths) != max(0, len(indexed) - 1):
+        raise ValueError("witness paths do not describe a tree on its mapped vertices")
+    mapping = dict(indexed)
+    selected_right = set(mapping.values())
+    skeleton = {u: [] for u in mapping}
+    used_left, used_right, seen = set(), set(), set()
+    contributions = []
+    for lp, rp in paths:
+        try:
+            lp, rp = tuple(li[u] for u in lp), tuple(ri[v] for v in rp)
+        except KeyError as ex:
+            raise ValueError("witness path contains an unknown vertex") from ex
+        if len(lp) < 2 or len(rp) < 2 or mapping.get(lp[0]) != rp[0] or mapping.get(lp[-1]) != rp[-1]:
+            raise ValueError("witness path endpoints disagree with its mapping")
+        if len(set(lp)) != len(lp) or len(set(rp)) != len(rp):
+            raise ValueError("witness paths must be original simple tree paths")
+        if (any(frozenset(edge) not in problem.scoring.left_edges for edge in zip(lp, lp[1:])) or
+                any(frozenset(edge) not in problem.scoring.right_edges for edge in zip(rp, rp[1:]))):
+            raise ValueError("witness paths must be original simple tree paths")
+        left_interior, right_interior = set(lp[1:-1]), set(rp[1:-1])
+        if left_interior.intersection(mapping) or right_interior.intersection(selected_right):
+            raise ValueError("witness path contains an interior mapped vertex")
+        if left_interior & used_left or right_interior & used_right:
+            raise ValueError("witness paths overlap at an interior vertex")
+        used_left.update(left_interior)
+        used_right.update(right_interior)
+        key = tuple(sorted((lp[0], lp[-1])))
+        if key in seen or (penalty is None and (len(lp) != 2 or len(rp) != 2)):
+            raise ValueError("witness paths repeat an edge or violate isomorphism adjacency")
+        seen.add(key)
+        skeleton[lp[0]].append(lp[-1])
+        skeleton[lp[-1]].append(lp[0])
+        if len(lp) == 2 and len(rp) == 2:
+            weight = problem.scoring.edge_weight(left, lp[0], lp[-1], right, rp[0], rp[-1])
+            if weight is None:
+                raise ValueError("incompatible mapped edges in witness paths")
+            contribution = _finite(weight)
+        else:
+            contribution = _finite(-penalty * (len(lp) + len(rp) - 4))
+        contributions.append((key, contribution))
+    if mapping:
+        reached, pending = set(), [next(iter(mapping))]
+        while pending:
+            u = pending.pop()
+            if u not in reached:
+                reached.add(u)
+                pending.extend(skeleton[u])
+        if len(reached) != len(mapping):
+            raise ValueError("witness paths do not connect its mapped vertices")
+    score = 0.0
+    for u, v in indexed:
+        weight = problem.scoring.node_weight(left, u, right, v)
+        if weight is None:
+            raise ValueError("incompatible mapped nodes in witness")
+        score = _finite(score + _finite(weight))
+    # Preserve the independent reference's summation order, including when
+    # callers reorder or reverse their otherwise equivalent path witnesses.
+    for _, contribution in sorted(contributions):
+        score = _finite(score + contribution)
+    return score
+
+
 def _rescore(problem, witness, penalty):
     left, right = problem.references()
     li = {node: i for i, node in enumerate(problem.left[0])}
     ri = {node: i for i, node in enumerate(problem.right[0])}
     pairs = witness.node_pairs if isinstance(witness, CommonSubtreeResult) else tuple(witness)
     try:
-        indexed = tuple((li[u], ri[v]) for u, v in pairs)
+        indexed = reference._canonical_pairs((li[u], ri[v]) for u, v in pairs)
     except KeyError as ex:
         raise ValueError("witness contains a node outside its input tree") from ex
+    if isinstance(witness, CommonSubtreeResult):
+        return _score_path_witness(problem, left, right, indexed, witness.edge_paths, li, ri, penalty)
     if penalty is None:
         score = reference.score_subtree_isomorphism_witness(left, right, indexed, problem.scoring)
     else:
         score = reference.score_embedding_witness(left, right, indexed, problem.scoring, penalty)
-    if isinstance(witness, CommonSubtreeResult):
-        if len(witness.edge_paths) != max(0, len(pairs)-1):
-            raise ValueError("witness paths do not describe a tree on its mapped vertices")
-        mapping = dict(indexed)
-        seen = set()
-        for lp, rp in witness.edge_paths:
-            try:
-                lp, rp = tuple(li[u] for u in lp), tuple(ri[v] for v in rp)
-            except KeyError as ex:
-                raise ValueError("witness path contains an unknown vertex") from ex
-            if len(lp) < 2 or len(rp) < 2 or mapping.get(lp[0]) != rp[0] or mapping.get(lp[-1]) != rp[-1]:
-                raise ValueError("witness path endpoints disagree with its mapping")
-            if lp != left.path(lp[0], lp[-1]) or rp != right.path(rp[0], rp[-1]):
-                raise ValueError("witness paths must be original simple tree paths")
-            if any(u in mapping for u in lp[1:-1]) or any(v in mapping.values() for v in rp[1:-1]):
-                raise ValueError("witness path contains an interior mapped vertex")
-            key = frozenset((lp[0], lp[-1]))
-            if key in seen or (penalty is None and (len(lp) != 2 or len(rp) != 2)):
-                raise ValueError("witness paths repeat an edge or violate isomorphism adjacency")
-            seen.add(key)
     return score
 
 
 def score_common_subtree_isomorphism(tree1, tree2, witness, *, node_label=None, edge_label=None, node_weight=1.0, edge_weight=1.0):
-    """Independently validate and rescore an original-node 2016 witness."""
+    """Independently validate and rescore an original-node 2016 witness.
+
+    Result objects validate their supplied paths directly. Bare node-pair
+    iterables use the separate reference validator.
+    """
     return _rescore(_Problem(tree1, tree2, node_label, edge_label, node_weight, edge_weight), witness, None)
 
 
 def score_common_subtree_embedding(tree1, tree2, witness, *, skip_vertex_penalty=0.0, node_label=None, edge_label=None, node_weight=1.0, edge_weight=1.0):
-    """Independently validate/rescore original-node paths using the 2018 rule."""
+    """Independently validate/rescore original-node paths using the 2018 rule.
+
+    Result objects check original edges, simple paths, disjoint interiors and
+    the connected common skeleton without enumerating every mapped pair.
+    Bare node-pair iterables retain the small reference path/skeleton validator.
+    """
     penalty = _finite(skip_vertex_penalty)
     if penalty < 0:
         raise ValueError("skip vertex penalty must be finite and nonnegative")

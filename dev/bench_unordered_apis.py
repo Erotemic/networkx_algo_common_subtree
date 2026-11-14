@@ -55,6 +55,7 @@ def main():
     parser.add_argument("--seed", type=int, default=2018)
     parser.add_argument("--algorithm", choices=["both", "isomorphism", "embedding"], default="both")
     parser.add_argument("--weights", choices=["scalar", "callbacks"], default="scalar")
+    parser.add_argument("--time-rescoring", action="store_true", help="Also time independent public witness validation")
     parser.add_argument("--module-trees", action="store_true", help="Also measure three existing ResNet-sized fixtures")
     parser.add_argument("--json", type=Path, required=True)
     args = parser.parse_args()
@@ -117,11 +118,21 @@ def main():
                         return getattr(common, name)(left, right, impl=backend, **labels, **api_weights, **extra)
                 samples, result = measure(call, args.repeat, args.warmup)
                 weight = result[0] if backend == "raw-pyo3" else result.weight
+                rescore_samples = None
                 if backend != "raw-pyo3":
-                    assert scorer(left, right, result, **labels, **api_weights, **extra) == weight
+                    def rescore():
+                        return scorer(left, right, result, **labels, **api_weights, **extra)
+                    if args.time_rescoring:
+                        rescore_samples, rescored = measure(rescore, args.repeat, args.warmup)
+                    else:
+                        rescored = rescore()
+                    assert rescored == weight
                 values.append(weight)
                 row = dict(algorithm=name, shape=shape, left_size=n, right_size=m, backend=backend, weights=args.weights,
                            samples_seconds=samples, median_seconds=statistics.median(samples), weight=weight)
+                if rescore_samples is not None:
+                    row.update(rescore_samples_seconds=rescore_samples,
+                               rescore_median_seconds=statistics.median(rescore_samples))
                 rows.append(row)
                 print(json.dumps(row), flush=True)
             assert len(set(values)) == 1, (name, shape, n, m, values)

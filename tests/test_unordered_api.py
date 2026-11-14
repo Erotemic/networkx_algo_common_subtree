@@ -205,6 +205,9 @@ def test_signed_optional_callback_tables_against_exhaustive_objectives():
                 assert result.weight == oracle.weight
                 scoring = {k: v for k, v in kwargs.items() if k != "allow_empty"}
                 assert scorer(left, right, result, **scoring, **extra) == result.weight
+                # Bare pairs take the separate exhaustive path/skeleton
+                # validator, independent of the supplied-path fast path.
+                assert scorer(left, right, result.node_pairs, **scoring, **extra) == result.weight
 
 
 @pytest.mark.parametrize("leaves", [2, 5])
@@ -322,3 +325,51 @@ def test_reordered_edges_keep_callback_indices_and_optima(kind):
         assert scorer(left, right, result, **kwargs) == result.weight
         optima.append(result.weight)
     assert optima[0] == optima[1]
+
+
+@pytest.mark.parametrize("kind", ["iso", "embedding"])
+def test_path_witness_validation_and_reordering(kind):
+    tree = nx.path_graph(3)
+    scorer = (common.score_common_subtree_isomorphism if kind == "iso" else
+              common.score_common_subtree_embedding)
+    result = common.CommonSubtreeResult(999, ((0, 0), (1, 1), (2, 2)),
+                                       (((0, 1), (0, 1)), ((1, 2), (1, 2))))
+    assert scorer(tree, tree, result) == 5  # Rescore independently of claimed weight.
+    reversed_paths = tuple((a[::-1], b[::-1]) for a, b in reversed(result.edge_paths))
+    assert scorer(tree, tree, replace(result, edge_paths=reversed_paths)) == 5
+    bad = [
+        replace(result, node_pairs=((0, 0), (0, 1), (2, 2))),
+        replace(result, node_pairs=((0, 0), (1, 0), (2, 2))),
+        replace(result, node_pairs=((0, 0), (1, 1), (99, 2))),
+        replace(result, edge_paths=()),
+        replace(result, edge_paths=(((0, 99, 1), (0, 1)), ((1, 2), (1, 2)))),
+        replace(result, edge_paths=(((0, 1, 0, 1), (0, 1)), ((1, 2), (1, 2)))),
+        replace(result, edge_paths=(((0, 2), (0, 2)), ((1, 2), (1, 2)))),
+        replace(result, edge_paths=(((0, 1, 2), (0, 1, 2)), ((1, 2), (1, 2)))),
+        replace(result, edge_paths=(((0, 1), (0, 1)), ((0, 1), (0, 1)))),
+        replace(result, edge_paths=(((0, 1), (1, 0)), ((1, 2), (1, 2)))),
+    ]
+    for witness in bad:
+        with pytest.raises(ValueError):
+            scorer(tree, tree, witness)
+    for kwargs in [dict(node_weight=lambda u, v: None), dict(edge_weight=lambda a, b: None),
+                   dict(node_weight=1e308)]:
+        with pytest.raises(ValueError):
+            scorer(tree, tree, result, **kwargs)
+
+
+@pytest.mark.parametrize("overlap_side", ["left", "right"])
+def test_path_witness_rejects_unselected_branch_overlap(overlap_side):
+    star, path = nx.star_graph(3), nx.path_graph(3)
+    pairs = ((1, 0), (2, 1), (3, 2))
+    paths = (((1, 0, 2), (0, 1)), ((2, 0, 3), (1, 2)))
+    left, right = star, path
+    if overlap_side == "right":
+        left, right = path, star
+        pairs = tuple((v, u) for u, v in pairs)
+        paths = tuple((b, a) for a, b in paths)
+    witness = common.CommonSubtreeResult(0, pairs, paths)
+    with pytest.raises(ValueError, match="overlap"):
+        common.score_common_subtree_embedding(left, right, witness)
+    with pytest.raises(ValueError):
+        common.score_common_subtree_embedding(left, right, pairs)

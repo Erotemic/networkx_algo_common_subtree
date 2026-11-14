@@ -87,6 +87,15 @@ installed tests pass, including five ABI3 runtimes. This closes an implementatio
 cost gap, not any Lean dichotomy, choice-witness, source-refinement, f64 or
 complexity obligation. Those proofs remain required for the final release.
 
+Public result-object rescoring now independently checks the supplied simple
+path families, injectivity, disjoint interiors, original edges and connected
+common skeleton, then applies the paper's scoring rule. Small signed cases
+also compare the separate exhaustive bare-pair validator. All 176 installed
+tests pass (normal required-native and five ABI3 runtimes), including malformed
+path witnesses. This enables independently rescored 512-node benchmarks but
+adds no Lean validation, source-refinement or asymptotic proof. The native
+solver binaries and all mathematical/source proof endpoints are unchanged.
+
 ## Accepted development: 2026-11-14
 
 `cd proofs && lake build` succeeds under Lean 4.35.0, Mathlib

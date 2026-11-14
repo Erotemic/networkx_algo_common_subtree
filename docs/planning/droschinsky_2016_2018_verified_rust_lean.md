@@ -10,7 +10,7 @@ Both graph families are now public NetworkX/PyO3 APIs, with optional labels,
 signed scalar/callback weights, empty/nonempty objectives, original-node/path
 witnesses and independent exhaustive references/rescorers. Exact source-proved
 integer assignment/partial matching are also public Python APIs. The installed
-Release wheel passes all 172 tests with compiled backends required. Python
+Release wheel passes all 176 tests with compiled backends required. Python
 conversion and f64 graph DPs remain tested, not source proved.
 
 Measured optimization removes padded dummy matching matrices and roots the
@@ -22,8 +22,9 @@ both families store reconstruction choices instead of full per-state mappings.
 Independent deletion and graph oracles pass. The 2018 fixed-left mapped/skipped
 schedule and skipped-highest path join are implemented and independently
 tested. Directed-edge IDs and original edge metadata now give constant-time
-view/branch queries, with a written operation-count argument. Efficient public
-witness rescoring and complete production complexity/refinement remain tasks.
+view/branch queries, with a written operation-count argument. Independent
+supplied-path rescoring is now practical at 512 nodes. Complete production
+complexity/refinement remains open.
 Substantial formal work below is
 deferred until software coverage/correctness/performance are established;
 existing proofs are preserved, and full verification remains a final-release
