@@ -1,0 +1,9 @@
+media/
+slides/
+__pycache__/
+.pytest_cache/
+*.mp4
+*.webm
+*.png
+*.svg
+*.pdf
