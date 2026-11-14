@@ -29,14 +29,18 @@ correct, keys unique, and lookup/insertion counts bounded by the D-product.
 Its association-list lookup comparisons carry an extra proved state-count
 factor. Full word-representation and dictionary runtime refinement remains open.
 
-`Shared/WeightedMatching` specifies compatible partial matchings with integer
-weights, forbidden pairs and unmatched endpoints. Its executable exhaustive
-matrix optimizer is proved globally optimal. `Shared/FiniteTree`, `Droschinsky2016/Specification` and `Witness` establish
-nonempty finite graph optima and concrete induced-tree isomorphisms.
-`Droschinsky2018/Specification` defines unrooted skeletons with disjoint path
-interiors and exact path penalties, and proves finite attainment and penalty
-monotonicity. The graph-paper recurrences, rooted correspondence and an
-efficient verified matching algorithm remain open.
+`Shared/WeightedMatching` specifies signed partial matchings with forbidden
+pairs and proves a finite exhaustive optimizer correct. `AssignmentReduction`
+proves the exact real-weight dummy-assignment reduction. `Shared/FiniteTree`
+and `RootedTree` supply canonical paths, ancestry and connected-subtree geometry.
+`Droschinsky2016/Specification` and `Witness` define independent nonempty graph
+optima; `Rooted` proves fixed-root Lemma 2, and `RootedRecurrence` proves Eq. (1)
+with exact score decomposition and concrete branch assembly. Efficient recursive
+evaluation, Hungarian correctness, cost bounds and Rust refinement remain open.
+`Droschinsky2018/Specification` defines skeletons and exact path penalties;
+`Witness` constructs source-style rooted embeddings at corresponding chosen
+roots. Shared path lifting proves ancestry preservation. Converse source
+correspondence, fixed ambient roots and the mapped/skipped recurrence remain open.
 
 `Rust/Generated` contains unedited Charon/Aeneas output from the maintained
 `verified_ordered_core` Rust crate. `Rust/ContractionBudget` proves its first

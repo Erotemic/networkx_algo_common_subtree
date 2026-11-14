@@ -22,6 +22,10 @@ variable {V : Type*} (tree : FiniteTree V)
 def Ancestor (root ancestor vertex : V) : Prop :=
   ancestor ∈ (tree.path root vertex).val.support
 
+/-- Parent-to-child adjacency in the orientation determined by a root. -/
+def Child (root parent child : V) : Prop :=
+  tree.graph.Adj parent child ∧ tree.Ancestor root parent child
+
 @[simp] theorem ancestor_refl (root vertex : V) : tree.Ancestor root vertex vertex :=
   (tree.path root vertex).val.end_mem_support
 

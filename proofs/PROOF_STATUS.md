@@ -213,6 +213,24 @@ certified finite exhaustive oracle; the continuation values are independently
 specified optima, not an implemented recursive DP. Efficient evaluation,
 state representation, Rust refinement and Proposition 1's runtime remain open.
 
+## Topological source-witness direction accepted: 2026-11-14
+
+`Shared.TopologicalEmbedding` specifies an independent common tree with an
+injective map, canonical edge paths, no mapped vertices in edge interiors,
+and disjoint interiors for distinct edges. `liftWalk_isPath` proves that
+lifting an abstract simple path yields a target simple path; `ancestor_iff`
+proves ancestry preservation/reflection. `toRooted` and
+`branch_paths_intersection` establish both clauses of 2018 Definition 1
+for corresponding chosen roots, with the root-to-root property explicit.
+
+`Droschinsky2018.Valid.skeletonIso` constructs an actual isomorphism between
+the selected skeleton trees. `Valid.rooted_realizations` constructs the common
+tree and both source-style rooted embeddings, with their images recovering
+exactly the original finite pair relation. Fixed ambient-root admissibility,
+the converse from arbitrary source embeddings, score equivalence and the
+mapped/skipped recurrence remain open. The chosen-root result does not justify
+the 2016 fixed-root shortcut for topological embeddings.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

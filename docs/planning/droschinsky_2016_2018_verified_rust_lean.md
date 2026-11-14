@@ -4,6 +4,16 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Topological witness direction accepted: 2026-11-14
+
+`Droschinsky2018.Valid.rooted_realizations` now constructs an explicit common
+tree and two injective embeddings satisfying both clauses of Definition 1,
+with the root-to-root property at corresponding chosen roots. Their pair
+relation is exactly the independent skeleton witness. Simple abstract paths
+lift to simple target paths and preserve/reflect ancestry. Fixed ambient-root
+restrictions, converse source correspondence, score bridge and the two-state
+recurrence remain open; no graph Rust refinement is claimed.
+
 ## Rooted matching recurrence accepted: 2026-11-14
 
 `Droschinsky2016.rooted_matching_recurrence` proves Eq. (1) against the
