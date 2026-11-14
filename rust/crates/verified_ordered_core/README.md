@@ -48,8 +48,10 @@ that reconstructs the optimum shape in both original inputs. Its indexed words
 carry zero-based opening/preorder pair identities. Independent labeled-tree
 contraction tests validate all feasible/infeasible requested shapes and both
 public optimum witnesses on all 38,809 pairs through six edges. Copying,
-concatenation and exact checked preorder numbering have compiled source proofs;
-reconstruction completeness and the full public indexed refinement are pending.
+concatenation, checked preorder numbering and total reconstruction now have
+compiled source proofs. Reconstruction rejects exactly independently infeasible
+patterns and otherwise returns a valid indexed contraction of the requested
+shape. Composition into the full public indexed optimum theorem is pending.
 This is a backtracking reconstruction and makes no optimized cost claim.
 
 The established embedding/isomorphism entry points return tree witnesses;

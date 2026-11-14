@@ -438,6 +438,29 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual indexed reconstruction total correctness: 2026-11-14
+
+`Rust.IndexedOrderedSolver.reconstruct_embedding_refines` proves every actual
+Rust reconstruction call terminates, with no feasibility or size premise.
+Success returns a witness in the independently defined indexed `Retains`
+relation and erases to exactly the requested pattern. Failure proves the
+pattern independently infeasible under tree/Dyck contraction semantics.
+`reconstruct_embedding_success` rules out failure for every feasible pattern;
+`reconstruct_embedding_none_iff` gives the exact rejection equivalence.
+
+The proof handles both early failure branches and their actual copied/spliced
+fallback input. The structural `must_drop_first` lemma derives fallback
+completeness from independent first-pair decomposition and uniqueness of the
+pattern interior/suffix. A well-founded input/pattern semilength measure proves
+termination of every generated partial-fixpoint call. It neither redefines
+containment by the algorithm nor supplies a presumed reconstruction witness.
+The copy/append source proofs preserve actual pair identities throughout.
+
+Composition with the actual memoized optimum and exact canonical original
+input numbering remains open for the public indexed entry point. The source
+has not changed since the exhaustive labeled-contraction tests and pinned
+extraction comparison passed. No optimized reconstruction-cost claim follows.
+
 ## Actual Rust original-index numbering and structural helpers: 2026-11-14
 
 The ordered extraction crate now includes `indexed::maximum_common_embedding_indexed`:
