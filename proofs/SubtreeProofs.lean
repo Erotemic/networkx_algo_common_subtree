@@ -77,3 +77,8 @@ public import SubtreeProofs.Rust.AssignmentSearchCapacity
 public import SubtreeProofs.Rust.AssignmentScanCut
 public import SubtreeProofs.Rust.AssignmentAdjustmentCut
 public import SubtreeProofs.Rust.AssignmentCutFeasibility
+public import SubtreeProofs.Shared.AssignmentEnvelope
+public import SubtreeProofs.Rust.AssignmentNumericBounds
+public import SubtreeProofs.Rust.AssignmentSafeAdjustment
+public import SubtreeProofs.Rust.AssignmentSearchArithmetic
+public import SubtreeProofs.Rust.AssignmentSearchInitialization

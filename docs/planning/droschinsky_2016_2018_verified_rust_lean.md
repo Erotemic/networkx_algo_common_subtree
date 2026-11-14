@@ -14,6 +14,35 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Derived actual search arithmetic and initialization: 2026-11-14
+
+`Shared.AssignmentEnvelope` bounds each potential by the cumulative
+nonnegative adjustment. Its ideal cut theorem establishes the new cumulative
+bound from feasibility and dual progress before any checked machine update.
+`Rust.AssignmentNumericBounds` specializes those bounds to signed i64 costs
+and u32-sized dimensions, proving i128 representability of potentials, reserved
+slot zero, reduced-cost subtractions, and finite slack subtractions.
+
+`AssignmentSafeAdjustment.derived_adjustment_bounds` derives every local
+arithmetic premise of the actual adjustment from independent cut and numeric
+invariants. `AssignmentSearchArithmetic.PotentialInvariant` uses the negative
+actual reserved column value as the cumulative adjustment; no new runtime
+counter is introduced. `adjust_potentials_from_search_spec` proves successful
+actual execution, preserves this invariant and all attained slack minima,
+and derives every local checked-arithmetic range internally from those search
+properties. It does not assume representability or success of the update
+being verified. The actual complete-adjustment frames also preserve exact
+objective/reserved-slot accounting.
+
+`AssignmentSearchInitialization` defines initial rows as independent input
+row minima, identifies the actual initialized vector with them, proves their
+signed cost bounds, and establishes the initial potential, empty-candidate
+slack and unused-column invariants from the actual initialized contents.
+The full library builds with these five maintained modules. The actual
+search loop still needs the combined discovery-rank, matched/predecessor
+edge tightness and state-preservation proof; its full driver and public entry
+point remain open, along with implementation cost and later program goals.
+
 ## Actual scan/adjust cut invariants and search capacity: 2026-11-14
 
 `Shared.AssignmentSearchCapacity` derives the number of matched columns,

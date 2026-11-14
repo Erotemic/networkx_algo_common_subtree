@@ -53,7 +53,15 @@ Current assurance is deliberately narrower than the crate's eventual target:
   criterion over ordered rings. The signed partial-assignment reduction and
   negative-infinity edge removal are proved independently.
 
-The Hungarian phase invariants, arithmetic bounds, entry-point total
+- `Rust.AssignmentSearchArithmetic.adjust_potentials_from_search_spec` derives
+  every actual adjustment arithmetic range from the independent search state
+  and preserves feasibility, component envelopes, objective accounting and
+  attained slack minima. Its reserved column value is the cumulative
+  accumulator. The scan's checked ranges also follow from those envelopes.
+  `AssignmentSearchInitialization` establishes the initial numeric and cut
+  invariants from actual initialized contents and independent input row minima.
+
+The combined Hungarian search/driver invariants, entry-point total
 correctness, partial-matching adapter and complexity refinement remain open.
 This crate is not yet a verified replacement for the graph crate's floating
 matching API.
