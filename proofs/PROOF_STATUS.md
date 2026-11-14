@@ -438,6 +438,21 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Guided/reference witness measurements: 2026-11-14
+
+[The indexed witness benchmark](../../dev/benchmarks/2026-11-14-indexed-witnesses.md)
+records 150 samples across ten chain, star, balanced, broom, caterpillar and
+unequal-size cases, with separate full-reference, full-guided and guided-witness
+phases. All 30 case/mode processes have CPU time and peak RSS records excluding
+Cargo/compilation. Compiler/profile, hardware, warmup, measured phase boundaries
+and variability are documented. Guided full-run medians are approximately 0–16%
+slower here; these cases do not demonstrate a speedup. The recorded linear
+witness-call counts hold, while shape-dependent memo entries and structural
+costs dominate. Chain/star guided feasibility adds a cache entry, demonstrating
+why the initial optimizer's D-product cache proof alone cannot cover the whole
+guided wrapper. Combined cache/copy costs and allocation instrumentation remain
+open.
+
 ## Actual guided indexed reconstruction and linear witness calls: 2026-11-14
 
 `Rust.GuidedReconstruction.reconstruct_guided_spec` proves total correctness of

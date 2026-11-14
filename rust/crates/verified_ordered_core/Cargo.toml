@@ -11,3 +11,7 @@ path = "src/lib.rs"
 [[bench]]
 name = "ordered_shapes"
 harness = false
+
+[[bench]]
+name = "indexed_witnesses"
+harness = false
