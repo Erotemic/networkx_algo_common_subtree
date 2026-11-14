@@ -438,6 +438,34 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Original token coordinates and flat-input parser prototype: 2026-11-14
+
+`Paper2004.IndexedWord.tokenIndices` emits each retained pair's actual opening
+coordinate, interior, closing coordinate and suffix. The independently defined
+indexed deletion relation preserves an ordered sublist of both original token
+coordinates (`Retains.tokenIndices_sublist`), including deletion of both tokens
+at arbitrary depth. Distinctness and actual token-array bounds transfer from
+the original coordinate stream, with exactly two token coordinates per scored
+edge. This is separate from the already verified zero-based pair identities.
+
+`Paper2004.TokenEncoding` specifies the flat Boolean alphabet (`false` opens,
+`true` closes), its injective correspondence with the existing Dyck language,
+and exact token length. `positionPairs` independently specifies original
+opening/closing coordinates in preorder; its length and strict original-segment
+bounds are proved.
+
+The ordered Rust core now has a checked `tokens::parse_balanced_tokens`
+prototype, with explicit unmatched-open/close and pair-count errors, and an
+owned preorder coordinate table. An independent stack oracle tests every one
+of the 32,767 Boolean words through fourteen tokens, checking acceptance,
+complete returned shape and every opening/closing coordinate. All six ordered
+crate tests pass, including the earlier exhaustive indexed-optimum oracles.
+The full maintained library builds successfully (3,643 jobs), and fresh pinned
+extraction matches both maintained generated modules. The parser parameter is
+named `input` to avoid a generated Lean module/local-name collision. This parser has not yet been
+refined in Lean; exact source parsing/coordinate proofs, token-index emission,
+PyO3/NetworkX conversion and dispatch remain open. It is not a default backend.
+
 ## Actual public original-index LCBE optimum: 2026-11-14
 
 `Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees` proves

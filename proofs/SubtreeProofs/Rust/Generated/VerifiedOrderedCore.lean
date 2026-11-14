@@ -516,4 +516,102 @@ def largest_common_embedding
                   ok (some ce1)
 partial_fixpoint
 
+/-- [verified_ordered_core::tokens::PairPositions]
+    Source: 'src/tokens.rs', lines 8:0-11:1
+    Visibility: public -/
+structure tokens.PairPositions where
+  «open» : Std.Usize
+  close : Std.Usize
+
+/-- [verified_ordered_core::tokens::ParsedForest]
+    Source: 'src/tokens.rs', lines 13:0-18:1
+    Visibility: public -/
+structure tokens.ParsedForest where
+  word : BalancedWord
+  next : Std.Usize
+  positions : alloc.vec.Vec tokens.PairPositions
+
+/-- [verified_ordered_core::tokens::TokenError]
+    Source: 'src/tokens.rs', lines 20:0-24:1
+    Visibility: public -/
+@[discriminant isize]
+inductive tokens.TokenError where
+| UnexpectedClose : tokens.TokenError
+| MissingClose : tokens.TokenError
+| TooLarge : tokens.TokenError
+
+/-- [verified_ordered_core::tokens::parse_forest]:
+    Source: 'src/tokens.rs', lines 26:0-73:1 -/
+def tokens.parse_forest
+  (input : Slice Bool) (start : Std.Usize)
+  (positions : alloc.vec.Vec tokens.PairPositions) :
+  Result (core.result.Result tokens.ParsedForest tokens.TokenError)
+  := do
+  let i := Slice.len input
+  if start = i
+  then
+    ok (core.result.Result.Ok
+      { word := BalancedWord.Empty, next := start, positions })
+  else
+    let b ← Slice.index_usize input start
+    if b
+    then
+      ok (core.result.Result.Ok
+        { word := BalancedWord.Empty, next := start, positions })
+    else
+      let pair_index := alloc.vec.Vec.len positions
+      let i1 ← lift (UScalar.cast .Usize core.num.U32.MAX)
+      if pair_index = i1
+      then ok (core.result.Result.Err tokens.TokenError.TooLarge)
+      else
+        let positions1 ←
+          alloc.vec.Vec.push positions ({ «open» := start, close := start } :
+            tokens.PairPositions)
+        let i2 ← start + 1#usize
+        let r ← tokens.parse_forest input i2 positions1
+        match r with
+        | core.result.Result.Ok value =>
+          let i3 := Slice.len input
+          if value.next = i3
+          then ok (core.result.Result.Err tokens.TokenError.MissingClose)
+          else
+            let b1 ← Slice.index_usize input value.next
+            if b1
+            then
+              let (pp, index_mut_back) ←
+                alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                  tokens.PairPositions) value.positions pair_index
+              let i4 ← value.next + 1#usize
+              let v := index_mut_back { pp with close := value.next }
+              let r1 ← tokens.parse_forest input i4 v
+              match r1 with
+              | core.result.Result.Ok value1 =>
+                ok (core.result.Result.Ok
+                  {
+                    value1
+                      with
+                      word := (BalancedWord.Pair value.word value1.word)
+                  })
+              | core.result.Result.Err _ => ok r1
+            else ok (core.result.Result.Err tokens.TokenError.MissingClose)
+        | core.result.Result.Err _ => ok r
+partial_fixpoint
+
+/-- [verified_ordered_core::tokens::parse_balanced_tokens]:
+    Source: 'src/tokens.rs', lines 78:0-87:1
+    Visibility: public -/
+def tokens.parse_balanced_tokens
+  (input : Slice Bool) :
+  Result (core.result.Result tokens.ParsedForest tokens.TokenError)
+  := do
+  let r ←
+    tokens.parse_forest input 0#usize (alloc.vec.Vec.new tokens.PairPositions)
+  match r with
+  | core.result.Result.Ok value =>
+    let i := Slice.len input
+    if value.next != i
+    then ok (core.result.Result.Err tokens.TokenError.UnexpectedClose)
+    else ok r
+  | core.result.Result.Err _ => ok r
+
 end verified_ordered_core

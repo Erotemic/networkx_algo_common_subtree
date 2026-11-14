@@ -136,3 +136,5 @@ public import SubtreeProofs.Rust.IndexedReconstructionSpecification
 public import SubtreeProofs.Rust.IndexedReconstruction
 public import SubtreeProofs.Paper2004.CanonicalIndexedWord
 public import SubtreeProofs.Rust.IndexedOrderedEntrypoint
+public import SubtreeProofs.Paper2004.IndexedTokenPositions
+public import SubtreeProofs.Paper2004.TokenEncoding
