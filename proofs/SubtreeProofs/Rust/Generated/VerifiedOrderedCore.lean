@@ -20,6 +20,14 @@ set_option maxRecDepth 2048
 
 namespace verified_ordered_core
 
+/-- [verified_ordered_core::BalancedWord]
+    Source: 'src/lib.rs', lines 18:0-21:1
+    Visibility: public -/
+@[discriminant isize]
+inductive BalancedWord where
+| Empty : BalancedWord
+| Pair : BalancedWord → BalancedWord → BalancedWord
+
 /-- [verified_ordered_core::indexed::IndexedWord]
     Source: 'src/indexed.rs', lines 11:0-14:1
     Visibility: public -/
@@ -32,113 +40,17 @@ inductive indexed.IndexedWord where
   indexed.IndexedWord →
   indexed.IndexedWord
 
-/-- [verified_ordered_core::indexed::NumberedWord]
-    Source: 'src/indexed.rs', lines 16:0-19:1
+/-- [verified_ordered_core::guided::erase_indexed]:
+    Source: 'src/guided.rs', lines 9:0-16:1
     Visibility: public -/
-structure indexed.NumberedWord where
-  word : indexed.IndexedWord
-  next : Std.U32
-
-/-- [verified_ordered_core::indexed::IndexedCommonEmbedding]
-    Source: 'src/indexed.rs', lines 23:0-27:1
-    Visibility: public -/
-structure indexed.IndexedCommonEmbedding where
-  left : indexed.IndexedWord
-  right : indexed.IndexedWord
-  edges : Std.U32
-
-/-- [verified_ordered_core::indexed::copy_indexed]:
-    Source: 'src/indexed.rs', lines 29:0-38:1
-    Visibility: public -/
-def indexed.copy_indexed
-  (word : indexed.IndexedWord) : Result indexed.IndexedWord := do
+def guided.erase_indexed
+  (word : indexed.IndexedWord) : Result BalancedWord := do
   match word with
-  | indexed.IndexedWord.Empty => ok indexed.IndexedWord.Empty
-  | indexed.IndexedWord.Pair index head tail =>
-    let iw ← indexed.copy_indexed head
-    let iw1 ← indexed.copy_indexed tail
-    ok (indexed.IndexedWord.Pair index iw iw1)
-partial_fixpoint
-
-/-- [verified_ordered_core::indexed::append_indexed]:
-    Source: 'src/indexed.rs', lines 40:0-49:1
-    Visibility: public -/
-def indexed.append_indexed
-  (left : indexed.IndexedWord) (right : indexed.IndexedWord) :
-  Result indexed.IndexedWord
-  := do
-  match left with
-  | indexed.IndexedWord.Empty => indexed.copy_indexed right
-  | indexed.IndexedWord.Pair index head tail =>
-    let iw ← indexed.copy_indexed head
-    let iw1 ← indexed.append_indexed tail right
-    ok (indexed.IndexedWord.Pair index iw iw1)
-partial_fixpoint
-
-/-- [verified_ordered_core::BalancedWord]
-    Source: 'src/lib.rs', lines 18:0-21:1
-    Visibility: public -/
-@[discriminant isize]
-inductive BalancedWord where
-| Empty : BalancedWord
-| Pair : BalancedWord → BalancedWord → BalancedWord
-
-/-- [verified_ordered_core::indexed::number_word]:
-    Source: 'src/indexed.rs', lines 53:0-78:1
-    Visibility: public -/
-def indexed.number_word
-  (word : BalancedWord) (next : Std.U32) :
-  Result (Option indexed.NumberedWord)
-  := do
-  match word with
-  | BalancedWord.Empty => ok (some { word := indexed.IndexedWord.Empty, next })
-  | BalancedWord.Pair head tail =>
-    let o ← lift (U32.checked_add next 1#u32)
-    match o with
-    | none => ok none
-    | some value =>
-      let o1 ← indexed.number_word head value
-      match o1 with
-      | none => ok none
-      | some value1 =>
-        let o2 ← indexed.number_word tail value1.next
-        match o2 with
-        | none => ok none
-        | some value2 =>
-          ok (some
-            {
-              value2
-                with
-                word := (indexed.IndexedWord.Pair next value1.word value2.word)
-            })
-partial_fixpoint
-
-/-- [verified_ordered_core::indexed::reconstruct_embedding]:
-    Source: 'src/indexed.rs', lines 83:0-105:1
-    Visibility: public -/
-def indexed.reconstruct_embedding
-  (pattern : BalancedWord) (input : indexed.IndexedWord) :
-  Result (Option indexed.IndexedWord)
-  := do
-  match pattern with
-  | BalancedWord.Empty => ok (some indexed.IndexedWord.Empty)
-  | BalancedWord.Pair ph pt =>
-    match input with
-    | indexed.IndexedWord.Empty => ok none
-    | indexed.IndexedWord.Pair index head tail =>
-      let o ← indexed.reconstruct_embedding ph head
-      match o with
-      | none =>
-        let contracted ← indexed.append_indexed head tail
-        indexed.reconstruct_embedding pattern contracted
-      | some inside =>
-        let o1 ← indexed.reconstruct_embedding pt tail
-        match o1 with
-        | none =>
-          let contracted ← indexed.append_indexed head tail
-          indexed.reconstruct_embedding pattern contracted
-        | some outside =>
-          ok (some (indexed.IndexedWord.Pair index inside outside))
+  | indexed.IndexedWord.Empty => ok BalancedWord.Empty
+  | indexed.IndexedWord.Pair _ head tail =>
+    let bw ← guided.erase_indexed head
+    let bw1 ← guided.erase_indexed tail
+    ok (BalancedWord.Pair bw bw1)
 partial_fixpoint
 
 /-- [verified_ordered_core::CommonEmbedding]
@@ -323,6 +235,254 @@ def memoized_common_embedding
                     let table5 ← memo_insert table4 left right result
                     ok (some result, table5)
   | some _ => ok (o, table)
+partial_fixpoint
+
+/-- [verified_ordered_core::guided::embedding_possible]:
+    Source: 'src/guided.rs', lines 19:0-30:1
+    Visibility: public -/
+def guided.embedding_possible
+  (pattern : BalancedWord) (input : indexed.IndexedWord) (table : MemoTable) :
+  Result ((Option Bool) × MemoTable)
+  := do
+  let shape ← guided.erase_indexed input
+  let (matching, table1) ← memoized_common_embedding pattern shape table
+  match matching with
+  | none => ok (none, table1)
+  | some matching1 =>
+    let b ← words_equal matching1.word pattern
+    ok (some b, table1)
+
+/-- [verified_ordered_core::guided::keep_first_pair]:
+    Source: 'src/guided.rs', lines 33:0-46:1
+    Visibility: public -/
+def guided.keep_first_pair
+  (pattern_head : BalancedWord) (pattern_tail : BalancedWord)
+  (input_head : indexed.IndexedWord) (input_tail : indexed.IndexedWord)
+  (table : MemoTable) :
+  Result ((Option Bool) × MemoTable)
+  := do
+  let (head_possible, table1) ←
+    guided.embedding_possible pattern_head input_head table
+  match head_possible with
+  | none => ok (none, table1)
+  | some b =>
+    if b
+    then guided.embedding_possible pattern_tail input_tail table1
+    else ok (head_possible, table1)
+
+/-- [verified_ordered_core::guided::GuidedReconstruction]
+    Source: 'src/guided.rs', lines 50:0-54:1
+    Visibility: public -/
+structure guided.GuidedReconstruction where
+  word : Option indexed.IndexedWord
+  table : MemoTable
+  calls : Std.U64
+
+/-- [verified_ordered_core::indexed::copy_indexed]:
+    Source: 'src/indexed.rs', lines 29:0-38:1
+    Visibility: public -/
+def indexed.copy_indexed
+  (word : indexed.IndexedWord) : Result indexed.IndexedWord := do
+  match word with
+  | indexed.IndexedWord.Empty => ok indexed.IndexedWord.Empty
+  | indexed.IndexedWord.Pair index head tail =>
+    let iw ← indexed.copy_indexed head
+    let iw1 ← indexed.copy_indexed tail
+    ok (indexed.IndexedWord.Pair index iw iw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::indexed::append_indexed]:
+    Source: 'src/indexed.rs', lines 40:0-49:1
+    Visibility: public -/
+def indexed.append_indexed
+  (left : indexed.IndexedWord) (right : indexed.IndexedWord) :
+  Result indexed.IndexedWord
+  := do
+  match left with
+  | indexed.IndexedWord.Empty => indexed.copy_indexed right
+  | indexed.IndexedWord.Pair index head tail =>
+    let iw ← indexed.copy_indexed head
+    let iw1 ← indexed.append_indexed tail right
+    ok (indexed.IndexedWord.Pair index iw iw1)
+partial_fixpoint
+
+/-- [verified_ordered_core::guided::reconstruct_guided]:
+    Source: 'src/guided.rs', lines 58:0-134:1
+    Visibility: public -/
+def guided.reconstruct_guided
+  (pattern : BalancedWord) (input : indexed.IndexedWord) (table : MemoTable) :
+  Result (Option guided.GuidedReconstruction)
+  := do
+  match pattern with
+  | BalancedWord.Empty =>
+    ok (some
+      { word := (some indexed.IndexedWord.Empty), table, calls := 1#u64 })
+  | BalancedWord.Pair ph pt =>
+    match input with
+    | indexed.IndexedWord.Empty =>
+      ok (some { word := none, table, calls := 1#u64 })
+    | indexed.IndexedWord.Pair index head tail =>
+      let (keep, table1) ← guided.keep_first_pair ph pt head tail table
+      match keep with
+      | none => ok none
+      | some value =>
+        if value
+        then
+          let o ← guided.reconstruct_guided ph head table1
+          match o with
+          | none => ok none
+          | some value1 =>
+            match value1.word with
+            | none => ok none
+            | some value2 =>
+              let o1 ← guided.reconstruct_guided pt tail value1.table
+              match o1 with
+              | none => ok none
+              | some value3 =>
+                match value3.word with
+                | none => ok none
+                | some value4 =>
+                  let o2 ← lift (U64.checked_add value1.calls value3.calls)
+                  match o2 with
+                  | none => ok none
+                  | some value5 =>
+                    let o3 ← lift (U64.checked_add value5 1#u64)
+                    match o3 with
+                    | none => ok none
+                    | some value6 =>
+                      ok (some
+                        {
+                          value3
+                            with
+                            word :=
+                              (some
+                                (indexed.IndexedWord.Pair
+                                index
+                                value2
+                                value4)),
+                            calls := value6
+                        })
+        else
+          let contracted ← indexed.append_indexed head tail
+          let o ← guided.reconstruct_guided pattern contracted table1
+          match o with
+          | none => ok none
+          | some value1 =>
+            let o1 ← lift (U64.checked_add value1.calls 1#u64)
+            match o1 with
+            | none => ok none
+            | some value2 => ok (some { value1 with calls := value2 })
+partial_fixpoint
+
+/-- [verified_ordered_core::indexed::NumberedWord]
+    Source: 'src/indexed.rs', lines 16:0-19:1
+    Visibility: public -/
+structure indexed.NumberedWord where
+  word : indexed.IndexedWord
+  next : Std.U32
+
+/-- [verified_ordered_core::indexed::number_word]:
+    Source: 'src/indexed.rs', lines 53:0-78:1
+    Visibility: public -/
+def indexed.number_word
+  (word : BalancedWord) (next : Std.U32) :
+  Result (Option indexed.NumberedWord)
+  := do
+  match word with
+  | BalancedWord.Empty => ok (some { word := indexed.IndexedWord.Empty, next })
+  | BalancedWord.Pair head tail =>
+    let o ← lift (U32.checked_add next 1#u32)
+    match o with
+    | none => ok none
+    | some value =>
+      let o1 ← indexed.number_word head value
+      match o1 with
+      | none => ok none
+      | some value1 =>
+        let o2 ← indexed.number_word tail value1.next
+        match o2 with
+        | none => ok none
+        | some value2 =>
+          ok (some
+            {
+              value2
+                with
+                word := (indexed.IndexedWord.Pair next value1.word value2.word)
+            })
+partial_fixpoint
+
+/-- [verified_ordered_core::indexed::IndexedCommonEmbedding]
+    Source: 'src/indexed.rs', lines 23:0-27:1
+    Visibility: public -/
+structure indexed.IndexedCommonEmbedding where
+  left : indexed.IndexedWord
+  right : indexed.IndexedWord
+  edges : Std.U32
+
+/-- [verified_ordered_core::guided::maximum_common_embedding_indexed_guided]:
+    Source: 'src/guided.rs', lines 138:0-177:1
+    Visibility: public -/
+def guided.maximum_common_embedding_indexed_guided
+  (left : BalancedWord) (right : BalancedWord) :
+  Result (Option indexed.IndexedCommonEmbedding)
+  := do
+  let (matching, table) ←
+    memoized_common_embedding left right MemoTable.Empty
+  match matching with
+  | none => ok none
+  | some value =>
+    let o ← indexed.number_word left 0#u32
+    match o with
+    | none => ok none
+    | some value1 =>
+      let o1 ← indexed.number_word right 0#u32
+      match o1 with
+      | none => ok none
+      | some value2 =>
+        let o2 ← guided.reconstruct_guided value.word value1.word table
+        match o2 with
+        | none => ok none
+        | some value3 =>
+          match value3.word with
+          | none => ok none
+          | some value4 =>
+            let o3 ←
+              guided.reconstruct_guided value.word value2.word value3.table
+            match o3 with
+            | none => ok none
+            | some value5 =>
+              match value5.word with
+              | none => ok none
+              | some value6 =>
+                ok (some
+                  { left := value4, right := value6, edges := value.edges })
+
+/-- [verified_ordered_core::indexed::reconstruct_embedding]:
+    Source: 'src/indexed.rs', lines 83:0-105:1
+    Visibility: public -/
+def indexed.reconstruct_embedding
+  (pattern : BalancedWord) (input : indexed.IndexedWord) :
+  Result (Option indexed.IndexedWord)
+  := do
+  match pattern with
+  | BalancedWord.Empty => ok (some indexed.IndexedWord.Empty)
+  | BalancedWord.Pair ph pt =>
+    match input with
+    | indexed.IndexedWord.Empty => ok none
+    | indexed.IndexedWord.Pair index head tail =>
+      let o ← indexed.reconstruct_embedding ph head
+      match o with
+      | none =>
+        let contracted ← indexed.append_indexed head tail
+        indexed.reconstruct_embedding pattern contracted
+      | some inside =>
+        let o1 ← indexed.reconstruct_embedding pt tail
+        match o1 with
+        | none =>
+          let contracted ← indexed.append_indexed head tail
+          indexed.reconstruct_embedding pattern contracted
+        | some outside =>
+          ok (some (indexed.IndexedWord.Pair index inside outside))
 partial_fixpoint
 
 /-- [verified_ordered_core::maximum_common_embedding]:
@@ -526,7 +686,7 @@ inductive tokens.TokenError where
 | TooLarge : tokens.TokenError
 
 /-- [verified_ordered_core::token_matching::TokenMatchingError]
-    Source: 'src/token_matching.rs', lines 8:0-13:1
+    Source: 'src/token_matching.rs', lines 9:0-14:1
     Visibility: public -/
 @[discriminant isize]
 inductive token_matching.TokenMatchingError where
@@ -536,7 +696,7 @@ inductive token_matching.TokenMatchingError where
 | InvalidIndex : token_matching.TokenMatchingError
 
 /-- [verified_ordered_core::token_matching::TokenCommonEmbedding]
-    Source: 'src/token_matching.rs', lines 15:0-19:1
+    Source: 'src/token_matching.rs', lines 16:0-20:1
     Visibility: public -/
 structure token_matching.TokenCommonEmbedding where
   left : alloc.vec.Vec Std.Usize
@@ -551,7 +711,7 @@ structure tokens.PairPositions where
   close : Std.Usize
 
 /-- [verified_ordered_core::token_matching::emit_tokens]:
-    Source: 'src/token_matching.rs', lines 21:0-44:1 -/
+    Source: 'src/token_matching.rs', lines 22:0-45:1 -/
 def token_matching.emit_tokens
   (word : indexed.IndexedWord) (coordinates : Slice tokens.PairPositions)
   (output : alloc.vec.Vec Std.Usize) :
@@ -661,7 +821,7 @@ def tokens.parse_balanced_tokens
   | core.result.Result.Err _ => ok r
 
 /-- [verified_ordered_core::token_matching::maximum_common_token_embedding]:
-    Source: 'src/token_matching.rs', lines 53:0-82:1
+    Source: 'src/token_matching.rs', lines 54:0-84:1
     Visibility: public -/
 def token_matching.maximum_common_token_embedding
   (left : Slice Bool) (right : Slice Bool) :
@@ -674,7 +834,8 @@ def token_matching.maximum_common_token_embedding
     let r1 ← tokens.parse_balanced_tokens right
     match r1 with
     | core.result.Result.Ok value1 =>
-      let o ← indexed.maximum_common_embedding_indexed value.word value1.word
+      let o ←
+        guided.maximum_common_embedding_indexed_guided value.word value1.word
       match o with
       | none =>
         ok (core.result.Result.Err

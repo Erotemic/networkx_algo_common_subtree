@@ -303,6 +303,14 @@ fn indexed_witnesses_match_independent_labeled_contractions_through_six_edges() 
         for (j, other) in inputs.iter().enumerate() {
             let pattern = as_word(&other.0);
             let witness = reconstruct_embedding(&pattern, &indexed.word);
+            let guided = verified_ordered_core::guided::reconstruct_guided(
+                &pattern,
+                &indexed.word,
+                verified_ordered_core::MemoTable::Empty,
+            )
+            .expect("tiny guided reconstruction fits");
+            assert!(guided.calls <= 2 * indexed.next as u64 + 1);
+            assert!(guided.word.as_ref().map(tagged_output) == witness.as_ref().map(tagged_output));
             assert_eq!(
                 witness.is_some(),
                 shapes[i].contains(&tree_encoding(other)),
@@ -315,6 +323,14 @@ fn indexed_witnesses_match_independent_labeled_contractions_through_six_edges() 
             }
             let common =
                 maximum_common_embedding_indexed(&word, &pattern).expect("tiny indexed scores fit");
+            let guided_common =
+                verified_ordered_core::guided::maximum_common_embedding_indexed_guided(
+                    &word, &pattern,
+                )
+                .expect("tiny guided indexed scores fit");
+            assert_eq!(guided_common.edges, common.edges);
+            assert!(tagged_output(&guided_common.left) == tagged_output(&common.left));
+            assert!(tagged_output(&guided_common.right) == tagged_output(&common.right));
             let left = tagged_output(&common.left);
             let right = tagged_output(&common.right);
             assert!(candidates[i].contains(&left));

@@ -182,7 +182,7 @@ Rust backend notes:
 * ``impl="verified-rust", node_affinity=None`` opts into the proved unweighted
   Boolean contraction core. Typed bracket pairs are validated and original
   string/list/tuple values are preserved. It is a reference implementation with
-  backtracking reconstruction; automatic dispatch continues to use the existing
+  shared-memo guided reconstruction; automatic dispatch continues to use the existing
   general affinity backend. Include restricted implementations in discovery with
   ``available_impls_longest_common_balanced_embedding(include_restricted=True)``.
   The Lean theorem covers the Rust Boolean core and original token indices;

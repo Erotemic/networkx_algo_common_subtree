@@ -18,6 +18,18 @@ program. Read these in order:
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
 
+## Actual token and forest APIs with guided witnesses: 2026-11-14
+
+The flat Boolean Rust API is totally verified with original token readback,
+maximum contraction score and exact malformed-input side rejection. The
+one-pair-per-vertex forest convention has an independent optimum bridge using
+a retained virtual parent. The opt-in Python `impl="verified-rust"` integrates
+that core for `node_affinity=None`; its token/NetworkX conversions remain tested
+boundaries. Actual guided indexed reconstruction now has complete feasibility
+and original-index correctness plus a recorded `2*n+1` witness-call bound.
+Earlier reference backtracking is retained separately. Combined memo/copy costs,
+optimized dictionaries, isomorphism indices and the paper runtime remain open.
+
 ## Verified actual indexed LCBE reference: 2026-11-14
 
 The public Rust indexed contraction solver now returns independently maximum

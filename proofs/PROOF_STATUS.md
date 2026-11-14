@@ -438,6 +438,40 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Actual guided indexed reconstruction and linear witness calls: 2026-11-14
+
+`Rust.GuidedReconstruction.reconstruct_guided_spec` proves total correctness of
+the actual new `guided::reconstruct_guided` on every represented pattern/input
+below 2^32 pairs with a sound shared memo. The output is a genuine indexed
+contraction of exactly the requested shape, or independent infeasibility. The
+actual u64 source counter is at most `2*input_pairs+1`; all checked counter
+arithmetic is derived safe, and the output memo remains sound.
+
+The actual guard runs the already proved memoized optimizer and structural
+word equality. `EmbeddingFeasibility.paperCommon_eq_left_iff` establishes
+independent feasibility from that equality, using strict contraction size and
+optimum completeness. `GuidedFeasibility` proves actual shape erasure and both
+retention guards, including memo threading. The source chooses retention only
+when both subpatterns embed; a rejected branch builds no recursive witness.
+
+`maximum_common_embedding_indexed_guided_of_trees` composes actual optimization,
+canonical original numbering and guided reconstruction into an independently
+maximum indexed tree for every admitted original tree pair. The flat-token Rust
+API and its opt-in Python backend now use this guided entry point; their total
+correctness/readback/forest-optimum theorems continue to compile. The older
+backtracking entry point remains a separately proved reference.
+
+The native oracle compares old and guided reconstruction on all 38,809 pattern/
+input pairs through six edges, including feasibility, exact original retained
+identities and the recorded call bound. Both public indexed optima have identical
+original-index witnesses and scores on all those pairs, and the flat-token oracle
+passes with the guided implementation. The full library builds (3,660 jobs), regeneration matches both maintained
+crates, and all 91 Python tests pass with the rebuilt guided extension.
+The linear bound counts witness calls,
+not feasibility memo work, table scans or shape copies. Combined key-space,
+allocation and complete running-time bounds remain open; no paper runtime is
+claimed for this implementation.
+
 ## Vertex-root forest convention and actual Rust optimum: 2026-11-14
 
 The independent ordered-forest relation now lives upstream of the Dyck encoding

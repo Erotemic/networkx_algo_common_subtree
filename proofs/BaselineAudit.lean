@@ -63,3 +63,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Paper2004.OrderedTree.forestEmbeds_iff_parent
 #print axioms SubtreeProofs.Rust.TokenMatching.maximum_common_token_embedding_of_forests
+
+#print axioms SubtreeProofs.Rust.GuidedReconstruction.reconstruct_guided_spec
+#print axioms SubtreeProofs.Rust.GuidedReconstruction.maximum_common_embedding_indexed_guided_of_trees

@@ -151,3 +151,7 @@ public import SubtreeProofs.Rust.TokenMatchingEntrypoint
 public import SubtreeProofs.Paper2004.OrderedForest
 public import SubtreeProofs.Paper2004.VertexEncoding
 public import SubtreeProofs.Rust.VertexMatchingEntrypoint
+public import SubtreeProofs.Paper2004.EmbeddingFeasibility
+public import SubtreeProofs.Rust.GuidedFeasibility
+public import SubtreeProofs.Rust.GuidedReconstruction
+public import SubtreeProofs.Rust.GuidedIndexedEntrypoint

@@ -2,7 +2,7 @@ module
 
 public import SubtreeProofs.Rust.TokenEmission
 public import SubtreeProofs.Rust.TokenParserEntrypoint
-public import SubtreeProofs.Rust.IndexedOrderedEntrypoint
+public import SubtreeProofs.Rust.GuidedIndexedEntrypoint
 public import SubtreeProofs.Paper2004.TokenMaximum
 import Mathlib.Tactic
 
@@ -62,8 +62,9 @@ theorem maximum_common_token_embedding_spec (left right : Slice Bool) (hl : Admi
   apply WP.spec_bind (parse_balanced_tokens_spec right hr)
   rintro rightResult ⟨rightParsed,hRightResult,hRight⟩
   subst rightResult
-  obtain ⟨matching,hMatching,hMaximum⟩ := maximum_common_embedding_indexed_correct leftParsed.word rightParsed.word hLeft.pair_bound hRight.pair_bound
-  simp only [hMatching,bind_ok]
+  apply WP.spec_bind (GuidedReconstruction.maximum_common_embedding_indexed_guided_spec leftParsed.word rightParsed.word hLeft.pair_bound hRight.pair_bound)
+  rintro output ⟨matching,hOutput,hMaximum⟩
+  subst output
   have hlr : Retains (model matching.left) (numberFrom (toDyck leftParsed.word).toTree 0) := by
     simpa only [canonical,Paper2004.OrderedTree.encodeDyck_decodeDyck] using hMaximum.1
   have hrr : Retains (model matching.right) (numberFrom (toDyck rightParsed.word).toTree 0) := by

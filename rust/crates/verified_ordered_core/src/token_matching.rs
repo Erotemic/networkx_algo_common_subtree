@@ -1,7 +1,8 @@
 //! Flat-token reference adapter for the verified indexed contraction solver.
 
 use crate::{
-    indexed::{maximum_common_embedding_indexed, IndexedWord},
+    guided::maximum_common_embedding_indexed_guided,
+    indexed::IndexedWord,
     tokens::{parse_balanced_tokens, PairPositions, TokenError},
 };
 
@@ -48,7 +49,7 @@ fn emit_tokens(
 /// The typed alphabet uses false for opening and true for closing. Returns
 /// both original token-index lists and the exact pair/edge score. The matching
 /// is unweighted, with explicit malformed/oversized input errors. This remains
-/// a reference adapter with backtracking reconstruction, without a paper cost
+/// a reference adapter with guided reconstruction, without a paper cost
 /// claim. External token kinds and labels are handled by a separate caller.
 pub fn maximum_common_token_embedding(
     left: &[bool],
@@ -62,10 +63,11 @@ pub fn maximum_common_token_embedding(
         Ok(value) => value,
         Err(error) => return Err(TokenMatchingError::RightInput(error)),
     };
-    let matching = match maximum_common_embedding_indexed(&left_input.word, &right_input.word) {
-        Some(value) => value,
-        None => return Err(TokenMatchingError::SolverFailure),
-    };
+    let matching =
+        match maximum_common_embedding_indexed_guided(&left_input.word, &right_input.word) {
+            Some(value) => value,
+            None => return Err(TokenMatchingError::SolverFailure),
+        };
     let left_tokens = match emit_tokens(&matching.left, &left_input.positions, Vec::new()) {
         Ok(value) => value,
         Err(error) => return Err(error),

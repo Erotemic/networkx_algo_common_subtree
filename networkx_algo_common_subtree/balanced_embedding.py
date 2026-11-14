@@ -58,7 +58,7 @@ def longest_common_balanced_embedding(
         is "auto", which chooses "iter-rust" if available, then "iter-cython", otherwise "iter".
         "verified-rust" explicitly selects the proved unweighted Boolean core
         and requires ``node_affinity=None``. It preserves original typed tokens
-        and uses reference backtracking reconstruction; it is not selected by
+        and uses shared-memo guided reconstruction; it is not selected by
         "auto". Python token conversion is outside the Lean theorem.
 
     Returns
