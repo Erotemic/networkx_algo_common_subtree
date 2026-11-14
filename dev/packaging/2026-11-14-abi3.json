@@ -790,5 +790,16 @@
       }
     },
     "strict_abi3audit": "passed; see portable ledger"
+  },
+  "uniform_index_source_refinement_update": {
+    "normal_wheel_sha256": "446b0cdb1b8867b0c9af0026e64a63a8757ad50b5330890d3be813815230a590",
+    "normal_required_native_tests_passed": 228,
+    "tests_skipped": 0,
+    "extension_sha256": "9703653004018e8956ad0c36128f12d189c2dc5f300e82a5ef03db0e8541ee9d",
+    "graph_rust_tests_passed": 50,
+    "exact_core_rust_tests_passed": 17,
+    "lean_main_jobs_passed": 3717,
+    "portable_abi3": "Not rebuilt for this integer-helper update; preceding source-only d858a55 portable wheel remains the last validated ABI3 artifact.",
+    "evidence": "dev/benchmarks/2026-11-14-uniform-source.md"
   }
 }

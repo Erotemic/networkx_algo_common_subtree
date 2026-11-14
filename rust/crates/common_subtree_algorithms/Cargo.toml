@@ -11,6 +11,7 @@ name = "common_subtree_algorithms"
 path = "src/lib.rs"
 
 [dependencies]
+verified_assignment_core = { path = "../verified_assignment_core" }
 
 [[bench]]
 name = "pytorch_sized_trees"

@@ -211,3 +211,5 @@ public import SubtreeProofs.Shared.AssignmentCompactDeletionState
 public import SubtreeProofs.Rust.SparseDeletionIndices
 public import SubtreeProofs.Shared.AssignmentSurvivingIndices
 public import SubtreeProofs.Rust.SparseDeletionVertices
+
+public import SubtreeProofs.Rust.UniformPairs

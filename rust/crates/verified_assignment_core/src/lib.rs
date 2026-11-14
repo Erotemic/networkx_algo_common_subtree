@@ -416,3 +416,6 @@ pub mod sparse;
 pub mod sparse_search;
 
 pub mod sparse_deletion;
+
+/// Original-index construction for complete uniform matching families.
+pub mod uniform_pairs;

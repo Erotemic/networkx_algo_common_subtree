@@ -2751,4 +2751,72 @@ def sparse_deletion.repair_deleted_sparse_vertex
                 ok (core.result.Result.Err error)
         else ok (core.result.Result.Err AssignmentError.NonSquare)
 
+/-- [verified_assignment_core::uniform_pairs::uniform_row]:
+    Source: 'src/uniform_pairs.rs', lines 3:0-21:1 -/
+def uniform_pairs.uniform_row
+  (left : Std.Usize) (right : Std.Usize) (deleted : Option Std.Usize)
+  (row : Std.Usize) :
+  Result (Option (Std.Usize × Std.Usize))
+  := do
+  match deleted with
+  | none => ok (some (row, row))
+  | some removed =>
+    if right > left
+    then if row = removed
+         then ok (some (row, left))
+         else ok (some (row, row))
+    else if row = removed
+         then ok none
+         else ok (some (row, row))
+
+/-- [verified_assignment_core::uniform_pairs::uniform_pair_indices]: loop body 0:
+    Source: 'src/uniform_pairs.rs', lines 35:4-41:5
+    Visibility: public -/
+@[rust_loop_body]
+def uniform_pairs.uniform_pair_indices_loop.body
+  (left : Std.Usize) (right : Std.Usize) (deleted : Option Std.Usize)
+  (size : Std.Usize) (pairs : alloc.vec.Vec (Std.Usize × Std.Usize))
+  (row : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (Std.Usize × Std.Usize)) × Std.Usize)
+    (alloc.vec.Vec (Std.Usize × Std.Usize)))
+  := do
+  if row < size
+  then
+    let o ← uniform_pairs.uniform_row left right deleted row
+    let pairs1 ←
+      match o with
+      | none => ok pairs
+      | some pair => alloc.vec.Vec.push pairs pair
+    let row1 ← row + 1#usize
+    ok (cont (pairs1, row1))
+  else ok (done pairs)
+
+/-- [verified_assignment_core::uniform_pairs::uniform_pair_indices]: loop 0:
+    Source: 'src/uniform_pairs.rs', lines 35:4-41:5
+    Visibility: public -/
+@[rust_loop]
+def uniform_pairs.uniform_pair_indices_loop
+  (left : Std.Usize) (right : Std.Usize) (deleted : Option Std.Usize)
+  (size : Std.Usize) (pairs : alloc.vec.Vec (Std.Usize × Std.Usize))
+  (row : Std.Usize) :
+  Result (alloc.vec.Vec (Std.Usize × Std.Usize))
+  := do
+  loop
+    (fun (pairs1, row1) => uniform_pairs.uniform_pair_indices_loop.body left
+      right deleted size pairs1 row1)
+    (pairs, row)
+
+/-- [verified_assignment_core::uniform_pairs::uniform_pair_indices]:
+    Source: 'src/uniform_pairs.rs', lines 27:0-43:1
+    Visibility: public -/
+def uniform_pairs.uniform_pair_indices
+  (left : Std.Usize) (right : Std.Usize) (deleted : Option Std.Usize) :
+  Result (alloc.vec.Vec (Std.Usize × Std.Usize))
+  := do
+  let size ← if left < right
+               then ok left
+               else ok right
+  let pairs := alloc.vec.Vec.with_capacity (Std.Usize × Std.Usize) size
+  uniform_pairs.uniform_pair_indices_loop left right deleted size pairs 0#usize
+
 end verified_assignment_core

@@ -95,8 +95,11 @@ and measuring these optimizations does not establish their formal source bound.
 A model-level storage component is now proved in `Complexity/MatchingFamilies`:
 materialized repair pairs occupy at most `k+k²` cells per family, and degree-sum
 aggregation gives a quadratic tree-pair bound. The concrete uniform deletion
-family has independent optimality and original-index witness proofs. These do
-not close Lemma 6/Theorem 7 runtime or the production allocation/source bridge.
+family has independent optimality and original-index witness proofs. The actual
+production integer index constructor now refines these optima, with termination,
+index bounds, duplicate-free rows and live-vector counts proved in
+`Rust/UniformPairs`. These do not close Lemma 6/Theorem 7 runtime or the complete
+production caller/allocation/source bridge.
 
 Section 7's empirical results are reproducibility context; they are not Lean
 theorem obligations. The appendix diagnoses a prior external algorithm's

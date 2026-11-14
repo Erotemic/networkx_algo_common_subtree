@@ -17,6 +17,29 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Actual production uniform-index source refinement: 2026-11-14
+
+Both optimized graph algorithms now call the integer-only production helper
+`verified_assignment_core::uniform_pairs::uniform_pair_indices`. Pinned
+Charon/Aeneas extraction and `Rust/UniformPairs.lean` prove its termination,
+checked increments/vector-length safety, exact original-coordinate output,
+index/deletion bounds, duplicate-free rows and live pair count. The base and
+every valid original right deletion refine independent maximum matchings over
+nonnegative exact ordered-ring weights (`source_base_maximum` and
+`source_deleted_maximum`). Empty/asymmetric dimensions are included.
+
+`source_pair_cells` connects the actual vector length to its represented finite
+pair-set cardinality and bounds it by the smaller side. Capacity, allocator
+failure, complete family sharing, graph scheduling and runtime correspondence
+remain open. Uniform float recognition and score accumulation are tested caller
+boundaries; IEEE-754 correctness is intentionally excluded. General production
+Hungarian/source and graph-DP refinements remain open. No whole-backend
+verification claim follows from this helper theorem.
+
+All **3,717 main Lean jobs**, **50 graph Rust**, **17 exact-core Rust** and
+**228 required-native installed Python tests** pass. A three-sample installed
+API check is recorded in [the milestone evidence](../dev/benchmarks/2026-11-14-uniform-source.md).
+
 ## Matching-family pair-storage bounds: 2026-11-14
 
 `Complexity/MatchingFamilies.lean` counts separately tagged cells for each
