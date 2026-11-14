@@ -33,8 +33,15 @@ Independent Rust tests compare 320 signed matrices through dimension seven
 against permutation enumeration and check bijectivity, dual feasibility,
 tightness, extreme costs, empty inputs, malformed inputs and ties.
 
-Partial-matching adapters, graph/Python integration, rectangular and reused
-matching optimizations, and implementation complexity proofs remain open.
+`matching::max_weight_partial_matching` adds a rectangular signed-i64 adapter
+with forbidden edges and unmatched vertices. Two independent-injection tests
+cover 588 generated cases and explicit edge cases. Its actual cost cell, row
+and matrix construction are proved safe and exact against the mathematical
+dummy reduction; actual pair decoding and the public partial-matching optimum
+refinement remain open.
+
+Graph/Python integration, rectangular and reused matching optimizations, and
+implementation complexity proofs remain open.
 The graph crate's floating matching API is separate from this exact core.
 
 ```bash

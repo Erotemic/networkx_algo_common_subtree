@@ -21,6 +21,8 @@ pub enum AssignmentError {
     InvariantViolation,
 }
 
+pub mod matching;
+
 fn zeros_i128(len: usize) -> Vec<i128> {
     let mut result = Vec::new();
     let mut index = 0;

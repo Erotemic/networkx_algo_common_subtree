@@ -100,3 +100,6 @@ public import SubtreeProofs.Rust.AssignmentDriverBody
 public import SubtreeProofs.Rust.AssignmentDriverLoop
 public import SubtreeProofs.Rust.AssignmentValidation
 public import SubtreeProofs.Rust.AssignmentEntrypoint
+public import SubtreeProofs.Rust.MatchingCostSpecification
+public import SubtreeProofs.Rust.MatchingCostConstruction
+public import SubtreeProofs.Rust.MatchingMatrixRepresentation

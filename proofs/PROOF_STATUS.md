@@ -467,6 +467,33 @@ formalizations, published optimized algorithms, or end-to-end Rust graph verific
 
 
 
+## Exact partial-matching adapter and actual cost construction: 2026-11-14
+
+The exact Rust crate now provides `matching::max_weight_partial_matching` for
+rectangular signed-i64 optional weights, with explicit shape/size errors and
+an indexed positive-edge witness. Empty sides, forbidden and nonpositive edges
+are handled by the independent |L|+|R| dummy-assignment reduction. Real right
+columns occupy the second index block, matching the mathematical `Fin L ⊕
+Fin R` convention. Independent tests cover 588 generated rectangular cases
+through six vertices per side plus signed, forbidden, empty, malformed, tie
+and extreme-i64 cases; all five crate tests pass, including the previous
+320-case assignment oracle. Pinned extraction succeeds on the actual new
+source, and the existing assignment public-API proof still compiles.
+
+`Rust.MatchingCostSpecification.costAt_sum` identifies concrete array costs
+with the independently proved ordered-ring dummy profit via Mathlib's finite
+sum equivalence. `negative_profit_spec` proves actual signed negation safe
+and exact. `MatchingCostConstruction.cost_cell_spec`, `cost_row_spec` and
+`cost_matrix_spec` prove the actual helper and both owned-vector construction
+loops safely terminate with every specified cell. `MatchingMatrixRepresentation`
+derives actual row count, square shape, cell values and admission by the
+verified assignment API from those constructed contents.
+
+All three new maintained proof modules compile in the full library. Actual
+pair-list decoding, its feasible maximum witness/score and the public partial
+matching wrapper still need refinement proofs. Rectangular paper matching
+optimizations and their running-time bounds remain separate open obligations.
+
 ## Actual public exact-assignment API total correctness: 2026-11-14
 
 `Rust.AssignmentEntrypoint.min_cost_assignment_total_spec` proves successful
