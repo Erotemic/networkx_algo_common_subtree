@@ -18,7 +18,7 @@ namespace SubtreeProofs.Paper2004
 /-- A nonempty rooted ordered tree; the children of each vertex are ordered. -/
 inductive OrderedTree where
   | node : List OrderedTree → OrderedTree
-  deriving DecidableEq, Repr, Inhabited
+  deriving Repr, Inhabited
 
 namespace OrderedTree
 
@@ -35,8 +35,8 @@ def oneEdge : OrderedTree := .node [singleton]
 /-- A three-vertex tree with two leaf children. -/
 def fork : OrderedTree := .node [singleton, singleton]
 
-/-- Edge count, with one edge for each child of a node. -/
 mutual
+  /-- Edge count, with one edge for each child of a node. -/
   def edgeCount : OrderedTree → Nat
     | .node ts => forestEdgeCount ts
 
@@ -48,8 +48,8 @@ end
 /-- Vertex count is edge count plus one for a nonempty tree. -/
 def vertexCount (t : OrderedTree) : Nat := t.edgeCount + 1
 
-/-- Actual leaves: a vertex is a leaf precisely when it has no children. -/
 mutual
+  /-- Actual leaves: a vertex is a leaf precisely when it has no children. -/
   def leafCount : OrderedTree → Nat
     | .node [] => 1
     | .node (t :: ts) => forestLeafCount (t :: ts)
@@ -100,11 +100,11 @@ theorem ContractStep.edgeCount_decreases {before after : OrderedTree}
   | atRoot left right child =>
       cases child with
       | node grandchildren =>
-          simp [forestEdgeCount_append]
-          omega
+          simp only [edgeCount_node, forestEdgeCount_append,
+            forestEdgeCount_cons, forestEdgeCount_nil, children] <;> omega
   | below left right step ih =>
-      simp [forestEdgeCount_append]
-      omega
+      simp only [edgeCount_node, forestEdgeCount_append,
+        forestEdgeCount_cons, forestEdgeCount_nil] <;> omega
 
 /-- `small` is obtainable from `large` by zero or more edge contractions.
 This relation is specified solely in terms of trees. -/

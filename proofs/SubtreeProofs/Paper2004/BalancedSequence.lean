@@ -15,8 +15,8 @@ about sequence containment is used to define edge contraction.
 namespace SubtreeProofs.Paper2004
 namespace OrderedTree
 
-/-- Balanced-sequence encoding of an entire rooted tree and its child forest. -/
 mutual
+  /-- Balanced-sequence encoding of an entire rooted tree and its child forest. -/
   def encodeDyck : OrderedTree → DyckWord
     | .node ts => encodeForestDyck ts
 
@@ -25,8 +25,8 @@ mutual
     | t :: ts => (encodeDyck t).nest + encodeForestDyck ts
 end
 
-/-- The balanced-sequence semilength is exactly the number of tree edges. -/
 mutual
+  /-- The balanced-sequence semilength is exactly the number of tree edges. -/
   theorem encodeDyck_semilength (t : OrderedTree) :
       (encodeDyck t).semilength = edgeCount t := by
     cases t with
