@@ -29,3 +29,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Droschinsky2018.pairedImage_valid
 #print axioms SubtreeProofs.Droschinsky2018.score_pairedImage
 #print axioms SubtreeProofs.Droschinsky2018.valid_iff_source_embeddings
+#print axioms SubtreeProofs.Droschinsky2018.rootedValid_iff_source_embeddings
+#print axioms SubtreeProofs.Droschinsky2018.rootToRootValid_iff_source_embeddings

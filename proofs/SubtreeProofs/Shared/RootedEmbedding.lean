@@ -199,4 +199,21 @@ def toUnrooted (embedding : RootedTopologicalEmbedding common target commonRoot 
 
 end SubtreeProofs.RootedTopologicalEmbedding
 
+namespace SubtreeProofs.TopologicalEmbedding
+
+variable {A V : Type*} [DecidableEq V] {common : FiniteTree A} {target : FiniteTree V}
+
+/-- A realization is admissible in a supplied ambient orientation whenever
+the chosen common root is above every image vertex in that orientation. -/
+def toRootedAt (embedding : TopologicalEmbedding common target) (root : A) (ambientRoot : V)
+    (htop : ∀ a, target.Ancestor ambientRoot (embedding.map root) (embedding.map a)) :
+    RootedTopologicalEmbedding common target root ambientRoot where
+  map := embedding.map
+  injective := embedding.injective
+  downward := fun a b hab => target.suffix_ancestor (htop b)
+    ((embedding.ancestor_iff root a b).mpr hab.2)
+  branches := fun _ _ _ hab hac hn => embedding.branch_paths_intersection hab.1 hac.1 hn
+
+end SubtreeProofs.TopologicalEmbedding
+
 end

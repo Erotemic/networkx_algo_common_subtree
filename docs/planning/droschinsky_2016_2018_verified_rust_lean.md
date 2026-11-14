@@ -4,6 +4,15 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Fixed-root source contract accepted: 2026-11-14
+
+The 2018 rooted and root-to-root feasible families now have separate exact
+source equivalences for supplied ambient roots, proved in `Droschinsky2018.Rooted`.
+Rooted admissibility requires a common selected top pair in both orientations;
+root-to-root additionally maps the two input roots. Independent rooted score
+attainment is proved. Mapped/skipped boundary states and the two-state recurrence
+are the next mathematical obligations; graph Rust refinement remains open.
+
 ## Source correspondence accepted: 2026-11-14
 
 `Droschinsky2018.valid_iff_source_embeddings` now proves the exact unrooted

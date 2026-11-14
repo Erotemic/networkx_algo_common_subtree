@@ -276,6 +276,22 @@ embeddings for existential corresponding roots. `rooted_source_witness` and
 `score_pairedImage` preserve the independent abstract-tree score. Fixed
 ambient-root admissibility and the mapped/skipped recurrence remain open.
 
+## Fixed ambient-root source contract accepted: 2026-11-14
+
+`Droschinsky2018.RootedValid` requires an independently valid skeleton plus a
+single mapped top pair above every selected vertex in both supplied input
+orientations. `rootedValid_iff_source_embeddings` proves exact equivalence to
+Definition 1 embeddings with those fixed ambient roots.
+`RootToRootValid` is separate; `rootToRootValid_iff_source_embeddings` proves
+its precise source correspondence with both root-mapping conditions explicit.
+`rootedValue_attained` proves finite attainment for the independent rooted
+objective, retaining signed/negative-infinity scores and infinite penalties.
+
+Mapped/skipped boundary-state objectives, recurrence correctness, optimized
+matching/evaluation, complexity and actual graph Rust refinement remain open.
+The fixed-root admissibility result does not make the 2016 fixed-root shortcut
+valid for 2018's unrestricted unrooted objective.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

@@ -87,7 +87,7 @@ bound; do not promote that assumption into an unconditional theorem.
 
 | Source | Target | State |
 | --- | --- | --- |
-| Definitions 1--2 | Topological path embeddings and rooted/root-to-root common skeletons | Proved exact unrooted `valid_iff_source_embeddings`, with both local source clauses, global path realization, explicit common trees, exact `score_pairedImage` and pair round trips. Fixed ambient-root admissibility and the two-state recurrence remain open |
+| Definitions 1--2 | Topological path embeddings and rooted/root-to-root common skeletons | Proved exact unrooted `valid_iff_source_embeddings`, with both local source clauses, global path realization, explicit common trees, exact `score_pairedImage` and pair round trips. Fixed ambient-root and root-to-root equivalences proved by `rootedValid_iff_source_embeddings` and `rootToRootValid_iff_source_embeddings`; mapped/skipped states and their recurrence remain open |
 | Theorem 3 | Prior Gupta--Nishimura result | Externally attributed prerequisite; not claimed as a new result by this paper |
 | Definition 4 | Direct path reward only for two single-edge paths; otherwise skipped-vertex penalties | Corrected Python/Rust references; Lean `pathScore_direct`, `one_two_path_score`, `maximum_score_antitone` and nonempty finite optimum proved |
 | Lemma 5 | Mapped/skipped two-state recurrence | Corrected Rust implementation independently tested; general proof open |
