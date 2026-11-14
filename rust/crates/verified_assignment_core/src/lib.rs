@@ -96,6 +96,32 @@ fn initial_potentials(cost: &[Vec<i64>], extent: usize) -> Result<Vec<i128>, Ass
     }
 }
 
+/// Relax one slack and update its predecessor only on a strict improvement.
+fn relax_column(
+    slack: &mut Vec<Option<i128>>,
+    predecessor: &mut Vec<usize>,
+    candidate: usize,
+    column: usize,
+    reduced: i128,
+) -> i128 {
+    match slack[candidate] {
+        None => {
+            slack[candidate] = Some(reduced);
+            predecessor[candidate] = column;
+            reduced
+        }
+        Some(old) => {
+            if reduced < old {
+                slack[candidate] = Some(reduced);
+                predecessor[candidate] = column;
+                reduced
+            } else {
+                old
+            }
+        }
+    }
+}
+
 /// Scan the unused columns and update the exact minimum slacks.
 fn scan_columns(
     cost: &[Vec<i64>],
@@ -122,18 +148,7 @@ fn scan_columns(
                 Some(value) => value,
                 None => return Err(AssignmentError::ArithmeticOverflow),
             };
-            let improve = match slack[candidate] {
-                None => true,
-                Some(old) => reduced < old,
-            };
-            if improve {
-                slack[candidate] = Some(reduced);
-                predecessor[candidate] = column;
-            }
-            let best = match slack[candidate] {
-                Some(value) => value,
-                None => return Err(AssignmentError::InvariantViolation),
-            };
+            let best = relax_column(slack, predecessor, candidate, column, reduced);
             let improve_delta = match delta {
                 None => true,
                 Some(old) => best < old,

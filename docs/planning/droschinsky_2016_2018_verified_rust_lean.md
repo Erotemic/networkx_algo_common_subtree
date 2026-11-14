@@ -10,6 +10,24 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Actual Rust slack relaxation: 2026-11-14
+
+The Rust column scan now calls a factored `relax_column` helper.
+`Rust.AssignmentColumnScan.relax_column_spec` proves safe execution, exact
+minimum selection, the resulting slack table, and predecessor changes exactly
+on strict improvement. `relax_column_minimum_spec` connects its returned
+`i128` value to the independent `WithTop ℤ` minimum, including absent slacks
+and ties. Source-body lemmas also verify skipped used columns and scan
+completion with a present minimum. A checked-subtraction lemma discharges
+its success case under explicit integer range bounds.
+
+All three independent Rust oracle/certificate tests still pass; pinned actual
+source regeneration compares exactly. The full Lean library builds (3,560
+jobs). The complete column-scan invariant and the subsequent potential-update
+and augmenting-path loops remain open; this increment does not prove the
+Hungarian entry point correct.
+
 ## Independent Hungarian cut adjustment and numeric bound: 2026-11-14
 
 `Shared.AssignmentPotentials` proves `adjust_feasible`, preservation of tight

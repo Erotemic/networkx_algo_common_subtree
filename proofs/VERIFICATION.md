@@ -94,6 +94,12 @@ maintained module compiles against the supplied Aeneas models without a custom
 external-model file. This diagnostic is not a substitute for final endpoint
 dependency review.
 
+The column-scan refinement locally imports the body of the pinned signed
+checked-subtraction alias with `import all Aeneas.Std.Scalar.CheckedOps.Sub`.
+Its published specification names the underlying generic subtraction rather
+than that alias. This scoped import permits the ordinary definitional bridge;
+the dependency pin and generated Rust module are unchanged by the proof.
+
 ## Endpoint dependency audit
 
 An opt-in audit module is `BaselineAudit.lean`. Run it at a milestone and

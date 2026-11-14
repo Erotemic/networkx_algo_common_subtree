@@ -54,3 +54,4 @@ public import SubtreeProofs.Rust.AssignmentInitialization
 public import SubtreeProofs.Rust.AssignmentRowMinimum
 public import SubtreeProofs.Rust.AssignmentPotentialInitialization
 public import SubtreeProofs.Shared.AssignmentPotentials
+public import SubtreeProofs.Rust.AssignmentColumnScan
