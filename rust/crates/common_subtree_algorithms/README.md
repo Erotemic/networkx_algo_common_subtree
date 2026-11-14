@@ -95,12 +95,18 @@ The existing APIs permit an empty result of weight zero. Explicit
 entry points retain negative/zero nonempty optima and return `None` when no
 compatible vertex pair exists. Corresponding Python reference functions
 use the same explicit names. Negative or nonfinite penalties are rejected.
-The floating-weight implementation still uses numerical comparison tolerances.
+Selected gains are compared strictly; every positive gain is eligible and
+lexicographic tie breaking applies only to exactly equal scores. Scoring queries
+must be deterministic and finite (or `None` for incompatibility). Nonfinite
+queried weights and accumulated scores panic in Rust and raise `ValueError` in
+the Python oracle. IEEE rounding and matching arithmetic still prevent an
+exact-real correctness claim for these floating reference solvers.
 
-Lean proves independent exhaustive contraction and partial-matching oracles.
-A separate small Rust crate demonstrates checked Aeneas translation and a
-contraction-budget refinement. Those results do not yet verify this crate's
-Hungarian routine or tree DPs. See
+Lean proves independent contraction/matching optima, the exact real dummy
+assignment reduction, 2016's rooted matching equality and fixed-root reduction,
+and explicit topological witness bridges for 2018. The separate ordered Rust
+core has verified reference and memoized solvers. These results do not verify
+this crate's Hungarian routine, graph representations or tree DP implementation. See
 [`proof evidence`](../../../proofs/PROOF_STATUS.md) and
 [`reproduction`](../../../proofs/VERIFICATION.md).
 

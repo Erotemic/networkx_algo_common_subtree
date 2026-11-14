@@ -248,6 +248,18 @@ in both directions with exact scores. The converse from the source's two local
 rooted clauses to the global path-realization invariant, admissibility for fixed
 ambient roots, and the two-state algorithm are still open.
 
+## Finite floating-score behavior corrected: 2026-11-14
+
+The Rust graph DPs and Python exhaustive references now retain positive scores
+below 1e-9 and use exact score equality for tie breaking. Slightly better
+candidates are no longer replaced or rejected as approximate ties. Both paths
+reject queried nonfinite node/edge weights and accumulation overflow; Rust
+panics and Python raises `ValueError`. Regression tests cover singleton and
+child gains of 5e-12, alternatives differing by 5e-10, NaN/infinite values and
+overflow. The full graph crate passes 39 tests; Python passes 65 with 3 skipped.
+IEEE rounding and the actual Hungarian numerical refinement remain
+open; these tests do not establish exact arbitrary-real implementation behavior.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
@@ -255,8 +267,8 @@ ambient roots, and the two-state algorithm are still open.
 - Lemma 8's numerical recurrence agrees with operational optima on 19,503
   unordered pairs from those trees. It disagrees with the literal printed
   objective on 7,554 pairs. This is finite evidence, not a general DP proof.
-- The Python test suite passes 55 tests, with two extension tests skipped.
-- The graph-only Rust crate passes 30 tests, including an exhaustive
+- The latest Python test suite passes 65 tests, with three tests skipped.
+- The graph-only Rust crate passes 39 tests, including an exhaustive
   partial-injection embedding oracle with independently reconstructed paths
   and scores. This tests signed weights and forbidden edge labels.
 - Both 2018 discriminator cases return 1.75 in Rust and Python. Skipped paths

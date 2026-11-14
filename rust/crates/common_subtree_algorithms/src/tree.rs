@@ -11,7 +11,13 @@ use std::collections::{HashMap, VecDeque};
 use crate::matching::max_weight_bipartite_matching;
 use crate::Weight;
 
-const EPS: Weight = 1.0e-9;
+fn finite_weight(weight: Weight) -> Weight {
+    assert!(
+        weight.is_finite(),
+        "tree scores must be finite: invalid scoring value or arithmetic overflow"
+    );
+    weight
+}
 
 /// Node index in a [`LabeledTree`].
 pub type NodeId = usize;
@@ -114,6 +120,10 @@ impl LabeledTree {
 }
 
 /// Scoring / compatibility hook for labeled tree algorithms.
+///
+/// Queries must be deterministic and return finite weights or `None` for
+/// incompatibility. Signed weights are supported. Solvers panic when a queried
+/// weight or accumulated score is nonfinite; IEEE rounding still applies.
 pub trait Scoring {
     /// Weight for mapping a node pair. `None` means incompatible.
     fn node_weight(
@@ -262,6 +272,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         let root_weight = self
             .scoring
             .node_weight(self.left, state.u, self.right, state.v)?;
+        let root_weight = finite_weight(root_weight);
         let left_children = Self::child_edges(self.left, state.u, state.parent_u);
         let right_children = Self::child_edges(self.right, state.v, state.parent_v);
 
@@ -278,6 +289,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     state.v,
                     right_edge.to,
                 ) {
+                    let edge_weight = finite_weight(edge_weight);
                     let child_state = State {
                         u: left_edge.to,
                         parent_u: Some(state.u),
@@ -285,8 +297,8 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                         parent_v: Some(state.v),
                     };
                     if let Some(child) = self.rooted_isomorphism(child_state) {
-                        let value = edge_weight + child.weight;
-                        if value > EPS {
+                        let value = finite_weight(edge_weight + child.weight);
+                        if value > 0.0 {
                             matrix[i][j] = Some(value);
                             child_results[i][j] = Some(child);
                         }
@@ -306,7 +318,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         node_pairs.dedup();
 
         Some(CommonSubtree {
-            weight: root_weight + matching.weight,
+            weight: finite_weight(root_weight + matching.weight),
             node_pairs,
         })
     }
@@ -349,7 +361,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                 .into_iter()
                 .flatten()
             {
-                candidate.weight -= self.skip_vertex_penalty;
+                candidate.weight = finite_weight(candidate.weight - self.skip_vertex_penalty);
                 Self::keep_candidate(&mut best, candidate);
             }
         }
@@ -364,6 +376,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         let root_weight = self
             .scoring
             .node_weight(self.left, state.u, self.right, state.v)?;
+        let root_weight = finite_weight(root_weight);
         let left_children = Self::child_edges(self.left, state.u, state.parent_u);
         let right_children = Self::child_edges(self.right, state.v, state.parent_v);
 
@@ -387,13 +400,14 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
                     state.v,
                     right_edge.to,
                 ) {
+                    let edge_weight = finite_weight(edge_weight);
                     if let Some(mut direct) = self.rooted_embedding(child_state) {
-                        direct.weight += edge_weight;
+                        direct.weight = finite_weight(direct.weight + edge_weight);
                         Self::keep_candidate(&mut continuation, direct);
                     }
                 }
                 if let Some(child) = continuation {
-                    if child.weight > EPS {
+                    if child.weight > 0.0 {
                         matrix[i][j] = Some(child.weight);
                         child_results[i][j] = Some(child);
                     }
@@ -412,7 +426,7 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         node_pairs.dedup();
 
         Some(CommonSubtree {
-            weight: root_weight + matching.weight,
+            weight: finite_weight(root_weight + matching.weight),
             node_pairs,
         })
     }
@@ -421,8 +435,8 @@ impl<'a, S: Scoring> RootedSolver<'a, S> {
         match best {
             None => *best = Some(candidate),
             Some(current) => {
-                if candidate.weight > current.weight + EPS
-                    || ((candidate.weight - current.weight).abs() <= EPS
+                if candidate.weight > current.weight
+                    || (candidate.weight == current.weight
                         && candidate.node_pairs < current.node_pairs)
                 {
                     *current = candidate;
@@ -445,7 +459,7 @@ pub fn maximum_common_subtree_isomorphism<S: Scoring>(
     scoring: &S,
 ) -> CommonSubtree {
     maximum_nonempty_common_subtree_isomorphism(left, right, scoring)
-        .filter(|result| result.weight > EPS)
+        .filter(|result| result.weight > 0.0)
         .unwrap_or_default()
 }
 
@@ -501,7 +515,7 @@ pub fn largest_weight_common_subtree_embedding_with_distance_penalty<S: Scoring>
         scoring,
         skip_vertex_penalty,
     )
-    .filter(|result| result.weight > EPS)
+    .filter(|result| result.weight > 0.0)
     .unwrap_or_default()
 }
 

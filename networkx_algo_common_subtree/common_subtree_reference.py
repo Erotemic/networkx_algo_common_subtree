@@ -13,12 +13,16 @@ The production-oriented Rust crate solves the same kinds of subproblems with
 rooted dynamic programs and bipartite matchings.  The functions here instead
 enumerate candidate vertex sets and bijections directly.  That makes them useful
 as test oracles for very small trees, but unsuitable for normal workloads.
+Scoring queries must be deterministic and return finite weights or ``None``.
+Nonfinite queried values or accumulated scores raise ``ValueError``. Candidate
+scores use strict floating comparisons; ties require exactly equal scores.
 """
 from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
 from itertools import combinations, permutations
+from math import isfinite
 from typing import Callable, Iterable
 
 Weight = float
@@ -30,7 +34,10 @@ EdgeWeightFn = Callable[
     Weight | None,
 ]
 
-_EPS = 1.0e-9
+def _finite_weight(weight: Weight) -> Weight:
+    if not isfinite(weight):
+        raise ValueError("tree scores must be finite: invalid scoring value or arithmetic overflow")
+    return weight
 
 
 @dataclass(frozen=True)
@@ -333,7 +340,7 @@ def score_subtree_isomorphism_witness(
         node_w = scoring.node_weight(left, u, right, v)
         if node_w is None:
             raise ValueError(f"incompatible mapped nodes ({u}, {v})")
-        weight += node_w
+        weight = _finite_weight(weight + _finite_weight(node_w))
 
     left_edges = _induced_edges(left, left_subset)
     right_edges = frozenset(_induced_edges(right, right_subset))
@@ -347,7 +354,7 @@ def score_subtree_isomorphism_witness(
         edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
         if edge_w is None:
             raise ValueError(f"incompatible mapped edges ({u}, {u2}) -> ({v}, {v2})")
-        weight += edge_w
+        weight = _finite_weight(weight + _finite_weight(edge_w))
     return weight
 
 
@@ -382,7 +389,7 @@ def score_embedding_witness(
         node_w = scoring.node_weight(left, u, right, v)
         if node_w is None:
             raise ValueError(f"incompatible mapped nodes ({u}, {v})")
-        weight += node_w
+        weight = _finite_weight(weight + _finite_weight(node_w))
 
     left_skeleton = _embedding_skeleton_edges(left, left_subset)
     right_skeleton_edges = _embedding_skeleton_edges(right, right_subset)
@@ -402,16 +409,14 @@ def score_embedding_witness(
             edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
             if edge_w is None:
                 raise ValueError(f"incompatible embedded edge ({u}, {u2}) -> ({v}, {v2})")
-            weight += edge_w
+            weight = _finite_weight(weight + _finite_weight(edge_w))
         else:
             skipped = (len(left_path) - 2) + (len(right_path) - 2)
-            weight -= skip_vertex_penalty * skipped
+            weight = _finite_weight(weight - skip_vertex_penalty * skipped)
     return weight
 
 
 def _validate_skip_penalty(penalty: Weight) -> None:
-    from math import isfinite
-
     if not isfinite(penalty) or penalty < 0:
         raise ValueError("skip vertex penalty must be finite and nonnegative")
 
@@ -527,7 +532,7 @@ def _score_exact_subtree_bijection(
         node_w = scoring.node_weight(left, u, right, node_map[u])
         if node_w is None:
             return None
-        weight += node_w
+        weight = _finite_weight(weight + _finite_weight(node_w))
     for u, u2 in left_edges:
         v = node_map[u]
         v2 = node_map[u2]
@@ -536,7 +541,7 @@ def _score_exact_subtree_bijection(
         edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
         if edge_w is None:
             return None
-        weight += edge_w
+        weight = _finite_weight(weight + _finite_weight(edge_w))
     return ReferenceCommonSubtree(weight, tuple(sorted(node_map.items())))
 
 
@@ -555,7 +560,7 @@ def _score_embedding_bijection(
         node_w = scoring.node_weight(left, u, right, node_map[u])
         if node_w is None:
             return None
-        weight += node_w
+        weight = _finite_weight(weight + _finite_weight(node_w))
     for u, u2 in left_skeleton:
         v = node_map[u]
         v2 = node_map[u2]
@@ -567,10 +572,10 @@ def _score_embedding_bijection(
             edge_w = scoring.edge_weight(left, u, u2, right, v, v2)
             if edge_w is None:
                 return None
-            weight += edge_w
+            weight = _finite_weight(weight + _finite_weight(edge_w))
         else:
             skipped = (len(left_path) - 2) + (len(right_path) - 2)
-            weight -= skip_vertex_penalty * skipped
+            weight = _finite_weight(weight - skip_vertex_penalty * skipped)
     return ReferenceCommonSubtree(weight, tuple(sorted(node_map.items())))
 
 
@@ -581,9 +586,9 @@ def _normalized_edge(u: int, v: int) -> tuple[int, int]:
 def _keep_better(best: ReferenceCommonSubtree | None, candidate: ReferenceCommonSubtree) -> ReferenceCommonSubtree:
     if best is None:
         return candidate
-    if candidate.weight > best.weight + _EPS:
+    if candidate.weight > best.weight:
         return candidate
-    if abs(candidate.weight - best.weight) <= _EPS and candidate.node_pairs < best.node_pairs:
+    if candidate.weight == best.weight and candidate.node_pairs < best.node_pairs:
         return candidate
     return best
 

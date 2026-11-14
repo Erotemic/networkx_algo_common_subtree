@@ -106,7 +106,7 @@ Default Rust and Python APIs permit an empty result with score zero; explicit
 nonempty entry points now preserve negative optima and return `None` for
 infeasibility. The independent Lean source specifications require nonempty
 connected common trees and retain negative-infinity weights. Rust/Python use finite
-floating weights with comparison tolerances, and require finite nonnegative
+floating weights with strict score comparisons and exact equality for ties, and require finite nonnegative
 penalties. These API conventions must be reconciled explicitly with the real
 weight mathematical statements during refinement. No existing test run is a
 substitute for the source-level graph, matching, or complexity proofs.

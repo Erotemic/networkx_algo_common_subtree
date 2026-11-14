@@ -74,3 +74,116 @@ fn no_compatible_mapping_is_distinct_from_empty_and_negative() {
         );
     }
 }
+
+#[test]
+fn positive_gains_below_old_threshold_are_retained() {
+    let tiny = 5.0e-12;
+    for tree in [
+        LabeledTree::new(vec![1], &[]).unwrap(),
+        LabeledTree::new(vec![1, 1], &[(0, 1, 0)]).unwrap(),
+    ] {
+        let scoring = ExactLabelScoring {
+            node_match_weight: tiny,
+            edge_match_weight: 0.0,
+        };
+        let expected = tiny * tree.len() as f64;
+        let iso = maximum_common_subtree_isomorphism(&tree, &tree, &scoring);
+        let emb = largest_weight_common_subtree_embedding_with_distance_penalty(
+            &tree, &tree, &scoring, 0.25,
+        );
+        assert_eq!(iso.weight, expected);
+        assert_eq!(emb.weight, expected);
+        assert_eq!(iso.node_pairs.len(), tree.len());
+        assert_eq!(emb.node_pairs.len(), tree.len());
+    }
+}
+
+#[test]
+fn close_scores_are_not_treated_as_equal() {
+    use common_subtree_algorithms::Scoring;
+    struct CloseScores;
+    impl Scoring for CloseScores {
+        fn node_weight(&self, _: &LabeledTree, _: usize, _: &LabeledTree, v: usize) -> Option<f64> {
+            Some(1.0 + v as f64 * 5.0e-10)
+        }
+        fn edge_weight(
+            &self,
+            _: &LabeledTree,
+            _: usize,
+            _: usize,
+            _: &LabeledTree,
+            _: usize,
+            _: usize,
+        ) -> Option<f64> {
+            None
+        }
+    }
+    let left = LabeledTree::new(vec![1], &[]).unwrap();
+    let right = LabeledTree::new(vec![1, 1], &[(0, 1, 0)]).unwrap();
+    let iso = maximum_common_subtree_isomorphism(&left, &right, &CloseScores);
+    let emb = largest_weight_common_subtree_embedding_with_distance_penalty(
+        &left,
+        &right,
+        &CloseScores,
+        0.25,
+    );
+    assert_eq!(iso.node_pairs, vec![(0, 1)]);
+    assert_eq!(emb.node_pairs, vec![(0, 1)]);
+    assert_eq!(iso.weight, 1.0 + 5.0e-10);
+    assert_eq!(emb.weight, 1.0 + 5.0e-10);
+}
+
+#[test]
+fn graph_solvers_reject_nonfinite_scoring_values() {
+    for node_weight in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+        let tree = LabeledTree::new(vec![1], &[]).unwrap();
+        let scoring = ExactLabelScoring {
+            node_match_weight: node_weight,
+            edge_match_weight: 0.0,
+        };
+        assert!(
+            std::panic::catch_unwind(|| maximum_common_subtree_isomorphism(&tree, &tree, &scoring))
+                .is_err()
+        );
+        assert!(std::panic::catch_unwind(|| {
+            largest_weight_common_subtree_embedding_with_distance_penalty(
+                &tree, &tree, &scoring, 0.25,
+            )
+        })
+        .is_err());
+    }
+    for edge_weight in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+        let tree = LabeledTree::new(vec![1, 1], &[(0, 1, 0)]).unwrap();
+        let scoring = ExactLabelScoring {
+            node_match_weight: 1.0,
+            edge_match_weight: edge_weight,
+        };
+        assert!(
+            std::panic::catch_unwind(|| maximum_common_subtree_isomorphism(&tree, &tree, &scoring))
+                .is_err()
+        );
+        assert!(std::panic::catch_unwind(|| {
+            largest_weight_common_subtree_embedding_with_distance_penalty(
+                &tree, &tree, &scoring, 0.25,
+            )
+        })
+        .is_err());
+    }
+}
+
+#[test]
+fn graph_solvers_reject_accumulation_overflow() {
+    let tree = LabeledTree::new(vec![1, 1], &[(0, 1, 0)]).unwrap();
+    let scoring = ExactLabelScoring {
+        node_match_weight: f64::MAX,
+        edge_match_weight: 0.0,
+    };
+    assert!(
+        std::panic::catch_unwind(|| maximum_common_subtree_isomorphism(&tree, &tree, &scoring))
+            .is_err()
+    );
+    assert!(std::panic::catch_unwind(|| {
+        largest_weight_common_subtree_embedding_with_distance_penalty(&tree, &tree, &scoring, 0.25)
+    })
+    .is_err());
+}

@@ -160,3 +160,69 @@ def test_nonempty_reference_distinguishes_infeasible_mapping():
     left, right = ReferenceLabeledTree([1], []), ReferenceLabeledTree([2], [])
     assert maximum_nonempty_common_subtree_isomorphism_reference(left, right) is None
     assert largest_weight_nonempty_common_subtree_embedding_with_distance_penalty_reference(left, right) is None
+
+
+@pytest.mark.parametrize("size", [1, 2])
+def test_positive_gains_below_old_threshold_are_retained(size):
+    tree = ReferenceLabeledTree([1] * size, [(0, 1, 0)] if size == 2 else [])
+    tiny = 5.0e-12
+    scoring = ExactLabelScoring(node_match_weight=tiny, edge_match_weight=0.0)
+    iso = maximum_common_subtree_isomorphism_reference(tree, tree, scoring)
+    emb = largest_weight_common_subtree_embedding_with_distance_penalty_reference(tree, tree, scoring)
+    assert iso.weight == size * tiny
+    assert emb.weight == size * tiny
+    assert len(iso.node_pairs) == size
+    assert len(emb.node_pairs) == size
+
+
+def test_close_scores_are_not_treated_as_equal():
+    class CloseScores(ExactLabelScoring):
+        def node_weight(self, left, u, right, v):
+            return 1.0 + v * 5.0e-10
+
+        def edge_weight(self, *args):
+            return None
+
+    left = ReferenceLabeledTree([1], [])
+    right = ReferenceLabeledTree([1, 1], [(0, 1, 0)])
+    iso = maximum_common_subtree_isomorphism_reference(left, right, CloseScores())
+    emb = largest_weight_common_subtree_embedding_with_distance_penalty_reference(left, right, CloseScores())
+    assert iso.node_pairs == emb.node_pairs == ((0, 1),)
+    assert iso.weight == emb.weight == 1.0 + 5.0e-10
+
+
+@pytest.mark.parametrize("weight", [float("nan"), float("inf"), -float("inf")])
+@pytest.mark.parametrize("component", ["node", "edge"])
+def test_reference_rejects_nonfinite_scoring_values(weight, component):
+    from networkx_algo_common_subtree.common_subtree_reference import (
+        score_embedding_witness,
+        score_subtree_isomorphism_witness,
+    )
+
+    tree = ReferenceLabeledTree([1, 1], [(0, 1, 0)])
+    scoring = ExactLabelScoring(
+        node_match_weight=weight if component == "node" else 1.0,
+        edge_match_weight=weight if component == "edge" else 0.0,
+    )
+    for solve in [
+        maximum_common_subtree_isomorphism_reference,
+        largest_weight_common_subtree_embedding_with_distance_penalty_reference,
+    ]:
+        with pytest.raises(ValueError, match="scores must be finite"):
+            solve(tree, tree, scoring)
+    for rescore in [score_subtree_isomorphism_witness, score_embedding_witness]:
+        with pytest.raises(ValueError, match="scores must be finite"):
+            rescore(tree, tree, [(0, 0), (1, 1)], scoring)
+
+
+def test_reference_rejects_accumulation_overflow():
+    from sys import float_info
+
+    tree = ReferenceLabeledTree([1, 1], [(0, 1, 0)])
+    scoring = ExactLabelScoring(node_match_weight=float_info.max, edge_match_weight=0.0)
+    for solve in [
+        maximum_common_subtree_isomorphism_reference,
+        largest_weight_common_subtree_embedding_with_distance_penalty_reference,
+    ]:
+        with pytest.raises(ValueError, match="scores must be finite"):
+            solve(tree, tree, scoring)
