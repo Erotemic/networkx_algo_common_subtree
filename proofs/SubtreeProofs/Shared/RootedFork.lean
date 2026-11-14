@@ -53,6 +53,28 @@ theorem mem_path_of_adj {a b c : V} (ha : tree.graph.Adj a b) :
   rw [he]
   simp [SimpleGraph.Path.singleton]
 
+@[simp] theorem pathLength_self (a : V) : tree.pathLength a a = 0 := by
+  have he := congrArg Subtype.val (tree.path_unique (tree.path a a) SimpleGraph.Path.nil)
+  unfold pathLength
+  rw [he]
+  rfl
+
+theorem pathLength_adj {a b : V} (ha : tree.graph.Adj a b) : tree.pathLength a b = 1 := by
+  have he := congrArg Subtype.val (tree.path_unique (tree.path a b) (SimpleGraph.Path.singleton ha))
+  unfold pathLength
+  rw [he]
+  rfl
+
+/-- Descending one child on the way to a descendant removes exactly one edge. -/
+theorem pathLength_child_step {root u c v : V} (hc : tree.Child root u c)
+    (hv : tree.Ancestor root c v) : tree.pathLength u v = tree.pathLength c v + 1 := by
+  have hlocal : tree.Ancestor u c v := tree.ancestor_interval hc.2 hv
+  have he := congrArg SimpleGraph.Walk.length (tree.path_append_of_ancestor hlocal)
+  rw [SimpleGraph.Walk.length_append] at he
+  change tree.pathLength u c + tree.pathLength c v = tree.pathLength u v at he
+  rw [tree.pathLength_adj hc.1] at he
+  omega
+
 /-- Every two vertices have a greatest common ancestor, proved from their
 finite paths rather than assumed as a rooted-tree operation. -/
 theorem exists_greatest_common_ancestor (root a b : V) :

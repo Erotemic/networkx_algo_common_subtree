@@ -4,6 +4,16 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Skipped-root recurrence accepted: 2026-11-14
+
+`Droschinsky2018.skipped_recurrence_two_state` proves the diamond half of
+Lemma 5 against independently optimized finite boundary witnesses. The common
+top pair, fixed input orientations and boundary path penalties are explicit.
+Both child-descent directions and exact one-penalty score changes compile,
+including empty child families and infinite penalties. Mapped and skipped
+maxima partition the boundary objective exactly. The mapped-root matching
+half, executable evaluation, optimization and Rust refinement remain open.
+
 ## Fixed-root source contract accepted: 2026-11-14
 
 The 2018 rooted and root-to-root feasible families now have separate exact

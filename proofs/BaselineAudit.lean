@@ -31,3 +31,4 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Droschinsky2018.valid_iff_source_embeddings
 #print axioms SubtreeProofs.Droschinsky2018.rootedValid_iff_source_embeddings
 #print axioms SubtreeProofs.Droschinsky2018.rootToRootValid_iff_source_embeddings
+#print axioms SubtreeProofs.Droschinsky2018.skipped_recurrence_two_state

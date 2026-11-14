@@ -292,6 +292,22 @@ matching/evaluation, complexity and actual graph Rust refinement remain open.
 The fixed-root admissibility result does not make the 2016 fixed-root shortcut
 valid for 2018's unrestricted unrooted objective.
 
+## Skipped-state recurrence accepted: 2026-11-14
+
+`Droschinsky2018.BoundaryStates.StateValid` specifies a concrete common-root
+pair inside descendant subtrees with fixed input orientations. `stateScore`
+adds exactly the boundary skipped-vertex penalty to the independent internal
+vertex/path score. The mapped boundary has no additional penalty.
+`StateValid.skipped_cover`, `extend_left` / `extend_right` and
+`stateScore_step_left` / `stateScore_step_right` prove both child-descent
+directions with exactly one penalty, including the infinite-penalty case.
+
+`SkippedRecurrence` defines finite independent mapped/skipped witness maxima.
+`allStateValue_eq_max` proves their exact partition; `skipped_recurrence_two_state`
+proves the diamond half of 2018 Lemma 5 against those independent optima,
+including empty child families. The mapped-root matching half, executable DP,
+optimized matching/cost and actual graph Rust refinement remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently
