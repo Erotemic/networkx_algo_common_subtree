@@ -127,3 +127,5 @@ public import SubtreeProofs.Shared.CopiedAssignmentReduction
 public import SubtreeProofs.Shared.AssignmentVertexDeletion
 public import SubtreeProofs.Shared.CopiedMatchingDeletion
 public import SubtreeProofs.Shared.CopiedMatchingInitialization
+public import SubtreeProofs.Shared.AssignmentDualityOn
+public import SubtreeProofs.Shared.CopiedMatchingDuality

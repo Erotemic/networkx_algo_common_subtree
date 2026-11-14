@@ -524,6 +524,33 @@ formalizations, published optimized algorithms, or end-to-end Rust graph verific
 
 
 
+## Sparse copied-graph duality and tight normalization: 2026-11-14
+
+`AssignmentDualityOn` proves independent weak duality and feasible/tight
+optimality with inequalities restricted to actual allowed edges. Compatible
+permutations must respect that relation, so forbidden edges need no finite
+sentinel. `tight_of_cost_eq_dual_on` proves the converse equality criterion:
+nonnegative selected-edge slacks sum to zero only when every selected edge is
+tight. `tight_transfer_on` preserves tightness for any equal-cost compatible
+replacement under the same dual.
+
+`CopiedAssignmentReduction.feasible_tight_decodes` connects the paper's
+maximization dual convention to this independent sparse assignment criterion
+and yields maximum original and copy matchings. `normalize_tight` replaces a
+compatible tight optimum by the involution swapping just its decoded original
+pairs. The normalized assignment has exactly the same weight, stays compatible
+and tight under the original potentials, and pairs every unused right vertex
+to its own copy. This justifies the unmatched/matched deletion split even if
+the old assignment used zero-weight cross edges or its two decoded components
+differed. The original optimum is proved from duality; it is not a supplied
+premise of the normalization theorem.
+
+These are mathematical certificates and normalization proofs for the source
+construction. They do not replace verification of computing those certificates:
+optimized sparse augmentation, its actual Rust refinement and runtime bounds
+remain open. The actual reference matching/deletion-family public APIs already
+have separate unconditional admitted-input total-correctness proofs.
+
 ## Paper copied-graph dual and initial tight matching: 2026-11-14
 
 `CopiedAssignmentReduction.initial_dual_feasible` proves the exact row-maximum

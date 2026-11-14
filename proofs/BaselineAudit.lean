@@ -49,3 +49,6 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec
 #print axioms SubtreeProofs.Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_spec
+
+#print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.feasible_tight_decodes
+#print axioms SubtreeProofs.WeightedMatching.CopiedAssignmentReduction.normalize_tight
