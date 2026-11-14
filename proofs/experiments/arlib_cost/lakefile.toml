@@ -1,0 +1,14 @@
+name = "common_subtree_arlib_spike"
+defaultTargets = ["ArlibSpike"]
+
+[[require]]
+name = "subtree_proofs"
+path = "../.."
+
+[[require]]
+name = "arlib"
+git = "https://github.com/meelgroup/arlib.git"
+rev = "8d08f89a6d05c5e8368e91659bd6e117fbb74c4e"
+
+[[lean_lib]]
+name = "ArlibSpike"

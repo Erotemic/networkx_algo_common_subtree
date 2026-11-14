@@ -4,6 +4,18 @@
 **Scope:** Formal time/space bounds and source refinement for Lozano–Valiente 2004, Droschinsky–Kriege–Mutzel 2016 and 2018.  
 **Method:** Inspected upstream repository source and published module documentation on 2026-11-14, cross-checked against our Lean files and `paper_statement_crosswalk.md`. **No upstream Lean build or integration smoke test was executed in this environment** (Lean/Lake unavailable). Inspecting source declarations is evidence of their presence, not proof of compatibility in our workspace.
 
+## Execution follow-up
+
+The [isolated experiment](../../proofs/experiments/arlib_cost/README.md) now
+builds with the exact main dependency pins: 3,744 jobs pass, including the full
+main proof library. It proves an operation-bearing lookup's value and exact
+comparison-counter bridge to existing `memoFind`, a `2*n+1` recorded-operation
+bound, early-hit behavior and explicit dictionary model exchanges. Three
+negative compilation checks pass. The original source-only assessment below is
+preserved; `results.json` records the subsequent execution. Decision: retain
+the experiment without adding arlib to the main manifest. Existing counters
+remain useful; production resource correspondence is a separate obligation.
+
 ## Decision in brief
 
 1. **Keep Mathlib and Aeneas as the established foundation.** Mathematical cardinality, combinatorial sums and asymptotics stay in Mathlib; source correspondence stays in Aeneas.

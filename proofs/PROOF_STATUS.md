@@ -17,6 +17,26 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Optional arlib operation-count experiment: 2026-11-14
+
+The isolated project `experiments/arlib_cost` pins arlib to `8d08f89a` and
+retains exactly the main Lean/Mathlib/Aeneas and transitive dependency revisions.
+Its joint 3,744-job build, including the entire main library, succeeds. A sealed
+queue lookup is proved equal to the existing `memoFind` value and comparison
+counter for every table, with total recorded operations bounded by `2*n+1`
+and constant recorded work on an early first hit. Three negative compilation
+checks reject specification-view/cost-erasure access. Separate model-exchange
+lemmas expose linear-list and assumed constant-time dictionary rates.
+
+This is a real bridge to the existing lookup, not a `pure` wrapper around a
+costly computation. It counts whole-key comparisons as abstract primitives;
+structural equality internals, input encoding, space ownership and production
+Rust resource correspondence are not proved. The program audit is bounded and
+manual, not a general automatic sealing guarantee. Keep arlib optional: main
+manifest/toolchain pins are unchanged, current memo counters remain the near-term
+foundation, and expected hashing/full paper complexity are still open. See the
+[executed experiment](experiments/arlib_cost/README.md) and its `results.json`.
+
 ## Uniform complete matching fast path: 2026-11-14
 
 The production graph matcher now recognizes complete equal-positive-weight

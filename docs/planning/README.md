@@ -33,8 +33,9 @@ witness checks and native tests, plus short representative performance checks.
 Use small workloads and about three timed samples during development; accept
 some timing variance. Commit coherent implementation milestones before the
 long final benchmark campaign. The new [complexity-library reuse audit](lean_complexity_library_reuse_audit_2026_11_14.md)
-recommends a limited arlib experiment with a real memo-lookup bridge before
-adopting any dependency; existing Mathlib/Aeneas proofs remain the foundation.
+now has an [executed arlib experiment](../../proofs/experiments/arlib_cost/README.md)
+with a proved memo-lookup bridge and operation bound. Its 3,744-job joint build
+passes; arlib stays optional and main dependency pins remain unchanged.
 
 ## Initial proof scope: arithmetic boundary
 
