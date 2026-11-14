@@ -182,6 +182,21 @@ Child-matching decomposition/assembly and the actual rooted/unrooted graph
 algorithms and cost bounds remain open. These structural results do not
 verify the Rust graph solvers.
 
+## Weighted branch decomposition accepted: 2026-11-14
+
+`Droschinsky2016.Valid.ancestor_preserved` proves rooted ancestry preservation
+from the actual induced-graph isomorphism and canonical paths.
+`branchMapping_valid` proves that each mapped descendant restriction is a
+nonempty connected isomorphism. `unique_child_branch`, `branch_partition`
+and `child_branch_disjoint` give the exact disjoint vertex partition.
+`edge_partition` partitions actual unordered common edges into root edges and
+branch edges; `score_decomposition` proves the complete independent vertex/edge
+score equals the mapped-root reward plus edge-and-continuation branch rewards.
+It holds for signed and negative-infinity scores.
+
+This proves the decomposition direction behind 2016 Eq. (1). Converse assembly,
+optimal child selection, recursive evaluation and the cost theorem remain open.
+
 ## Executed independent evidence
 
 - All 197 rooted ordered trees through six edges agree between independently

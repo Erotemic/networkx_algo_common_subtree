@@ -26,3 +26,4 @@ public import SubtreeProofs.Droschinsky2016.Witness
 public import SubtreeProofs.Droschinsky2018.Specification
 public import SubtreeProofs.Rust.MemoizedOrderedSolver
 public import SubtreeProofs.Droschinsky2016.Rooted
+public import SubtreeProofs.Droschinsky2016.BranchDecomposition
