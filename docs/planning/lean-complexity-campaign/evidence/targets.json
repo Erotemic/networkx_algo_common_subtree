@@ -1,0 +1,667 @@
+{
+  "schema_version": 1,
+  "status": "proto-roadmap; no new target proved by this overlay",
+  "targets": [
+    {
+      "id": "ALG-01",
+      "name": "Finite sum, cardinality and reindexing API",
+      "kind": "existing mathematics",
+      "dependencies": [],
+      "sources": [
+        "L01"
+      ],
+      "status": "reuse_pending_pin_check",
+      "consumer": "All work bounds",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G0"
+    },
+    {
+      "id": "COST-01",
+      "name": "Event-occurrence pricing and currency exchange",
+      "kind": "existing/adapted interface",
+      "dependencies": [
+        "ALG-01"
+      ],
+      "sources": [
+        "L02",
+        "L03",
+        "I03"
+      ],
+      "status": "reuse_or_adapter",
+      "consumer": "Memo lookup and primitive implementations",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "SEM-01",
+      "name": "Operational resource adequacy",
+      "kind": "semantic theorem",
+      "dependencies": [
+        "COST-01"
+      ],
+      "sources": [
+        "L02",
+        "L05",
+        "A01",
+        "I02"
+      ],
+      "status": "adapter_pending",
+      "consumer": "Actual lookup/loop pilot",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "SEM-02",
+      "name": "Compositional total-cost program rules",
+      "kind": "semantic/API theorem",
+      "dependencies": [
+        "SEM-01"
+      ],
+      "sources": [
+        "L04",
+        "L05",
+        "R01",
+        "I02"
+      ],
+      "status": "reuse_or_adapter",
+      "consumer": "Fold, early exit and recursive body",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "REF-01",
+      "name": "Cost-aware simulation composition",
+      "kind": "semantic theorem",
+      "dependencies": [
+        "SEM-01",
+        "COST-01"
+      ],
+      "sources": [
+        "L02",
+        "L05",
+        "I03",
+        "R10"
+      ],
+      "status": "reuse_or_adapter",
+      "consumer": "Abstract primitive to concrete event block",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "REF-02",
+      "name": "Stuttering and termination transfer",
+      "kind": "semantic theorem",
+      "dependencies": [
+        "REF-01"
+      ],
+      "sources": [
+        "I02",
+        "I03"
+      ],
+      "status": "statement_audit_required",
+      "consumer": "Loops with abstractly invisible source work",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "SUB-01",
+      "name": "Result-size-aware subroutine substitution",
+      "kind": "interface theorem",
+      "dependencies": [
+        "SEM-02",
+        "REF-01"
+      ],
+      "sources": [
+        "R01",
+        "I02"
+      ],
+      "status": "adapter_pending",
+      "consumer": "Dictionary and matcher contracts",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "WORK-01",
+      "name": "Weighted bounded-fiber work charging",
+      "kind": "mathematical theorem",
+      "dependencies": [
+        "ALG-01",
+        "COST-01"
+      ],
+      "sources": [
+        "A06",
+        "R03"
+      ],
+      "status": "formulation_proposed",
+      "consumer": "Graph scans and matching repairs",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G2"
+    },
+    {
+      "id": "AMO-01",
+      "name": "Finite-trace potential bound",
+      "kind": "existing mathematical theorem",
+      "dependencies": [
+        "ALG-01"
+      ],
+      "sources": [
+        "A06",
+        "I05"
+      ],
+      "status": "reuse_or_short_lemma",
+      "consumer": "Sequential queue and mutable warm starts",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G4"
+    },
+    {
+      "id": "AMO-02",
+      "name": "Framed modular potential contracts",
+      "kind": "semantic/API theorem",
+      "dependencies": [
+        "SEM-02",
+        "AMO-01",
+        "SUB-01"
+      ],
+      "sources": [
+        "A01",
+        "R01",
+        "R02",
+        "R04"
+      ],
+      "status": "adapter_pending",
+      "consumer": "Composed amortized data structures",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G4"
+    },
+    {
+      "id": "AMO-03",
+      "name": "Credit conservation on branching jobs",
+      "kind": "semantic/mathematical theorem",
+      "dependencies": [
+        "AMO-02",
+        "WORK-01"
+      ],
+      "sources": [
+        "R05",
+        "L06",
+        "A07"
+      ],
+      "status": "conditional_design_after_pilot",
+      "consumer": "Forked persistent computations and sibling instances",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G4"
+    },
+    {
+      "id": "MEM-01",
+      "name": "Memo interpreter soundness and unique expansion",
+      "kind": "semantic theorem",
+      "dependencies": [
+        "SEM-02",
+        "ALG-01"
+      ],
+      "sources": [
+        "I01"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "LV2004 and edit distance",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G2"
+    },
+    {
+      "id": "MEM-02",
+      "name": "Root-plus-body request accounting",
+      "kind": "semantic/combinatorial theorem",
+      "dependencies": [
+        "MEM-01",
+        "WORK-01"
+      ],
+      "sources": [
+        "I01",
+        "P01"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "Multi-root warm-cache DP",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G2"
+    },
+    {
+      "id": "MEM-03",
+      "name": "Representation-parametric memo work bound",
+      "kind": "semantic/interface theorem",
+      "dependencies": [
+        "MEM-02",
+        "SUB-01",
+        "COST-01"
+      ],
+      "sources": [
+        "I01",
+        "R01",
+        "L02"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "List and direct-address memo backends",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G2"
+    },
+    {
+      "id": "SCHED-01",
+      "name": "Ready schedule correctness",
+      "kind": "semantic/combinatorial theorem",
+      "dependencies": [
+        "SEM-02",
+        "ALG-01"
+      ],
+      "sources": [
+        "I01",
+        "P03"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "Tabulation and directed messages",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "SCHED-02",
+      "name": "Schedule event accounting and batch readiness",
+      "kind": "semantic theorem",
+      "dependencies": [
+        "SCHED-01",
+        "SEM-02",
+        "WORK-01"
+      ],
+      "sources": [
+        "I01",
+        "P03"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "Two-pass oriented tree evaluation",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "BATCH-01",
+      "name": "Shared preparation and per-job accounting",
+      "kind": "semantic/interface theorem",
+      "dependencies": [
+        "SUB-01",
+        "WORK-01",
+        "SEM-02"
+      ],
+      "sources": [
+        "R03",
+        "R05",
+        "P02",
+        "P03"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "Related matching instances",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G4"
+    },
+    {
+      "id": "BATCH-02",
+      "name": "Bounded repair-family work theorem",
+      "kind": "mathematical/interface theorem",
+      "dependencies": [
+        "BATCH-01",
+        "WORK-01"
+      ],
+      "sources": [
+        "P02",
+        "P03",
+        "R03"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "Deletion-family solver and independent reoptimization",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G4"
+    },
+    {
+      "id": "SIZE-01",
+      "name": "Degree-sensitive product-sum envelopes",
+      "kind": "mathematical theorem",
+      "dependencies": [
+        "ALG-01",
+        "WORK-01"
+      ],
+      "sources": [
+        "L01",
+        "P03"
+      ],
+      "status": "reuse_or_short_lemma",
+      "consumer": "Tree DP aggregate cost",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "SPACE-01",
+      "name": "Well-formed occupancy-profile composition",
+      "kind": "existing/adapted resource theorem",
+      "dependencies": [
+        "SEM-01",
+        "COST-01"
+      ],
+      "sources": [
+        "L02",
+        "R11"
+      ],
+      "status": "reuse_or_adapter",
+      "consumer": "Allocate/free traces",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "SPACE-02",
+      "name": "Schedule frontier and representation residency",
+      "kind": "semantic/combinatorial theorem",
+      "dependencies": [
+        "SPACE-01",
+        "SCHED-02"
+      ],
+      "sources": [
+        "I01",
+        "R11",
+        "P03"
+      ],
+      "status": "generalization_candidate",
+      "consumer": "Rolling DP and oriented tables",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "ASY-01",
+      "name": "Opaque monotone cost envelopes",
+      "kind": "interface theorem",
+      "dependencies": [
+        "SUB-01",
+        "ALG-01"
+      ],
+      "sources": [
+        "R01",
+        "L01"
+      ],
+      "status": "adapter_pending",
+      "consumer": "Stable subroutine specifications",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G3"
+    },
+    {
+      "id": "ASY-02",
+      "name": "Admissible-domain uniform big-O transfer",
+      "kind": "mathematical/interface theorem",
+      "dependencies": [
+        "ASY-01",
+        "ALG-01"
+      ],
+      "sources": [
+        "R01",
+        "L01"
+      ],
+      "status": "reuse_or_adapter",
+      "consumer": "Readable multivariate end theorems",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G3"
+    },
+    {
+      "id": "SRC-01",
+      "name": "Pinned-source event interpretation and adequacy",
+      "kind": "source-specific semantic bridge",
+      "dependencies": [
+        "SEM-01",
+        "REF-01",
+        "REF-02",
+        "SUB-01"
+      ],
+      "sources": [
+        "L07",
+        "R10",
+        "L05",
+        "L14",
+        "R14"
+      ],
+      "status": "open_local_bridge",
+      "consumer": "Actual Rust lookup and scan loop",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G1"
+    },
+    {
+      "id": "MEM-04",
+      "name": "Existing evaluator/source memo correspondence",
+      "kind": "local adapter",
+      "dependencies": [
+        "MEM-03",
+        "SRC-01"
+      ],
+      "sources": [
+        "P01",
+        "L07"
+      ],
+      "status": "open_local_adapter",
+      "consumer": "Actual owned memo solver",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G3"
+    },
+    {
+      "id": "SRC-02",
+      "name": "Wrappers, copies and output-sensitive bounds",
+      "kind": "source-specific interface bridge",
+      "dependencies": [
+        "SRC-01",
+        "SUB-01"
+      ],
+      "sources": [
+        "L07",
+        "P01",
+        "P03"
+      ],
+      "status": "open_local_bridge",
+      "consumer": "Indexed/token/Python boundary claims",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G3"
+    },
+    {
+      "id": "MATCH-01",
+      "name": "Rectangular matcher resource contract",
+      "kind": "algorithm-specific theorem",
+      "dependencies": [
+        "SUB-01",
+        "SEM-02",
+        "AMO-02",
+        "SRC-01"
+      ],
+      "sources": [
+        "P02",
+        "P03",
+        "L08"
+      ],
+      "status": "open_local_algorithm",
+      "consumer": "2016 Lemma 5; 2018 matching prerequisite",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "MATCH-02",
+      "name": "2016 deletion-family resource bound",
+      "kind": "algorithm-specific theorem",
+      "dependencies": [
+        "MATCH-01",
+        "BATCH-02"
+      ],
+      "sources": [
+        "P02"
+      ],
+      "status": "open_local_algorithm",
+      "consumer": "2016 Lemma 6 and family caller",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "MATCH-03",
+      "name": "2018 deletion strategy and combined bound",
+      "kind": "algorithm-specific theorem",
+      "dependencies": [
+        "MATCH-02",
+        "BATCH-02"
+      ],
+      "sources": [
+        "P03"
+      ],
+      "status": "open_local_algorithm",
+      "consumer": "2018 Lemmas 13/14",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "APP-01",
+      "name": "LV2004 full specified-model resource theorem",
+      "kind": "local application",
+      "dependencies": [
+        "MEM-04",
+        "SRC-02",
+        "ASY-02"
+      ],
+      "sources": [
+        "P01"
+      ],
+      "status": "open_application",
+      "consumer": "Preserve existing operation/comparison endpoints",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G3"
+    },
+    {
+      "id": "APP-02",
+      "name": "DKM2016 total specified-model resource theorem",
+      "kind": "local application",
+      "dependencies": [
+        "MATCH-02",
+        "SCHED-02",
+        "SIZE-01",
+        "SRC-02",
+        "ASY-02"
+      ],
+      "sources": [
+        "P02"
+      ],
+      "status": "open_application",
+      "consumer": "Optimized production family schedule",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    },
+    {
+      "id": "APP-03",
+      "name": "DKM2018 total time and stated-space theorem",
+      "kind": "local application",
+      "dependencies": [
+        "MATCH-03",
+        "SCHED-02",
+        "SIZE-01",
+        "SPACE-02",
+        "SRC-02",
+        "ASY-02"
+      ],
+      "sources": [
+        "P03"
+      ],
+      "status": "open_application",
+      "consumer": "Unrooted optimized implementation",
+      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "global_absence_claim": false,
+      "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
+      "dossier_document": "06-theorem-dossiers.md",
+      "first_acceptance_gate": "G5"
+    }
+  ]
+}

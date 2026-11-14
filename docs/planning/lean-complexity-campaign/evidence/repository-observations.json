@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-14",
+  "archive_name": "networkx_algo_common_subtree-source-2026-11-14T164724-5-4291e8bd12d6.tar.gz",
+  "archive_sha256": "62a06164534e701cbb39a336071c5c9b9884baee87cfd4ce7b8ab6cc76236a82",
+  "git_head": "4291e8bd12d693fbb0d1a6a8737ed96c5f6705e3",
+  "baseline_worktree_clean": true,
+  "new_target_subtree_absent": true,
+  "lean_toolchain": "leanprover/lean4:v4.35.0",
+  "selected_dependencies": [
+    {
+      "name": "aeneas",
+      "url": "https://github.com/AeneasVerif/aeneas",
+      "rev": "5a392f4b80a4d0d05abc240eb2a7fa70622a9a35",
+      "inputRev": "5a392f4b80a4d0d05abc240eb2a7fa70622a9a35"
+    },
+    {
+      "name": "mathlib",
+      "url": "https://github.com/leanprover-community/mathlib4",
+      "rev": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+      "inputRev": "v4.35.0"
+    }
+  ],
+  "builds_executed": false,
+  "observations": [
+    {
+      "id": "BASE-TOOLCHAIN",
+      "path": "proofs/lean-toolchain",
+      "sha256": "ca5f1f601d34c49079e38d7e7041eb0f2a9c227fbc1df0f404820069a052330c",
+      "line_count": 1,
+      "evidence": "local file inspected",
+      "meaning": "Exact local Lean toolchain",
+      "anchors": []
+    },
+    {
+      "id": "BASE-MANIFEST",
+      "path": "proofs/lake-manifest.json",
+      "sha256": "ef3ce4770c8d815c3c68f8cdaa658c692e4128b89c35bce34a026342183e9e60",
+      "line_count": 106,
+      "evidence": "local file inspected",
+      "meaning": "Resolved Aeneas/Mathlib dependencies",
+      "anchors": []
+    },
+    {
+      "id": "BASE-VERIFY",
+      "path": "proofs/VERIFICATION.md",
+      "sha256": "0dbdd7689337811dba8801621637335238dc132efc542d5e1b9b6cc76a3731b0",
+      "line_count": 172,
+      "evidence": "local file inspected",
+      "meaning": "Existing correctness, extraction and resource boundaries",
+      "anchors": []
+    },
+    {
+      "id": "BASE-STATUS",
+      "path": "proofs/PROOF_STATUS.md",
+      "sha256": "ae2fd5953227bfe50678731957feb8fe010f4bbf39af4641e3c0c00905802cc9",
+      "line_count": 2198,
+      "evidence": "local file inspected",
+      "meaning": "Historical proof-status record; not rerun here",
+      "anchors": []
+    },
+    {
+      "id": "BASE-CROSSWALK",
+      "path": "docs/planning/paper_statement_crosswalk.md",
+      "sha256": "decbc700a676f3ccd3bff17ccba229c1632ba217f8cd97e07cc9dc0cdd3c777e",
+      "line_count": 156,
+      "evidence": "local file inspected",
+      "meaning": "Paper-to-declaration and remaining-obligation mapping",
+      "anchors": []
+    },
+    {
+      "id": "BASE-AUDIT",
+      "path": "docs/planning/lean_complexity_library_reuse_audit_2026_11_14.md",
+      "sha256": "4632ce7e38e7df0ef24f63fb7f204b12b9f27e3d2a1430cdd22bda64e2cd0095",
+      "line_count": 179,
+      "evidence": "local file inspected",
+      "meaning": "Prior included library audit, with its own older baseline",
+      "anchors": []
+    },
+    {
+      "id": "BASE-CONTAINMENT",
+      "path": "docs/planning/lozano_valiente_2004_containment_definition_audit.md",
+      "sha256": "e06e6e8835c736a401709699fb1f4b6589b960c40c24e51cba110e9a8a27382a",
+      "line_count": 170,
+      "evidence": "local file inspected",
+      "meaning": "Printed-containment discrepancy and local corrected specification",
+      "anchors": []
+    },
+    {
+      "id": "BASE-MEMO",
+      "path": "proofs/SubtreeProofs/Paper2004/MemoizedDynamicProgram.lean",
+      "sha256": "6c741a6b34e264950f517019610521b8d343a74e6c05fd209aac743c2bf45945",
+      "line_count": 470,
+      "evidence": "local file inspected",
+      "meaning": "Directly inspected evaluator and count proofs",
+      "anchors": [
+        {
+          "name": "memoLookup",
+          "declaration_start_lines": [
+            24
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoFind",
+          "declaration_start_lines": [
+            30
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoFind_value",
+          "declaration_start_lines": [
+            37
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoFind_comparisons",
+          "declaration_start_lines": [
+            46
+          ],
+          "status": "located"
+        },
+        {
+          "name": "MemoSound",
+          "declaration_start_lines": [
+            56,
+            76
+          ],
+          "status": "located"
+        },
+        {
+          "name": "MemoRun",
+          "declaration_start_lines": [
+            86
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs",
+          "declaration_start_lines": [
+            94
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_counts",
+          "declaration_start_lines": [
+            191
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_new_keys",
+          "declaration_start_lines": [
+            234
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_nodup",
+          "declaration_start_lines": [
+            315
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_table_bound",
+          "declaration_start_lines": [
+            360
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_operation_bound",
+          "declaration_start_lines": [
+            380
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_tree_operation_bound",
+          "declaration_start_lines": [
+            392
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_comparison_bound",
+          "declaration_start_lines": [
+            404
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoLcs_comparison_state_bound",
+          "declaration_start_lines": [
+            461
+          ],
+          "status": "located"
+        }
+      ]
+    },
+    {
+      "id": "BASE-RUST",
+      "path": "rust/crates/verified_ordered_core/src/lib.rs",
+      "sha256": "7fed9dd1de4ac6e4a3b221ec8c764fe8579f1d5784ca2f1e38691c4b4eb2e64d",
+      "line_count": 250,
+      "evidence": "local file inspected",
+      "meaning": "Actual source functions selected for pilot",
+      "anchors": [
+        {
+          "name": "memo_lookup",
+          "declaration_start_lines": [
+            139
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memo_insert",
+          "declaration_start_lines": [
+            156
+          ],
+          "status": "located"
+        },
+        {
+          "name": "memoized_common_embedding",
+          "declaration_start_lines": [
+            174
+          ],
+          "status": "located"
+        },
+        {
+          "name": "maximum_common_embedding",
+          "declaration_start_lines": [
+            234
+          ],
+          "status": "located"
+        }
+      ]
+    },
+    {
+      "id": "BASE-RUST-PROOF",
+      "path": "proofs/SubtreeProofs/Rust/MemoizedOrderedSolver.lean",
+      "sha256": "2c4e1f9ab63719af087e66b9db832dd7d78a0616b357239a4f21a816745a64e7",
+      "line_count": 306,
+      "evidence": "local file inspected",
+      "meaning": "Existing source-functional memo correspondence",
+      "anchors": []
+    },
+    {
+      "id": "BASE-OBJECTIVE",
+      "path": "proofs/SubtreeProofs/Rust/MatchingCostSpecification.lean",
+      "sha256": "495f66f62a259c56f66b547f8e7bea9330b5c58605ce570ecc2a8885c79cb468",
+      "line_count": 80,
+      "evidence": "local file inspected",
+      "meaning": "Matching objective costs, not runtime accounting",
+      "anchors": [
+        {
+          "name": "costAt",
+          "declaration_start_lines": [
+            32
+          ],
+          "status": "located"
+        },
+        {
+          "name": "costAt_sum",
+          "declaration_start_lines": [
+            55
+          ],
+          "status": "located"
+        }
+      ]
+    },
+    {
+      "id": "BASE-GENERATION",
+      "path": "dev/regenerate_rust_lean.sh",
+      "sha256": "1b1c0d2b313547366484339044f0fa262ae6c4381d537d92592349704da46210",
+      "line_count": 43,
+      "evidence": "local file inspected",
+      "meaning": "Generation/check workflow; script not executed",
+      "anchors": []
+    },
+    {
+      "id": "BASE-DKM-PLAN",
+      "path": "docs/planning/droschinsky_2016_2018_verified_rust_lean.md",
+      "sha256": "92c8192334e3d13b868c524ed2ebb6fe1393885e6bb7c1a2072d6d6021e54a50",
+      "line_count": 1629,
+      "evidence": "local file inspected",
+      "meaning": "Production algorithm and proof/resource obligations",
+      "anchors": []
+    }
+  ]
+}

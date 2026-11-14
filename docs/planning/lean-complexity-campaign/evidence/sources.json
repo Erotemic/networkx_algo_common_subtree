@@ -1,0 +1,763 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-14",
+  "exhaustive": false,
+  "records": [
+    {
+      "id": "L01",
+      "title": "Mathlib: asymptotics, finite sums, and Akra-Bazzi",
+      "date_or_revision": "Project pin v4.35.0; live docs inspected 2026-11-14",
+      "ecosystem": "Lean",
+      "url": "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Asymptotics/Defs.html",
+      "locator": "Asymptotics.IsBigOWith, IsBigO, IsTheta; Mathlib.Computability.AkraBazzi.AkraBazzi / AkraBazziRecurrence.isTheta_asympBound",
+      "evidence": "official API inspected",
+      "relevance": "Existing mathematical substrate, including filter-based multivariate domains and a discrete Akra-Bazzi theorem.",
+      "limit": "Live API docs can be newer than the project pin. Check exact declarations in the pinned checkout before writing imports; this is not an operational cost semantics.",
+      "decision": "reuse",
+      "additional_urls": [
+        "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Computability/AkraBazzi/AkraBazzi.html"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L02",
+      "title": "arlib: Charged and RAM realization",
+      "date_or_revision": "8d08f89a6d05c5e8368e91659bd6e117fbb74c4e; commit 2026-10-17",
+      "ecosystem": "Lean",
+      "url": "https://github.com/meelgroup/arlib/tree/8d08f89a6d05c5e8368e91659bd6e117fbb74c4e",
+      "locator": "Arlib/Computation/{Charged,Cost,ExactRealization}.lean; docs/dev/Cost-Modelling-Protocol.md",
+      "evidence": "selected pinned source inspected; other modules audited in repository",
+      "relevance": "Typed cost vectors, data-structure contracts and exact value/opcode correspondence. ExactRealizes.bind and steps_eq already address compositional realization.",
+      "limit": "Own RAM model; not automatic Aeneas/Rust or physical-memory adequacy. No integration build executed here.",
+      "decision": "mandatory pilot",
+      "additional_urls": [
+        "https://github.com/meelgroup/arlib/blob/8d08f89a6d05c5e8368e91659bd6e117fbb74c4e/Arlib/Computation/ExactRealization.lean"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L03",
+      "title": "CSLib TimeM and CSLib program",
+      "date_or_revision": "Live TimeM docs; CSLib preprint arXiv:2602.04846 (2026)",
+      "ecosystem": "Lean",
+      "url": "https://api.cslib.io/docs/Cslib/Algorithms/Lean/TimeM.html",
+      "locator": "Design Principles; TimeM.ret, TimeM.time, time_bind",
+      "evidence": "official API inspected",
+      "relevance": "Lightweight cost annotations and value/cost composition; a useful interchange and baseline representation.",
+      "limit": "Documentation explicitly makes annotation-to-execution matching a manual responsibility. A sound external realization theorem can still use this representation.",
+      "decision": "adapter baseline",
+      "additional_urls": [
+        "https://arxiv.org/abs/2602.04846"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L04",
+      "title": "Lean Std.WP and vcgen",
+      "date_or_revision": "Lean 4.35.0 release, 2026-10-12",
+      "ecosystem": "Lean",
+      "url": "https://lean-lang.org/doc/reference/latest/releases/v4.35.0/",
+      "locator": "Highlights: vcgen; reference chapter The vcgen tactic; Std.WP.WP, @[spec]",
+      "evidence": "official release and reference inspected",
+      "relevance": "Generalized weakest-precondition interface and proof-producing verification conditions, including deep embeddings and general assertion lattices.",
+      "limit": "Experimental. Does not choose or certify an execution-cost semantics on its own. Test exact pinned API and supported assertions.",
+      "decision": "reuse before new VCG",
+      "additional_urls": [
+        "https://lean-lang.org/doc/reference/latest/The--vcgen--tactic/",
+        "https://lean-lang.org/doc/tutorials/latest/vcgen/"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L05",
+      "title": "A Refinement Framework for the Word RAM (lax-62)",
+      "date_or_revision": "Registered 2026-09-02; source 0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e",
+      "ecosystem": "Lean",
+      "url": "https://laxarchive.org/lax-62/index.html",
+      "locator": "refinement-tower/proofs/Lax62Proofs.lean; Refine/NREST/Basic.lean; Refine/Codegen/Examples/EndToEnd.lean lines 1-140",
+      "evidence": "registry and selected pinned source inspected",
+      "relevance": "Lean NREST, timed/data refinement, separation/refinement machinery, structured IR and Word RAM cost path; substantial overlap with a proposed general stack.",
+      "limit": "No build or complete axiom audit here. Example source says independent fcCount/filter and rvOutFn/reverse functional specifications remain a backlog item. Registry status is not review acceptance.",
+      "decision": "mandatory competing pilot",
+      "additional_urls": [
+        "https://github.com/lax-archive/lax-submissions/tree/0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e/refinement-tower"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L06",
+      "title": "Iris in Lean and iris-lean",
+      "date_or_revision": "de Medeiros et al.; arXiv:2609.24252, 2026-09-21",
+      "ecosystem": "Lean",
+      "url": "https://arxiv.org/abs/2609.24252",
+      "locator": "Introduction and implementation discussion; leanprover-community/iris-lean",
+      "evidence": "paper text and official project discovery inspected",
+      "relevance": "Existing separation-logic substrate, proof mode and Mathlib integration; candidate for resource ownership and shared-work reasoning.",
+      "limit": "Do not infer that Rocq Tachis, Parcas, debit or heap-space layers are ported from the existence of Iris. Current dependency build and coverage remain to audit.",
+      "decision": "ownership pilot if needed",
+      "additional_urls": [
+        "https://github.com/leanprover-community/iris-lean",
+        "https://leanprover-community.github.io/iris-lean/"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L07",
+      "title": "Aeneas: Rust functional verification",
+      "date_or_revision": "Local pin 5a392f4b80a4d0d05abc240eb2a7fa70622a9a35; 2026 source baseline",
+      "ecosystem": "Lean / Rust",
+      "url": "https://github.com/AeneasVerif/aeneas",
+      "locator": "Local proofs/VERIFICATION.md; dev/regenerate_rust_lean.sh; generated modules",
+      "evidence": "local configuration and verification boundary inspected",
+      "relevance": "Maintained route to source-level functional statements; source instrumentation should cooperate with it.",
+      "limit": "No general Rust execution-cost preservation theorem was established by this audit. Translation and primitive models are explicit trust boundaries.",
+      "decision": "preserve and extend narrowly",
+      "additional_urls": [
+        "https://www.microsoft.com/en-us/research/publication/scaling-verification-of-cryptographic-software-with-aeneas-rust-and-lean/"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L08",
+      "title": "CLRS-Lean",
+      "date_or_revision": "9352a92ba9b1d44ad1349f9e57ac31c858ec81b8; local audit 2026-11-14",
+      "ecosystem": "Lean",
+      "url": "https://github.com/TankTechnology/CLRS-Lean/tree/9352a92ba9b1d44ad1349f9e57ac31c858ec81b8",
+      "locator": "FourthEdition/Chapter_25; hungarian_constructs_optimal; local reuse audit",
+      "evidence": "repository audit, not freshly built here",
+      "relevance": "Hungarian correctness and algorithm-analysis proof examples.",
+      "limit": "Balanced complete assignment existence/correctness does not supply our signed partial matching, deletion-family runtime, or actual Rust costs. Different Lean pin.",
+      "decision": "reference, narrow theorem reuse",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L09",
+      "title": "Lean4CStheory-Library",
+      "date_or_revision": "7f0a215d60c83906e15cbc753f7dc7e7a5d3f935; local audit 2026-11-14",
+      "ecosystem": "Lean",
+      "url": "https://github.com/Lean4CStheory/Lean4CStheory-Library/tree/7f0a215d60c83906e15cbc753f7dc7e7a5d3f935",
+      "locator": "Time/Basic.lean; Asymptotics/MasterTheorem/NatRecurrences.lean",
+      "evidence": "repository audit",
+      "relevance": "Concrete recurrence-analysis examples and a TimeM wrapper.",
+      "limit": "No independently inspected source adequacy theorem; different Lean pin. Recurrence solvers do not discharge degree-dependent matching sums.",
+      "decision": "reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L10",
+      "title": "Tau Ceti roadmap standards",
+      "date_or_revision": "Current guidance read 2026-11-14",
+      "ecosystem": "Lean / roadmap",
+      "url": "https://taucetiproject.org/contribute/write-roadmap.html",
+      "locator": "TauCetiRoadmap README and CONTRIBUTING: layered APIs, sources, false neighbors, Suggested.lean",
+      "evidence": "official guidance inspected",
+      "relevance": "Defines the submission-quality standard: existing interfaces, checked statements, human review and coordinated scope.",
+      "limit": "A local campaign with experiments is not yet a timeless accepted roadmap. Software semantics is not automatically excluded by the inspected policy.",
+      "decision": "packaging standard",
+      "additional_urls": [
+        "https://github.com/TauCetiProject/TauCetiRoadmap/blob/main/README.md",
+        "https://github.com/TauCetiProject/TauCetiRoadmap/blob/main/CONTRIBUTING.md"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L11",
+      "title": "VCV-io / VCVio",
+      "date_or_revision": "Live public repository and package discovery, 2026-11-14",
+      "ecosystem": "Lean",
+      "url": "https://github.com/XC0R/VCV-io",
+      "locator": "README: goals and computational complexity disclaimer; Reservoir discovery of Verified-zkEVM/VCVio",
+      "evidence": "public project description inspected",
+      "relevance": "Oracle computations and probability foundations are adjacent to a future probabilistic-cost adapter.",
+      "limit": "The inspected README explicitly says computational complexity is not considered. Project identity/version changed in surfaced package results; resolve exact current source before importing.",
+      "decision": "adjacent, not cost backend",
+      "additional_urls": [
+        "https://reservoir.lean-lang.org/%40Verified-zkEVM/VCVio"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L12",
+      "title": "The Word RAM (lax-13)",
+      "date_or_revision": "Current registry inspected 2026-11-14",
+      "ecosystem": "Lean",
+      "url": "https://laxarchive.org/lax-13/index.html",
+      "locator": "Lax13.Ram; RamComputes; word-length and uniform-program conventions",
+      "evidence": "registry/documentation inspected",
+      "relevance": "Machine model and uniformity reference for lax-62.",
+      "limit": "Own abstract machine; not Rust hardware semantics. Verify word-size quantifier order and encodings before transferring asymptotics.",
+      "decision": "machine-model reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L13",
+      "title": "Tex2Lean",
+      "date_or_revision": "Public guide inspected 2026-11-14",
+      "ecosystem": "Lean workflow",
+      "url": "https://www.tex2lean.com/",
+      "locator": "Guide: time complexity with Charged; Model/Interface/Analysis separation",
+      "evidence": "official guide inspected",
+      "relevance": "Workflow and cost-model review patterns; points to arlib.",
+      "limit": "Tool guidance is not a theorem library or evidence that source costs were proved for this repository.",
+      "decision": "borrow process only",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R01",
+      "title": "A Fistful of Dollars: Formalizing Asymptotic Complexity Claims via Deductive Program Verification",
+      "date_or_revision": "Gueneau, Chargueraud, Pottier; ESOP 2018; DOI 10.1007/978-3-319-89884-1_19",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://chargueraud.org/research/2018/bigo_credits/bigo_credits.pdf",
+      "locator": "Sections 3-5, especially specO and cost-function synthesis; author version pp. 13-21",
+      "evidence": "primary full text parsed; screenshot retrieval failed",
+      "relevance": "Modular asymptotic specifications, multivariate filters, nonnegative/monotone cost envelopes and cost-synthesis proof methodology.",
+      "limit": "Not a WCET result; not fully automatic. Its 2018 account of unavailable recurrence theorems is historical, not current Lean evidence.",
+      "decision": "architectural reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R02",
+      "title": "Verifying the Correctness and Amortized Complexity of a Union-Find Implementation in Separation Logic with Time Credits",
+      "date_or_revision": "Chargueraud and Pottier; JAR 62(3), 331-365, 2019; online 2017; DOI 10.1007/s10817-017-9431-7",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://doi.org/10.1007/s10817-017-9431-7",
+      "locator": "Journal paper; authors publication catalogue; predecessor ITP 2015",
+      "evidence": "primary bibliographic and author descriptions inspected",
+      "relevance": "Demanding precedent for linking mathematical amortized analysis to an imperative implementation.",
+      "limit": "Not a generic ready-made Lean API, nor a matching deletion-family theorem.",
+      "decision": "case-study reference",
+      "additional_urls": [
+        "https://toccata.gitlabpages.inria.fr/toccata/publications/chargueraud.fr.html"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R03",
+      "title": "Formal Proof and Analysis of an Incremental Cycle Detection Algorithm",
+      "date_or_revision": "Gueneau, Jourdan, Chargueraud, Pottier; ITP 2019; DOI 10.4230/LIPIcs.ITP.2019.18",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2019.18",
+      "locator": "Abstract and publication metadata; paper and artifact linked there",
+      "evidence": "publisher/author descriptions inspected",
+      "relevance": "Nontrivial amortized graph algorithm verified with time credits; useful comparison for batched matching.",
+      "limit": "A 2019 verification case study, not a claim that this is the fastest cycle algorithm in 2026.",
+      "decision": "study charging decomposition",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R04",
+      "title": "Time Credits and Time Receipts in Iris",
+      "date_or_revision": "Mevel, Jourdan, Pottier; ESOP 2019; DOI 10.1007/978-3-030-17184-1_1",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://link.springer.com/chapter/10.1007/978-3-030-17184-1_1",
+      "locator": "Publisher record; official Iris publication list",
+      "evidence": "primary record identified",
+      "relevance": "Reusable separation-logic resource reasoning and distinction between upper-budget credits and recorded-time receipts.",
+      "limit": "Exact porting status and source theorem signatures were not audited.",
+      "decision": "resource-logic reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R05",
+      "title": "Thunks and Debits in Separation Logic with Time Credits",
+      "date_or_revision": "Pottier, Gueneau, Jourdan, Mevel; POPL 2024, article 50; DOI 10.1145/3632892",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://iris-project.org/pdfs/2024-popl-pottier-gueneau-jourdan-mevel-thunks-debits.pdf",
+      "locator": "Abstract, introduction and logical treatment of future thunks/debits; artifact linked by Iris",
+      "evidence": "primary PDF parsed and first page visually inspected",
+      "relevance": "Sound reusable shared-thunk and debit reasoning; important for persistent branching rather than merely sequential telescoping.",
+      "limit": "Does not automatically justify sharing arbitrary matching state or cloning stored potential. Requires the actual ownership/debit rules.",
+      "decision": "mandatory shared-work reading",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R06",
+      "title": "Tachis: Higher-Order Separation Logic with Credits for Expected Costs",
+      "date_or_revision": "Haselwarter et al.; OOPSLA 2024; DOI 10.1145/3689753; arXiv:2405.20083",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://arxiv.org/abs/2405.20083",
+      "locator": "Abstract; Clutch project publication/artifact links",
+      "evidence": "primary project and abstract inspected",
+      "relevance": "Expected-cost credit semantics for probabilistic programs.",
+      "limit": "Expected bounds require randomness/adversary and integrability/termination conditions appropriate to the theorem. Not implied by unit-cost dictionary operations.",
+      "decision": "future expected-cost adapter",
+      "additional_urls": [
+        "https://clutch-project.org/"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R07",
+      "title": "An Iris for Expected Cost Analysis (ExpIris)",
+      "date_or_revision": "Lohse and Garg; arXiv:2406.00884, 2024",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://arxiv.org/abs/2406.00884",
+      "locator": "Abstract",
+      "evidence": "primary abstract identified",
+      "relevance": "Independent expected-cost logic to compare before inventing one.",
+      "limit": "No source/theorem-level audit in this campaign preparation.",
+      "decision": "probabilistic census coverage",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R08",
+      "title": "The Memorist Tale: Every Thunk Every Cost All At Once",
+      "date_or_revision": "Xing Li, Yao Li, Peter Schachte, Christine Rizkallah; ESOP 2026; DOI 10.1007/978-3-032-22720-1_17",
+      "ecosystem": "Rocq",
+      "url": "https://link.springer.com/chapter/10.1007/978-3-032-22720-1_17",
+      "locator": "Abstract and soundness discussion; artifact 18168559",
+      "evidence": "publisher full text and artifact metadata inspected",
+      "relevance": "Deterministic cost/usage semantics for shared lazy computations, proved sound relative to Clairvoyance.",
+      "limit": "Total typed language with structural recursion and no first-class functions. Not a drop-in strict memoized Rust evaluator.",
+      "decision": "sharing-semantics reference",
+      "additional_urls": [
+        "https://zenodo.org/records/18168559"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R09",
+      "title": "A Separation Logic for Parallel Time Complexity with Work and Span Credits (Parcas)",
+      "date_or_revision": "Moine, Westrick, Tassarotti; 2026; arXiv:2607.11582; DOI 10.1145/3828679",
+      "ecosystem": "Rocq",
+      "url": "https://arxiv.org/abs/2607.11582",
+      "locator": "Abstract; author text; artifact 20432258",
+      "evidence": "primary text and artifact metadata inspected",
+      "relevance": "Work and span have different composition; task-tagged span credits handle fork/join.",
+      "limit": "Sequential work infrastructure is not automatically parallel span infrastructure. Not required for current subtree campaign core.",
+      "decision": "separate future work/span track",
+      "additional_urls": [
+        "https://zenodo.org/records/20432258"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R10",
+      "title": "Foundational Verification of Running-Time Bounds for Interactive Programs",
+      "date_or_revision": "Tockman, Singh, Erbsen, Gruetter, Chlipala; CPP 2026, 187-200; DOI 10.1145/3779031.3779088",
+      "ecosystem": "Rocq",
+      "url": "https://dspace.mit.edu/entities/publication/fb2db054-1df8-42dc-8145-ea4bbe7adce8",
+      "locator": "Abstract and publication record; CPP 2026 programme",
+      "evidence": "primary record inspected",
+      "relevance": "End-to-end route from source time specifications through compilation to RISC-V semantics.",
+      "limit": "Different language/compiler path from Aeneas. Machine semantics does not provide a generic physical-time theorem for arbitrary hardware.",
+      "decision": "source-cost architecture reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R11",
+      "title": "A High-Level Separation Logic for Heap Space under Garbage Collection",
+      "date_or_revision": "Moine, Chargueraud, Pottier; POPL 2023; DOI 10.1145/3571218",
+      "ecosystem": "Rocq / Coq",
+      "url": "https://popl23.sigplan.org/details/POPL-2023-popl-research-papers/25/A-High-Level-Separation-Logic-for-Heap-Space-under-Garbage-Collection",
+      "locator": "Conference abstract and artifact 7129302",
+      "evidence": "primary metadata and abstract inspected",
+      "relevance": "Space credits and reachability-aware live heap reasoning.",
+      "limit": "Allocation counts and mathematical value sizes are insufficient for live heap bounds; Rust ownership and allocator semantics differ.",
+      "decision": "space-reference track",
+      "additional_urls": [
+        "https://zenodo.org/records/7129302"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R12",
+      "title": "Will It Fit? Verifying Heap Space Bounds of Concurrent Programs under Garbage Collection",
+      "date_or_revision": "Moine, Chargueraud, Pottier; TOPLAS 2025; DOI 10.1145/3716312",
+      "ecosystem": "Rocq",
+      "url": "https://doi.org/10.1145/3716312",
+      "locator": "Publisher and author publication records",
+      "evidence": "primary record identified",
+      "relevance": "Recent extension of heap-space verification to concurrent programs.",
+      "limit": "Full source and theorem audit not performed; not a prerequisite for deterministic DP-table residency.",
+      "decision": "space census coverage",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "I01",
+      "title": "Verified Memoization and Dynamic Programming",
+      "date_or_revision": "Wimmer, Shuwei Hu, Nipkow; ITP 2018, LNCS 10895, 579-596",
+      "ecosystem": "Isabelle/HOL",
+      "url": "https://www21.in.tum.de/~nipkow/pubs/itp18dp.html",
+      "locator": "Paper abstract/BibTeX; AFP Monad_Memo_DP",
+      "evidence": "author page and AFP discovery inspected",
+      "relevance": "Verified memoization transformations and bottom-up/space-efficient DP development.",
+      "limit": "Do not equate functional memoization correspondence with every resource theorem proposed here. Author PDF fetch failed during this audit.",
+      "decision": "mandatory memoization reference",
+      "additional_urls": [
+        "https://devel.isa-afp.org/entries/Monad_Memo_DP.html"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "I02",
+      "title": "Refinement with Time - Refining the Run-Time of Algorithms in Isabelle/HOL",
+      "date_or_revision": "Haslbeck and Lammich; ITP 2019; DOI 10.4230/LIPIcs.ITP.2019.20",
+      "ecosystem": "Isabelle/HOL",
+      "url": "https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2019.20",
+      "locator": "Sections 2.1-2.5: NREST, refinement, VCG and data refinement",
+      "evidence": "primary PDF text and page 20:3 visually inspected",
+      "relevance": "Result-dependent nondeterministic cost bounds and refinement-based derivation of algorithm costs.",
+      "limit": "Finite successful runs and totality must be separated from top/failure and unbounded resource specifications.",
+      "decision": "mandatory semantic reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "I03",
+      "title": "For a Few Dollars More: Verified Fine-Grained Algorithm Analysis Down to LLVM",
+      "date_or_revision": "Haslbeck and Lammich; ESOP 2021; TOPLAS 44(3), 2022; DOI 10.1145/3486169",
+      "ecosystem": "Isabelle/HOL",
+      "url": "https://doi.org/10.1145/3486169",
+      "locator": "Journal record; AFP NREST related publications; author full text",
+      "evidence": "primary text parsed; screenshot retrieval failed",
+      "relevance": "Fine-grained currencies and refinement to LLVM-level execution model.",
+      "limit": "LLVM model bound is not unspecified physical time or the Rust/Aeneas path.",
+      "decision": "cost-exchange and refinement reference",
+      "additional_urls": [
+        "https://www21.in.tum.de/~haslbema/documents/Haslbeck_Lammich_LLVM_with_Time.pdf"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "I04",
+      "title": "NREST: Nondeterministic Result Monad with Time",
+      "date_or_revision": "Haslbeck; AFP entry 2024-09-16",
+      "ecosystem": "Isabelle/HOL",
+      "url": "https://isa-afp.org/entries/NREST.html",
+      "locator": "NREST, DataRefinement, RefineMonadicVCG, Refine_Foreach sessions",
+      "evidence": "official AFP entry inspected",
+      "relevance": "Maintained formal development underlying timed refinement and the inspected Lean port.",
+      "limit": "Not directly importable into Lean. Code license and source version need review before copying/porting.",
+      "decision": "upstream semantic source",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "I05",
+      "title": "Amortized Complexity Verified / Amortized_Complexity",
+      "date_or_revision": "Nipkow; ITP 2015 and JAR journal version; maintained AFP entry",
+      "ecosystem": "Isabelle/HOL",
+      "url": "https://www21.in.tum.de/~nipkow/pubs/jar18.html",
+      "locator": "Journal paper and AFP Amortized_Complexity",
+      "evidence": "author page and AFP entry inspected",
+      "relevance": "Mechanized potential analyses of amortized data structures.",
+      "limit": "Regenerated 2026 PDF timestamp is not a new 2026 research result. Representation/source adequacy still needs its own statement.",
+      "decision": "reuse proof organization",
+      "additional_urls": [
+        "https://devel.isa-afp.org/entries/Amortized_Complexity.html"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "I06",
+      "title": "Verifying Asymptotic Time Complexity of Imperative Programs in Isabelle",
+      "date_or_revision": "Zhan and Haslbeck; IJCAR 2018; DOI 10.1007/978-3-319-94205-6_35",
+      "ecosystem": "Isabelle/HOL",
+      "url": "https://doi.org/10.1007/978-3-319-94205-6_35",
+      "locator": "Bibliography of timed-refinement work",
+      "evidence": "citation identified, detailed inspection pending",
+      "relevance": "Additional imperative/asymptotic verification methodology.",
+      "limit": "No theorem-specific adoption claim until the source is read.",
+      "decision": "targeted follow-up before automation design",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A01",
+      "title": "Amortised Resource Analysis with Separation Logic",
+      "date_or_revision": "Robert Atkey; LMCS 7(2:17), 2011; DOI 10.2168/LMCS-7(2:17)2011",
+      "ecosystem": "Semantics / separation logic",
+      "url": "https://lmcs.episciences.org/685",
+      "locator": "Publisher abstract and paper",
+      "evidence": "primary publisher record inspected",
+      "relevance": "Published foundation for combining consumable resources and heap reasoning.",
+      "limit": "Porting a resource logic is substantive; do not cite this as a verbatim generic memoization theorem.",
+      "decision": "resource-adequacy provenance",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A02",
+      "title": "Lightweight Semiformal Time Complexity Analysis for Purely Functional Data Structures",
+      "date_or_revision": "Nils Anders Danielsson; POPL 2008",
+      "ecosystem": "Agda / cost annotations",
+      "url": "https://api.cslib.io/docs/Cslib/Algorithms/Lean/TimeM.html",
+      "locator": "Reference [Dan08] in TimeM; original citation linked there",
+      "evidence": "citation chain only",
+      "relevance": "Historical basis of lightweight ticked cost representations.",
+      "limit": "Original text not reopened in this audit; no exact theorem claim taken from it.",
+      "decision": "background follow-up",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A03",
+      "title": "A Cost-Aware Logical Framework (calf)",
+      "date_or_revision": "Niu, Sterling, Grodin, Harper; POPL 2022; DOI 10.1145/3498670",
+      "ecosystem": "Agda / dependent type theory",
+      "url": "https://doi.org/10.1145/3498670",
+      "locator": "Abstract and author project page",
+      "evidence": "primary publication/author descriptions inspected",
+      "relevance": "Separates extensional program reasoning from intensional cost reasoning; relevant design alternative.",
+      "limit": "A separate cost-aware type theory is a much larger commitment than a Lean adapter.",
+      "decision": "design comparison",
+      "additional_urls": [
+        "https://www.cs.cmu.edu/~runmingl/calf.html"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A04",
+      "title": "Decalf: A Directed, Effectful Cost-Aware Logical Framework",
+      "date_or_revision": "arXiv:2307.05938, 2023",
+      "ecosystem": "Type theory",
+      "url": "https://arxiv.org/abs/2307.05938",
+      "locator": "Abstract",
+      "evidence": "primary abstract identified",
+      "relevance": "Effectful generalization of cost-aware reasoning.",
+      "limit": "No claim of an importable Lean implementation or exact compatibility.",
+      "decision": "boundary/reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A05",
+      "title": "Automatic amortized resource analysis: RAML and certificate-producing approaches",
+      "date_or_revision": "Literature lineage surveyed in R01 section 6; further source inspection pending",
+      "ecosystem": "AARA / type-based analysis",
+      "url": "https://chargueraud.org/research/2018/bigo_credits/bigo_credits.pdf",
+      "locator": "Related work: RAML and Pastis; see bibliography for primary papers",
+      "evidence": "citation-chain survey, not implementation audit",
+      "relevance": "Potential inference and checkable resource certificates are relevant to later automation.",
+      "limit": "Do not assume a particular current implementation is certified from this historical description. Resolve primary artifacts before reuse.",
+      "decision": "separate inference track",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A06",
+      "title": "Amortized Computational Complexity",
+      "date_or_revision": "Robert E. Tarjan; SIAM Journal on Algebraic and Discrete Methods 6(2), 1985; DOI 10.1137/0606031",
+      "ecosystem": "Algorithms",
+      "url": "https://doi.org/10.1137/0606031",
+      "locator": "Classical survey; potential/accounting methods",
+      "evidence": "bibliographic provenance; formal-method papers provide inspected mechanized treatment",
+      "relevance": "Classical provenance for potential and charging analysis.",
+      "limit": "The generic operational API proposed here is a new packaging, not a verbatim theorem from this survey.",
+      "decision": "mathematical provenance",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A07",
+      "title": "Purely Functional Data Structures",
+      "date_or_revision": "Chris Okasaki; book, 1998/1999 editions; cited by R05",
+      "ecosystem": "Algorithms / persistent data",
+      "url": "https://iris-project.org/pdfs/2024-popl-pottier-gueneau-jourdan-mevel-thunks-debits.pdf",
+      "locator": "R05 introduction and references to Okasaki; exact edition to pin before quotation",
+      "evidence": "citation chain; R05 checked",
+      "relevance": "Persistent amortization and lazy debits are relevant to branching reuse.",
+      "limit": "Do not use a sequential potential proof to justify persistence. Original book was not directly inspected here.",
+      "decision": "provenance/background",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "P01",
+      "title": "Lozano-Valiente common-subtree paper",
+      "date_or_revision": "2004; source pin in local paper_statement_crosswalk.md",
+      "ecosystem": "Target algorithm",
+      "url": "https://www.cs.upc.edu/~antoni/subtree.pdf",
+      "locator": "Theorem 3 and decomposition/state bounds; local containment audit",
+      "evidence": "repository crosswalk and corresponding Lean code inspected",
+      "relevance": "First real client: state count, memo requests and representation-aware cost.",
+      "limit": "Printed containment issue and corrected leaf/depth conventions must remain visible. Original PDF hash is repository-reported.",
+      "decision": "local client",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "P02",
+      "title": "Droschinsky-Kriege-Mutzel common subtree isomorphism paper",
+      "date_or_revision": "2016; arXiv:1602.07210v4",
+      "ecosystem": "Target algorithm",
+      "url": "https://arxiv.org/abs/1602.07210v4",
+      "locator": "Lemmas 5/6 and Theorems 4/7 in local crosswalk",
+      "evidence": "repository crosswalk and matching source context inspected",
+      "relevance": "Rectangular matching and related deletion-family costs drive batch contracts.",
+      "limit": "Optimized runtime does not follow from existence/correctness of a matching; exact paper-side assumptions must be restated.",
+      "decision": "local client",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "P03",
+      "title": "Droschinsky-Kriege-Mutzel largest weight common subtree embeddings",
+      "date_or_revision": "2018; arXiv:1805.00821v1",
+      "ecosystem": "Target algorithm",
+      "url": "https://arxiv.org/abs/1805.00821v1",
+      "locator": "Original HTML sections 4-5, especially section 5.2 Lemmas 12-14 and Theorem 15; local crosswalk",
+      "evidence": "original paper HTML and repository proof boundary inspected",
+      "relevance": "Oriented DP scheduling, shared maxima, matching families and table space.",
+      "limit": "Unrooted structural obligations and integer-weight space qualifications remain; source tests are not formal resource proofs.",
+      "decision": "local client",
+      "additional_urls": [
+        "https://arxiv.org/html/1805.00821v1"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L14",
+      "title": "Order Maintenance in Worst-Case Constant Time, Verified",
+      "date_or_revision": "Denis Firsov; arXiv:2610.38616v1, 2026-10-28",
+      "ecosystem": "Lean",
+      "url": "https://arxiv.org/html/2610.38616v1",
+      "locator": "Sections 4.1-4.6 and appendix C; README points to OM/Impl/{TheoremsM,PeakRun,PeakWord,FlatRun}.lean",
+      "evidence": "primary paper text and repository README inspected; README blob 5a98944785cb2b4f6781ba0a8251252926d6d4fc",
+      "relevance": "Recent execution-linked cost and word-size development with step-preserving translation. Important semantic/refinement reuse candidate.",
+      "limit": "No build or theorem-source audit here. Paper RAM includes unit-cost zero-filled allocation; current README also reports a flat-memory translation. Neither establishes cost adequacy for our Rust source; Rust transpilation is checked by tests in the reported workflow.",
+      "decision": "mandatory targeted source audit, not automatic dependency",
+      "additional_urls": [
+        "https://github.com/dfirsov/order_maintenance"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L15",
+      "title": "complexity-lean: model-parametric complexity classes",
+      "date_or_revision": "Public README inspected 2026-11-14; reported Lean/Mathlib 4.32.2",
+      "ecosystem": "Lean",
+      "url": "https://github.com/alonamaloh/complexity-lean",
+      "locator": "Complexity/Model; Models/While, Models/Fun, Models/Shallow and Models/PartrecCost; README blob cd063842829eaaa17adc3ff217299eaa7fd9bae8",
+      "evidence": "project README inspected, not declaration/build audit",
+      "relevance": "Model composition and explicit cost boundaries; fuel need not equal work. Offers a separate complexity-class use case.",
+      "limit": "Its shallow-model impossibility concerns encoding all functions as countable program syntax, not impossibility of proving bounds for particular shallow programs. README carries ReductionsComputable explicitly and does not prove model invariance to Turing machines.",
+      "decision": "inspect model contracts; adjacent scope",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L16",
+      "title": "Verified Dynamic Programming with Sigma-types in Lean",
+      "date_or_revision": "Tanner Duve, 2025-05-21",
+      "ecosystem": "Lean",
+      "url": "https://tannerduve.github.io/blog/2025/verified-dp/",
+      "locator": "Independent recurrence and memo table carrying correctness witnesses",
+      "evidence": "author tutorial and code text inspected",
+      "relevance": "Existing Lean memo correctness pattern; avoid treating basic cache soundness as absent.",
+      "limit": "Tutorial is not a generic source-runtime resource theorem. HashMap use does not establish its cost. No build reproduced.",
+      "decision": "correctness-interface reference",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "L17",
+      "title": "Agentic Verified Optimization of Real-World Software",
+      "date_or_revision": "Ye, Ghai, Qin, Song and Kong; arXiv:2610.30188, 2026-10-20",
+      "ecosystem": "Lean",
+      "url": "https://arxiv.org/abs/2610.30188",
+      "locator": "Abstract and introduction: proved equivalence and benchmarked performance; Aqueduct migration boundary",
+      "evidence": "primary text inspected",
+      "relevance": "Recent adjacent optimization work illustrates functional equivalence plus empirical improvement.",
+      "limit": "Do not count measured speedups as formal asymptotic bounds, or differentially tested source ports as source-cost refinement.",
+      "decision": "related but not a cost-theorem backend",
+      "additional_urls": [],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R13",
+      "title": "CertiRocq / CertiCoq compilation and space-safety work",
+      "date_or_revision": "Official status inspected 2026-11-14; Closure Conversion is Safe for Space, ICFP 2019; compiler experience report August 2026",
+      "ecosystem": "Rocq",
+      "url": "https://certicoq.org/",
+      "locator": "Official overview, verification status and publications; space paper DOI 10.1145/3341687",
+      "evidence": "official project overview and publication record inspected",
+      "relevance": "Compiler-stage resource preservation is an established separate research concern.",
+      "limit": "Project says some compiler components remain under verification. Functional compiler correctness alone is not arbitrary time/space preservation; exact resource theorem and formalized scope require audit.",
+      "decision": "compiler/space reference, outside first core",
+      "additional_urls": [
+        "https://doi.org/10.1145/3341687"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R14",
+      "title": "A Certifying Extraction with Time Bounds from Coq to Call-By-Value Lambda Calculus",
+      "date_or_revision": "Yannick Forster and Fabian Kunze; ITP 2019, article 17",
+      "ecosystem": "Rocq",
+      "url": "https://doi.org/10.4230/LIPIcs.ITP.2019.17",
+      "locator": "Author/publisher abstract; logical relation relating Coq functions, extracted terms and time bounds; linked artifact",
+      "evidence": "primary author and publisher records inspected",
+      "relevance": "Direct precedent for certifying translation and automatic time-bound validation, complementing CFML.",
+      "limit": "Exact supported source fragment, logical-relation statement and automation limitations must be read before porting. This is not a Rust execution theorem.",
+      "decision": "mandatory source-bridge design reading",
+      "additional_urls": [
+        "https://www.ps.uni-saarland.de/Publications/details/ForsterKunze%3A2019%3ACertifying-extraction.html",
+        "https://github.com/uds-psl/certifying-extraction-with-time-bounds"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R15",
+      "title": "The Weak Call-By-Value Lambda-Calculus is Reasonable for Both Time and Space",
+      "date_or_revision": "Forster, Kunze and Roth; POPL 2020; arXiv:1902.07515",
+      "ecosystem": "Rocq / complexity theory",
+      "url": "https://ps.uni-saarland.de/extras/wcbv-reasonable/",
+      "locator": "Author project and linked mechanized portions; artifact DOI 10.1145/3373103",
+      "evidence": "author record and artifact description inspected",
+      "relevance": "Explains model invariance and the relationship between reduction counts, term space and machine complexity.",
+      "limit": "Artifact identifies formalized portions, not a blanket certification of every paper argument. Reasonable polynomial overhead is weaker than preserving a tight target bound.",
+      "decision": "model-boundary reference",
+      "additional_urls": [
+        "https://doi.org/10.1145/3373103",
+        "https://github.com/uds-psl/cbv-lambda-calculus-reasonable"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "R16",
+      "title": "Mechanising Complexity Theory: The Cook-Levin Theorem in Coq",
+      "date_or_revision": "Lennard Gaher and Fabian Kunze; ITP 2021, article 20",
+      "ecosystem": "Rocq",
+      "url": "https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2021.20",
+      "locator": "Publisher record; author artifact linked through uds-psl/cook-levin",
+      "evidence": "primary publication and artifact records inspected",
+      "relevance": "A substantial use of compositional computation/time infrastructure for complexity-theory proofs.",
+      "limit": "Different client than tight RAM data-structure analysis. Artifact/build and current Rocq compatibility not audited here.",
+      "decision": "independent reuse and extraction reference",
+      "additional_urls": [
+        "https://uds-psl.github.io/cook-levin/"
+      ],
+      "checked_on": "2026-11-14"
+    },
+    {
+      "id": "A08",
+      "title": "AutoCLRS / AlgoStar in F* and Pulse",
+      "date_or_revision": "RiSE MSR author report, 2026-03-06; later specification-audit reports in 2026",
+      "ecosystem": "F* / Pulse",
+      "url": "https://risemsr.github.io/blog/2026-03-06-autoclrs/",
+      "locator": "Algorithm/complexity examples and discussion of specification audit; official AlgoStar repository",
+      "evidence": "primary author report inspected",
+      "relevance": "Adjacent imperative algorithm-verification campaign; examples of linked counting and explicit specification-review failures.",
+      "limit": "Per-algorithm hypotheses and count linkage differ. Do not transfer a ghost counter to machine cost without adequacy, or generalize a successful build to the intended specification.",
+      "decision": "comparative methodology and review reference",
+      "additional_urls": [
+        "https://github.com/FStarLang/AlgoStar",
+        "https://risemsr.github.io/blog/2026-04-16-spotting-specs/"
+      ],
+      "checked_on": "2026-11-14"
+    }
+  ]
+}
