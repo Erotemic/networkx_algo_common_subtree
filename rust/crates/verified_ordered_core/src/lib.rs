@@ -238,6 +238,7 @@ pub fn maximum_common_embedding(
     memoized_common_embedding(left, right, MemoTable::Empty).0
 }
 
+pub mod indexed_isomorphism;
 pub mod isomorphism;
 
 pub mod indexed;

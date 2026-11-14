@@ -49,7 +49,7 @@ required proof work.
 
 Both Droschinsky Rust families and the verified exact assignment/partial
 matching cores are now callable through public Python APIs. A fresh installed
-wheel passes all 209 tests with native backends mandatory. Independent graph
+wheel passes all 219 tests with native backends mandatory. Independent graph
 witness rescoring and exhaustive optimum comparisons are included. Installed
 API measurements cover both optimized schedules, matching deletion families,
 conversion overhead and independent witness rescoring. See the capability
@@ -60,7 +60,7 @@ The ordered isomorphism APIs now expose the existing root-preserving level
 state with `rooted=True`, alongside the default general state. Independent
 parent-preserving subset enumeration validates both contracts and fractional
 affinities. Normal and genuine Rust-only ABI3 wheels are tested; the latter
-passes the complete 209-test API suite on each CPython 3.10–3.14.
+passes the complete 219-test API suite on each CPython 3.10–3.14.
 
 2018 now uses the fixed-left mapped/skipped schedule and includes the skipped
 highest-vertex path case. Independent high-degree/path oracles pass; installed
@@ -86,6 +86,14 @@ The 2018 API now also accepts positive infinity as the distance penalty,
 forbidding skipped vertices under every root policy. Independent enumeration
 and both witness formats validate this case; 48 native and 209 installed tests
 pass, including each host ABI3 runtime. [Evidence](../../dev/benchmarks/2026-11-14-infinite-penalty.md).
+
+The source-proved structural ordered isomorphism reference is now callable
+from both balanced-sequence and NetworkX APIs as `reference-rust`, with
+`node_affinity=None` and either root policy. Original-index reconstruction is
+independently tested and extracted, but its refinement remains open. All 219
+installed tests, 10 ordered-core tests, 3,713 Lean jobs and both Lean example
+suites pass. Eight-pair stars are 625× slower than optimized Rust; this explicit
+reference stays outside `auto`. [Evidence](../../dev/benchmarks/2026-11-14-ordered-isomorphism-reference.md).
 
 ## Verified actual one-path sparse augmentation: 2026-11-14
 

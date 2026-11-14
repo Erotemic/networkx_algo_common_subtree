@@ -17,6 +17,28 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Structural isomorphism reference Python access: 2026-11-14
+
+The existing actual structural Rust solvers are now accessible through both
+Python ordered APIs as opt-in unweighted `reference-rust`. They still supply
+the structurally optimal word and score covered by
+`Rust.OrderedIsomorphism.rooted_common_isomorphism_of_trees` and
+`largest_common_isomorphism_of_trees`. New Rust indexed reconstruction drops
+whole child subtrees and searches one common original parent; token emission
+returns original positions for Python/NetworkX readback. These new functions
+are extracted and independently tested, **not source proved**. Do not transfer
+the old structural theorem to this new indexed/token composition without its
+missing refinement proof.
+
+Pinned regeneration and its clean comparison succeed. All existing Lean
+proofs compile in the full 3,713-job build, and both example suites pass. All
+10 ordered-core tests and 219 installed tests pass, including five ABI3
+runtimes. Exhaustive subset oracles check both root policies on 1,058 pairs;
+160 unique-token cases check original-index feasibility and optima. The new
+reference remains exponential (625× slower than optimized Rust on an eight-pair
+star), with no production/default or runtime-verification claim. IEEE-754 is
+outside the initial proof scope, independently of these discrete proof gaps.
+
 ## Infinite distance penalties exposed: 2026-11-14
 
 Both graph backends now accept the paper's positive-infinity penalty, which

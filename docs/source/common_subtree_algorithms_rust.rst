@@ -63,11 +63,14 @@ child choices with a maximum-weight bipartite matching. Unmatched children are
 allowed, which lets the optimum be a connected subtree of each input tree.
 
 The 2018 embedding routine extends the same rooted matching structure by allowing
-vertices to be skipped at a configurable distance-penalty cost. The current
-implementation is a reference-oriented prototype rather than the final optimized
-form of the paper. An edge reward/compatibility test applies only when both
+vertices to be skipped at a configurable distance-penalty cost. Production Rust
+uses fixed-left mapped tables, matching deletion families, rerooted skip messages
+and the skipped-highest-vertex path join. These optimizations are independently
+tested and benchmarked; their formal refinement remains open.
+An edge reward/compatibility test applies only when both
 matched paths are single edges; longer paths incur only skipped-vertex
-penalties. Both APIs provide independent original-node/path witness rescoring.
+penalties. Positive infinity forbids skipped vertices and uses the optimized
+isomorphism solver. Both APIs provide independent original-node/path witness rescoring.
 
 The floating-point graph DPs are independently tested; their production Rust
 source refinement and published optimized complexity remain open. Mathematical

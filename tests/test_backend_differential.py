@@ -98,12 +98,14 @@ def _backends(kind: str, unweighted: bool):
             include_restricted=unweighted
         )
     else:
-        available = balanced_isomorphism.available_impls_longest_common_balanced_isomorphism()
-    enabled = [p for p in ("iter", "recurse", "iter-cython", "iter-rust", "verified-rust") if p in available]
+        available = balanced_isomorphism.available_impls_longest_common_balanced_isomorphism(include_restricted=unweighted)
+    enabled = [p for p in ("iter", "recurse", "iter-cython", "iter-rust", "verified-rust", "reference-rust") if p in available]
     if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
         required = {"iter", "recurse", "iter-cython", "iter-rust"}
         if kind == "embedding" and unweighted:
             required.add("verified-rust")
+        if kind == "isomorphism" and unweighted:
+            required.add("reference-rust")
         assert required <= set(enabled), f"missing required {kind} backends: {sorted(required - set(enabled))}"
     return enabled
 
@@ -259,3 +261,24 @@ def test_affinity_preserves_double_precision_and_range(kind, weight):
         witness, score = solver("01", "01", {"0": "1"}, node_affinity=lambda u, v: weight, impl=impl)
         assert witness == ("01", "01")
         assert score == weight, (impl, score, weight)
+
+
+@pytest.mark.parametrize("rooted", [False, True])
+def test_structural_reference_original_indices_against_subset_oracle(rooted):
+    if "reference-rust" not in _backends("isomorphism", unweighted=True):
+        pytest.skip("optional structural reference Rust binding is missing")
+    rng = random.Random(2004)
+    words = [word for n in range(5) for word in _dyck_words(n, BRACKETS[:1])]
+    for _ in range(80):
+        left, lp = _indexed_word(rng.choice(words), 0)
+        right, rp = _indexed_word(rng.choice(words), 100)
+        pairs = lp | rp
+        ls = _subset_witnesses(left, pairs, "isomorphism", rooted=rooted)
+        rs = _subset_witnesses(right, pairs, "isomorphism", rooted=rooted)
+        optimum = max(len(lv) for _, lshape, lv in ls for _, rshape, _ in rs if lshape == rshape)
+        (ol, or_), score = balanced_isomorphism.longest_common_balanced_isomorphism(
+            left, right, pairs, node_affinity=None, impl="reference-rust", rooted=rooted)
+        assert ol in {w for w, _, _ in ls}
+        assert or_ in {w for w, _, _ in rs}
+        assert tuple(t in pairs for t in ol) == tuple(t in pairs for t in or_)
+        assert len(ol) == len(or_) == 2 * score == 2 * optimum

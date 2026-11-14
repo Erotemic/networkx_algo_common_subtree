@@ -7,7 +7,7 @@ from .balanced_sequence import (
 )
 
 
-def available_impls_longest_common_balanced_isomorphism():
+def available_impls_longest_common_balanced_isomorphism(include_restricted=False):
     """
     Returns all available implementations for
     :func:`longest_common_balanced_isomorphism`.
@@ -16,12 +16,17 @@ def available_impls_longest_common_balanced_isomorphism():
     -------
     List[str]
         the string code for each available implementation
+
+    ``include_restricted=True`` also lists the small-input, unweighted
+    ``reference-rust`` backend when its native entry point is installed.
     """
     impls = ["recurse", "iter"]
     if _rust_lcsi_backend():
         impls += [
             "iter-rust",
         ]
+        if include_restricted and hasattr(_rust_lcsi_backend(), "maximum_common_token_isomorphism"):
+            impls.append("reference-rust")
     if _cython_lcsi_backend():
         impls += [
             "iter-cython",
@@ -76,6 +81,10 @@ def longest_common_balanced_isomorphism(
         :func:`available_impls_longest_common_balanced_isomorphism`.
         The default is "auto", which chooses "iter-rust" if available,
         then "iter-cython", otherwise "iter".
+        ``"reference-rust"`` explicitly invokes the source-proved structural
+        reference with ``node_affinity=None``. It is exponential and intended
+        for small inputs. Its new original-index reconstruction and Python
+        boundary are independently tested, with their source proofs still open.
 
     rooted : bool
         Preserve the implicit parent of the balanced forest. Top-level output
@@ -132,6 +141,11 @@ def longest_common_balanced_isomorphism(
     """
     if not isinstance(rooted, bool):
         raise TypeError("rooted must be a bool")
+    if impl == "reference-rust":
+        if node_affinity is not None:
+            raise ValueError("reference-rust requires node_affinity=None (unweighted matching)")
+        from .balanced_isomorphism_rust import _lcsi_reference_rust
+        return _lcsi_reference_rust(seq1, seq2, open_to_close, rooted=rooted)
     if impl == "auto":
         if _rust_lcsi_backend(error="ignore"):
             impl = "iter-rust"

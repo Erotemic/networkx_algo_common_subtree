@@ -68,6 +68,7 @@ def make_cases(
     cases_per_size: int,
     seed: int,
     labels: int,
+    include_examples: bool = True,
     shapes: tuple[str, ...] = ("random", "chain", "star", "balanced", "asymmetric", "chain-star"),
 ) -> list[Case]:
     rng = random.Random(seed)
@@ -83,6 +84,8 @@ def make_cases(
             {"0": "1"},
         )
     )
+    if not include_examples:
+        cases.clear()
 
     for n_pairs in sizes:
         for idx in range(cases_per_size if "random" in shapes else 0):
@@ -122,12 +125,12 @@ def make_cases(
     return cases
 
 
-def median_time_seconds(
+def time_calls(
     func: Callable[[], object],
     *,
     repeat: int,
     warmup: int,
-) -> tuple[float, object]:
+) -> tuple[list[float], object]:
     result = None
 
     for _ in range(warmup):
@@ -140,14 +143,14 @@ def median_time_seconds(
         t1 = time.perf_counter_ns()
         times.append((t1 - t0) / 1e9)
 
-    return stats.median(times), result
+    return times, result
 
 
 def available_impls(kind: str, *, include_restricted: bool = False) -> list[str]:
     if kind == "embedding":
         return balanced_embedding.available_impls_longest_common_balanced_embedding(include_restricted=include_restricted)
     if kind == "isomorphism":
-        return balanced_isomorphism.available_impls_longest_common_balanced_isomorphism()
+        return balanced_isomorphism.available_impls_longest_common_balanced_isomorphism(include_restricted=include_restricted)
     raise KeyError(kind)
 
 
@@ -179,6 +182,8 @@ def main(argv=None) -> int:
     parser.add_argument("--repeat", type=int, default=5)
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--skip-examples", action="store_true",
+                        help="Omit fixed documentation examples, useful for small exponential reference runs")
     parser.add_argument("--labels", type=int, default=3, choices=[1, 2, 3])
     parser.add_argument("--shapes", default="random,chain,star,balanced,asymmetric,chain-star")
     parser.add_argument("--rooted-isomorphism", action="store_true", help="Measure the root-preserving level state for isomorphism")
@@ -197,7 +202,7 @@ def main(argv=None) -> int:
     )
     parser.add_argument(
         "--node-affinity", choices=("eq", "none", "weighted"), default="eq",
-        help="Equality, topology-only (required for verified-rust), or fractional label affinity.",
+        help="Equality, topology-only (required for verified-rust/reference-rust), or fractional label affinity.",
     )
     parser.add_argument(
         "--reference",
@@ -227,6 +232,7 @@ def main(argv=None) -> int:
         cases_per_size=args.cases,
         seed=args.seed,
         labels=args.labels,
+        include_examples=not args.skip_examples,
         shapes=tuple(args.shapes.split(",")),
     )
 
@@ -281,11 +287,12 @@ def main(argv=None) -> int:
                     )
 
                 try:
-                    seconds, result = median_time_seconds(
+                    samples, result = time_calls(
                         _run,
                         repeat=args.repeat,
                         warmup=args.warmup,
                     )
+                    seconds = stats.median(samples)
                 except Exception as ex:
                     row = {
                         "kind": kind,
@@ -296,6 +303,7 @@ def main(argv=None) -> int:
                         "pairs2": len(case.seq2) // 2,
                         "impl": impl,
                         "seconds": None,
+                        "samples_seconds": None,
                         "speedup_vs_reference": None,
                         "value": None,
                         "error": repr(ex),
@@ -318,6 +326,7 @@ def main(argv=None) -> int:
                     "pairs2": len(case.seq2) // 2,
                     "impl": impl,
                     "seconds": seconds,
+                    "samples_seconds": samples,
                     "speedup_vs_reference": None,
                     "value": value,
                     "error": None,

@@ -555,6 +555,51 @@ def indexed.maximum_common_embedding_indexed
           | some value4 =>
             ok (some { left := value3, right := value4, edges := value.edges })
 
+/-- [verified_ordered_core::indexed_isomorphism::reconstruct_rooted_isomorphism]:
+    Source: 'src/indexed_isomorphism.rs', lines 16:0-40:1
+    Visibility: public -/
+def indexed_isomorphism.reconstruct_rooted_isomorphism
+  (pattern : BalancedWord) (input : indexed.IndexedWord) :
+  Result (Option indexed.IndexedWord)
+  := do
+  match pattern with
+  | BalancedWord.Empty => ok (some indexed.IndexedWord.Empty)
+  | BalancedWord.Pair ph pt =>
+    match input with
+    | indexed.IndexedWord.Empty => ok none
+    | indexed.IndexedWord.Pair index head tail =>
+      let o ← indexed_isomorphism.reconstruct_rooted_isomorphism ph head
+      match o with
+      | none => indexed_isomorphism.reconstruct_rooted_isomorphism pattern tail
+      | some inside =>
+        let o1 ← indexed_isomorphism.reconstruct_rooted_isomorphism pt tail
+        match o1 with
+        | none =>
+          indexed_isomorphism.reconstruct_rooted_isomorphism pattern tail
+        | some outside =>
+          ok (some (indexed.IndexedWord.Pair index inside outside))
+partial_fixpoint
+
+/-- [verified_ordered_core::indexed_isomorphism::reconstruct_any_isomorphism]:
+    Source: 'src/indexed_isomorphism.rs', lines 44:0-58:1
+    Visibility: public -/
+def indexed_isomorphism.reconstruct_any_isomorphism
+  (pattern : BalancedWord) (input : indexed.IndexedWord) :
+  Result (Option indexed.IndexedWord)
+  := do
+  let o ← indexed_isomorphism.reconstruct_rooted_isomorphism pattern input
+  match o with
+  | none =>
+    match input with
+    | indexed.IndexedWord.Empty => ok none
+    | indexed.IndexedWord.Pair _ head tail =>
+      let o1 ← indexed_isomorphism.reconstruct_any_isomorphism pattern head
+      match o1 with
+      | none => indexed_isomorphism.reconstruct_any_isomorphism pattern tail
+      | some _ => ok o1
+  | some _ => ok o
+partial_fixpoint
+
 /-- [verified_ordered_core::isomorphism::rooted_common_isomorphism]:
     Source: 'src/isomorphism.rs', lines 14:0-55:1
     Visibility: public -/
@@ -645,6 +690,52 @@ def isomorphism.largest_common_isomorphism
                 let ce3 ← choose_longer value ce2
                 ok (some ce3)
 partial_fixpoint
+
+/-- [verified_ordered_core::indexed_isomorphism::maximum_common_isomorphism_indexed]:
+    Source: 'src/indexed_isomorphism.rs', lines 64:0-106:1
+    Visibility: public -/
+def indexed_isomorphism.maximum_common_isomorphism_indexed
+  (left : BalancedWord) (right : BalancedWord) (rooted : Bool) :
+  Result (Option indexed.IndexedCommonEmbedding)
+  := do
+  let o ←
+    if rooted
+    then isomorphism.rooted_common_isomorphism left right
+    else isomorphism.largest_common_isomorphism left right
+  match o with
+  | none => ok none
+  | some value =>
+    let o1 ← indexed.number_word left 0#u32
+    match o1 with
+    | none => ok none
+    | some value1 =>
+      let o2 ← indexed.number_word right 0#u32
+      match o2 with
+      | none => ok none
+      | some value2 =>
+        let o3 ←
+          if rooted
+          then
+            indexed_isomorphism.reconstruct_rooted_isomorphism value.word
+              value1.word
+          else
+            indexed_isomorphism.reconstruct_any_isomorphism value.word
+              value1.word
+        match o3 with
+        | none => ok none
+        | some value3 =>
+          let o4 ←
+            if rooted
+            then
+              indexed_isomorphism.reconstruct_rooted_isomorphism value.word
+                value2.word
+            else
+              indexed_isomorphism.reconstruct_any_isomorphism value.word
+                value2.word
+          match o4 with
+          | none => ok none
+          | some value4 =>
+            ok (some { left := value3, right := value4, edges := value.edges })
 
 /-- [verified_ordered_core::remaining_edges_after_contraction]:
     Source: 'src/lib.rs', lines 8:0-14:1
@@ -867,6 +958,51 @@ def token_matching.maximum_common_token_embedding
     | core.result.Result.Ok value1 =>
       let o ←
         guided.maximum_common_embedding_indexed_guided value.word value1.word
+      match o with
+      | none =>
+        ok (core.result.Result.Err
+          token_matching.TokenMatchingError.SolverFailure)
+      | some value2 =>
+        let s := alloc.vec.Vec.deref value.positions
+        let r2 ←
+          token_matching.emit_tokens value2.left s (alloc.vec.Vec.new
+            Std.Usize)
+        match r2 with
+        | core.result.Result.Ok value3 =>
+          let s1 := alloc.vec.Vec.deref value1.positions
+          let r3 ←
+            token_matching.emit_tokens value2.right s1 (alloc.vec.Vec.new
+              Std.Usize)
+          match r3 with
+          | core.result.Result.Ok value4 =>
+            ok (core.result.Result.Ok
+              { left := value3, right := value4, edges := value2.edges })
+          | core.result.Result.Err error => ok (core.result.Result.Err error)
+        | core.result.Result.Err error => ok (core.result.Result.Err error)
+    | core.result.Result.Err error =>
+      ok (core.result.Result.Err (token_matching.TokenMatchingError.RightInput
+        error))
+  | core.result.Result.Err error =>
+    ok (core.result.Result.Err (token_matching.TokenMatchingError.LeftInput
+      error))
+
+/-- [verified_ordered_core::token_matching::maximum_common_token_isomorphism]:
+    Source: 'src/token_matching.rs', lines 89:0-123:1
+    Visibility: public -/
+def token_matching.maximum_common_token_isomorphism
+  (left : Slice Bool) (right : Slice Bool) (rooted : Bool) :
+  Result (core.result.Result token_matching.TokenCommonEmbedding
+    token_matching.TokenMatchingError)
+  := do
+  let r ← tokens.parse_balanced_tokens left
+  match r with
+  | core.result.Result.Ok value =>
+    let r1 ← tokens.parse_balanced_tokens right
+    match r1 with
+    | core.result.Result.Ok value1 =>
+      let o ←
+        indexed_isomorphism.maximum_common_isomorphism_indexed value.word
+          value1.word rooted
       match o with
       | none =>
         ok (core.result.Result.Err

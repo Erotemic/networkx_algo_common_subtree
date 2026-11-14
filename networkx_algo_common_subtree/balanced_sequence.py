@@ -51,6 +51,16 @@ def _normalize_node_affinity(affinity, *, check_weights=True):
     return checked
 
 
+def _read_token_indices(sequence, indices):
+    """Read original token positions, retaining string/list/tuple containers."""
+    items = [sequence[index] for index in indices]
+    if isinstance(sequence, str):
+        return "".join(items)
+    if isinstance(sequence, list):
+        return items
+    return tuple(items)
+
+
 def generate_all_decomp(seq, open_to_close, open_to_node=None):
     """
     Generates all decompositions of a single balanced sequence by

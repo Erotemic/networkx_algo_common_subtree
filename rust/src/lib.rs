@@ -645,8 +645,34 @@ fn maximum_common_token_embedding(
     left: Vec<bool>,
     right: Vec<bool>,
 ) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
+    token_matching_result(
+        verified_ordered_core::token_matching::maximum_common_token_embedding(&left, &right),
+    )
+}
+
+/// Opt-in structural isomorphism reference with tested original-token readback.
+#[pyfunction(signature=(left,right,rooted=false))]
+fn maximum_common_token_isomorphism(
+    py: Python<'_>,
+    left: Vec<bool>,
+    right: Vec<bool>,
+    rooted: bool,
+) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
+    token_matching_result(py.allow_threads(|| {
+        verified_ordered_core::token_matching::maximum_common_token_isomorphism(
+            &left, &right, rooted,
+        )
+    }))
+}
+
+fn token_matching_result(
+    result: Result<
+        verified_ordered_core::token_matching::TokenCommonEmbedding,
+        verified_ordered_core::token_matching::TokenMatchingError,
+    >,
+) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
     use pyo3::exceptions::{PyOverflowError, PyRuntimeError, PyValueError};
-    use verified_ordered_core::token_matching::{self, TokenMatchingError};
+    use verified_ordered_core::token_matching::TokenMatchingError;
     use verified_ordered_core::tokens::TokenError;
 
     fn input_error(side: &str, error: TokenError) -> PyErr {
@@ -663,7 +689,7 @@ fn maximum_common_token_embedding(
         }
     }
 
-    match token_matching::maximum_common_token_embedding(&left, &right) {
+    match result {
         Ok(result) => Ok((result.left, result.right, result.edges)),
         Err(TokenMatchingError::LeftInput(error)) => Err(input_error("left", error)),
         Err(TokenMatchingError::RightInput(error)) => Err(input_error("right", error)),
@@ -680,6 +706,7 @@ fn maximum_common_token_embedding(
 fn _rust(_py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
     graph_bindings::register(module)?;
     module.add_function(wrap_pyfunction!(maximum_common_token_embedding, module)?)?;
+    module.add_function(wrap_pyfunction!(maximum_common_token_isomorphism, module)?)?;
     module.add_function(wrap_pyfunction!(longest_common_balanced_embedding, module)?)?;
     module.add_function(wrap_pyfunction!(
         longest_common_balanced_isomorphism,

@@ -684,5 +684,81 @@
       }
     },
     "portable_manylinux": "Source-only 5d7fabd rebuilt in the pinned manylinux profile: 209 tests on glibc 2.28 and all five host runtimes; see 2026-11-14-manylinux.json."
+  },
+  "structural_isomorphism_reference_update": {
+    "source_base_commit": "7470fa1",
+    "normal_wheel_sha256": "8908ecada7d661f6238046e33260719f28df624064ce1dbdf15abdda73849086",
+    "abi3_wheel_sha256": "d01e8235e01da894b21fde944e12863d03763158fdb4ced1fd1483d2318663cd",
+    "extension_sha256": "71d5059057a7ee7a2d129a923a2777a89e149d2097b20aeda191a5c399be93c7",
+    "only_rust_extension": true,
+    "normal_required_native_tests_passed": 219,
+    "ordered_core_tests_passed": 10,
+    "runtimes": [
+      {
+        "python": "3.10.20",
+        "networkx": "3.4.2",
+        "tests_passed": 219,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.11.15",
+        "networkx": "3.6.1",
+        "tests_passed": 219,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.12.3",
+        "networkx": "3.7",
+        "tests_passed": 219,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.13.2",
+        "networkx": "3.6.1",
+        "tests_passed": 219,
+        "tests_skipped": 0
+      },
+      {
+        "python": "3.14.3",
+        "networkx": "3.7",
+        "tests_passed": 219,
+        "tests_skipped": 0
+      }
+    ],
+    "required_entry_points": [
+      "longest_common_balanced_embedding",
+      "longest_common_balanced_isomorphism",
+      "maximum_common_token_embedding",
+      "maximum_common_subtree_isomorphism",
+      "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "min_cost_assignment",
+      "max_weight_partial_matching",
+      "maximum_common_token_isomorphism"
+    ],
+    "abi3audit": {
+      "specs": {
+        "/tmp/common-subtree-indexed-iso-final-abi3-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-linux_x86_64.whl": {
+          "kind": "wheel",
+          "wheel": [
+            {
+              "name": "_rust.abi3.so",
+              "result": {
+                "is_abi3": true,
+                "is_abi3_baseline_compatible": true,
+                "baseline": "3.10",
+                "computed": "3.10",
+                "non_abi3_symbols": [],
+                "future_abi3_objects": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "lean_build_jobs_passed": 3713,
+    "lean_example_suites_passed": 2,
+    "extraction_regeneration_check": "passed",
+    "assurance": "Existing structural core source proved; new indexed reconstruction and token composition tested/extracted, source proof open.",
+    "portable_manylinux": "The preceding scoring update passes 209 tests. The new reference entry point awaits its own portable rebuild."
   }
 }

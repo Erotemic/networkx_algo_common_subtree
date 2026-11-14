@@ -43,6 +43,17 @@ whole-tree pruning/descendant enumeration on all 38,809 pairs through six edges.
 The shared historical `CommonEmbedding` payload stores a word and score;
 the new APIs have their own independent isomorphism contracts.
 
+`indexed_isomorphism::maximum_common_isomorphism_indexed` now reconstructs
+original preorder pair identities around those structural isomorphism solvers.
+`token_matching::maximum_common_token_isomorphism` composes parsing, structural
+optimization, indexed reconstruction and token emission. The opt-in Python
+`reference-rust` backend exposes this unweighted API through balanced sequences
+and NetworkX, for general and root-preserving modes. The **new reconstruction
+and token composition are tested/extracted, not yet source proved**. Existing
+structural proofs are preserved; their theorem does not establish the new
+indexed boundary. This remains an exponential small-input reference and is
+never selected by `auto`.
+
 `indexed::maximum_common_embedding_indexed` is a new tested/extracted reference
 that reconstructs the optimum shape in both original inputs. Its indexed words
 carry zero-based opening/preorder pair identities. Independent labeled-tree
@@ -68,8 +79,10 @@ through length fourteen, including every returned coordinate. The actual public 
 `Rust.TokenParser.parse_balanced_tokens_total_spec`: every represented input
 terminates, accepts exactly the independently balanced/bounded domain, and
 returns exact shape and original opening/closing coordinates on success.
-All accesses, mutable updates and arithmetic ranges are derived. Token emission
-and composition with the indexed solver and Python adapter remain pending.
+All accesses, mutable updates and arithmetic ranges are derived. Embedding token emission/composition is now proved by
+`Rust.TokenMatching.maximum_common_token_embedding_total_spec`.
+Python conversion remains a tested boundary; the new isomorphism indexed
+composition described above has its own open source-proof obligations.
 
 The established embedding/isomorphism entry points return tree witnesses;
 the new indexed reference additionally retains original input pair identities.

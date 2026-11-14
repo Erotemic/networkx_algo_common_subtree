@@ -82,3 +82,42 @@ pub fn maximum_common_token_embedding(
         edges: matching.edges,
     })
 }
+
+/// Original-token isomorphism reference. Its structural core is source proved;
+/// the new indexed reconstruction and this composition remain tested boundaries.
+/// `rooted` fixes the implicit parent of each input forest.
+pub fn maximum_common_token_isomorphism(
+    left: &[bool],
+    right: &[bool],
+    rooted: bool,
+) -> Result<TokenCommonEmbedding, TokenMatchingError> {
+    let left_input = match parse_balanced_tokens(left) {
+        Ok(value) => value,
+        Err(error) => return Err(TokenMatchingError::LeftInput(error)),
+    };
+    let right_input = match parse_balanced_tokens(right) {
+        Ok(value) => value,
+        Err(error) => return Err(TokenMatchingError::RightInput(error)),
+    };
+    let matching = match crate::indexed_isomorphism::maximum_common_isomorphism_indexed(
+        &left_input.word,
+        &right_input.word,
+        rooted,
+    ) {
+        Some(value) => value,
+        None => return Err(TokenMatchingError::SolverFailure),
+    };
+    let left_tokens = match emit_tokens(&matching.left, &left_input.positions, Vec::new()) {
+        Ok(value) => value,
+        Err(error) => return Err(error),
+    };
+    let right_tokens = match emit_tokens(&matching.right, &right_input.positions, Vec::new()) {
+        Ok(value) => value,
+        Err(error) => return Err(error),
+    };
+    Ok(TokenCommonEmbedding {
+        left: left_tokens,
+        right: right_tokens,
+        edges: matching.edges,
+    })
+}
