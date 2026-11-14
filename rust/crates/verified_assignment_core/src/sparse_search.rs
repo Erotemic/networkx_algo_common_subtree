@@ -1,7 +1,7 @@
 //! Reference alternating search using actual optional-edge cut steps.
 //!
-//! The complete search has a maintained source proof. Refinement of the
-//! path flip and augmentation wrapper is developed separately. Each
+//! The complete search, path flip and one-path augmentation have maintained
+//! source proofs. Each
 //! cut is scanned from the matrix; this is not the paper's priority-queue cost.
 
 use crate::{sparse::advance_sparse_cut, unused_columns, zeros_usize, AssignmentError};
@@ -191,8 +191,8 @@ pub fn flip_sparse_path(
 }
 
 /// Reference one-path augmentation of a feasible tight single-deficit seed.
-/// The complete source-level proof of search is maintained; refinement of the
-/// path flip and this wrapper is a separate current obligation.
+/// Maintained source proofs cover search, path flipping, original indices and
+/// independent optimality. Full-matrix cut scans have no optimized cost claim.
 pub fn augment_sparse_permutation(
     cost: &[Vec<Option<i64>>],
     rows: Vec<i128>,

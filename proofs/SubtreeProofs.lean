@@ -197,3 +197,9 @@ public import SubtreeProofs.Shared.AssignmentRankedAugmentation
 public import SubtreeProofs.Rust.SparsePathCertificate
 public import SubtreeProofs.Shared.AssignmentTracePrefix
 public import SubtreeProofs.Rust.SparsePathFlipBody
+public import SubtreeProofs.Rust.SparsePathFlipInvariant
+public import SubtreeProofs.Rust.SparsePathFlipBounds
+public import SubtreeProofs.Rust.SparsePathFlipPreservation
+public import SubtreeProofs.Rust.SparsePathFlipLoop
+public import SubtreeProofs.Rust.SparsePathFlipEntrypoint
+public import SubtreeProofs.Rust.SparseAugmentationEntrypoint

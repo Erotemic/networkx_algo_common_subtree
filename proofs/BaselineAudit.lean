@@ -108,3 +108,6 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Assignment.exists_ranked_augmentation
 
 #print axioms SubtreeProofs.Rust.SparseSearch.flip_body_step_spec
+
+#print axioms SubtreeProofs.Rust.SparseSearch.flip_sparse_path_spec
+#print axioms SubtreeProofs.Rust.SparseSearch.augment_sparse_permutation_spec

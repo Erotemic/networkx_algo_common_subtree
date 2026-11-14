@@ -38,6 +38,33 @@ The matching specification permits unmatched vertices and an empty matching.
 The contraction oracle's specification permits the singleton (zero-edge)
 tree, rather than an empty forest. The Rust spike does not verify a solver.
 
+## Actual single-path sparse augmentation verified end to end: 2026-11-14
+
+`Rust/SparseAugmentationEntrypoint.augment_sparse_permutation_spec` proves
+the actual public Rust search-plus-flip wrapper returns an independently
+minimum compatible permutation from a represented completed permutation
+whose nonroot edges are allowed and tight under a feasible dual. Inputs obey
+the paper's two-sided nonpositive initial-potential envelope and exact dual
+accounting, with nonpositive allowed i64 costs and u32-bounded dimension. A
+compatible perfect assignment supplies feasibility of repair; no optimum,
+path, inverse/rank table, loop output or machine-success certificate is a
+premise. The exact returned row-index vector represents the canonical path
+augmentation, its exported physical potentials remain feasible and are tight
+on the returned assignment, and rows outside the path retain their old edges.
+
+`SparsePathFlipEntrypoint.flip_sparse_path_spec` proves the actual checked
+flip routine itself: positive decreasing ranks construct a finite simple trace
+internally; source counter/array/rank checks succeed; every returned original
+row coordinate equals the inverse column-cycle augmentation. Its invariant,
+local-bound derivation, exact prefix writes and complete loop termination are
+proved in `SparsePathFlipInvariant`, `Bounds`, `Preservation` and `Loop`.
+
+This closes the actual generic one-deficit augmentation source refinement.
+The copied-graph initialization/deletion caller, exact original matching
+family integration and the paper's optimized sparse priority-queue/runtime
+remain open. The current selector scans the whole optional matrix at each
+step, so the verified reference makes no published optimized cost claim.
+
 ## Actual path certificate, prefix semantics and flip loop body: 2026-11-14
 
 `Rust/SparsePathCertificate` interprets the actual returned predecessor indices
