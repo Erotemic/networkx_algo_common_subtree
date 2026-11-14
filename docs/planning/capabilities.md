@@ -9,7 +9,7 @@ milestones; full verification remains a final verified-release requirement.
 | --- | --- | --- | --- |
 | Ordered embedding, equality/custom affinity | `maximum_common_ordered_subtree_embedding`, `balanced_embedding.longest_common_balanced_embedding`; `auto` prefers legacy Rust, then Cython, then Python | Python iterative/recursive, Cython, memoized/interned PyO3 Rust; exhaustive pair-deletion oracle and differential tests | Legacy optimized Rust is exposed. Whole installed-API comparative measurements pending; production affinity implementation not source verified |
 | Ordered embedding, unweighted | Same APIs with `node_affinity=None`; opt-in `impl="verified-rust"` | Also actual verified flat-token Rust core, original-index token readback and graph adapter tests | Lean proves core optimum, witnesses, parser, memo bounds and guided reconstruction. Native owned-cache/reference benchmarks exist; it is slower and is not the default. Full production runtime proof open |
-| Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; current overlay adds parity and necessary witness checks | Independent exhaustive isomorphism oracle still needed. Verified structural reference Rust core exists but original-index verified Python backend is missing |
+| Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; independent original-parent subset enumeration checks adjacency-preserving forest feasibility and optima | Single-label exhaustive cases, multicolor equality and fractional original-node affinity comparisons pass. Verified structural reference Rust core exists but original-index verified Python backend is missing |
 | Droschinsky 2016 weighted unordered isomorphism | Public `maximum_common_subtree_isomorphism`; `auto` selects Rust, Python exhaustive fallback | Existing Rust DP bound through PyO3; signed/fractional scalar or callback weights, optional label equality, empty/nonempty objectives, original-node/path witnesses and independent rescorer | Installed API/raw-binding benchmark covers chains, stars, balanced/random and asymmetric trees. Mathematical recurrence proofs exist; graph Rust refinement and published optimized matching runtime remain open |
 | Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Existing Rust DP; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Installed API benchmark exists; optimized schedule/runtime and graph Rust refinement remain open |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching`, exhaustive injection tests | Used internally by graph DP. Signed optional weights; f64 arithmetic, not an exact-integer proof |
@@ -61,6 +61,16 @@ reference takes 0.295 s (2016) and 0.360 s (2018); ordinary balanced trees take
 Rust APIs are 3.5–20.3x faster than exhaustive Python on these workloads; this
 does not compare against a polynomial Python DP. See the reproducible commands
 and limitations in [the benchmark report](../../dev/benchmarks/2026-11-14-unordered-python-apis.md).
+
+Ordered parity now uses an independent subset oracle for isomorphism as well
+as pair-deletion enumeration for embedding. Parent adjacency and a shared
+original parent for forest roots are checked explicitly. Eighty fractional
+affinity cases per algorithm use unique token indices mapped to distinct
+original objects; original witness feasibility and rescoring are checked.
+These tests exposed and fixed Cython embedding's string-only token locals and
+f32 affinity/score storage. Tuple integer tokens and valid f64 precision/range
+now work. The expanded strict source suite passes **138 tests, one skip**;
+all required compiled backend tests execute.
 
 ## Immediate implementation queue
 

@@ -131,7 +131,7 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
     """
     Depth first stack trajectory and replace try except statements with ifs
     """
-    cdef float pval_h, pval_t, val3, affinity
+    cdef double pval_h, pval_t, val3, affinity
     cdef SeqT seq1, seq2
     cdef SeqT a1, b1, head1, tail1, head_tail1
     cdef SeqT a2, b2, head2, tail2, head_tail2
@@ -244,8 +244,8 @@ cdef tuple balanced_decomp_unsafe_cython(SeqT sequence, dict open_to_close):
     cdef int head_stop = 1
     cdef SeqT pop_open, pop_close, head, tail, head_tail
 
-    cdef str tok_curr = sequence[0]
-    cdef str want_close = open_to_close[tok_curr]
+    cdef object tok_curr = sequence[0]
+    cdef object want_close = open_to_close[tok_curr]
 
     for head_stop in range(1, len(sequence)):
         tok_curr = sequence[head_stop]

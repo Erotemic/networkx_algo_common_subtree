@@ -64,6 +64,34 @@ def _embedding_oracle(left: str, right: str, alphabet):
     return max(len(word) // 2 for word in common)
 
 
+@lru_cache(maxsize=None)
+def _isomorphism_closure(word: str, alphabet):
+    """Enumerate adjacency-preserving selections with one common parent.
+
+    Parse the original parent relation, then inspect every vertex subset.
+    Every retained component root must have the same original parent (possibly
+    the virtual parent of the whole forest). Missing intermediate ancestors
+    are therefore forbidden. This is subset enumeration, not the DP's
+    head/tail or level/general recurrence. The parent is not itself scored.
+    """
+    stack, parents, pair_ids = [], [], []
+    for token in word:
+        if token in dict(alphabet):
+            index = len(parents)
+            parents.append(stack[-1] if stack else -1)
+            stack.append(index)
+            pair_ids.append(index)
+        else:
+            pair_ids.append(stack.pop())
+    result = {""}
+    for mask in range(1, 1 << len(parents)):
+        selected = {i for i in range(len(parents)) if mask & (1 << i)}
+        external_parents = {parents[i] for i in selected if parents[i] not in selected}
+        if len(external_parents) == 1:
+            result.add("".join(token for token, i in zip(word, pair_ids) if i in selected))
+    return frozenset(result)
+
+
 def _backends(kind: str, unweighted: bool):
     if kind == "embedding":
         available = balanced_embedding.available_impls_longest_common_balanced_embedding(
@@ -92,8 +120,9 @@ def _solve(kind: str, left: str, right: str, alphabet, affinity: str | None, imp
 def _check_case(kind: str, left: str, right: str, alphabet, affinity: str | None):
     backends = _backends(kind, unweighted=affinity is None)
     scores = {}
-    left_closure = _deletion_closure(left, alphabet)
-    right_closure = _deletion_closure(right, alphabet)
+    closure = _deletion_closure if kind == "embedding" else _isomorphism_closure
+    left_closure = closure(left, alphabet)
+    right_closure = closure(right, alphabet)
     for impl in backends:
         (out_left, out_right), score = _solve(kind, left, right, alphabet, affinity, impl)
         assert out_left in left_closure, (kind, impl, left, out_left)
@@ -104,6 +133,9 @@ def _check_case(kind: str, left: str, right: str, alphabet, affinity: str | None
     assert len(set(scores.values())) == 1, (kind, left, right, scores)
     if kind == "embedding":
         assert next(iter(scores.values())) == _embedding_oracle(left, right, alphabet), (left, right, scores)
+    else:
+        optimum = max(len(word) // 2 for word in left_closure & right_closure)
+        assert next(iter(scores.values())) == optimum, (left, right, scores)
 
 
 @pytest.mark.parametrize("kind", ["embedding", "isomorphism"])
@@ -130,3 +162,86 @@ def test_labeled_equality_affinity_and_adversarial_shapes(kind):
 def test_empty_word_iterative_regression(kind):
     for left, right in [("", ""), ("", "01"), ("01", "")]:
         _check_case(kind, left, right, BRACKETS[:1], None)
+
+
+def _indexed_word(word, offset):
+    """Give each original pair a unique opening/closing token."""
+    stack, sequence, mapping = [], [], {}
+    for token in word:
+        if token == "0":
+            opening = offset + 2 * len(mapping)
+            mapping[opening] = opening + 1
+            stack.append(opening)
+            sequence.append(opening)
+        else:
+            sequence.append(stack.pop() + 1)
+    return tuple(sequence), mapping
+
+
+def _subset_witnesses(sequence, pairs, kind):
+    """Original-index subsets and their shape, with explicit parent checks."""
+    stack, parents, ids = [], {}, []
+    for token in sequence:
+        if token in pairs:
+            parents[token] = stack[-1] if stack else None
+            stack.append(token)
+            ids.append(token)
+        else:
+            ids.append(stack.pop())
+    vertices = tuple(parents)
+    records = []
+    for mask in range(1 << len(vertices)):
+        selected = {v for i, v in enumerate(vertices) if mask & (1 << i)}
+        if kind == "isomorphism" and selected:
+            if len({parents[v] for v in selected if parents[v] not in selected}) != 1:
+                continue
+        witness = tuple(token for token, v in zip(sequence, ids) if v in selected)
+        shape = tuple(token in pairs for token in witness)
+        records.append((witness, shape, tuple(v for v in vertices if v in selected)))
+    return records
+
+
+@pytest.mark.parametrize("kind", ["embedding", "isomorphism"])
+def test_fractional_affinity_optima_original_indices_and_rescoring(kind):
+    rng = random.Random(20042016)
+    words = [w for n in range(5) for w in _dyck_words(n, BRACKETS[:1])]
+    for _ in range(80):
+        left, lp = _indexed_word(rng.choice(words), 0)
+        right, rp = _indexed_word(rng.choice(words), 100)
+        pairs = lp | rp
+        # Distinct non-token original objects expose mapping/index confusion.
+        nodes = {v: ("original", v) for v in pairs}
+        weights = {(nodes[u], nodes[v]): rng.choice([0, .125, 1.0, 3.75]) for u in lp for v in rp}
+        affinity = lambda u, v: weights[u, v]
+        ls = _subset_witnesses(left, pairs, kind)
+        rs = _subset_witnesses(right, pairs, kind)
+        optimum = 0
+        for _, lshape, lvertices in ls:
+            for _, rshape, rvertices in rs:
+                if lshape == rshape:
+                    values = [weights[nodes[u], nodes[v]] for u, v in zip(lvertices, rvertices)]
+                    if all(values):
+                        optimum = max(optimum, sum(values))
+        solver = (balanced_embedding.longest_common_balanced_embedding if kind == "embedding" else
+                  balanced_isomorphism.longest_common_balanced_isomorphism)
+        for impl in _backends(kind, unweighted=False):
+            (out_left, out_right), score = solver(left, right, pairs, open_to_node=nodes,
+                                                 node_affinity=affinity, impl=impl)
+            assert out_left in {x[0] for x in ls}, (kind, impl, left, out_left)
+            assert out_right in {x[0] for x in rs}, (kind, impl, right, out_right)
+            assert tuple(t in pairs for t in out_left) == tuple(t in pairs for t in out_right)
+            values = [weights[nodes[u], nodes[v]] for u, v in
+                      zip((t for t in out_left if t in pairs), (t for t in out_right if t in pairs))]
+            assert all(values)
+            assert sum(values) == score == optimum, (kind, impl, left, right, score, optimum)
+
+
+@pytest.mark.parametrize("kind", ["embedding", "isomorphism"])
+@pytest.mark.parametrize("weight", [1 + 2**-40, 1e-100, 1e100])
+def test_affinity_preserves_double_precision_and_range(kind, weight):
+    solver = (balanced_embedding.longest_common_balanced_embedding if kind == "embedding" else
+              balanced_isomorphism.longest_common_balanced_isomorphism)
+    for impl in _backends(kind, unweighted=False):
+        witness, score = solver("01", "01", {"0": "1"}, node_affinity=lambda u, v: weight, impl=impl)
+        assert witness == ("01", "01")
+        assert score == weight, (impl, score, weight)
