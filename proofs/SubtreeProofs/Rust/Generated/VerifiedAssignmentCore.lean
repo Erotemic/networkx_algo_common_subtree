@@ -20,56 +20,310 @@ set_option maxRecDepth 2048
 
 namespace verified_assignment_core
 
-/-- [verified_assignment_core::Assignment]
-    Source: 'src/lib.rs', lines 9:0-14:1
+/-- [verified_assignment_core::matching::MatchedPair]
+    Source: 'src/matching.rs', lines 6:0-9:1
     Visibility: public -/
-structure Assignment where
-  column_for_row : alloc.vec.Vec Std.Usize
-  row_potential : alloc.vec.Vec Std.I128
-  column_potential : alloc.vec.Vec Std.I128
-  cost : Std.I128
+structure matching.MatchedPair where
+  left : Std.Usize
+  right : Std.Usize
 
-/-- [verified_assignment_core::AssignmentError]
-    Source: 'src/lib.rs', lines 17:0-22:1
+/-- [verified_assignment_core::matching::PartialMatching]
+    Source: 'src/matching.rs', lines 12:0-15:1
     Visibility: public -/
-@[discriminant isize]
-inductive AssignmentError where
-| NonSquare : AssignmentError
-| TooLarge : AssignmentError
-| ArithmeticOverflow : AssignmentError
-| InvariantViolation : AssignmentError
+structure matching.PartialMatching where
+  pairs : alloc.vec.Vec matching.MatchedPair
+  weight : Std.I128
 
-/-- [verified_assignment_core::zeros_i128]: loop body 0:
-    Source: 'src/lib.rs', lines 29:4-32:5 -/
+/-- [verified_assignment_core::deletion::DeletionFamily]
+    Source: 'src/deletion.rs', lines 10:0-14:1
+    Visibility: public -/
+structure deletion.DeletionFamily where
+  original : matching.PartialMatching
+  without_right : alloc.vec.Vec matching.PartialMatching
+
+/-- [verified_assignment_core::deletion::uses_right]: loop body 0:
+    Source: 'src/deletion.rs', lines 18:4-25:1 -/
 @[rust_loop_body]
-def zeros_i128_loop.body
-  (len : Std.Usize) (result : alloc.vec.Vec Std.I128) (index : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize) (alloc.vec.Vec
-    Std.I128))
+def deletion.uses_right_loop.body
+  (pairs : Slice matching.MatchedPair) (right : Std.Usize) (index : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
   := do
-  if index < len
+  let i := Slice.len pairs
+  if index < i
   then
-    let result1 ← alloc.vec.Vec.push result 0#i128
-    let index1 ← index + 1#usize
-    ok (cont (result1, index1))
-  else ok (done result)
+    let mp ← Slice.index_usize pairs index
+    if mp.right = right
+    then ok (done true)
+    else let index1 ← index + 1#usize
+         ok (cont index1)
+  else ok (done false)
 
-/-- [verified_assignment_core::zeros_i128]: loop 0:
-    Source: 'src/lib.rs', lines 29:4-32:5 -/
+/-- [verified_assignment_core::deletion::uses_right]: loop 0:
+    Source: 'src/deletion.rs', lines 18:4-25:1 -/
 @[rust_loop]
-def zeros_i128_loop
-  (len : Std.Usize) (result : alloc.vec.Vec Std.I128) (index : Std.Usize) :
-  Result (alloc.vec.Vec Std.I128)
+def deletion.uses_right_loop
+  (pairs : Slice matching.MatchedPair) (right : Std.Usize) (index : Std.Usize)
+  :
+  Result Bool
   := do
   loop
-    (fun (result1, index1) => zeros_i128_loop.body len result1 index1)
-    (result, index)
+    (fun index1 => deletion.uses_right_loop.body pairs right index1)
+    index
 
-/-- [verified_assignment_core::zeros_i128]:
-    Source: 'src/lib.rs', lines 26:0-34:1 -/
+/-- [verified_assignment_core::deletion::uses_right]:
+    Source: 'src/deletion.rs', lines 16:0-25:1 -/
 @[reducible]
-def zeros_i128 (len : Std.Usize) : Result (alloc.vec.Vec Std.I128) := do
-  zeros_i128_loop len (alloc.vec.Vec.new Std.I128) 0#usize
+def deletion.uses_right
+  (pairs : Slice matching.MatchedPair) (right : Std.Usize) : Result Bool := do
+  deletion.uses_right_loop pairs right 0#usize
+
+/-- [verified_assignment_core::deletion::copy_matching]: loop body 0:
+    Source: 'src/deletion.rs', lines 30:4-37:5 -/
+@[rust_loop_body]
+def deletion.copy_matching_loop.body
+  (original : matching.PartialMatching)
+  (pairs : alloc.vec.Vec matching.MatchedPair) (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec matching.MatchedPair) × Std.Usize)
+    (Std.I128 × (alloc.vec.Vec matching.MatchedPair)))
+  := do
+  let i := alloc.vec.Vec.len original.pairs
+  if index < i
+  then
+    let pair ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        matching.MatchedPair) original.pairs index
+    let pairs1 ← alloc.vec.Vec.push pairs pair
+    let index1 ← index + 1#usize
+    ok (cont (pairs1, index1))
+  else ok (done (original.weight, pairs))
+
+/-- [verified_assignment_core::deletion::copy_matching]: loop 0:
+    Source: 'src/deletion.rs', lines 30:4-37:5 -/
+@[rust_loop]
+def deletion.copy_matching_loop
+  (original : matching.PartialMatching)
+  (pairs : alloc.vec.Vec matching.MatchedPair) (index : Std.Usize) :
+  Result (Std.I128 × (alloc.vec.Vec matching.MatchedPair))
+  := do
+  loop
+    (fun (pairs1, index1) => deletion.copy_matching_loop.body original pairs1
+      index1)
+    (pairs, index)
+
+/-- [verified_assignment_core::deletion::copy_matching]:
+    Source: 'src/deletion.rs', lines 27:0-42:1 -/
+def deletion.copy_matching
+  (original : matching.PartialMatching) : Result matching.PartialMatching := do
+  let (i, pairs) ←
+    deletion.copy_matching_loop original (alloc.vec.Vec.new
+      matching.MatchedPair) 0#usize
+  ok { pairs, weight := i }
+
+/-- [verified_assignment_core::deletion::mask_row]: loop body 0:
+    Source: 'src/deletion.rs', lines 47:4-54:5 -/
+@[rust_loop_body]
+def deletion.mask_row_loop.body
+  (row : Slice (Option Std.I64)) (removed : Std.Usize)
+  (result : alloc.vec.Vec (Option Std.I64)) (column : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (Option Std.I64)) × Std.Usize)
+    (alloc.vec.Vec (Option Std.I64)))
+  := do
+  let i := Slice.len row
+  if column < i
+  then
+    let result1 ←
+      if column = removed
+      then alloc.vec.Vec.push result none
+      else
+        do
+        let o ← Slice.index_usize row column
+        alloc.vec.Vec.push result o
+    let column1 ← column + 1#usize
+    ok (cont (result1, column1))
+  else ok (done result)
+
+/-- [verified_assignment_core::deletion::mask_row]: loop 0:
+    Source: 'src/deletion.rs', lines 47:4-54:5 -/
+@[rust_loop]
+def deletion.mask_row_loop
+  (row : Slice (Option Std.I64)) (removed : Std.Usize)
+  (result : alloc.vec.Vec (Option Std.I64)) (column : Std.Usize) :
+  Result (alloc.vec.Vec (Option Std.I64))
+  := do
+  loop
+    (fun (result1, column1) => deletion.mask_row_loop.body row removed result1
+      column1)
+    (result, column)
+
+/-- [verified_assignment_core::deletion::mask_row]:
+    Source: 'src/deletion.rs', lines 44:0-56:1 -/
+@[reducible]
+def deletion.mask_row
+  (row : Slice (Option Std.I64)) (removed : Std.Usize) :
+  Result (alloc.vec.Vec (Option Std.I64))
+  := do
+  deletion.mask_row_loop row removed (alloc.vec.Vec.new (Option Std.I64))
+    0#usize
+
+/-- [verified_assignment_core::deletion::mask_right]: loop body 0:
+    Source: 'src/deletion.rs', lines 61:4-64:5 -/
+@[rust_loop_body]
+def deletion.mask_right_loop.body
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (removed : Std.Usize)
+  (result : alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))) ×
+    Std.Usize) (alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))))
+  := do
+  let i := Slice.len weights
+  if row < i
+  then
+    let v ← Slice.index_usize weights row
+    let s := alloc.vec.Vec.deref v
+    let v1 ← deletion.mask_row s removed
+    let result1 ← alloc.vec.Vec.push result v1
+    let row1 ← row + 1#usize
+    ok (cont (result1, row1))
+  else ok (done result)
+
+/-- [verified_assignment_core::deletion::mask_right]: loop 0:
+    Source: 'src/deletion.rs', lines 61:4-64:5 -/
+@[rust_loop]
+def deletion.mask_right_loop
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (removed : Std.Usize)
+  (result : alloc.vec.Vec (alloc.vec.Vec (Option Std.I64))) (row : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec (Option Std.I64)))
+  := do
+  loop
+    (fun (result1, row1) => deletion.mask_right_loop.body weights removed
+      result1 row1)
+    (result, row)
+
+/-- [verified_assignment_core::deletion::mask_right]:
+    Source: 'src/deletion.rs', lines 58:0-66:1 -/
+@[reducible]
+def deletion.mask_right
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (removed : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec (Option Std.I64)))
+  := do
+  deletion.mask_right_loop weights removed (alloc.vec.Vec.new (alloc.vec.Vec
+    (Option Std.I64))) 0#usize
+
+/-- [verified_assignment_core::matching::decode_pair]:
+    Source: 'src/matching.rs', lines 79:0-109:1 -/
+def matching.decode_pair
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
+  (right : Std.Usize) (columns : Slice Std.Usize) (row : Std.Usize) :
+  Result (Option matching.MatchedPair)
+  := do
+  let column ← Slice.index_usize columns row
+  if column >= left
+  then
+    let target ← column - left
+    if target < right
+    then
+      let v ← Slice.index_usize weights row
+      let o ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
+          Std.I64)) v target
+      match o with
+      | none => ok none
+      | some weight =>
+        if weight > 0#i64
+        then ok (some { left := row, right := target })
+        else ok none
+    else ok none
+  else ok none
+
+/-- [verified_assignment_core::matching::decode_pairs]: loop body 0:
+    Source: 'src/matching.rs', lines 119:4-125:5 -/
+@[rust_loop_body]
+def matching.decode_pairs_loop.body
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
+  (right : Std.Usize) (columns : Slice Std.Usize)
+  (pairs : alloc.vec.Vec matching.MatchedPair) (row : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec matching.MatchedPair) × Std.Usize)
+    (alloc.vec.Vec matching.MatchedPair))
+  := do
+  if row < left
+  then
+    let o ← matching.decode_pair weights left right columns row
+    let pairs1 ←
+      match o with
+      | none => ok pairs
+      | some pair => alloc.vec.Vec.push pairs pair
+    let row1 ← row + 1#usize
+    ok (cont (pairs1, row1))
+  else ok (done pairs)
+
+/-- [verified_assignment_core::matching::decode_pairs]: loop 0:
+    Source: 'src/matching.rs', lines 119:4-125:5 -/
+@[rust_loop]
+def matching.decode_pairs_loop
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
+  (right : Std.Usize) (columns : Slice Std.Usize)
+  (pairs : alloc.vec.Vec matching.MatchedPair) (row : Std.Usize) :
+  Result (alloc.vec.Vec matching.MatchedPair)
+  := do
+  loop
+    (fun (pairs1, row1) => matching.decode_pairs_loop.body weights left right
+      columns pairs1 row1)
+    (pairs, row)
+
+/-- [verified_assignment_core::matching::decode_pairs]:
+    Source: 'src/matching.rs', lines 111:0-127:1 -/
+@[reducible]
+def matching.decode_pairs
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
+  (right : Std.Usize) (columns : Slice Std.Usize) :
+  Result (alloc.vec.Vec matching.MatchedPair)
+  := do
+  matching.decode_pairs_loop weights left right columns (alloc.vec.Vec.new
+    matching.MatchedPair) 0#usize
+
+/-- [verified_assignment_core::matching::MatchingError]
+    Source: 'src/matching.rs', lines 18:0-23:1
+    Visibility: public -/
+@[discriminant isize]
+inductive matching.MatchingError where
+| NonRectangular : matching.MatchingError
+| TooLarge : matching.MatchingError
+| AssignmentFailure : matching.MatchingError
+| ArithmeticOverflow : matching.MatchingError
+
+/-- [verified_assignment_core::is_square]: loop body 0:
+    Source: 'src/lib.rs', lines 374:4-381:1 -/
+@[rust_loop_body]
+def is_square_loop.body
+  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (row : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  if row < n
+  then
+    let v ← Slice.index_usize cost row
+    let i := alloc.vec.Vec.len v
+    if i != n
+    then ok (done false)
+    else let row1 ← row + 1#usize
+         ok (cont row1)
+  else ok (done true)
+
+/-- [verified_assignment_core::is_square]: loop 0:
+    Source: 'src/lib.rs', lines 374:4-381:1 -/
+@[rust_loop]
+def is_square_loop
+  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (row : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun row1 => is_square_loop.body cost n row1)
+    row
+
+/-- [verified_assignment_core::is_square]:
+    Source: 'src/lib.rs', lines 371:0-381:1 -/
+def is_square (cost : Slice (alloc.vec.Vec Std.I64)) : Result Bool := do
+  let n := Slice.len cost
+  is_square_loop cost n 0#usize
 
 /-- [verified_assignment_core::zeros_usize]: loop body 0:
     Source: 'src/lib.rs', lines 39:4-42:5 -/
@@ -103,582 +357,24 @@ def zeros_usize_loop
 def zeros_usize (len : Std.Usize) : Result (alloc.vec.Vec Std.Usize) := do
   zeros_usize_loop len (alloc.vec.Vec.new Std.Usize) 0#usize
 
-/-- [verified_assignment_core::absent_costs]: loop body 0:
-    Source: 'src/lib.rs', lines 49:4-52:5 -/
-@[rust_loop_body]
-def absent_costs_loop.body
-  (len : Std.Usize) (result : alloc.vec.Vec (Option Std.I128))
-  (index : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (Option Std.I128)) × Std.Usize)
-    (alloc.vec.Vec (Option Std.I128)))
-  := do
-  if index < len
-  then
-    let result1 ← alloc.vec.Vec.push result none
-    let index1 ← index + 1#usize
-    ok (cont (result1, index1))
-  else ok (done result)
+/-- [verified_assignment_core::AssignmentError]
+    Source: 'src/lib.rs', lines 17:0-22:1
+    Visibility: public -/
+@[discriminant isize]
+inductive AssignmentError where
+| NonSquare : AssignmentError
+| TooLarge : AssignmentError
+| ArithmeticOverflow : AssignmentError
+| InvariantViolation : AssignmentError
 
-/-- [verified_assignment_core::absent_costs]: loop 0:
-    Source: 'src/lib.rs', lines 49:4-52:5 -/
-@[rust_loop]
-def absent_costs_loop
-  (len : Std.Usize) (result : alloc.vec.Vec (Option Std.I128))
-  (index : Std.Usize) :
-  Result (alloc.vec.Vec (Option Std.I128))
-  := do
-  loop
-    (fun (result1, index1) => absent_costs_loop.body len result1 index1)
-    (result, index)
-
-/-- [verified_assignment_core::absent_costs]:
-    Source: 'src/lib.rs', lines 46:0-54:1 -/
-@[reducible]
-def absent_costs
-  (len : Std.Usize) : Result (alloc.vec.Vec (Option Std.I128)) := do
-  absent_costs_loop len (alloc.vec.Vec.new (Option Std.I128)) 0#usize
-
-/-- [verified_assignment_core::unused_columns]: loop body 0:
-    Source: 'src/lib.rs', lines 59:4-62:5 -/
-@[rust_loop_body]
-def unused_columns_loop.body
-  (len : Std.Usize) (result : alloc.vec.Vec Bool) (index : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Bool) × Std.Usize) (alloc.vec.Vec Bool))
-  := do
-  if index < len
-  then
-    let result1 ← alloc.vec.Vec.push result false
-    let index1 ← index + 1#usize
-    ok (cont (result1, index1))
-  else ok (done result)
-
-/-- [verified_assignment_core::unused_columns]: loop 0:
-    Source: 'src/lib.rs', lines 59:4-62:5 -/
-@[rust_loop]
-def unused_columns_loop
-  (len : Std.Usize) (result : alloc.vec.Vec Bool) (index : Std.Usize) :
-  Result (alloc.vec.Vec Bool)
-  := do
-  loop
-    (fun (result1, index1) => unused_columns_loop.body len result1 index1)
-    (result, index)
-
-/-- [verified_assignment_core::unused_columns]:
-    Source: 'src/lib.rs', lines 56:0-64:1 -/
-@[reducible]
-def unused_columns (len : Std.Usize) : Result (alloc.vec.Vec Bool) := do
-  unused_columns_loop len (alloc.vec.Vec.new Bool) 0#usize
-
-/-- [verified_assignment_core::minimum_row]: loop body 0:
-    Source: 'src/lib.rs', lines 69:4-79:5 -/
-@[rust_loop_body]
-def minimum_row_loop.body
-  (row : Slice Std.I64) (minimum : Option Std.I64) (column : Std.Usize) :
-  Result (ControlFlow ((Option Std.I64) × Std.Usize) (Option Std.I64))
-  := do
-  let i := Slice.len row
-  if column < i
-  then
-    let value ← Slice.index_usize row column
-    let improve ←
-      match minimum with
-      | none => ok true
-      | some old => ok (value < old)
-    let minimum1 ← if improve
-                     then ok (some value)
-                     else ok minimum
-    let column1 ← column + 1#usize
-    ok (cont (minimum1, column1))
-  else ok (done minimum)
-
-/-- [verified_assignment_core::minimum_row]: loop 0:
-    Source: 'src/lib.rs', lines 69:4-79:5 -/
-@[rust_loop]
-def minimum_row_loop
-  (row : Slice Std.I64) (minimum : Option Std.I64) (column : Std.Usize) :
-  Result (Option Std.I64)
-  := do
-  loop
-    (fun (minimum1, column1) => minimum_row_loop.body row minimum1 column1)
-    (minimum, column)
-
-/-- [verified_assignment_core::minimum_row]:
-    Source: 'src/lib.rs', lines 66:0-81:1 -/
-@[reducible]
-def minimum_row (row : Slice Std.I64) : Result (Option Std.I64) := do
-  minimum_row_loop row none 0#usize
-
-/-- [verified_assignment_core::initial_potentials]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-94:5 -/
-@[rust_loop_body]
-def initial_potentials_loop.body
-  (cost : Slice (alloc.vec.Vec Std.I64)) (result : alloc.vec.Vec Std.I128)
-  (row : Std.Usize) (failure : Option AssignmentError) :
-  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize × (Option
-    AssignmentError)) ((alloc.vec.Vec Std.I128) × (Option AssignmentError)))
-  := do
-  let i := Slice.len cost
-  if row < i
-  then
-    let b := core.option.Option.is_none failure
-    if b
-    then
-      let v ← Slice.index_usize cost row
-      let s := alloc.vec.Vec.deref v
-      let o ← minimum_row s
-      let (result1, failure1) ←
-        match o with
-        | none => ok (result, some AssignmentError.InvariantViolation)
-        | some value =>
-          do
-          let i1 ← row + 1#usize
-          let (_, index_mut_back) ←
-            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-              Std.I128) result i1
-          let i2 ← lift (IScalar.cast .I128 value)
-          let result2 := index_mut_back i2
-          ok (result2, failure)
-      let row1 ← row + 1#usize
-      ok (cont (result1, row1, failure1))
-    else ok (done (result, failure))
-  else ok (done (result, failure))
-
-/-- [verified_assignment_core::initial_potentials]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-94:5 -/
-@[rust_loop]
-def initial_potentials_loop
-  (cost : Slice (alloc.vec.Vec Std.I64)) (result : alloc.vec.Vec Std.I128)
-  (row : Std.Usize) (failure : Option AssignmentError) :
-  Result ((alloc.vec.Vec Std.I128) × (Option AssignmentError))
-  := do
-  loop
-    (fun (result1, row1, failure1) => initial_potentials_loop.body cost result1
-      row1 failure1)
-    (result, row, failure)
-
-/-- [verified_assignment_core::initial_potentials]:
-    Source: 'src/lib.rs', lines 84:0-99:1 -/
-def initial_potentials
-  (cost : Slice (alloc.vec.Vec Std.I64)) (extent : Std.Usize) :
-  Result (core.result.Result (alloc.vec.Vec Std.I128) AssignmentError)
-  := do
-  let result ← zeros_i128 extent
-  let (result1, failure) ← initial_potentials_loop cost result 0#usize none
-  match failure with
-  | none => ok (core.result.Result.Ok result1)
-  | some error => ok (core.result.Result.Err error)
-
-/-- [verified_assignment_core::relax_column]:
-    Source: 'src/lib.rs', lines 102:0-125:1 -/
-def relax_column
-  (slack : alloc.vec.Vec (Option Std.I128))
-  (predecessor : alloc.vec.Vec Std.Usize) (candidate : Std.Usize)
-  (column : Std.Usize) (reduced : Std.I128) :
-  Result (Std.I128 × (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec
-    Std.Usize))
-  := do
-  let o ←
-    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
-      Std.I128)) slack candidate
-  match o with
-  | none =>
-    let (_, index_mut_back) ←
-      alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice (Option
-        Std.I128)) slack candidate
-    let (_, index_mut_back1) ←
-      alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Std.Usize)
-        predecessor candidate
-    let slack1 := index_mut_back (some reduced)
-    let predecessor1 := index_mut_back1 column
-    ok (reduced, slack1, predecessor1)
-  | some old =>
-    if reduced < old
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice (Option
-          Std.I128)) slack candidate
-      let (_, index_mut_back1) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-          Std.Usize) predecessor candidate
-      let slack1 := index_mut_back (some reduced)
-      let predecessor1 := index_mut_back1 column
-      ok (reduced, slack1, predecessor1)
-    else ok (old, slack, predecessor)
-
-/-- [verified_assignment_core::select_delta]:
-    Source: 'src/lib.rs', lines 128:0-144:1 -/
-def select_delta
-  (delta : Option Std.I128) (next_column : Std.Usize) (best : Std.I128)
-  (candidate : Std.Usize) :
-  Result ((Option Std.I128) × Std.Usize)
-  := do
-  match delta with
-  | none => ok (some best, candidate)
-  | some old =>
-    if best < old
-    then ok (some best, candidate)
-    else ok (delta, next_column)
-
-/-- [verified_assignment_core::scan_columns]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-183:1 -/
-@[rust_loop_body]
-def scan_columns_loop.body
-  (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
-  (v : Slice Std.I128) (used : Slice Bool) (column : Std.Usize)
-  (active_row : Std.Usize) (n : Std.Usize)
-  (slack : alloc.vec.Vec (Option Std.I128))
-  (predecessor : alloc.vec.Vec Std.Usize) (delta : Option Std.I128)
-  (next_column : Std.Usize) (candidate : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec
-    Std.Usize) × (Option Std.I128) × Std.Usize × Std.Usize)
-    ((core.result.Result (Std.I128 × Std.Usize) AssignmentError) ×
-    (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec Std.Usize)))
-  := do
-  if candidate <= n
-  then
-    let b ← Slice.index_usize used candidate
-    if b
-    then
-      let candidate1 ← candidate + 1#usize
-      ok (cont (slack, predecessor, delta, next_column, candidate1))
-    else
-      let i ← active_row - 1#usize
-      let v1 ← Slice.index_usize cost i
-      let i1 ← candidate - 1#usize
-      let i2 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I64) v1
-          i1
-      let i3 ← lift (IScalar.cast .I128 i2)
-      let i4 ← Slice.index_usize u active_row
-      let o ← lift (I128.checked_sub i3 i4)
-      match o with
-      | none =>
-        ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
-          slack, predecessor))
-      | some value =>
-        let i5 ← Slice.index_usize v candidate
-        let o1 ← lift (I128.checked_sub value i5)
-        match o1 with
-        | none =>
-          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
-            slack, predecessor))
-        | some value1 =>
-          let (best, slack1, predecessor1) ←
-            relax_column slack predecessor candidate column value1
-          let (new_delta, new_column) ←
-            select_delta delta next_column best candidate
-          let candidate1 ← candidate + 1#usize
-          ok (cont (slack1, predecessor1, new_delta, new_column, candidate1))
-  else
-    match delta with
-    | none =>
-      ok (done (core.result.Result.Err AssignmentError.InvariantViolation,
-        slack, predecessor))
-    | some value =>
-      ok (done (core.result.Result.Ok (value, next_column), slack,
-        predecessor))
-
-/-- [verified_assignment_core::scan_columns]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-183:1 -/
-@[rust_loop]
-def scan_columns_loop
-  (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
-  (v : Slice Std.I128) (used : Slice Bool)
-  (slack : alloc.vec.Vec (Option Std.I128))
-  (predecessor : alloc.vec.Vec Std.Usize) (column : Std.Usize)
-  (active_row : Std.Usize) (n : Std.Usize) (delta : Option Std.I128)
-  (next_column : Std.Usize) (candidate : Std.Usize) :
-  Result ((core.result.Result (Std.I128 × Std.Usize) AssignmentError) ×
-    (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec Std.Usize))
-  := do
-  loop
-    (fun (slack1, predecessor1, delta1, next_column1, candidate1) =>
-      scan_columns_loop.body cost u v used column active_row n slack1
-      predecessor1 delta1 next_column1 candidate1)
-    (slack, predecessor, delta, next_column, candidate)
-
-/-- [verified_assignment_core::scan_columns]:
-    Source: 'src/lib.rs', lines 147:0-183:1 -/
-@[reducible]
-def scan_columns
-  (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
-  (v : Slice Std.I128) (used : Slice Bool)
-  (slack : alloc.vec.Vec (Option Std.I128))
-  (predecessor : alloc.vec.Vec Std.Usize) (column : Std.Usize)
-  (active_row : Std.Usize) (n : Std.Usize) :
-  Result ((core.result.Result (Std.I128 × Std.Usize) AssignmentError) ×
-    (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec Std.Usize))
-  := do
-  scan_columns_loop cost u v used slack predecessor column active_row n none
-    0#usize 1#usize
-
-/-- [verified_assignment_core::adjust_potentials]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-215:1 -/
-@[rust_loop_body]
-def adjust_potentials_loop.body
-  (matched_row : Slice Std.Usize) (used : Slice Bool) (amount : Std.I128)
-  (n : Std.Usize) (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
-  (slack : alloc.vec.Vec (Option Std.I128)) (index : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec (Option Std.I128)) × Std.Usize) ((core.result.Result Unit
-    AssignmentError) × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec (Option Std.I128))))
-  := do
-  if index <= n
-  then
-    let b ← Slice.index_usize used index
-    if b
-    then
-      let assigned ← Slice.index_usize matched_row index
-      let i ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I128) u
-          assigned
-      let o ← lift (I128.checked_add i amount)
-      match o with
-      | none =>
-        ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow, u,
-          v, slack))
-      | some value =>
-        let (_, index_mut_back) ←
-          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-            Std.I128) u assigned
-        let i1 ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I128)
-            v index
-        let o1 ← lift (I128.checked_sub i1 amount)
-        match o1 with
-        | none =>
-          let u1 := index_mut_back value
-          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
-            u1, v, slack))
-        | some value1 =>
-          let (_, index_mut_back1) ←
-            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-              Std.I128) v index
-          let index1 ← index + 1#usize
-          let v1 := index_mut_back1 value1
-          let u1 := index_mut_back value
-          ok (cont (u1, v1, slack, index1))
-    else
-      let o ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
-          Std.I128)) slack index
-      match o with
-      | none => let index1 ← index + 1#usize
-                ok (cont (u, v, slack, index1))
-      | some value =>
-        let o1 ← lift (I128.checked_sub value amount)
-        match o1 with
-        | none =>
-          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
-            u, v, slack))
-        | some _ =>
-          let (_, index_mut_back) ←
-            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-              (Option Std.I128)) slack index
-          let index1 ← index + 1#usize
-          let slack1 := index_mut_back o1
-          ok (cont (u, v, slack1, index1))
-  else ok (done (core.result.Result.Ok (), u, v, slack))
-
-/-- [verified_assignment_core::adjust_potentials]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-215:1 -/
-@[rust_loop]
-def adjust_potentials_loop
-  (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
-  (matched_row : Slice Std.Usize) (used : Slice Bool)
-  (slack : alloc.vec.Vec (Option Std.I128)) (amount : Std.I128) (n : Std.Usize)
-  (index : Std.Usize) :
-  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec Std.I128)
-    × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec (Option Std.I128)))
-  := do
-  loop
-    (fun (u1, v1, slack1, index1) => adjust_potentials_loop.body matched_row
-      used amount n u1 v1 slack1 index1)
-    (u, v, slack, index)
-
-/-- [verified_assignment_core::adjust_potentials]:
-    Source: 'src/lib.rs', lines 185:0-215:1 -/
-@[reducible]
-def adjust_potentials
-  (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
-  (matched_row : Slice Std.Usize) (used : Slice Bool)
-  (slack : alloc.vec.Vec (Option Std.I128)) (amount : Std.I128) (n : Std.Usize)
-  :
-  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec Std.I128)
-    × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec (Option Std.I128)))
-  := do
-  adjust_potentials_loop u v matched_row used slack amount n 0#usize
-
-/-- [verified_assignment_core::find_augmenting_column]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-266:5 -/
-@[rust_loop_body]
-def find_augmenting_column_loop.body
-  (cost : Slice (alloc.vec.Vec Std.I64)) (matched_row : Slice Std.Usize)
-  (n : Std.Usize) (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
-  (predecessor : alloc.vec.Vec Std.Usize) (column : Std.Usize)
-  (slack : alloc.vec.Vec (Option Std.I128)) (used : alloc.vec.Vec Bool)
-  (visited : Std.Usize) (searching : Bool) (failure : Option AssignmentError) :
-  Result (ControlFlow ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec Std.Usize) × Std.Usize × (alloc.vec.Vec (Option Std.I128))
-    × (alloc.vec.Vec Bool) × Std.Usize × Bool × (Option AssignmentError))
-    ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec
-    Std.Usize) × Std.Usize × (Option AssignmentError)))
-  := do
-  if searching
-  then
-    let b := core.option.Option.is_none failure
-    if b
-    then
-      let failure1 ←
-        if visited >= n
-        then ok (some AssignmentError.InvariantViolation)
-        else
-          do
-          let b1 ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bool)
-              used column
-          if b1
-          then ok (some AssignmentError.InvariantViolation)
-          else ok failure
-      let visited1 ← visited + 1#usize
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Bool)
-          used column
-      let active_row ← Slice.index_usize matched_row column
-      let (used1, failure2) ←
-        if active_row = 0#usize
-        then
-          let used2 := index_mut_back true
-          ok (used2, some AssignmentError.InvariantViolation)
-        else
-          if active_row > n
-          then
-            let used2 := index_mut_back true
-            ok (used2, some AssignmentError.InvariantViolation)
-          else let used2 := index_mut_back true
-               ok (used2, failure1)
-      let b1 := core.option.Option.is_none failure2
-      if b1
-      then
-        let s := alloc.vec.Vec.deref u
-        let s1 := alloc.vec.Vec.deref v
-        let s2 := alloc.vec.Vec.deref used1
-        let (r, slack1, predecessor1) ←
-          scan_columns cost s s1 s2 slack predecessor column active_row n
-        match r with
-        | core.result.Result.Ok p =>
-          let (amount, next_column) := p
-          let s3 := alloc.vec.Vec.deref used1
-          let (r1, u1, v1, slack2) ←
-            adjust_potentials u v matched_row s3 slack1 amount n
-          match r1 with
-          | core.result.Result.Ok _ =>
-            let i ← Slice.index_usize matched_row next_column
-            ok (cont (u1, v1, predecessor1, next_column, slack2, used1,
-              visited1, i != 0#usize, failure2))
-          | core.result.Result.Err error =>
-            ok (cont (u1, v1, predecessor1, column, slack2, used1, visited1,
-              searching, some error))
-        | core.result.Result.Err error =>
-          ok (cont (u, v, predecessor1, column, slack1, used1, visited1,
-            searching, some error))
-      else
-        ok (cont (u, v, predecessor, column, slack, used1, visited1, searching,
-          failure2))
-    else ok (done (u, v, predecessor, column, failure))
-  else ok (done (u, v, predecessor, column, failure))
-
-/-- [verified_assignment_core::find_augmenting_column]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-266:5 -/
-@[rust_loop]
-def find_augmenting_column_loop
-  (cost : Slice (alloc.vec.Vec Std.I64)) (u : alloc.vec.Vec Std.I128)
-  (v : alloc.vec.Vec Std.I128) (matched_row : Slice Std.Usize)
-  (predecessor : alloc.vec.Vec Std.Usize) (n : Std.Usize) (column : Std.Usize)
-  (slack : alloc.vec.Vec (Option Std.I128)) (used : alloc.vec.Vec Bool)
-  (visited : Std.Usize) (searching : Bool) (failure : Option AssignmentError) :
-  Result ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
-    (alloc.vec.Vec Std.Usize) × Std.Usize × (Option AssignmentError))
-  := do
-  loop
-    (fun (u1, v1, predecessor1, column1, slack1, used1, visited1, searching1,
-      failure1) => find_augmenting_column_loop.body cost matched_row n u1 v1
-      predecessor1 column1 slack1 used1 visited1 searching1 failure1)
-    (u, v, predecessor, column, slack, used, visited, searching, failure)
-
-/-- [verified_assignment_core::find_augmenting_column]:
-    Source: 'src/lib.rs', lines 217:0-271:1 -/
-def find_augmenting_column
-  (cost : Slice (alloc.vec.Vec Std.I64)) (u : alloc.vec.Vec Std.I128)
-  (v : alloc.vec.Vec Std.I128) (matched_row : Slice Std.Usize)
-  (predecessor : alloc.vec.Vec Std.Usize) (n : Std.Usize) (extent : Std.Usize)
-  :
-  Result ((core.result.Result Std.Usize AssignmentError) × (alloc.vec.Vec
-    Std.I128) × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.Usize))
-  := do
-  let slack ← absent_costs extent
-  let used ← unused_columns extent
-  let (u1, v1, predecessor1, column, failure) ←
-    find_augmenting_column_loop cost u v matched_row predecessor n 0#usize
-      slack used 0#usize true none
-  match failure with
-  | none => ok (core.result.Result.Ok column, u1, v1, predecessor1)
-  | some error => ok (core.result.Result.Err error, u1, v1, predecessor1)
-
-/-- [verified_assignment_core::augment_matching]: loop body 0:
-    Source: 'src/lib.rs', lines 280:4-290:1 -/
-@[rust_loop_body]
-def augment_matching_loop.body
-  (predecessor : Slice Std.Usize) (n : Std.Usize)
-  (matched_row : alloc.vec.Vec Std.Usize) (column : Std.Usize)
-  (path_length : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize × Std.Usize)
-    ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec Std.Usize)))
-  := do
-  if column != 0#usize
-  then
-    if path_length >= n
-    then
-      ok (done (core.result.Result.Err AssignmentError.InvariantViolation,
-        matched_row))
-    else
-      let path_length1 ← path_length + 1#usize
-      let previous ← Slice.index_usize predecessor column
-      let i ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.Usize)
-          matched_row previous
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-          Std.Usize) matched_row column
-      let matched_row1 := index_mut_back i
-      ok (cont (matched_row1, previous, path_length1))
-  else ok (done (core.result.Result.Ok (), matched_row))
-
-/-- [verified_assignment_core::augment_matching]: loop 0:
-    Source: 'src/lib.rs', lines 280:4-290:1 -/
-@[rust_loop]
-def augment_matching_loop
-  (matched_row : alloc.vec.Vec Std.Usize) (predecessor : Slice Std.Usize)
-  (column : Std.Usize) (n : Std.Usize) (path_length : Std.Usize) :
-  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec
-    Std.Usize))
-  := do
-  loop
-    (fun (matched_row1, column1, path_length1) => augment_matching_loop.body
-      predecessor n matched_row1 column1 path_length1)
-    (matched_row, column, path_length)
-
-/-- [verified_assignment_core::augment_matching]:
-    Source: 'src/lib.rs', lines 273:0-290:1 -/
-@[reducible]
-def augment_matching
-  (matched_row : alloc.vec.Vec Std.Usize) (predecessor : Slice Std.Usize)
-  (column : Std.Usize) (n : Std.Usize) :
-  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec
-    Std.Usize))
-  := do
-  augment_matching_loop matched_row predecessor column n 0#usize
+/-- [verified_assignment_core::Assignment]
+    Source: 'src/lib.rs', lines 9:0-14:1
+    Visibility: public -/
+structure Assignment where
+  column_for_row : alloc.vec.Vec Std.Usize
+  row_potential : alloc.vec.Vec Std.I128
+  column_potential : alloc.vec.Vec Std.I128
+  cost : Std.I128
 
 /-- [verified_assignment_core::reconstruct_assignment]: loop body 0:
     Source: 'src/lib.rs', lines 1:0-310:5 -/
@@ -814,6 +510,516 @@ def reconstruct_assignment
       })
   | some error => ok (core.result.Result.Err error)
 
+/-- [verified_assignment_core::augment_matching]: loop body 0:
+    Source: 'src/lib.rs', lines 280:4-290:1 -/
+@[rust_loop_body]
+def augment_matching_loop.body
+  (predecessor : Slice Std.Usize) (n : Std.Usize)
+  (matched_row : alloc.vec.Vec Std.Usize) (column : Std.Usize)
+  (path_length : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize × Std.Usize)
+    ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec Std.Usize)))
+  := do
+  if column != 0#usize
+  then
+    if path_length >= n
+    then
+      ok (done (core.result.Result.Err AssignmentError.InvariantViolation,
+        matched_row))
+    else
+      let path_length1 ← path_length + 1#usize
+      let previous ← Slice.index_usize predecessor column
+      let i ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.Usize)
+          matched_row previous
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+          Std.Usize) matched_row column
+      let matched_row1 := index_mut_back i
+      ok (cont (matched_row1, previous, path_length1))
+  else ok (done (core.result.Result.Ok (), matched_row))
+
+/-- [verified_assignment_core::augment_matching]: loop 0:
+    Source: 'src/lib.rs', lines 280:4-290:1 -/
+@[rust_loop]
+def augment_matching_loop
+  (matched_row : alloc.vec.Vec Std.Usize) (predecessor : Slice Std.Usize)
+  (column : Std.Usize) (n : Std.Usize) (path_length : Std.Usize) :
+  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec
+    Std.Usize))
+  := do
+  loop
+    (fun (matched_row1, column1, path_length1) => augment_matching_loop.body
+      predecessor n matched_row1 column1 path_length1)
+    (matched_row, column, path_length)
+
+/-- [verified_assignment_core::augment_matching]:
+    Source: 'src/lib.rs', lines 273:0-290:1 -/
+@[reducible]
+def augment_matching
+  (matched_row : alloc.vec.Vec Std.Usize) (predecessor : Slice Std.Usize)
+  (column : Std.Usize) (n : Std.Usize) :
+  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec
+    Std.Usize))
+  := do
+  augment_matching_loop matched_row predecessor column n 0#usize
+
+/-- [verified_assignment_core::adjust_potentials]: loop body 0:
+    Source: 'src/lib.rs', lines 1:0-215:1 -/
+@[rust_loop_body]
+def adjust_potentials_loop.body
+  (matched_row : Slice Std.Usize) (used : Slice Bool) (amount : Std.I128)
+  (n : Std.Usize) (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
+  (slack : alloc.vec.Vec (Option Std.I128)) (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec (Option Std.I128)) × Std.Usize) ((core.result.Result Unit
+    AssignmentError) × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec (Option Std.I128))))
+  := do
+  if index <= n
+  then
+    let b ← Slice.index_usize used index
+    if b
+    then
+      let assigned ← Slice.index_usize matched_row index
+      let i ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I128) u
+          assigned
+      let o ← lift (I128.checked_add i amount)
+      match o with
+      | none =>
+        ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow, u,
+          v, slack))
+      | some value =>
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Std.I128) u assigned
+        let i1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I128)
+            v index
+        let o1 ← lift (I128.checked_sub i1 amount)
+        match o1 with
+        | none =>
+          let u1 := index_mut_back value
+          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
+            u1, v, slack))
+        | some value1 =>
+          let (_, index_mut_back1) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              Std.I128) v index
+          let index1 ← index + 1#usize
+          let v1 := index_mut_back1 value1
+          let u1 := index_mut_back value
+          ok (cont (u1, v1, slack, index1))
+    else
+      let o ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
+          Std.I128)) slack index
+      match o with
+      | none => let index1 ← index + 1#usize
+                ok (cont (u, v, slack, index1))
+      | some value =>
+        let o1 ← lift (I128.checked_sub value amount)
+        match o1 with
+        | none =>
+          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
+            u, v, slack))
+        | some _ =>
+          let (_, index_mut_back) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              (Option Std.I128)) slack index
+          let index1 ← index + 1#usize
+          let slack1 := index_mut_back o1
+          ok (cont (u, v, slack1, index1))
+  else ok (done (core.result.Result.Ok (), u, v, slack))
+
+/-- [verified_assignment_core::adjust_potentials]: loop 0:
+    Source: 'src/lib.rs', lines 1:0-215:1 -/
+@[rust_loop]
+def adjust_potentials_loop
+  (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
+  (matched_row : Slice Std.Usize) (used : Slice Bool)
+  (slack : alloc.vec.Vec (Option Std.I128)) (amount : Std.I128) (n : Std.Usize)
+  (index : Std.Usize) :
+  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec Std.I128)
+    × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec (Option Std.I128)))
+  := do
+  loop
+    (fun (u1, v1, slack1, index1) => adjust_potentials_loop.body matched_row
+      used amount n u1 v1 slack1 index1)
+    (u, v, slack, index)
+
+/-- [verified_assignment_core::adjust_potentials]:
+    Source: 'src/lib.rs', lines 185:0-215:1 -/
+@[reducible]
+def adjust_potentials
+  (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
+  (matched_row : Slice Std.Usize) (used : Slice Bool)
+  (slack : alloc.vec.Vec (Option Std.I128)) (amount : Std.I128) (n : Std.Usize)
+  :
+  Result ((core.result.Result Unit AssignmentError) × (alloc.vec.Vec Std.I128)
+    × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec (Option Std.I128)))
+  := do
+  adjust_potentials_loop u v matched_row used slack amount n 0#usize
+
+/-- [verified_assignment_core::select_delta]:
+    Source: 'src/lib.rs', lines 128:0-144:1 -/
+def select_delta
+  (delta : Option Std.I128) (next_column : Std.Usize) (best : Std.I128)
+  (candidate : Std.Usize) :
+  Result ((Option Std.I128) × Std.Usize)
+  := do
+  match delta with
+  | none => ok (some best, candidate)
+  | some old =>
+    if best < old
+    then ok (some best, candidate)
+    else ok (delta, next_column)
+
+/-- [verified_assignment_core::relax_column]:
+    Source: 'src/lib.rs', lines 102:0-125:1 -/
+def relax_column
+  (slack : alloc.vec.Vec (Option Std.I128))
+  (predecessor : alloc.vec.Vec Std.Usize) (candidate : Std.Usize)
+  (column : Std.Usize) (reduced : Std.I128) :
+  Result (Std.I128 × (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec
+    Std.Usize))
+  := do
+  let o ←
+    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
+      Std.I128)) slack candidate
+  match o with
+  | none =>
+    let (_, index_mut_back) ←
+      alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice (Option
+        Std.I128)) slack candidate
+    let (_, index_mut_back1) ←
+      alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Std.Usize)
+        predecessor candidate
+    let slack1 := index_mut_back (some reduced)
+    let predecessor1 := index_mut_back1 column
+    ok (reduced, slack1, predecessor1)
+  | some old =>
+    if reduced < old
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice (Option
+          Std.I128)) slack candidate
+      let (_, index_mut_back1) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+          Std.Usize) predecessor candidate
+      let slack1 := index_mut_back (some reduced)
+      let predecessor1 := index_mut_back1 column
+      ok (reduced, slack1, predecessor1)
+    else ok (old, slack, predecessor)
+
+/-- [verified_assignment_core::scan_columns]: loop body 0:
+    Source: 'src/lib.rs', lines 1:0-183:1 -/
+@[rust_loop_body]
+def scan_columns_loop.body
+  (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
+  (v : Slice Std.I128) (used : Slice Bool) (column : Std.Usize)
+  (active_row : Std.Usize) (n : Std.Usize)
+  (slack : alloc.vec.Vec (Option Std.I128))
+  (predecessor : alloc.vec.Vec Std.Usize) (delta : Option Std.I128)
+  (next_column : Std.Usize) (candidate : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec
+    Std.Usize) × (Option Std.I128) × Std.Usize × Std.Usize)
+    ((core.result.Result (Std.I128 × Std.Usize) AssignmentError) ×
+    (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec Std.Usize)))
+  := do
+  if candidate <= n
+  then
+    let b ← Slice.index_usize used candidate
+    if b
+    then
+      let candidate1 ← candidate + 1#usize
+      ok (cont (slack, predecessor, delta, next_column, candidate1))
+    else
+      let i ← active_row - 1#usize
+      let v1 ← Slice.index_usize cost i
+      let i1 ← candidate - 1#usize
+      let i2 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I64) v1
+          i1
+      let i3 ← lift (IScalar.cast .I128 i2)
+      let i4 ← Slice.index_usize u active_row
+      let o ← lift (I128.checked_sub i3 i4)
+      match o with
+      | none =>
+        ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
+          slack, predecessor))
+      | some value =>
+        let i5 ← Slice.index_usize v candidate
+        let o1 ← lift (I128.checked_sub value i5)
+        match o1 with
+        | none =>
+          ok (done (core.result.Result.Err AssignmentError.ArithmeticOverflow,
+            slack, predecessor))
+        | some value1 =>
+          let (best, slack1, predecessor1) ←
+            relax_column slack predecessor candidate column value1
+          let (new_delta, new_column) ←
+            select_delta delta next_column best candidate
+          let candidate1 ← candidate + 1#usize
+          ok (cont (slack1, predecessor1, new_delta, new_column, candidate1))
+  else
+    match delta with
+    | none =>
+      ok (done (core.result.Result.Err AssignmentError.InvariantViolation,
+        slack, predecessor))
+    | some value =>
+      ok (done (core.result.Result.Ok (value, next_column), slack,
+        predecessor))
+
+/-- [verified_assignment_core::scan_columns]: loop 0:
+    Source: 'src/lib.rs', lines 1:0-183:1 -/
+@[rust_loop]
+def scan_columns_loop
+  (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
+  (v : Slice Std.I128) (used : Slice Bool)
+  (slack : alloc.vec.Vec (Option Std.I128))
+  (predecessor : alloc.vec.Vec Std.Usize) (column : Std.Usize)
+  (active_row : Std.Usize) (n : Std.Usize) (delta : Option Std.I128)
+  (next_column : Std.Usize) (candidate : Std.Usize) :
+  Result ((core.result.Result (Std.I128 × Std.Usize) AssignmentError) ×
+    (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec Std.Usize))
+  := do
+  loop
+    (fun (slack1, predecessor1, delta1, next_column1, candidate1) =>
+      scan_columns_loop.body cost u v used column active_row n slack1
+      predecessor1 delta1 next_column1 candidate1)
+    (slack, predecessor, delta, next_column, candidate)
+
+/-- [verified_assignment_core::scan_columns]:
+    Source: 'src/lib.rs', lines 147:0-183:1 -/
+@[reducible]
+def scan_columns
+  (cost : Slice (alloc.vec.Vec Std.I64)) (u : Slice Std.I128)
+  (v : Slice Std.I128) (used : Slice Bool)
+  (slack : alloc.vec.Vec (Option Std.I128))
+  (predecessor : alloc.vec.Vec Std.Usize) (column : Std.Usize)
+  (active_row : Std.Usize) (n : Std.Usize) :
+  Result ((core.result.Result (Std.I128 × Std.Usize) AssignmentError) ×
+    (alloc.vec.Vec (Option Std.I128)) × (alloc.vec.Vec Std.Usize))
+  := do
+  scan_columns_loop cost u v used slack predecessor column active_row n none
+    0#usize 1#usize
+
+/-- [verified_assignment_core::unused_columns]: loop body 0:
+    Source: 'src/lib.rs', lines 59:4-62:5 -/
+@[rust_loop_body]
+def unused_columns_loop.body
+  (len : Std.Usize) (result : alloc.vec.Vec Bool) (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bool) × Std.Usize) (alloc.vec.Vec Bool))
+  := do
+  if index < len
+  then
+    let result1 ← alloc.vec.Vec.push result false
+    let index1 ← index + 1#usize
+    ok (cont (result1, index1))
+  else ok (done result)
+
+/-- [verified_assignment_core::unused_columns]: loop 0:
+    Source: 'src/lib.rs', lines 59:4-62:5 -/
+@[rust_loop]
+def unused_columns_loop
+  (len : Std.Usize) (result : alloc.vec.Vec Bool) (index : Std.Usize) :
+  Result (alloc.vec.Vec Bool)
+  := do
+  loop
+    (fun (result1, index1) => unused_columns_loop.body len result1 index1)
+    (result, index)
+
+/-- [verified_assignment_core::unused_columns]:
+    Source: 'src/lib.rs', lines 56:0-64:1 -/
+@[reducible]
+def unused_columns (len : Std.Usize) : Result (alloc.vec.Vec Bool) := do
+  unused_columns_loop len (alloc.vec.Vec.new Bool) 0#usize
+
+/-- [verified_assignment_core::absent_costs]: loop body 0:
+    Source: 'src/lib.rs', lines 49:4-52:5 -/
+@[rust_loop_body]
+def absent_costs_loop.body
+  (len : Std.Usize) (result : alloc.vec.Vec (Option Std.I128))
+  (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (Option Std.I128)) × Std.Usize)
+    (alloc.vec.Vec (Option Std.I128)))
+  := do
+  if index < len
+  then
+    let result1 ← alloc.vec.Vec.push result none
+    let index1 ← index + 1#usize
+    ok (cont (result1, index1))
+  else ok (done result)
+
+/-- [verified_assignment_core::absent_costs]: loop 0:
+    Source: 'src/lib.rs', lines 49:4-52:5 -/
+@[rust_loop]
+def absent_costs_loop
+  (len : Std.Usize) (result : alloc.vec.Vec (Option Std.I128))
+  (index : Std.Usize) :
+  Result (alloc.vec.Vec (Option Std.I128))
+  := do
+  loop
+    (fun (result1, index1) => absent_costs_loop.body len result1 index1)
+    (result, index)
+
+/-- [verified_assignment_core::absent_costs]:
+    Source: 'src/lib.rs', lines 46:0-54:1 -/
+@[reducible]
+def absent_costs
+  (len : Std.Usize) : Result (alloc.vec.Vec (Option Std.I128)) := do
+  absent_costs_loop len (alloc.vec.Vec.new (Option Std.I128)) 0#usize
+
+/-- [verified_assignment_core::find_augmenting_column]: loop body 0:
+    Source: 'src/lib.rs', lines 1:0-266:5 -/
+@[rust_loop_body]
+def find_augmenting_column_loop.body
+  (cost : Slice (alloc.vec.Vec Std.I64)) (matched_row : Slice Std.Usize)
+  (n : Std.Usize) (u : alloc.vec.Vec Std.I128) (v : alloc.vec.Vec Std.I128)
+  (predecessor : alloc.vec.Vec Std.Usize) (column : Std.Usize)
+  (slack : alloc.vec.Vec (Option Std.I128)) (used : alloc.vec.Vec Bool)
+  (visited : Std.Usize) (searching : Bool) (failure : Option AssignmentError) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec Std.Usize) × Std.Usize × (alloc.vec.Vec (Option Std.I128))
+    × (alloc.vec.Vec Bool) × Std.Usize × Bool × (Option AssignmentError))
+    ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec
+    Std.Usize) × Std.Usize × (Option AssignmentError)))
+  := do
+  if searching
+  then
+    let b := core.option.Option.is_none failure
+    if b
+    then
+      let failure1 ←
+        if visited >= n
+        then ok (some AssignmentError.InvariantViolation)
+        else
+          do
+          let b1 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bool)
+              used column
+          if b1
+          then ok (some AssignmentError.InvariantViolation)
+          else ok failure
+      let visited1 ← visited + 1#usize
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Bool)
+          used column
+      let active_row ← Slice.index_usize matched_row column
+      let (used1, failure2) ←
+        if active_row = 0#usize
+        then
+          let used2 := index_mut_back true
+          ok (used2, some AssignmentError.InvariantViolation)
+        else
+          if active_row > n
+          then
+            let used2 := index_mut_back true
+            ok (used2, some AssignmentError.InvariantViolation)
+          else let used2 := index_mut_back true
+               ok (used2, failure1)
+      let b1 := core.option.Option.is_none failure2
+      if b1
+      then
+        let s := alloc.vec.Vec.deref u
+        let s1 := alloc.vec.Vec.deref v
+        let s2 := alloc.vec.Vec.deref used1
+        let (r, slack1, predecessor1) ←
+          scan_columns cost s s1 s2 slack predecessor column active_row n
+        match r with
+        | core.result.Result.Ok p =>
+          let (amount, next_column) := p
+          let s3 := alloc.vec.Vec.deref used1
+          let (r1, u1, v1, slack2) ←
+            adjust_potentials u v matched_row s3 slack1 amount n
+          match r1 with
+          | core.result.Result.Ok _ =>
+            let i ← Slice.index_usize matched_row next_column
+            ok (cont (u1, v1, predecessor1, next_column, slack2, used1,
+              visited1, i != 0#usize, failure2))
+          | core.result.Result.Err error =>
+            ok (cont (u1, v1, predecessor1, column, slack2, used1, visited1,
+              searching, some error))
+        | core.result.Result.Err error =>
+          ok (cont (u, v, predecessor1, column, slack1, used1, visited1,
+            searching, some error))
+      else
+        ok (cont (u, v, predecessor, column, slack, used1, visited1, searching,
+          failure2))
+    else ok (done (u, v, predecessor, column, failure))
+  else ok (done (u, v, predecessor, column, failure))
+
+/-- [verified_assignment_core::find_augmenting_column]: loop 0:
+    Source: 'src/lib.rs', lines 1:0-266:5 -/
+@[rust_loop]
+def find_augmenting_column_loop
+  (cost : Slice (alloc.vec.Vec Std.I64)) (u : alloc.vec.Vec Std.I128)
+  (v : alloc.vec.Vec Std.I128) (matched_row : Slice Std.Usize)
+  (predecessor : alloc.vec.Vec Std.Usize) (n : Std.Usize) (column : Std.Usize)
+  (slack : alloc.vec.Vec (Option Std.I128)) (used : alloc.vec.Vec Bool)
+  (visited : Std.Usize) (searching : Bool) (failure : Option AssignmentError) :
+  Result ((alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.I128) ×
+    (alloc.vec.Vec Std.Usize) × Std.Usize × (Option AssignmentError))
+  := do
+  loop
+    (fun (u1, v1, predecessor1, column1, slack1, used1, visited1, searching1,
+      failure1) => find_augmenting_column_loop.body cost matched_row n u1 v1
+      predecessor1 column1 slack1 used1 visited1 searching1 failure1)
+    (u, v, predecessor, column, slack, used, visited, searching, failure)
+
+/-- [verified_assignment_core::find_augmenting_column]:
+    Source: 'src/lib.rs', lines 217:0-271:1 -/
+def find_augmenting_column
+  (cost : Slice (alloc.vec.Vec Std.I64)) (u : alloc.vec.Vec Std.I128)
+  (v : alloc.vec.Vec Std.I128) (matched_row : Slice Std.Usize)
+  (predecessor : alloc.vec.Vec Std.Usize) (n : Std.Usize) (extent : Std.Usize)
+  :
+  Result ((core.result.Result Std.Usize AssignmentError) × (alloc.vec.Vec
+    Std.I128) × (alloc.vec.Vec Std.I128) × (alloc.vec.Vec Std.Usize))
+  := do
+  let slack ← absent_costs extent
+  let used ← unused_columns extent
+  let (u1, v1, predecessor1, column, failure) ←
+    find_augmenting_column_loop cost u v matched_row predecessor n 0#usize
+      slack used 0#usize true none
+  match failure with
+  | none => ok (core.result.Result.Ok column, u1, v1, predecessor1)
+  | some error => ok (core.result.Result.Err error, u1, v1, predecessor1)
+
+/-- [verified_assignment_core::zeros_i128]: loop body 0:
+    Source: 'src/lib.rs', lines 29:4-32:5 -/
+@[rust_loop_body]
+def zeros_i128_loop.body
+  (len : Std.Usize) (result : alloc.vec.Vec Std.I128) (index : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize) (alloc.vec.Vec
+    Std.I128))
+  := do
+  if index < len
+  then
+    let result1 ← alloc.vec.Vec.push result 0#i128
+    let index1 ← index + 1#usize
+    ok (cont (result1, index1))
+  else ok (done result)
+
+/-- [verified_assignment_core::zeros_i128]: loop 0:
+    Source: 'src/lib.rs', lines 29:4-32:5 -/
+@[rust_loop]
+def zeros_i128_loop
+  (len : Std.Usize) (result : alloc.vec.Vec Std.I128) (index : Std.Usize) :
+  Result (alloc.vec.Vec Std.I128)
+  := do
+  loop
+    (fun (result1, index1) => zeros_i128_loop.body len result1 index1)
+    (result, index)
+
+/-- [verified_assignment_core::zeros_i128]:
+    Source: 'src/lib.rs', lines 26:0-34:1 -/
+@[reducible]
+def zeros_i128 (len : Std.Usize) : Result (alloc.vec.Vec Std.I128) := do
+  zeros_i128_loop len (alloc.vec.Vec.new Std.I128) 0#usize
+
 /-- [verified_assignment_core::finish_assignment]: loop body 0:
     Source: 'src/lib.rs', lines 1:0-364:5 -/
 @[rust_loop_body]
@@ -895,39 +1101,104 @@ def finish_assignment
     reconstruct_assignment cost s s1 s2 n
   | some error => ok (core.result.Result.Err error)
 
-/-- [verified_assignment_core::is_square]: loop body 0:
-    Source: 'src/lib.rs', lines 374:4-381:1 -/
+/-- [verified_assignment_core::minimum_row]: loop body 0:
+    Source: 'src/lib.rs', lines 69:4-79:5 -/
 @[rust_loop_body]
-def is_square_loop.body
-  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (row : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
+def minimum_row_loop.body
+  (row : Slice Std.I64) (minimum : Option Std.I64) (column : Std.Usize) :
+  Result (ControlFlow ((Option Std.I64) × Std.Usize) (Option Std.I64))
   := do
-  if row < n
+  let i := Slice.len row
+  if column < i
   then
-    let v ← Slice.index_usize cost row
-    let i := alloc.vec.Vec.len v
-    if i != n
-    then ok (done false)
-    else let row1 ← row + 1#usize
-         ok (cont row1)
-  else ok (done true)
+    let value ← Slice.index_usize row column
+    let improve ←
+      match minimum with
+      | none => ok true
+      | some old => ok (value < old)
+    let minimum1 ← if improve
+                     then ok (some value)
+                     else ok minimum
+    let column1 ← column + 1#usize
+    ok (cont (minimum1, column1))
+  else ok (done minimum)
 
-/-- [verified_assignment_core::is_square]: loop 0:
-    Source: 'src/lib.rs', lines 374:4-381:1 -/
+/-- [verified_assignment_core::minimum_row]: loop 0:
+    Source: 'src/lib.rs', lines 69:4-79:5 -/
 @[rust_loop]
-def is_square_loop
-  (cost : Slice (alloc.vec.Vec Std.I64)) (n : Std.Usize) (row : Std.Usize) :
-  Result Bool
+def minimum_row_loop
+  (row : Slice Std.I64) (minimum : Option Std.I64) (column : Std.Usize) :
+  Result (Option Std.I64)
   := do
   loop
-    (fun row1 => is_square_loop.body cost n row1)
-    row
+    (fun (minimum1, column1) => minimum_row_loop.body row minimum1 column1)
+    (minimum, column)
 
-/-- [verified_assignment_core::is_square]:
-    Source: 'src/lib.rs', lines 371:0-381:1 -/
-def is_square (cost : Slice (alloc.vec.Vec Std.I64)) : Result Bool := do
-  let n := Slice.len cost
-  is_square_loop cost n 0#usize
+/-- [verified_assignment_core::minimum_row]:
+    Source: 'src/lib.rs', lines 66:0-81:1 -/
+@[reducible]
+def minimum_row (row : Slice Std.I64) : Result (Option Std.I64) := do
+  minimum_row_loop row none 0#usize
+
+/-- [verified_assignment_core::initial_potentials]: loop body 0:
+    Source: 'src/lib.rs', lines 1:0-94:5 -/
+@[rust_loop_body]
+def initial_potentials_loop.body
+  (cost : Slice (alloc.vec.Vec Std.I64)) (result : alloc.vec.Vec Std.I128)
+  (row : Std.Usize) (failure : Option AssignmentError) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I128) × Std.Usize × (Option
+    AssignmentError)) ((alloc.vec.Vec Std.I128) × (Option AssignmentError)))
+  := do
+  let i := Slice.len cost
+  if row < i
+  then
+    let b := core.option.Option.is_none failure
+    if b
+    then
+      let v ← Slice.index_usize cost row
+      let s := alloc.vec.Vec.deref v
+      let o ← minimum_row s
+      let (result1, failure1) ←
+        match o with
+        | none => ok (result, some AssignmentError.InvariantViolation)
+        | some value =>
+          do
+          let i1 ← row + 1#usize
+          let (_, index_mut_back) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              Std.I128) result i1
+          let i2 ← lift (IScalar.cast .I128 value)
+          let result2 := index_mut_back i2
+          ok (result2, failure)
+      let row1 ← row + 1#usize
+      ok (cont (result1, row1, failure1))
+    else ok (done (result, failure))
+  else ok (done (result, failure))
+
+/-- [verified_assignment_core::initial_potentials]: loop 0:
+    Source: 'src/lib.rs', lines 1:0-94:5 -/
+@[rust_loop]
+def initial_potentials_loop
+  (cost : Slice (alloc.vec.Vec Std.I64)) (result : alloc.vec.Vec Std.I128)
+  (row : Std.Usize) (failure : Option AssignmentError) :
+  Result ((alloc.vec.Vec Std.I128) × (Option AssignmentError))
+  := do
+  loop
+    (fun (result1, row1, failure1) => initial_potentials_loop.body cost result1
+      row1 failure1)
+    (result, row, failure)
+
+/-- [verified_assignment_core::initial_potentials]:
+    Source: 'src/lib.rs', lines 84:0-99:1 -/
+def initial_potentials
+  (cost : Slice (alloc.vec.Vec Std.I64)) (extent : Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.I128) AssignmentError)
+  := do
+  let result ← zeros_i128 extent
+  let (result1, failure) ← initial_potentials_loop cost result 0#usize none
+  match failure with
+  | none => ok (core.result.Result.Ok result1)
+  | some error => ok (core.result.Result.Err error)
 
 /-- [verified_assignment_core::min_cost_assignment]:
     Source: 'src/lib.rs', lines 391:0-407:1
@@ -954,69 +1225,25 @@ def min_cost_assignment
         | core.result.Result.Err error => ok (core.result.Result.Err error)
       else ok (core.result.Result.Err AssignmentError.NonSquare)
 
-/-- [verified_assignment_core::matching::MatchedPair]
-    Source: 'src/matching.rs', lines 6:0-9:1
-    Visibility: public -/
-structure matching.MatchedPair where
-  left : Std.Usize
-  right : Std.Usize
-
-/-- [verified_assignment_core::matching::PartialMatching]
-    Source: 'src/matching.rs', lines 12:0-15:1
-    Visibility: public -/
-structure matching.PartialMatching where
-  pairs : alloc.vec.Vec matching.MatchedPair
-  weight : Std.I128
-
-/-- [verified_assignment_core::matching::MatchingError]
-    Source: 'src/matching.rs', lines 18:0-23:1
-    Visibility: public -/
-@[discriminant isize]
-inductive matching.MatchingError where
-| NonRectangular : matching.MatchingError
-| TooLarge : matching.MatchingError
-| AssignmentFailure : matching.MatchingError
-| ArithmeticOverflow : matching.MatchingError
-
-/-- [verified_assignment_core::matching::is_rectangular]: loop body 0:
-    Source: 'src/matching.rs', lines 27:4-34:1 -/
-@[rust_loop_body]
-def matching.is_rectangular_loop.body
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (right : Std.Usize)
-  (row : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
+/-- [verified_assignment_core::matching::solve_built_matrix]:
+    Source: 'src/matching.rs', lines 129:0-145:1 -/
+def matching.solve_built_matrix
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
+  (right : Std.Usize) (cost : Slice (alloc.vec.Vec Std.I64)) :
+  Result (core.result.Result matching.PartialMatching matching.MatchingError)
   := do
-  let i := Slice.len weights
-  if row < i
-  then
-    let v ← Slice.index_usize weights row
-    let i1 := alloc.vec.Vec.len v
-    if i1 != right
-    then ok (done false)
-    else let row1 ← row + 1#usize
-         ok (cont row1)
-  else ok (done true)
-
-/-- [verified_assignment_core::matching::is_rectangular]: loop 0:
-    Source: 'src/matching.rs', lines 27:4-34:1 -/
-@[rust_loop]
-def matching.is_rectangular_loop
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (right : Std.Usize)
-  (row : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun row1 => matching.is_rectangular_loop.body weights right row1)
-    row
-
-/-- [verified_assignment_core::matching::is_rectangular]:
-    Source: 'src/matching.rs', lines 25:0-34:1 -/
-@[reducible]
-def matching.is_rectangular
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (right : Std.Usize) :
-  Result Bool
-  := do
-  matching.is_rectangular_loop weights right 0#usize
+  let r ← min_cost_assignment cost
+  match r with
+  | core.result.Result.Ok assignment =>
+    let s := alloc.vec.Vec.deref assignment.column_for_row
+    let pairs ← matching.decode_pairs weights left right s
+    let o ← lift (I128.checked_sub 0#i128 assignment.cost)
+    match o with
+    | none =>
+      ok (core.result.Result.Err matching.MatchingError.ArithmeticOverflow)
+    | some weight => ok (core.result.Result.Ok { pairs, weight })
+  | core.result.Result.Err _ =>
+    ok (core.result.Result.Err matching.MatchingError.AssignmentFailure)
 
 /-- [verified_assignment_core::matching::negative_profit]:
     Source: 'src/matching.rs', lines 36:0-47:1 -/
@@ -1133,97 +1360,45 @@ def matching.cost_matrix
   matching.cost_matrix_loop weights left dimension (alloc.vec.Vec.new
     (alloc.vec.Vec Std.I64)) 0#usize
 
-/-- [verified_assignment_core::matching::decode_pair]:
-    Source: 'src/matching.rs', lines 79:0-109:1 -/
-def matching.decode_pair
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
-  (right : Std.Usize) (columns : Slice Std.Usize) (row : Std.Usize) :
-  Result (Option matching.MatchedPair)
-  := do
-  let column ← Slice.index_usize columns row
-  if column >= left
-  then
-    let target ← column - left
-    if target < right
-    then
-      let v ← Slice.index_usize weights row
-      let o ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (Option
-          Std.I64)) v target
-      match o with
-      | none => ok none
-      | some weight =>
-        if weight > 0#i64
-        then ok (some { left := row, right := target })
-        else ok none
-    else ok none
-  else ok none
-
-/-- [verified_assignment_core::matching::decode_pairs]: loop body 0:
-    Source: 'src/matching.rs', lines 119:4-125:5 -/
+/-- [verified_assignment_core::matching::is_rectangular]: loop body 0:
+    Source: 'src/matching.rs', lines 27:4-34:1 -/
 @[rust_loop_body]
-def matching.decode_pairs_loop.body
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
-  (right : Std.Usize) (columns : Slice Std.Usize)
-  (pairs : alloc.vec.Vec matching.MatchedPair) (row : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec matching.MatchedPair) × Std.Usize)
-    (alloc.vec.Vec matching.MatchedPair))
+def matching.is_rectangular_loop.body
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (right : Std.Usize)
+  (row : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
   := do
-  if row < left
+  let i := Slice.len weights
+  if row < i
   then
-    let o ← matching.decode_pair weights left right columns row
-    let pairs1 ←
-      match o with
-      | none => ok pairs
-      | some pair => alloc.vec.Vec.push pairs pair
-    let row1 ← row + 1#usize
-    ok (cont (pairs1, row1))
-  else ok (done pairs)
+    let v ← Slice.index_usize weights row
+    let i1 := alloc.vec.Vec.len v
+    if i1 != right
+    then ok (done false)
+    else let row1 ← row + 1#usize
+         ok (cont row1)
+  else ok (done true)
 
-/-- [verified_assignment_core::matching::decode_pairs]: loop 0:
-    Source: 'src/matching.rs', lines 119:4-125:5 -/
+/-- [verified_assignment_core::matching::is_rectangular]: loop 0:
+    Source: 'src/matching.rs', lines 27:4-34:1 -/
 @[rust_loop]
-def matching.decode_pairs_loop
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
-  (right : Std.Usize) (columns : Slice Std.Usize)
-  (pairs : alloc.vec.Vec matching.MatchedPair) (row : Std.Usize) :
-  Result (alloc.vec.Vec matching.MatchedPair)
+def matching.is_rectangular_loop
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (right : Std.Usize)
+  (row : Std.Usize) :
+  Result Bool
   := do
   loop
-    (fun (pairs1, row1) => matching.decode_pairs_loop.body weights left right
-      columns pairs1 row1)
-    (pairs, row)
+    (fun row1 => matching.is_rectangular_loop.body weights right row1)
+    row
 
-/-- [verified_assignment_core::matching::decode_pairs]:
-    Source: 'src/matching.rs', lines 111:0-127:1 -/
+/-- [verified_assignment_core::matching::is_rectangular]:
+    Source: 'src/matching.rs', lines 25:0-34:1 -/
 @[reducible]
-def matching.decode_pairs
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
-  (right : Std.Usize) (columns : Slice Std.Usize) :
-  Result (alloc.vec.Vec matching.MatchedPair)
+def matching.is_rectangular
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (right : Std.Usize) :
+  Result Bool
   := do
-  matching.decode_pairs_loop weights left right columns (alloc.vec.Vec.new
-    matching.MatchedPair) 0#usize
-
-/-- [verified_assignment_core::matching::solve_built_matrix]:
-    Source: 'src/matching.rs', lines 129:0-145:1 -/
-def matching.solve_built_matrix
-  (weights : Slice (alloc.vec.Vec (Option Std.I64))) (left : Std.Usize)
-  (right : Std.Usize) (cost : Slice (alloc.vec.Vec Std.I64)) :
-  Result (core.result.Result matching.PartialMatching matching.MatchingError)
-  := do
-  let r ← min_cost_assignment cost
-  match r with
-  | core.result.Result.Ok assignment =>
-    let s := alloc.vec.Vec.deref assignment.column_for_row
-    let pairs ← matching.decode_pairs weights left right s
-    let o ← lift (I128.checked_sub 0#i128 assignment.cost)
-    match o with
-    | none =>
-      ok (core.result.Result.Err matching.MatchingError.ArithmeticOverflow)
-    | some weight => ok (core.result.Result.Ok { pairs, weight })
-  | core.result.Result.Err _ =>
-    ok (core.result.Result.Err matching.MatchingError.AssignmentFailure)
+  matching.is_rectangular_loop weights right 0#usize
 
 /-- [verified_assignment_core::matching::max_weight_partial_matching]:
     Source: 'src/matching.rs', lines 153:0-170:1
@@ -1258,5 +1433,79 @@ def matching.max_weight_partial_matching
           let s := alloc.vec.Vec.deref cost
           matching.solve_built_matrix weights left right s
   else ok (core.result.Result.Err matching.MatchingError.NonRectangular)
+
+/-- [verified_assignment_core::deletion::max_weight_matching_deletions]: loop body 0:
+    Source: 'src/deletion.rs', lines 88:4-105:1
+    Visibility: public -/
+@[rust_loop_body]
+def deletion.max_weight_matching_deletions_loop.body
+  (weights : Slice (alloc.vec.Vec (Option Std.I64)))
+  (original : matching.PartialMatching) (right : Std.Usize)
+  (without_right : alloc.vec.Vec matching.PartialMatching)
+  (removed : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec matching.PartialMatching) × Std.Usize)
+    (core.result.Result deletion.DeletionFamily matching.MatchingError))
+  := do
+  if removed < right
+  then
+    let s := alloc.vec.Vec.deref original.pairs
+    let b ← deletion.uses_right s removed
+    if b
+    then
+      let masked ← deletion.mask_right weights removed
+      let s1 := alloc.vec.Vec.deref masked
+      let r ← matching.max_weight_partial_matching s1
+      match r with
+      | core.result.Result.Ok value =>
+        let without_right1 ← alloc.vec.Vec.push without_right value
+        let removed1 ← removed + 1#usize
+        ok (cont (without_right1, removed1))
+      | core.result.Result.Err error =>
+        ok (done (core.result.Result.Err error))
+    else
+      let result ← deletion.copy_matching original
+      let without_right1 ← alloc.vec.Vec.push without_right result
+      let removed1 ← removed + 1#usize
+      ok (cont (without_right1, removed1))
+  else ok (done (core.result.Result.Ok { original, without_right }))
+
+/-- [verified_assignment_core::deletion::max_weight_matching_deletions]: loop 0:
+    Source: 'src/deletion.rs', lines 88:4-105:1
+    Visibility: public -/
+@[rust_loop]
+def deletion.max_weight_matching_deletions_loop
+  (weights : Slice (alloc.vec.Vec (Option Std.I64)))
+  (original : matching.PartialMatching) (right : Std.Usize)
+  (without_right : alloc.vec.Vec matching.PartialMatching)
+  (removed : Std.Usize) :
+  Result (core.result.Result deletion.DeletionFamily matching.MatchingError)
+  := do
+  loop
+    (fun (without_right1, removed1) =>
+      deletion.max_weight_matching_deletions_loop.body weights original right
+      without_right1 removed1)
+    (without_right, removed)
+
+/-- [verified_assignment_core::deletion::max_weight_matching_deletions]:
+    Source: 'src/deletion.rs', lines 74:0-105:1
+    Visibility: public -/
+def deletion.max_weight_matching_deletions
+  (weights : Slice (alloc.vec.Vec (Option Std.I64))) :
+  Result (core.result.Result deletion.DeletionFamily matching.MatchingError)
+  := do
+  let r ← matching.max_weight_partial_matching weights
+  match r with
+  | core.result.Result.Ok value =>
+    let i := Slice.len weights
+    let right ←
+      if i = 0#usize
+      then ok 0#usize
+      else
+        do
+        let v ← Slice.index_usize weights 0#usize
+        ok (alloc.vec.Vec.len v)
+    deletion.max_weight_matching_deletions_loop weights value right
+      (alloc.vec.Vec.new matching.PartialMatching) 0#usize
+  | core.result.Result.Err error => ok (core.result.Result.Err error)
 
 end verified_assignment_core

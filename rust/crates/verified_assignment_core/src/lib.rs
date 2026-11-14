@@ -408,3 +408,5 @@ pub fn min_cost_assignment(cost: &[Vec<i64>]) -> Result<Assignment, AssignmentEr
 
 #[cfg(test)]
 mod tests;
+
+pub mod deletion;

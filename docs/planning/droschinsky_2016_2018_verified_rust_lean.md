@@ -14,6 +14,30 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Deletion-family reuse foundations and actual helpers: 2026-11-14
+
+`WeightedMatching.IsMaximum.deleteRight` proves the unmatched-vertex reuse
+branch of 2016 Lemma 6 for independent optional signed/real weights: deleting
+an unused right vertex preserves the original maximum and its exact score.
+`valid_deleteRight_iff` characterizes surviving feasible pairs, and
+`deletion_repair_card_bound` proves that potentially affected right vertices
+number at most the smaller bipartition. `deletionFamily_correct` gives a
+correct independent reference family that reuses surviving optima and
+otherwise invokes the existing exhaustive optimizer. One-augmentation repair
+and the source running-time bound are not established by these lemmas.
+
+The exact Rust crate now implements `deletion::max_weight_matching_deletions`,
+a tested/extracted reference family with original input indices. It reuses
+unmatched results and fully recomputes matched deletions. Independent injection
+tests validate all original/deleted witnesses and scores for 392 generated
+matrices through six vertices per side, plus extreme/tie/malformed cases; all
+six exact-core tests pass. `Rust.MatchingDeletionReuse.uses_right_spec` proves
+the actual early-return detector exact, and `copy_matching_spec` proves actual
+owned copying preserves all pairs and the weight. `MatchingDeletionMask`
+proves both actual owned mask loops safely construct every specified cell,
+preserving indices and dimensions. The full actual family wrapper and its
+mathematical transport proof remain open, as do the optimized repair and costs.
+
 ## Actual public partial-matching API total correctness: 2026-11-14
 
 `Rust.MatchingEntrypoint.max_weight_partial_matching_total_spec` proves the

@@ -116,3 +116,6 @@ public import SubtreeProofs.Paper2004.IsomorphismScores
 public import SubtreeProofs.Rust.OrderedIsomorphismRepresentation
 public import SubtreeProofs.Rust.OrderedRootedIsomorphism
 public import SubtreeProofs.Rust.OrderedArbitraryIsomorphism
+public import SubtreeProofs.Shared.MatchingDeletion
+public import SubtreeProofs.Rust.MatchingDeletionReuse
+public import SubtreeProofs.Rust.MatchingDeletionMask
