@@ -47,3 +47,7 @@ public import SubtreeProofs.Droschinsky2018.RootedDynamicProgram
 public import SubtreeProofs.Droschinsky2016.OrientedRecurrence
 public import SubtreeProofs.Shared.FiniteTable
 public import SubtreeProofs.Droschinsky2016.RootedDynamicProgram
+public import SubtreeProofs.Shared.AssignmentDuality
+public import SubtreeProofs.Shared.WithBotMatching
+public import SubtreeProofs.Rust.Generated.VerifiedAssignmentCore
+public import SubtreeProofs.Rust.AssignmentInitialization

@@ -6,6 +6,34 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+
+## Exact integer assignment core and initialization: 2026-11-14
+
+The signed partial-matching/dummy-assignment reduction now works over ordered
+commutative rings, including exact integers. `Shared.AssignmentDuality` proves
+weak duality, exact cost under tightness and `tight_assignment_decodes`: feasible
+dual potentials plus a tight permutation produce a globally optimal compatible
+partial matching. `WeightedMatching.maximum_of_finiteWeights` proves that
+removing bottom-valued edges before finite assignment preserves optimality for
+the graph recurrences' `WithBot` objective. These are independent specifications,
+not definitions of the Hungarian algorithm's result.
+
+The new `rust/crates/verified_assignment_core` implements square signed-`i64`
+Hungarian assignment with checked `i128` potential/total arithmetic and explicit
+shape/arithmetic errors. Its three Rust tests pass: 320 signed matrices through
+dimension seven agree with independent permutation enumeration; empty, ragged,
+extreme-cost and tie cases also check bijectivity, dual feasibility and selected
+edge tightness. The actual source exports through the pinned Charon/Aeneas
+pipeline; regeneration comparison and generated Lean compilation pass.
+`Rust.AssignmentInitialization` proves terminating, safe execution and exact
+contents of all four actual initialization loops, via a common decreasing-rank
+push-loop proof. The full library builds (3,556 jobs).
+
+The Hungarian phase invariants, numeric bounds, full Rust entry-point optimum
+and total correctness, partial-matching adapter and cost refinement remain open.
+The floating graph API has not been replaced. CI includes the new core's tests;
+its first remote run remains pending.
+
 ## Executable 2016 and unrooted baselines: 2026-11-14
 
 `Droschinsky2016.RootedDP.solve_correct` proves every entry of the executable

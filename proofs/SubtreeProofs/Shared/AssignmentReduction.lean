@@ -2,6 +2,7 @@ module
 
 public import SubtreeProofs.Shared.WeightedMatching
 public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Order.Ring.Defs
 public import Mathlib.Data.Fintype.Sum
 public import Mathlib.Logic.Equiv.Basic
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
@@ -18,7 +19,7 @@ swaps its endpoints, and unmatched endpoints stay fixed. This uses exactly
 
 namespace SubtreeProofs.WeightedMatching.AssignmentReduction
 
-variable {L R : Type*}
+variable {L R K : Type*}
 
 noncomputable def leftPartner (pairs : Finset (L × R)) (l : L) : Option R := by
   classical
@@ -28,7 +29,7 @@ noncomputable def rightPartner (pairs : Finset (L × R)) (r : R) : Option L := b
   classical
   exact if h : ∃ l, (l,r) ∈ pairs then some (Classical.choose h) else none
 
-theorem leftPartner_some {weights : L → R → Option ℝ} {pairs : Finset (L × R)}
+theorem leftPartner_some {weights : L → R → Option K} {pairs : Finset (L × R)}
     (hv : Valid weights pairs) (l : L) (r : R) :
     leftPartner pairs l = some r ↔ (l,r) ∈ pairs := by
   classical
@@ -46,7 +47,7 @@ theorem leftPartner_some {weights : L → R → Option ℝ} {pairs : Finset (L �
     intro hp
     exact h ⟨r,hp⟩
 
-theorem rightPartner_some {weights : L → R → Option ℝ} {pairs : Finset (L × R)}
+theorem rightPartner_some {weights : L → R → Option K} {pairs : Finset (L × R)}
     (hv : Valid weights pairs) (l : L) (r : R) :
     rightPartner pairs r = some l ↔ (l,r) ∈ pairs := by
   classical
@@ -72,7 +73,7 @@ noncomputable def swapPartners (pairs : Finset (L × R)) : L ⊕ R → L ⊕ R
     | some l => .inl l
     | none => .inr r
 
-theorem swapPartners_involutive {weights : L → R → Option ℝ} {pairs : Finset (L × R)}
+theorem swapPartners_involutive {weights : L → R → Option K} {pairs : Finset (L × R)}
     (hv : Valid weights pairs) : Function.Involutive (swapPartners pairs) := by
   intro x
   cases x with
@@ -90,39 +91,42 @@ theorem swapPartners_involutive {weights : L → R → Option ℝ} {pairs : Fins
       simp [swapPartners, h, hl]
 
 /-- A concrete perfect assignment containing every selected real-real pair. -/
-noncomputable def extend {weights : L → R → Option ℝ} {pairs : Finset (L × R)}
+noncomputable def extend {weights : L → R → Option K} {pairs : Finset (L × R)}
     (hv : Valid weights pairs) : Equiv.Perm (L ⊕ R) :=
   (swapPartners_involutive hv).toPerm
 
-theorem extend_pair {weights : L → R → Option ℝ} {pairs : Finset (L × R)}
+theorem extend_pair {weights : L → R → Option K} {pairs : Finset (L × R)}
     (hv : Valid weights pairs) {l : L} {r : R} (hp : (l,r) ∈ pairs) :
     extend hv (.inl l) = .inr r := by
   change swapPartners pairs (.inl l) = .inr r
   simp [swapPartners, (leftPartner_some hv l r).mpr hp]
 
-/-- Forbidden/nonpositive real pairs and all dummy assignments have zero profit. -/
-def profit (weights : L → R → Option ℝ) : L ⊕ R → L ⊕ R → ℝ
+variable [CommRing K] [LinearOrder K] [IsStrictOrderedRing K]
+
+/-- Forbidden/nonpositive original pairs and all dummy assignments have zero profit. -/
+def profit (weights : L → R → Option K) : L ⊕ R → L ⊕ R → K
   | .inl l, .inr r => max 0 ((weights l r).getD 0)
   | _, _ => 0
 
 variable [Fintype L] [Fintype R]
 
 /-- A complete square assignment's profit. -/
-def assignmentWeight (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕ R)) : ℝ :=
+def assignmentWeight (weights : L → R → Option K) (σ : Equiv.Perm (L ⊕ R)) : K :=
   ∑ x, profit weights x (σ x)
 
 /-- Retain just strictly positive, compatible real-real assignments. -/
-noncomputable def decode (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕ R)) : Finset (L × R) := by
+noncomputable def decode (weights : L → R → Option K) (σ : Equiv.Perm (L ⊕ R)) : Finset (L × R) := by
   classical
   exact Finset.univ.filter (fun p => σ (.inl p.1) = .inr p.2 ∧ 0 < (weights p.1 p.2).getD 0)
 
-@[simp] theorem mem_decode (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕ R))
+omit [IsStrictOrderedRing K] in
+@[simp] theorem mem_decode (weights : L → R → Option K) (σ : Equiv.Perm (L ⊕ R))
     (p : L × R) : p ∈ decode weights σ ↔
       σ (.inl p.1) = .inr p.2 ∧ 0 < (weights p.1 p.2).getD 0 := by
   classical
   simp [decode]
 
-theorem decode_valid (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕ R)) :
+theorem decode_valid (weights : L → R → Option K) (σ : Equiv.Perm (L ⊕ R)) :
     Valid weights (decode weights σ) := by
   classical
   refine ⟨?_, ?_, ?_⟩
@@ -143,7 +147,7 @@ theorem decode_valid (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕ 
     exact Sum.inl.inj (σ.injective hp')
 
 /-- Decoding preserves the complete assignment profit exactly. -/
-theorem decode_weight (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕ R)) :
+theorem decode_weight (weights : L → R → Option K) (σ : Equiv.Perm (L ⊕ R)) :
     weight weights (decode weights σ) = assignmentWeight weights σ := by
   classical
   let active := Finset.univ.filter (fun x => 0 < profit weights x (σ x))
@@ -185,7 +189,7 @@ theorem decode_weight (weights : L → R → Option ℝ) (σ : Equiv.Perm (L ⊕
 
 /-- Extension cannot lose weight: replacing a negative selected weight by
 zero can only improve the objective. No sign or magnitude bound is needed. -/
-theorem weight_le_extend {weights : L → R → Option ℝ} {pairs : Finset (L × R)}
+theorem weight_le_extend {weights : L → R → Option K} {pairs : Finset (L × R)}
     (hv : Valid weights pairs) : weight weights pairs ≤ assignmentWeight weights (extend hv) := by
   classical
   let rows : Finset (L ⊕ R) := pairs.image (fun p => Sum.inl p.1)
@@ -209,7 +213,7 @@ theorem weight_le_extend {weights : L → R → Option ℝ} {pairs : Finset (L �
 
 /-- A maximum complete assignment decodes to an optimal partial matching.
 This theorem is independent of which assignment algorithm supplies optimality. -/
-theorem maximum_assignment_decodes {weights : L → R → Option ℝ}
+theorem maximum_assignment_decodes {weights : L → R → Option K}
     (σ : Equiv.Perm (L ⊕ R))
     (hmax : ∀ τ, assignmentWeight weights τ ≤ assignmentWeight weights σ) :
     IsMaximum weights (decode weights σ) := by
@@ -220,20 +224,21 @@ theorem maximum_assignment_decodes {weights : L → R → Option ℝ}
 
 /-- Subtracting each profit from one common constant converts maximization
 into complete minimum-cost assignment. -/
-def assignmentCost (weights : L → R → Option ℝ) (shift : ℝ)
-    (σ : Equiv.Perm (L ⊕ R)) : ℝ :=
+def assignmentCost (weights : L → R → Option K) (shift : K)
+    (σ : Equiv.Perm (L ⊕ R)) : K :=
   ∑ x, (shift - profit weights x (σ x))
 
-theorem assignmentCost_eq (weights : L → R → Option ℝ) (shift : ℝ)
+omit [IsStrictOrderedRing K] in
+theorem assignmentCost_eq (weights : L → R → Option K) (shift : K)
     (σ : Equiv.Perm (L ⊕ R)) :
     assignmentCost weights shift σ =
       (Fintype.card L + Fintype.card R : ℕ) * shift - assignmentWeight weights σ := by
   simp [assignmentCost, assignmentWeight, Finset.sum_sub_distrib, Fintype.card_sum]
 
 /-- Complete minimum-cost assignment suffices for the optional, forbidden,
-signed maximum-weight matching problem. The shift may be any real number. -/
-theorem minimum_assignment_decodes {weights : L → R → Option ℝ}
-    (shift : ℝ) (σ : Equiv.Perm (L ⊕ R))
+signed maximum-weight matching problem. The shift may be any scalar in the ordered ring. -/
+theorem minimum_assignment_decodes {weights : L → R → Option K}
+    (shift : K) (σ : Equiv.Perm (L ⊕ R))
     (hmin : ∀ τ, assignmentCost weights shift σ ≤ assignmentCost weights shift τ) :
     IsMaximum weights (decode weights σ) := by
   apply maximum_assignment_decodes σ

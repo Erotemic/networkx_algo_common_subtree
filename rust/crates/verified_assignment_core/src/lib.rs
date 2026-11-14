@@ -1,0 +1,325 @@
+//! Exact integer assignment core for the common-subtree verification program.
+//!
+//! Costs are signed i64 values. Potentials and totals use checked i128
+//! arithmetic. Returned potentials expose the primal/dual optimality criterion.
+//! Rust tests and generated semantics are separate from the pending proof of
+//! the Hungarian loop's invariants and total correctness.
+
+#[cfg_attr(test, derive(Clone, Debug, PartialEq, Eq))]
+pub struct Assignment {
+    pub column_for_row: Vec<usize>,
+    pub row_potential: Vec<i128>,
+    pub column_potential: Vec<i128>,
+    pub cost: i128,
+}
+
+#[cfg_attr(test, derive(Clone, Copy, Debug, PartialEq, Eq))]
+pub enum AssignmentError {
+    NonSquare,
+    TooLarge,
+    ArithmeticOverflow,
+    InvariantViolation,
+}
+
+fn zeros_i128(len: usize) -> Vec<i128> {
+    let mut result = Vec::new();
+    let mut index = 0;
+    while index < len {
+        result.push(0);
+        index += 1;
+    }
+    result
+}
+
+fn zeros_usize(len: usize) -> Vec<usize> {
+    let mut result = Vec::new();
+    let mut index = 0;
+    while index < len {
+        result.push(0);
+        index += 1;
+    }
+    result
+}
+
+fn absent_costs(len: usize) -> Vec<Option<i128>> {
+    let mut result = Vec::new();
+    let mut index = 0;
+    while index < len {
+        result.push(None);
+        index += 1;
+    }
+    result
+}
+
+fn unused_columns(len: usize) -> Vec<bool> {
+    let mut result = Vec::new();
+    let mut index = 0;
+    while index < len {
+        result.push(false);
+        index += 1;
+    }
+    result
+}
+
+/// Scan the unused columns and update the exact minimum slacks.
+fn scan_columns(
+    cost: &[Vec<i64>],
+    u: &[i128],
+    v: &[i128],
+    used: &[bool],
+    slack: &mut Vec<Option<i128>>,
+    predecessor: &mut Vec<usize>,
+    column: usize,
+    active_row: usize,
+    n: usize,
+) -> Result<(i128, usize), AssignmentError> {
+    let mut delta = None;
+    let mut next_column = 0;
+    let mut candidate = 1;
+    while candidate <= n {
+        if !used[candidate] {
+            let first =
+                match (cost[active_row - 1][candidate - 1] as i128).checked_sub(u[active_row]) {
+                    Some(value) => value,
+                    None => return Err(AssignmentError::ArithmeticOverflow),
+                };
+            let reduced = match first.checked_sub(v[candidate]) {
+                Some(value) => value,
+                None => return Err(AssignmentError::ArithmeticOverflow),
+            };
+            let improve = match slack[candidate] {
+                None => true,
+                Some(old) => reduced < old,
+            };
+            if improve {
+                slack[candidate] = Some(reduced);
+                predecessor[candidate] = column;
+            }
+            let best = match slack[candidate] {
+                Some(value) => value,
+                None => return Err(AssignmentError::InvariantViolation),
+            };
+            let improve_delta = match delta {
+                None => true,
+                Some(old) => best < old,
+            };
+            if improve_delta {
+                delta = Some(best);
+                next_column = candidate;
+            }
+        }
+        candidate += 1;
+    }
+    match delta {
+        Some(value) => Ok((value, next_column)),
+        None => Err(AssignmentError::InvariantViolation),
+    }
+}
+
+fn adjust_potentials(
+    u: &mut Vec<i128>,
+    v: &mut Vec<i128>,
+    matched_row: &[usize],
+    used: &[bool],
+    slack: &mut Vec<Option<i128>>,
+    amount: i128,
+    n: usize,
+) -> Result<(), AssignmentError> {
+    let mut index = 0;
+    while index <= n {
+        if used[index] {
+            let assigned = matched_row[index];
+            u[assigned] = match u[assigned].checked_add(amount) {
+                Some(value) => value,
+                None => return Err(AssignmentError::ArithmeticOverflow),
+            };
+            v[index] = match v[index].checked_sub(amount) {
+                Some(value) => value,
+                None => return Err(AssignmentError::ArithmeticOverflow),
+            };
+        } else if let Some(value) = slack[index] {
+            slack[index] = match value.checked_sub(amount) {
+                Some(updated) => Some(updated),
+                None => return Err(AssignmentError::ArithmeticOverflow),
+            };
+        }
+        index += 1;
+    }
+    Ok(())
+}
+
+fn find_augmenting_column(
+    cost: &[Vec<i64>],
+    u: &mut Vec<i128>,
+    v: &mut Vec<i128>,
+    matched_row: &[usize],
+    predecessor: &mut Vec<usize>,
+    n: usize,
+    extent: usize,
+) -> Result<usize, AssignmentError> {
+    let mut column = 0;
+    let mut slack = absent_costs(extent);
+    let mut used = unused_columns(extent);
+    let mut visited = 0;
+    let mut searching = true;
+    let mut failure = None;
+    while searching && failure.is_none() {
+        if visited >= n || used[column] {
+            failure = Some(AssignmentError::InvariantViolation);
+        }
+        visited += 1;
+        used[column] = true;
+        let active_row = matched_row[column];
+        if active_row == 0 || active_row > n {
+            failure = Some(AssignmentError::InvariantViolation);
+        }
+        if failure.is_none() {
+            match scan_columns(
+                cost,
+                u,
+                v,
+                &used,
+                &mut slack,
+                predecessor,
+                column,
+                active_row,
+                n,
+            ) {
+                Err(error) => failure = Some(error),
+                Ok((amount, next_column)) => {
+                    match adjust_potentials(u, v, matched_row, &used, &mut slack, amount, n) {
+                        Err(error) => failure = Some(error),
+                        Ok(()) => {
+                            column = next_column;
+                            searching = matched_row[column] != 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    match failure {
+        Some(error) => Err(error),
+        None => Ok(column),
+    }
+}
+
+fn augment_matching(
+    matched_row: &mut Vec<usize>,
+    predecessor: &[usize],
+    mut column: usize,
+    n: usize,
+) -> Result<(), AssignmentError> {
+    let mut path_length = 0;
+    while column != 0 {
+        if path_length >= n {
+            return Err(AssignmentError::InvariantViolation);
+        }
+        path_length += 1;
+        let previous = predecessor[column];
+        matched_row[column] = matched_row[previous];
+        column = previous;
+    }
+    Ok(())
+}
+
+fn reconstruct_assignment(
+    cost: &[Vec<i64>],
+    u: &[i128],
+    v: &[i128],
+    matched_row: &[usize],
+    n: usize,
+) -> Result<Assignment, AssignmentError> {
+    let mut failure = None;
+    let mut column_for_row = zeros_usize(n);
+    let mut column = 1;
+    while column <= n && failure.is_none() {
+        let assigned = matched_row[column];
+        if assigned == 0 || assigned > n {
+            failure = Some(AssignmentError::InvariantViolation);
+        } else {
+            column_for_row[assigned - 1] = column - 1;
+        }
+        column += 1;
+    }
+    let mut total = 0i128;
+    let mut row_potential = Vec::new();
+    let mut column_potential = Vec::new();
+    let mut index = 0;
+    while index < n && failure.is_none() {
+        match total.checked_add(cost[index][column_for_row[index]] as i128) {
+            Some(value) => total = value,
+            None => failure = Some(AssignmentError::ArithmeticOverflow),
+        }
+        row_potential.push(u[index + 1]);
+        column_potential.push(v[index + 1]);
+        index += 1;
+    }
+    match failure {
+        Some(error) => Err(error),
+        None => Ok(Assignment {
+            column_for_row,
+            row_potential,
+            column_potential,
+            cost: total,
+        }),
+    }
+}
+
+/// Minimum-cost perfect assignment of a square signed-integer matrix.
+///
+/// Empty input has the empty assignment and cost zero. Malformed inputs and
+/// checked-arithmetic failures are explicit errors. Finite costs are never
+/// replaced by a sentinel, and zero is a valid reduced cost.
+///
+/// The implementation uses the potential form of the Hungarian algorithm
+/// with a reserved column zero. All exported indices are zero based.
+pub fn min_cost_assignment(cost: &[Vec<i64>]) -> Result<Assignment, AssignmentError> {
+    let n = cost.len();
+    if n > u32::MAX as usize {
+        return Err(AssignmentError::TooLarge);
+    }
+    let extent = match n.checked_add(1) {
+        Some(value) => value,
+        None => return Err(AssignmentError::TooLarge),
+    };
+    let mut row = 0;
+    while row < n {
+        if cost[row].len() != n {
+            return Err(AssignmentError::NonSquare);
+        }
+        row += 1;
+    }
+    let mut u = zeros_i128(extent);
+    let mut v = zeros_i128(extent);
+    let mut matched_row = zeros_usize(extent);
+    let mut predecessor = zeros_usize(extent);
+    let mut next_row = 1;
+    let mut failure = None;
+    while next_row <= n && failure.is_none() {
+        matched_row[0] = next_row;
+        match find_augmenting_column(
+            cost,
+            &mut u,
+            &mut v,
+            &matched_row,
+            &mut predecessor,
+            n,
+            extent,
+        ) {
+            Err(error) => failure = Some(error),
+            Ok(column) => match augment_matching(&mut matched_row, &predecessor, column, n) {
+                Err(error) => failure = Some(error),
+                Ok(()) => {}
+            },
+        }
+        next_row += 1;
+    }
+    match failure {
+        Some(error) => Err(error),
+        None => reconstruct_assignment(cost, &u, &v, &matched_row, n),
+    }
+}
+
+#[cfg(test)]
+mod tests;

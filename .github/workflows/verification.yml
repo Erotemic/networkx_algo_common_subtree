@@ -31,8 +31,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@1.95.0
       - name: Test graph algorithms and exhaustive witness oracles
         run: cargo test --locked --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml
-      - name: Test extraction core
+      - name: Test ordered extraction core
         run: cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
+      - name: Test exact assignment extraction core
+        run: cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.toml
   independent-oracles:
     runs-on: ubuntu-latest
     steps:

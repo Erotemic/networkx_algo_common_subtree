@@ -27,13 +27,17 @@ fi
 rustup toolchain install nightly-2026-09-17 --profile minimal --component rustc-dev --component rust-src --component miri
 output_dir=$(mktemp -d)
 trap 'rm -rf "$output_dir"' EXIT
-cd "$repo_root/rust/crates/verified_ordered_core"
-RUSTUP_TOOLCHAIN=nightly-2026-09-17 "$binary_dir/charon" cargo --preset=aeneas
-"$binary_dir/aeneas" -backend lean -abort-on-error -warnings-as-errors -no-progress-bar \
-    -dest "$output_dir" -namespace verified_ordered_core verified_ordered_core.llbc
-maintained="$repo_root/proofs/SubtreeProofs/Rust/Generated/VerifiedOrderedCore.lean"
-if [[ $check == 1 ]]; then
-    diff -u "$maintained" "$output_dir/VerifiedOrderedCore.lean"
-else
-    cp "$output_dir/VerifiedOrderedCore.lean" "$maintained"
-fi
+for entry in verified_ordered_core:VerifiedOrderedCore verified_assignment_core:VerifiedAssignmentCore; do
+    crate_name=${entry%%:*}
+    module_name=${entry#*:}
+    cd "$repo_root/rust/crates/$crate_name"
+    RUSTUP_TOOLCHAIN=nightly-2026-09-17 "$binary_dir/charon" cargo --preset=aeneas
+    "$binary_dir/aeneas" -backend lean -abort-on-error -warnings-as-errors -no-progress-bar \
+        -dest "$output_dir" -namespace "$crate_name" "$crate_name.llbc"
+    maintained="$repo_root/proofs/SubtreeProofs/Rust/Generated/$module_name.lean"
+    if [[ $check == 1 ]]; then
+        diff -u "$maintained" "$output_dir/$module_name.lean"
+    else
+        cp "$output_dir/$module_name.lean" "$maintained"
+    fi
+done

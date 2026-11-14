@@ -12,6 +12,8 @@ Run from this repository:
 dev/regenerate_rust_lean.sh --check
 cargo test --locked --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml
 cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
+cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.toml
+(cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 python -m pytest tests
 ```
 
@@ -21,7 +23,7 @@ A source-only `git archive 6dbf81e` was unpacked at
 (3,473 jobs). The Mathlib download cache was reused; project modules rebuilt.
 
 The GitHub workflow `.github/workflows/verification.yml` builds the library,
-checks regeneration, executes both standalone Rust crates, and runs the
+checks regeneration, executes all three standalone Rust crates, and runs the
 independent finite oracles. Its first remote execution is still pending.
 
 ## VM caches
@@ -57,8 +59,9 @@ to an existing copy of this exact release to reuse an installation. The
 release archive includes its Lean backend sources, but Lake fetches those
 sources independently at the pinned revision.
 
-The script regenerates from `rust/crates/verified_ordered_core/src/lib.rs`;
-`--check` compares a fresh output with the maintained generated module.
+The script regenerates both `verified_ordered_core` and
+`verified_assignment_core`; `--check` compares fresh outputs with their
+maintained generated modules.
 Intermediate LLBC files are generated locally and ignored. Generated Lean
 must never be edited to make a proof pass.
 
@@ -81,6 +84,15 @@ correctness result rather than a platform memory-budget guarantee.
 Rust compilation, Charon/Aeneas translation, and the models of supported Rust
 operations are explicit translation trust boundaries. Lean checks the resulting
 refinement proof. The mathematical tree relation remains independent of them.
+
+The exact assignment core has reproducible generated semantics and a compiled
+initialization refinement (`Rust/AssignmentInitialization.lean`). Its full
+Hungarian-loop correctness and numeric bounds remain open. The pinned release
+emits a generic unknown-externals warning in single-file mode for this crate;
+a split-file diagnostic emitted only `Types.lean` and `Funs.lean`, and the
+maintained module compiles against the supplied Aeneas models without a custom
+external-model file. This diagnostic is not a substitute for final endpoint
+dependency review.
 
 ## Endpoint dependency audit
 

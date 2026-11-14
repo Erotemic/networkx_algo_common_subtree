@@ -126,7 +126,7 @@ its own pinned Lean/Mathlib 4.32.0-rc1 environment (8,586 jobs). Its
 existence of an optimal perfect assignment over equally sized complete
 real-weight bipartite instances. It is not a theorem about our Rust matching
 implementation. The independent exact forbidden/partial/signed-real reduction now compiles as
-`WeightedMatching.AssignmentReduction.minimum_assignment_decodes`. Connecting
+`WeightedMatching.AssignmentReduction.minimum_assignment_decodes`. The reduction now also applies to integers; `Assignment.tight_assignment_decodes` supplies a generic feasible/tight certificate bridge. Connecting
 its permutation interface to this CLRS theorem is still required; compatibility
 with the maintained 4.35.0 toolchain has
 not been established. It is therefore not a mandatory dependency.
