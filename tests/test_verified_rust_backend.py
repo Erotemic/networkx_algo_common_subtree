@@ -137,3 +137,41 @@ def test_verified_missing_extension_error(monkeypatch):
         balanced_embedding.longest_common_balanced_embedding(
             "()", "()", {"(": ")"}, node_affinity=None, impl="verified-rust"
         )
+
+
+@pytest.mark.parametrize(
+    "left_nodes,left_edges,right_nodes,right_edges,expected",
+    [
+        ([0], [], [10], [], 1),
+        ([0, 1, 2], [(0, 1), (0, 2)], [10, 11, 12], [(10, 11), (11, 12)], 2),
+        ([0, 1, 2], [], [10, 11, 12], [(10, 11), (11, 12)], 1),
+        ([0, 1, 2, 3], [(0, 1), (2, 3)], [10, 11, 12, 13], [(10, 11), (11, 12), (12, 13)], 2),
+        ([0, 1, 2, 3], [(0, 1), (1, 2), (1, 3)], [10, 11, 12], [(10, 11), (10, 12)], 3),
+    ],
+)
+def test_verified_networkx_vertex_scores_and_original_nodes(
+    left_nodes, left_edges, right_nodes, right_edges, expected
+):
+    _backend()
+    from networkx_algo_common_subtree import maximum_common_ordered_subtree_embedding
+    from networkx_algo_common_subtree._types import OrderedDiGraph
+
+    left, right = OrderedDiGraph(), OrderedDiGraph()
+    left.add_nodes_from(left_nodes)
+    left.add_edges_from(left_edges)
+    right.add_nodes_from(right_nodes)
+    right.add_edges_from(right_edges)
+    out_left, out_right, score = maximum_common_ordered_subtree_embedding(
+        left, right, node_affinity=None, impl="verified-rust", item_type="number"
+    )
+    assert score == expected == len(out_left) == len(out_right)
+    assert set(out_left) <= set(left)
+    assert set(out_right) <= set(right)
+
+    def shape(graph):
+        def children(node):
+            return tuple(children(child) for child in graph.successors(node))
+
+        return tuple(children(node) for node in graph if graph.in_degree(node) == 0)
+
+    assert shape(out_left) == shape(out_right)

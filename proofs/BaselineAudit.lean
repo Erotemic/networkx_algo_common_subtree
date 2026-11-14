@@ -60,3 +60,6 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.TokenParser.parse_balanced_tokens_spec
 
 #print axioms SubtreeProofs.Rust.TokenMatching.maximum_common_token_embedding_total_spec
+
+#print axioms SubtreeProofs.Paper2004.OrderedTree.forestEmbeds_iff_parent
+#print axioms SubtreeProofs.Rust.TokenMatching.maximum_common_token_embedding_of_forests

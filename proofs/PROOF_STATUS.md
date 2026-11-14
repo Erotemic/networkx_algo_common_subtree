@@ -438,6 +438,34 @@ published cost theorems remain open.
   theorem compile. The standalone Rust extraction crate compiles and its
   Cargo test command succeeds, including the six-edge contraction oracle.
 
+## Vertex-root forest convention and actual Rust optimum: 2026-11-14
+
+The independent ordered-forest relation now lives upstream of the Dyck encoding
+in `Paper2004/OrderedForest.lean`. A forest step deletes a vertex and promotes
+its children, including at component roots, or contracts inside a component.
+`forestEmbeds_iff_parent` proves exact two-way correspondence with ordinary tree
+edge contractions after attaching one retained virtual parent. The independent
+`IsMaximumCommonForest` counts actual original forest vertices, including
+component roots; `isMaximumCommonForest_iff_parent` proves its exact optimum
+correspondence with the virtual-parent tree.
+
+`VertexEncoding` explicitly identifies the one-pair-per-vertex forest encoding:
+a single tree has an additional outer pair around its paper edge encoding;
+each original vertex contributes two tokens, and the virtual parent contributes
+none. `maximumTokenEmbedding_vertices` transfers exact original-array readback,
+ordered retained token positions and global optimality to this independent
+forest contract. `Rust.TokenMatching.maximum_common_token_embedding_of_forests`
+composes that bridge with the actual extracted Boolean Rust API for every
+represented forest input with fewer than 2^32 original vertices.
+
+Five Python/NetworkX regression cases cover singleton roots, branching/chain
+comparisons, disconnected forests, deletion of an internal branching vertex,
+exact vertex scores and retained original graph-node identities. They pass
+against the opt-in backend. This proves the mathematical vertex/root convention
+and the actual Boolean source call under that representation. Python DFS token
+construction, graph-node marshaling and reconstruction remain tested conversion
+boundaries, not a source-refinement theorem about NetworkX internals.
+
 ## Opt-in Python integration of the proved Boolean core: 2026-11-14
 
 `longest_common_balanced_embedding(..., node_affinity=None, impl="verified-rust")`

@@ -1,6 +1,7 @@
 module
 
 public import SubtreeProofs.Paper2004.ContractionSoundness
+public import SubtreeProofs.Paper2004.OrderedForest
 
 /-!
 # Completeness of ordered-tree contraction under Dyck encoding
@@ -73,67 +74,6 @@ theorem encodeForestDyck_injective : Function.Injective encodeForestDyck := by
 /-- The ordinary tree decoder attaches a root to the decoded forest. -/
 theorem decodeDyck_eq_node_decodeForestDyck (word : DyckWord) :
     decodeDyck word = OrderedTree.node (decodeForestDyck word) := rfl
-
-/-- A single edge contraction performed in an ordered forest. An edge can
-be incident to the forest's implicit parent (`splice`), or inside one of the
-forest's child trees (`inside`). -/
-inductive ForestContractStep : List OrderedTree → List OrderedTree → Prop where
-  | splice (left right : List OrderedTree) (child : OrderedTree) :
-      ForestContractStep
-        (left ++ [child] ++ right)
-        (left ++ children child ++ right)
-  | inside (left right : List OrderedTree) {before after : OrderedTree}
-      (step : ContractStep before after) :
-      ForestContractStep
-        (left ++ [before] ++ right)
-        (left ++ [after] ++ right)
-
-namespace ForestContractStep
-
-/-- An additional forest to the left does not invalidate a contraction. -/
-theorem append_left (extra : List OrderedTree) {before after : List OrderedTree}
-    (h : ForestContractStep before after) :
-    ForestContractStep (extra ++ before) (extra ++ after) := by
-  cases h with
-  | splice left right child =>
-      simpa only [List.append_assoc] using
-        (ForestContractStep.splice (extra ++ left) right child)
-  | inside left right step =>
-      simpa only [List.append_assoc] using
-        (ForestContractStep.inside (extra ++ left) right step)
-
-/-- An additional forest to the right does not invalidate a contraction. -/
-theorem append_right (extra : List OrderedTree) {before after : List OrderedTree}
-    (h : ForestContractStep before after) :
-    ForestContractStep (before ++ extra) (after ++ extra) := by
-  cases h with
-  | splice left right child =>
-      simpa only [List.append_assoc] using
-        (ForestContractStep.splice left (right ++ extra) child)
-  | inside left right step =>
-      simpa only [List.append_assoc] using
-        (ForestContractStep.inside left (right ++ extra) step)
-
-/-- A forest contraction is an ordinary contraction below the forest's
-implicit parent, which becomes the root of the decoded tree. -/
-theorem atRoot {before after : List OrderedTree}
-    (h : ForestContractStep before after) :
-    ContractStep (.node before) (.node after) := by
-  cases h with
-  | splice left right child =>
-      exact ContractStep.atRoot left right child
-  | inside left right step =>
-      exact ContractStep.below left right step
-
-/-- A contraction in a forest can also be performed inside a single child
-whose child forest is that forest. -/
-theorem nest {before after : List OrderedTree}
-    (h : ForestContractStep before after) :
-    ForestContractStep [.node before] [.node after] := by
-  simpa only [List.nil_append, List.append_nil] using
-    (ForestContractStep.inside [] [] h.atRoot)
-
-end ForestContractStep
 
 /-- Removing an enclosing Dyck pair inside an arbitrary Dyck context becomes
 one operational edge contraction in the decoded forest. -/

@@ -148,3 +148,6 @@ public import SubtreeProofs.Paper2004.TokenReading
 public import SubtreeProofs.Paper2004.TokenMaximum
 public import SubtreeProofs.Rust.TokenEmission
 public import SubtreeProofs.Rust.TokenMatchingEntrypoint
+public import SubtreeProofs.Paper2004.OrderedForest
+public import SubtreeProofs.Paper2004.VertexEncoding
+public import SubtreeProofs.Rust.VertexMatchingEntrypoint
