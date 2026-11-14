@@ -61,6 +61,12 @@ Current assurance is deliberately narrower than the crate's eventual target:
   `AssignmentSearchInitialization` establishes the initial numeric and cut
   invariants from actual initialized contents and independent input row minima.
 
+- Discovery-rank proofs connect visited columns to a finite acyclic predecessor
+  forest. The actual scan preserves visited links; actual adjustment preserves
+  all old matching edges and visited tight predecessor edges and makes the
+  selected attaining predecessor edge tight. Boolean marking preserves the
+  candidate and visit-count invariants.
+
 The combined Hungarian search/driver invariants, entry-point total
 correctness, partial-matching adapter and complexity refinement remain open.
 This crate is not yet a verified replacement for the graph crate's floating

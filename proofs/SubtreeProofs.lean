@@ -82,3 +82,7 @@ public import SubtreeProofs.Rust.AssignmentNumericBounds
 public import SubtreeProofs.Rust.AssignmentSafeAdjustment
 public import SubtreeProofs.Rust.AssignmentSearchArithmetic
 public import SubtreeProofs.Rust.AssignmentSearchInitialization
+public import SubtreeProofs.Rust.AssignmentDiscoveryRanks
+public import SubtreeProofs.Rust.AssignmentAdjustmentTightness
+public import SubtreeProofs.Rust.AssignmentVisitColumn
+public import SubtreeProofs.Rust.AssignmentPredecessorTightness

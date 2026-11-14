@@ -14,6 +14,34 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Discovery ranks and actual predecessor tightness: 2026-11-14
+
+`Rust.AssignmentDiscoveryRanks` keeps visited discovery ranks below the visit
+count and assigns that count to unvisited columns. Visiting the pending
+column preserves strict predecessor descent; a selected unused column with
+a visited predecessor extends the ranked terminal forest. Exact whole-table
+frames prove the actual scan leaves every used predecessor slot unchanged.
+
+`AssignmentVisitColumn` proves the physical boolean write inserts exactly
+one candidate, increments the mathematical visit count, preserves nonzero
+row pointers and the reserved flag, and restricts the previous cut invariant
+to the remaining unused columns. It derives real row bounds for every
+nonzero pointer from the independent unfinished partial assignment.
+
+`AssignmentAdjustmentTightness.complete_matching_tight` derives matching
+endpoint lockstep and proves tightness of every existing matching edge in the
+actual returned potentials. Used predecessor edges remain tight through the
+actual row/column writes, and an attaining predecessor at the selected unused
+column gains zero actual reduced cost. `AssignmentPredecessorTightness`
+combines those facts into visitation, actual scan and actual adjustment
+preservation of tight predecessor forests.
+
+The full library builds with these four maintained modules. These are the
+rank and tightness components needed to assemble the complete actual search
+loop; that assembly, the full driver and public entry-point theorem still
+remain open. Later integration, paper optimizations and complexity goals are
+unchanged.
+
 ## Derived actual search arithmetic and initialization: 2026-11-14
 
 `Shared.AssignmentEnvelope` bounds each potential by the cumulative
