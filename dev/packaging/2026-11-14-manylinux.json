@@ -156,5 +156,60 @@
         }
       }
     }
+  },
+  "infinite_penalty_update": {
+    "source_commit": "5d7fabde68711ffe4034fcdae446caa0a5e9bd64",
+    "source_archive_sha256": "5597424fd397b769038ffa84ee4a2f0813efcd33b4f978f7f970b338bb436117",
+    "source_files": 486,
+    "prebuilt_native_libraries": 0,
+    "source_date_epoch": 1794691524,
+    "wheel_sha256": "e8312ad74f9f718ef28c6f90cbc44104b76697e88bb80c16853a564a7dc46865",
+    "extension_sha256": "30297d1c49bc31ccb7d984d8d7baf3dfee90d67fdf5609d376b8f1826c6f08a9",
+    "native_libraries": [
+      "networkx_algo_common_subtree/_rust.abi3.so"
+    ],
+    "container_tests_passed": 209,
+    "tests_per_runtime": {
+      "3.10": {
+        "passed": 209,
+        "skipped": 0
+      },
+      "3.11": {
+        "passed": 209,
+        "skipped": 0
+      },
+      "3.12": {
+        "passed": 209,
+        "skipped": 0
+      },
+      "3.13": {
+        "passed": 209,
+        "skipped": 0
+      },
+      "3.14": {
+        "passed": 209,
+        "skipped": 0
+      }
+    },
+    "abi3audit": {
+      "specs": {
+        "/tmp/common-subtree-infinite-manylinux-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-manylinux_2_28_x86_64.whl": {
+          "kind": "wheel",
+          "wheel": [
+            {
+              "name": "_rust.abi3.so",
+              "result": {
+                "is_abi3": true,
+                "is_abi3_baseline_compatible": true,
+                "baseline": "3.10",
+                "computed": "3.10",
+                "non_abi3_symbols": [],
+                "future_abi3_objects": {}
+              }
+            }
+          ]
+        }
+      }
+    }
   }
 }

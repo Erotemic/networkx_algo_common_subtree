@@ -133,3 +133,9 @@ their runtime tests remain packaging work. Remote CI execution remains pending.
 The default Cython-inclusive distribution is unchanged. These development artifacts are
 partially verified; complete production-source and applicable complexity
 proofs still block the final verified release.
+
+The positive-infinity scoring update at `5d7fabd` has also been rebuilt from a
+source-only archive through the pinned portable profile. Its wheel passes all
+209 tests on glibc 2.28 and each host CPython 3.10–3.14, with strict ABI
+auditing clean. This is a separate artifact from the rooted 199-test milestone;
+its exact source, wheel and native hashes are recorded in the packaging ledger.

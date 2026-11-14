@@ -683,6 +683,6 @@
         }
       }
     },
-    "portable_manylinux": "The earlier e272d36 rooted artifact passes 199; this scoring update is host-built ABI3 validated, pending its own portable rebuild."
+    "portable_manylinux": "Source-only 5d7fabd rebuilt in the pinned manylinux profile: 209 tests on glibc 2.28 and all five host runtimes; see 2026-11-14-manylinux.json."
   }
 }

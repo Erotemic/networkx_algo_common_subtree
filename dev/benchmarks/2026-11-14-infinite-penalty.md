@@ -43,9 +43,11 @@ predicate before scoring infeasible candidates.
 - Empty/nonempty behavior and invalid penalty errors are covered at the
   public API; infinity and invalid floating penalties are checked at raw PyO3.
 
-The prior portable manylinux artifact at `e272d36` passed 199 tests. This update
-has host native/ABI3 evidence; its own portable rebuild is recorded separately
-when executed. Existing mathematical `WithTop` specifications are unchanged.
+A source-only rebuild of `5d7fabd` through the pinned manylinux profile also
+passes 209 tests on glibc 2.28 and on each CPython 3.10–3.14, with a clean ABI
+audit. Its wheel SHA256 is
+`e8312ad74f9f718ef28c6f90cbc44104b76697e88bb80c16853a564a7dc46865`.
+Source archive and native payload hashes are in the packaging ledger. Existing mathematical `WithTop` specifications are unchanged.
 No new Lean production-refinement or complexity theorem is claimed. IEEE-754
 correctness is deliberately outside the initial proof scope; numerical runtime
 regressions remain tested.
