@@ -61,7 +61,10 @@ fn check_against_bruteforce(weights: Vec<Vec<Option<f64>>>) {
         seen_left[i] = true;
         seen_right[j] = true;
         let edge_weight = weights[i][j].expect("reported pair must be compatible");
-        assert!(edge_weight > EPS, "reported pair should have positive contribution");
+        assert!(
+            edge_weight > 0.0,
+            "reported pair should have positive contribution"
+        );
         pair_weight += edge_weight;
     }
     assert_close(result.weight, pair_weight);
@@ -86,10 +89,7 @@ fn matching_matches_bruteforce_on_handwritten_cases() {
             vec![Some(8.0), Some(4.0), Some(1.0)],
             vec![None, Some(9.0), Some(7.0)],
         ],
-        vec![
-            vec![Some(-1.0), Some(2.0)],
-            vec![Some(2.0), Some(-1.0)],
-        ],
+        vec![vec![Some(-1.0), Some(2.0)], vec![Some(2.0), Some(-1.0)]],
     ];
     for weights in cases {
         check_against_bruteforce(weights);
@@ -98,7 +98,14 @@ fn matching_matches_bruteforce_on_handwritten_cases() {
 
 #[test]
 fn matching_matches_bruteforce_on_deterministic_small_matrices() {
-    let values = [None, Some(-3.0), Some(-0.5), Some(0.0), Some(1.0), Some(2.5)];
+    let values = [
+        None,
+        Some(-3.0),
+        Some(-0.5),
+        Some(0.0),
+        Some(1.0),
+        Some(2.5),
+    ];
     let mut seed = 0x5eed_u64;
     for rows in 0..=4 {
         for cols in 0..=4 {
@@ -114,4 +121,45 @@ fn matching_matches_bruteforce_on_deterministic_small_matrices() {
             }
         }
     }
+}
+
+#[test]
+fn matching_keeps_positive_weights_below_old_absolute_threshold() {
+    let weight = 5.0e-12;
+    let result = max_weight_bipartite_matching(&[vec![Some(weight)]]);
+    assert_eq!(result.pairs, vec![(0, 0)]);
+    assert_eq!(result.weight, weight);
+}
+
+#[test]
+fn matching_handles_large_signed_weights_without_forbidden_sentinels() {
+    let weights = vec![
+        vec![Some(8.0e150), None, Some(-1.0e250)],
+        vec![Some(7.0e150), Some(6.0e150), None],
+    ];
+    let result = max_weight_bipartite_matching(&weights);
+    assert_eq!(result.pairs, vec![(0, 0), (1, 1)]);
+    assert!((result.weight / 1.0e150 - 14.0).abs() < 1.0e-12);
+}
+
+#[test]
+fn matching_rejects_nonfinite_weights_before_augmentation() {
+    for weight in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+        assert!(std::panic::catch_unwind(|| {
+            max_weight_bipartite_matching(&[vec![Some(weight)]]);
+        })
+        .is_err());
+    }
+}
+
+#[test]
+#[should_panic(expected = "all rows in a matching weight matrix must have the same length")]
+fn matching_rejects_ragged_matrix_even_when_first_row_is_empty() {
+    max_weight_bipartite_matching(&[vec![], vec![Some(1.0)]]);
+}
+
+#[test]
+#[should_panic(expected = "matching total weight overflow")]
+fn matching_rejects_an_unrepresentable_total_weight() {
+    max_weight_bipartite_matching(&[vec![Some(f64::MAX), None], vec![None, Some(f64::MAX)]]);
 }

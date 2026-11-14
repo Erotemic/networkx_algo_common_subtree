@@ -10,9 +10,6 @@
 
 use crate::Weight;
 
-const EPS: Weight = 1.0e-9;
-const FORBIDDEN_PROFIT: Weight = -1.0e100;
-
 /// Result of a maximum-weight bipartite matching.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct WeightedMatching {
@@ -26,8 +23,14 @@ pub struct WeightedMatching {
 ///
 /// `weights[i][j] == None` means left vertex `i` cannot be matched to right
 /// vertex `j`. Vertices are allowed to remain unmatched with contribution `0`.
-/// Consequently, negative-weight compatible edges are normally ignored unless
-/// they are needed only for tie-breaking in a later extension.
+/// Nonpositive compatible edges are omitted. Every strictly positive chosen
+/// weight is retained, without a fixed absolute threshold.
+///
+/// # Panics
+///
+/// Panics for ragged matrices, nonfinite weights, or nonfinite intermediate
+/// arithmetic. Floating-point rounding remains part of this reference API;
+/// it is not an exact-real solver.
 ///
 /// The implementation builds a square assignment instance with dummy rows and
 /// columns and solves it with the Hungarian algorithm for minimum cost. The
@@ -35,46 +38,41 @@ pub struct WeightedMatching {
 pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> WeightedMatching {
     let left = weights.len();
     let right = weights.first().map_or(0, Vec::len);
-    if left == 0 || right == 0 {
-        return WeightedMatching::default();
-    }
     for row in weights {
         assert_eq!(
             row.len(),
             right,
             "all rows in a matching weight matrix must have the same length"
         );
+        for w in row.iter().flatten() {
+            assert!(w.is_finite(), "matching weights must be finite");
+        }
+    }
+    if left == 0 || right == 0 {
+        return WeightedMatching::default();
     }
 
-    let size = left + right;
+    let size = left
+        .checked_add(right)
+        .expect("matching matrix size overflow");
     let mut profit = vec![vec![0.0; size]; size];
 
-    let mut max_real_profit = 0.0;
+    let mut max_real_profit: Weight = 0.0;
     for i in 0..left {
         for j in 0..right {
-            match weights[i][j] {
-                Some(w) => {
-                    profit[i][j] = w;
-                    if w > max_real_profit {
-                        max_real_profit = w;
-                    }
-                }
-                None => {
-                    profit[i][j] = FORBIDDEN_PROFIT;
-                }
-            }
+            // Dummy assignments permit every nonpositive or forbidden pair
+            // to have zero profit. Reconstruction drops these pairs, exactly
+            // as in the independent Lean dummy-assignment reduction.
+            let w = weights[i][j].unwrap_or(0.0).max(0.0);
+            profit[i][j] = w;
+            max_real_profit = max_real_profit.max(w);
         }
     }
 
-    let forbidden_cost = max_real_profit.abs() + 1.0e50;
     let mut cost = vec![vec![0.0; size]; size];
     for i in 0..size {
         for j in 0..size {
-            cost[i][j] = if profit[i][j] <= FORBIDDEN_PROFIT / 2.0 {
-                forbidden_cost
-            } else {
-                max_real_profit - profit[i][j]
-            };
+            cost[i][j] = max_real_profit - profit[i][j];
         }
     }
 
@@ -85,9 +83,10 @@ pub fn max_weight_bipartite_matching(weights: &[Vec<Option<Weight>>]) -> Weighte
         let j = assignment[i];
         if j < right {
             if let Some(w) = weights[i][j] {
-                if w > EPS {
+                if w > 0.0 {
                     pairs.push((i, j));
                     weight += w;
+                    assert!(weight.is_finite(), "matching total weight overflow");
                 }
             }
         }
@@ -130,6 +129,7 @@ fn min_cost_assignment_square(cost: &[Vec<Weight>]) -> Vec<usize> {
             for j in 1..=n {
                 if !used[j] {
                     let cur = cost[i0 - 1][j - 1] - u[i0] - v[j];
+                    assert!(cur.is_finite(), "matching reduced-cost arithmetic overflow");
                     if cur < minv[j] {
                         minv[j] = cur;
                         way[j] = j0;
@@ -141,6 +141,10 @@ fn min_cost_assignment_square(cost: &[Vec<Weight>]) -> Vec<usize> {
                 }
             }
 
+            assert!(
+                delta.is_finite(),
+                "matching augmentation requires a finite cost"
+            );
             for j in 0..=n {
                 if used[j] {
                     u[p[j]] += delta;

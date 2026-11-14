@@ -128,6 +128,24 @@ recorded in `dev/benchmarks/2026-11-14-ordered-memo.md`. The source algorithm
 is now memoized but its linked-list table still pays a linear scan factor.
 End-to-end Rust bit/word cost and expected-hashing complexity remain open.
 
+## Dummy-assignment reduction accepted: 2026-11-14
+
+`WeightedMatching.AssignmentReduction.minimum_assignment_decodes` proves the
+full mathematical reduction from complete minimum-cost assignment on |L|+|R|
+rows/columns to optional partial matching with forbidden pairs and arbitrary
+signed real weights. `extend` swaps matched endpoints and fixes unmatched ones;
+`decode_weight` proves exact objective preservation on decoding. Forbidden and
+nonpositive entries have zero profit and are dropped during reconstruction.
+No numerical sentinel or magnitude assumption occurs in the real theorem.
+
+The Rust matching reference now follows that construction, retains selected
+positive weights below the old 1e-9 cutoff, rejects nonfinite inputs and totals,
+and validates ragged matrices before returning for an empty first row. The
+35-test graph suite passes, including small exhaustive matching comparisons,
+tiny-positive and large-magnitude cases, and invalid numeric inputs.
+The floating Hungarian loop itself is not verified; real arithmetic equivalence
+does not establish exactness under floating-point rounding or overflow.
+
 ## Unordered graph foundations accepted: 2026-11-14
 
 `Shared.FiniteTree` uses Mathlib trees and proves canonical unique-path
@@ -178,7 +196,7 @@ specifications and finite-existence results are not proofs of those algorithms.
 | LCBS/isomorphism's distinct ordered contract and optimum | Open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
 | Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; efficient dictionary/bit cost, input-index witnesses and API conversion remain open |
-| Hungarian/assignment reduction and actual Rust matching correctness | Open; finite exhaustive matching is proved |
+| Hungarian/assignment reduction and actual Rust matching correctness | Exact signed-real dummy reduction proved; Hungarian loop, numeric refinement and complexity open |
 | 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; rooted/source completeness and DP/optimization proofs open |
 | Verified Python adapters and qualified performance evidence | Open |
 

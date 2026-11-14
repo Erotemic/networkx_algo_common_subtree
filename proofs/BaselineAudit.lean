@@ -21,3 +21,5 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Droschinsky2018.maximum_score_antitone
 #print axioms SubtreeProofs.Rust.MemoizedOrderedSolver.maximum_common_embedding_of_trees
 #print axioms SubtreeProofs.Rust.MemoizedOrderedSolver.memoized_common_embedding_cache_bound
+
+#print axioms SubtreeProofs.WeightedMatching.AssignmentReduction.minimum_assignment_decodes

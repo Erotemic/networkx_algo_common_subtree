@@ -12,6 +12,7 @@ public import SubtreeProofs.Paper2004.ContractionOracle
 public import SubtreeProofs.Rust.ContractionBudget
 
 public import SubtreeProofs.Shared.WeightedMatching
+public import SubtreeProofs.Shared.AssignmentReduction
 public import SubtreeProofs.Paper2004.OptimalEncoding
 public import SubtreeProofs.Paper2004.Decomposition
 public import SubtreeProofs.Paper2004.TreeStateBounds

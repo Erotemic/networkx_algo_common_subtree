@@ -4,6 +4,16 @@ Status: independent graph/path specifications and finite optima proved; referenc
 Updated: 2026-11-14
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
 
+## Matching reduction accepted: 2026-11-14
+
+`WeightedMatching.AssignmentReduction.minimum_assignment_decodes` now proves
+an exact dummy-assignment reduction for optional partial matchings with
+forbidden pairs and signed real weights, without a magnitude bound. The Rust
+reference uses the same zero-profit construction in place of numeric sentinels,
+retains tiny positive selected weights, and rejects nonfinite inputs/arithmetic.
+All 35 graph-crate tests pass. Hungarian-loop correctness, floating-point
+refinement, efficient matching bounds and the graph recurrences remain open.
+
 ## Graph foundations accepted: 2026-11-14
 
 `Droschinsky2016.Specification` defines nonempty connected partial-bijection
