@@ -44,3 +44,4 @@ public import SubtreeProofs.Droschinsky2018.MappedDecomposition
 public import SubtreeProofs.Droschinsky2018.OverallOptima
 public import SubtreeProofs.Shared.RootedEvaluationOrder
 public import SubtreeProofs.Droschinsky2018.RootedDynamicProgram
+public import SubtreeProofs.Droschinsky2016.OrientedRecurrence

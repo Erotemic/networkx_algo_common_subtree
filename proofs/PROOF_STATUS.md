@@ -492,3 +492,15 @@ negative infinity through `WithBot K`; 2018 retains infinite penalties through
 identification is assumed. The full Lean library compiles after this change.
 Executable graph evaluation, checked machine arithmetic, efficient matching
 and the published optimized running times remain outstanding.
+
+## Fixed-orientation 2016 recurrence: 2026-11-14
+
+`Droschinsky2016.Oriented.rooted_matching_recurrence` extends the compiled
+whole-tree equation to every descendant pair in fixed ambient orientations.
+Each selected neighbor is proved to be an actual oriented child; branch
+restrictions retain the original roots. `familyOfMatching_rooted` and
+`familyOfMatching_score` construct a feasible parent witness with exactly
+the matching objective for every compatible matching. This supplies the
+recurrence needed by recursive evaluation without silently rerooting input
+subproblems. The full library builds (3,550 jobs); executable 2016 evaluation
+and optimized matching/cost remain outstanding.
