@@ -14,6 +14,34 @@ Program charter: [Verified common-subtree research program](verified_common_subt
 
 
 
+## Complete actual Rust assignment driver: 2026-11-14
+
+`Rust.AssignmentDriverLoop.finish_assignment_spec` proves successful,
+terminating execution of the actual complete assignment driver from actual
+row-minimum initialization. The endpoint accepts represented square input,
+the u32-sized dimension and reserved extent, and the exact initialized row
+minimum vector; it assumes no optimum, selected path or local arithmetic
+range certificate.
+
+`AssignmentDriverInvariant` tracks exactly the rows covered before the current
+row counter and proves the reserved-pointer write preserves all real entries.
+`AssignmentDriverAugmentation` feeds the actual search's constructed ranked
+tight forest into actual augmentation, extending unique row coverage and
+preserving physical vector length and tightness. `AssignmentDriverBody`
+verifies the entire source iteration and safe counter increment, while the
+complete outer loop terminates at full independent row coverage. Actual
+constant-vector contents establish its initial state.
+
+`AssignmentReturnedSpecification.Correct` specifies the actual exported
+permutation, exact integer cost, potential vector lengths, dual feasibility,
+selected-edge tightness, primal/dual equality and global minimum cost against
+every competing permutation. The actual final decoder establishes this
+specification for the driver's returned data, including the empty assignment.
+The full library builds with all six new maintained modules. The public
+`min_cost_assignment` size/square validation still needs its own source proof
+and connection to this driver; partial-matching/graph integration and the
+remaining paper optimization and cost goals remain open.
+
 ## Complete actual Rust augmenting-column search: 2026-11-14
 
 `Rust.AssignmentSearchLoop.find_augmenting_column_spec` proves successful,

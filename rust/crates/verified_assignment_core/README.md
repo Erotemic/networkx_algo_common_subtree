@@ -73,7 +73,13 @@ Current assurance is deliberately narrower than the crate's eventual target:
   a positive free column, preserves numeric and old matching tightness
   invariants, and constructs the ranked tight forest required by augmentation.
 
-The full Hungarian driver, entry-point total
+- `Rust.AssignmentDriverLoop.finish_assignment_spec` proves the complete
+  actual driver safely terminates from actual row-minimum initialization and
+  returns a globally minimum-cost permutation. Its independent returned-data
+  specification includes exact cost, exported vector lengths, feasible/tight
+  potentials and primal/dual equality, including empty input.
+
+The public entry-point validation and total
 correctness, partial-matching adapter and complexity refinement remain open.
 This crate is not yet a verified replacement for the graph crate's floating
 matching API.

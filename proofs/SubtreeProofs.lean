@@ -92,3 +92,9 @@ public import SubtreeProofs.Rust.AssignmentSearchAdjustment
 public import SubtreeProofs.Rust.AssignmentSearchTransition
 public import SubtreeProofs.Rust.AssignmentSearchBody
 public import SubtreeProofs.Rust.AssignmentSearchLoop
+public import SubtreeProofs.Rust.AssignmentReturnedSpecification
+public import SubtreeProofs.Rust.AssignmentDriverInvariant
+public import SubtreeProofs.Rust.AssignmentDriverAugmentation
+public import SubtreeProofs.Rust.AssignmentDriverInitialization
+public import SubtreeProofs.Rust.AssignmentDriverBody
+public import SubtreeProofs.Rust.AssignmentDriverLoop

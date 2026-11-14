@@ -126,12 +126,12 @@ theorem augment_matching_ranked_tight_spec {K : Type*} [Add K]
     augment_matching matched predecessor column n ⦃ output =>
       output.1 = core.result.Result.Ok () ∧
         Assignment.PartialRows n.val (filled+1) (pointers output.2) ∧
-          Assignment.TightPointers n.val matrix rows columns (pointers output.2) ⦄ := by
+          Assignment.TightPointers n.val matrix rows columns (pointers output.2) ∧ output.2.length = matched.length ⦄ := by
   obtain ⟨path,hvalid,hhead,hentries⟩ := exists_validPath predecessor n vertices rank hranked column.val hcol
   apply WP.spec_mono (augment_matching_partial_spec matched predecessor column n filled path hvalid hhead.symm hpositive
     hmatched hpred hpartial hroot hterminal)
   rintro output ⟨hsuccess,hframe,hpartial⟩
-  refine ⟨hsuccess,hpartial,frame_preserves_tight matched output.2 predecessor n path matrix rows columns hmatched hframe htight ?_⟩
+  refine ⟨hsuccess,hpartial,frame_preserves_tight matched output.2 predecessor n path matrix rows columns hmatched hframe htight ?_,hframe.1⟩
   intro col hc
   have hp := (hvalid.2.1 col hc).1
   exact hforest col (hentries col hc).1 (by omega)

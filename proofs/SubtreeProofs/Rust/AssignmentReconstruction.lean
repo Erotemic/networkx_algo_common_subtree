@@ -107,6 +107,7 @@ theorem reconstruct_assignment_minimum_spec (cost : Slice (alloc.vec.Vec I64)) (
       (fun row => u.val[row]!.val) (fun col => v.val[col]!.val) (fun col => matched.val[col]!.val)) :
     reconstruct_assignment cost u v matched n ⦃ output => ∃ result, ∃ assignment : Equiv.Perm (Fin n.val),
       output = core.result.Result.Ok result ∧ Represents cost u v n assignment result ∧
+        SubtreeProofs.Assignment.Tight (matrix cost n) (potential u n) (potential v n) assignment ∧
         result.cost.val = SubtreeProofs.Assignment.dualValue (potential u n) (potential v n) ∧
         ∀ other, result.cost.val ≤ SubtreeProofs.Assignment.cost (matrix cost n) other ⦄ := by
   obtain ⟨assignment,hinverse⟩ := hpartial.exists_permutation
@@ -118,7 +119,7 @@ theorem reconstruct_assignment_minimum_spec (cost : Slice (alloc.vec.Vec I64)) (
     simpa only [pointerMatrix,Nat.add_sub_cancel] using ht row
   apply WP.spec_mono (reconstruct_assignment_spec cost u v matched n bounds assignment hinverse)
   rintro output ⟨result,houtput,hrep⟩
-  refine ⟨result,assignment,houtput,hrep,?_,?_⟩
+  refine ⟨result,assignment,houtput,hrep,hassignment,?_,?_⟩
   · exact hrep.2.2.2.trans (SubtreeProofs.Assignment.cost_eq_dual hassignment)
   · intro other
     rw [hrep.2.2.2]
