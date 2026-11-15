@@ -217,3 +217,5 @@ public import SubtreeProofs.Rust.UniformPairs
 public import SubtreeProofs.Rust.SparseDeletionData
 
 public import SubtreeProofs.Rust.SparseDeletionEntrypoint
+
+public import SubtreeProofs.Shared.RectangularMatchingReduction

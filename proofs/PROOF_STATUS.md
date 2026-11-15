@@ -17,6 +17,35 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Production transposed-deletion restriction: mathematical justification, 2026-11-14
+
+`Shared/TransposedMatchingDeletion.transposed_repair_global_minimum` justifies
+the production family's square repair on the old occupied columns after
+zeroing one row. A root-normalized repaired dual extends to every original
+column, proving a globally minimum complete injection. Premises are the old
+rectangular feasible dual with zero unused-column potentials, the repaired
+square feasible/tight certificate and the per-row warm-update bound. No new
+global optimum or restricted/unrestricted equivalence is assumed.
+
+`dummyBaseline_spec` and `dummy_initialization` derive the actual mathematical
+minimum-baseline initialization and nonroot diagonal tightness.
+`warm_rows_adjust` preserves the root/other-row growth invariant for each
+nonnegative update containing the root. `Shared/RectangularAssignment` supplies
+rectangular weak duality and complementary slackness.
+`Shared/RectangularMatchingReduction` connects negative-profit injections to
+independently specified maximum partial matchings, including signed/forbidden
+weights, positive-pair decoding, original labels and zeroed-row deletion.
+The existing partial-bijection extension is reused, rather than assuming an
+optimal matching or duplicating the Hungarian recurrence.
+
+All **3,727 main Lean jobs** pass. Rust algorithm bodies and Python APIs stay
+fixed; the existing 231-test wheel evidence and short performance measurements
+still apply, and no benchmark was repeated for this proof-only change.
+Actual production float caller/control-flow refinement, derivation of every
+warm invariant from that source, graph schedules and runtime/resource proofs
+remain open. These are ordered-ring mathematical theorems; IEEE-754 remains
+deliberately outside initial proof scope.
+
 ## Exact matching deletion families exposed through Python: 2026-11-14
 
 `max_weight_partial_matching_deletions` now calls the existing actual Rust

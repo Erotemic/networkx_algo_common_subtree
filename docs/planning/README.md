@@ -28,6 +28,12 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
+The latest proof-only milestone justifies the production matching family's
+transposed occupied-column restriction over exact ordered arithmetic, including
+its independent partial-matching objective and deletion decoding. All 3,727 main
+Lean jobs pass. The production algorithm and its performance remain unchanged;
+actual float source/control-flow and runtime refinement are still open.
+
 Implementation stability comes from exhaustive/differential objectives, independent
 witness checks and native tests, plus short representative performance checks.
 Use small workloads and about three timed samples during development; accept
