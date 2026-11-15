@@ -31,8 +31,10 @@ partial-injection objectives and witness rescoring. Nine native entries are
 mandatory in CI. Python/PyO3 conversions remain tested, not source proved;
 no main core semantics or dependency changes. The last main Lean build remains
 3,724 jobs. [Short measurements and boundary](../dev/benchmarks/2026-11-14-exact-matching-families.md)
-record the actual installed API; older ABI3 artifact evidence does not cover
-this new entry point until the source-only rebuild is executed.
+record the actual installed API. The subsequent source-only `e79b88b` portable
+CP310 ABI3 wheel passes 231 tests on glibc 2.28 and all five CPython 3.10–3.14
+runtimes, with all nine entries mandatory and strict ABI auditing clean. This
+is packaging/conversion evidence, not an additional source proof.
 
 ## Complete actual sparse-deletion reference caller: 2026-11-14
 

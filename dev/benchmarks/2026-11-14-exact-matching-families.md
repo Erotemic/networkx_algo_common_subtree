@@ -44,6 +44,11 @@ one tiny tall case is slower. These are noisy development measurements, not a
 universal speedup or a paper complexity result. No compilation or tests ran
 concurrently. The comprehensive campaign remains deferred until the end.
 
-The previous portable ABI3 artifact predates this entry point. A source-only
-portable rebuild follows the implementation commit; its results belong in the
-packaging ledger rather than being inferred from the older wheel.
+After implementation commit `e79b88b`, a source-only CP310 ABI3 manylinux_2_28
+x86_64 build passes all **231 tests** on the glibc floor and each host CPython
+**3.10–3.14**, with zero skips. All nine native entries are required; exactly
+one `_rust.abi3.so` is present and strict ABI auditing is clean. Wheel SHA256:
+`3b178110c7457bdf116b62e6081c809c9363967f5ca42454fc1587bf5b16b40e`. Source/archive/native hashes and runtime versions
+are recorded in the [packaging ledger](../packaging/2026-11-14-manylinux.json).
+This validation did not repeat performance measurements or establish other
+platform artifacts.

@@ -809,7 +809,33 @@
     "extension_sha256": "66287efaa186f9d6df921738ffa03d37456165ad9e2f8408b84e1954c46ca7a9",
     "required_native_entries": 9,
     "core_source_proof": "SubtreeProofs.Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec",
-    "portable_abi3": "Pending source-only rebuild after implementation commit; older 228-test artifact lacks the new API.",
-    "evidence": "dev/benchmarks/2026-11-14-exact-matching-families.md"
+    "evidence": "dev/benchmarks/2026-11-14-exact-matching-families.md",
+    "portable_source_commit": "e79b88bd2365422186430c1821235f1083104184",
+    "portable_wheel_sha256": "3b178110c7457bdf116b62e6081c809c9363967f5ca42454fc1587bf5b16b40e",
+    "portable_extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+    "portable_container_tests_passed": 231,
+    "portable_tests_per_runtime": {
+      "3.10": {
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.11": {
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.12": {
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.13": {
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.14": {
+        "passed": 231,
+        "skipped": 0
+      }
+    },
+    "strict_abi3audit": "passed; one native ABI3 extension, baseline CPython 3.10; detailed audit in manylinux ledger"
   }
 }

@@ -22,10 +22,10 @@ milestones; full verification remains a final verified-release requirement.
 ## Current executed validation
 
 A fresh normal Rust+Cython wheel passes **231 tests, zero skips**, outside the
-checkout with compiled parity mandatory. The earlier source-only `d858a55` Rust-only CP310 ABI3
-wheel passes **228 tests on each CPython 3.10–3.14**, with strict ABI auditing
-clean; that earlier artifact predates the new exact-family Python entry. A source-only
-rebuild follows its implementation commit. Independent oracles cover subset/pair deletions, graph bijections/paths,
+checkout with compiled parity mandatory. A source-only `e79b88b` Rust-only CP310 ABI3
+wheel passes **231 tests on the glibc 2.28 floor and each CPython 3.10–3.14**,
+with strict ABI auditing clean. All nine native entries are mandatory, including
+the new exact-family API. Independent oracles cover subset/pair deletions, graph bijections/paths,
 assignment permutations/injections, original indices, signed/forbidden scores,
 root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.

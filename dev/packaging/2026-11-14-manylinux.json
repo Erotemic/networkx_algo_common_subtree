@@ -276,5 +276,152 @@
         }
       }
     }
+  },
+  "exact_matching_family_update": {
+    "source_commit": "e79b88bd2365422186430c1821235f1083104184",
+    "source_archive_sha256": "38d335003aabb1e08fd44c2467ca3b199002b493bcc9e854f934b10ff609daa9",
+    "source_files": 555,
+    "prebuilt_native_libraries": 0,
+    "source_date_epoch": 1794702129,
+    "wheel": "networkx_algo_common_subtree-0.2.3-cp310-abi3-manylinux_2_28_x86_64.whl",
+    "wheel_sha256": "3b178110c7457bdf116b62e6081c809c9363967f5ca42454fc1587bf5b16b40e",
+    "extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+    "native_libraries": [
+      "networkx_algo_common_subtree/_rust.abi3.so"
+    ],
+    "container_tests_passed": 231,
+    "runtimes": {
+      "3.10": {
+        "python": "3.10.20",
+        "networkx": "3.4.2",
+        "package": "/tmp/common-subtree-abi3-py310/lib/python3.10/site-packages/networkx_algo_common_subtree/__init__.py",
+        "extension": "/tmp/common-subtree-abi3-py310/lib/python3.10/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+        "extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+        "required_entry_points": [
+          "longest_common_balanced_embedding",
+          "longest_common_balanced_isomorphism",
+          "maximum_common_token_embedding",
+          "maximum_common_token_isomorphism",
+          "maximum_common_subtree_isomorphism",
+          "largest_weight_common_subtree_embedding_with_distance_penalty",
+          "min_cost_assignment",
+          "max_weight_partial_matching",
+          "max_weight_partial_matching_deletions"
+        ],
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.11": {
+        "python": "3.11.15",
+        "networkx": "3.6.1",
+        "package": "/tmp/common-subtree-abi3-py311/lib/python3.11/site-packages/networkx_algo_common_subtree/__init__.py",
+        "extension": "/tmp/common-subtree-abi3-py311/lib/python3.11/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+        "extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+        "required_entry_points": [
+          "longest_common_balanced_embedding",
+          "longest_common_balanced_isomorphism",
+          "maximum_common_token_embedding",
+          "maximum_common_token_isomorphism",
+          "maximum_common_subtree_isomorphism",
+          "largest_weight_common_subtree_embedding_with_distance_penalty",
+          "min_cost_assignment",
+          "max_weight_partial_matching",
+          "max_weight_partial_matching_deletions"
+        ],
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.12": {
+        "python": "3.12.3",
+        "networkx": "3.7",
+        "package": "/tmp/common-subtree-abi3-py312/lib/python3.12/site-packages/networkx_algo_common_subtree/__init__.py",
+        "extension": "/tmp/common-subtree-abi3-py312/lib/python3.12/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+        "extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+        "required_entry_points": [
+          "longest_common_balanced_embedding",
+          "longest_common_balanced_isomorphism",
+          "maximum_common_token_embedding",
+          "maximum_common_token_isomorphism",
+          "maximum_common_subtree_isomorphism",
+          "largest_weight_common_subtree_embedding_with_distance_penalty",
+          "min_cost_assignment",
+          "max_weight_partial_matching",
+          "max_weight_partial_matching_deletions"
+        ],
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.13": {
+        "python": "3.13.2",
+        "networkx": "3.6.1",
+        "package": "/tmp/common-subtree-exact-family-manylinux-install/networkx_algo_common_subtree/__init__.py",
+        "extension": "/tmp/common-subtree-exact-family-manylinux-install/networkx_algo_common_subtree/_rust.abi3.so",
+        "extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+        "required_entry_points": [
+          "longest_common_balanced_embedding",
+          "longest_common_balanced_isomorphism",
+          "maximum_common_token_embedding",
+          "maximum_common_token_isomorphism",
+          "maximum_common_subtree_isomorphism",
+          "largest_weight_common_subtree_embedding_with_distance_penalty",
+          "min_cost_assignment",
+          "max_weight_partial_matching",
+          "max_weight_partial_matching_deletions"
+        ],
+        "passed": 231,
+        "skipped": 0
+      },
+      "3.14": {
+        "python": "3.14.3",
+        "networkx": "3.7",
+        "package": "/tmp/common-subtree-abi3-py314/lib/python3.14/site-packages/networkx_algo_common_subtree/__init__.py",
+        "extension": "/tmp/common-subtree-abi3-py314/lib/python3.14/site-packages/networkx_algo_common_subtree/_rust.abi3.so",
+        "extension_sha256": "284b062d01e66b105eeaf7d9fe36a7ba57a1dc39efcb1e23b7be2c60ab459293",
+        "required_entry_points": [
+          "longest_common_balanced_embedding",
+          "longest_common_balanced_isomorphism",
+          "maximum_common_token_embedding",
+          "maximum_common_token_isomorphism",
+          "maximum_common_subtree_isomorphism",
+          "largest_weight_common_subtree_embedding_with_distance_penalty",
+          "min_cost_assignment",
+          "max_weight_partial_matching",
+          "max_weight_partial_matching_deletions"
+        ],
+        "passed": 231,
+        "skipped": 0
+      }
+    },
+    "required_entry_points": [
+      "longest_common_balanced_embedding",
+      "longest_common_balanced_isomorphism",
+      "maximum_common_token_embedding",
+      "maximum_common_token_isomorphism",
+      "maximum_common_subtree_isomorphism",
+      "largest_weight_common_subtree_embedding_with_distance_penalty",
+      "min_cost_assignment",
+      "max_weight_partial_matching",
+      "max_weight_partial_matching_deletions"
+    ],
+    "abi3audit": {
+      "specs": {
+        "/tmp/common-subtree-exact-family-manylinux-wheels/networkx_algo_common_subtree-0.2.3-cp310-abi3-manylinux_2_28_x86_64.whl": {
+          "kind": "wheel",
+          "wheel": [
+            {
+              "name": "_rust.abi3.so",
+              "result": {
+                "is_abi3": true,
+                "is_abi3_baseline_compatible": true,
+                "baseline": "3.10",
+                "computed": "3.10",
+                "non_abi3_symbols": [],
+                "future_abi3_objects": {}
+              }
+            }
+          ]
+        }
+      }
+    }
   }
 }
