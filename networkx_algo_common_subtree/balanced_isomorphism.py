@@ -83,8 +83,8 @@ def longest_common_balanced_isomorphism(
         then "iter-cython", otherwise "iter".
         ``"reference-rust"`` explicitly invokes the source-proved structural
         reference with ``node_affinity=None``. It is exponential and intended
-        for small inputs. Its new original-index reconstruction and Python
-        boundary are independently tested, with their source proofs still open.
+        for small inputs. The indexed/token Rust path has source proofs; the
+        Python/PyO3 conversion boundary remains independently tested.
 
     rooted : bool
         Preserve the implicit parent of the balanced forest. Top-level output

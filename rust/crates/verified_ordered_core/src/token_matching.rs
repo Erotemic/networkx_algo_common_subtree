@@ -83,8 +83,8 @@ pub fn maximum_common_token_embedding(
     })
 }
 
-/// Original-token isomorphism reference. Its structural core is source proved;
-/// the new indexed reconstruction and this composition remain tested boundaries.
+/// Original-token isomorphism reference. Lean proves total source correctness,
+/// including indexed reconstruction, token readback and rejected-input handling.
 /// `rooted` fixes the implicit parent of each input forest.
 pub fn maximum_common_token_isomorphism(
     left: &[bool],

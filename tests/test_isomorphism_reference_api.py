@@ -1,4 +1,4 @@
-"""Expose the source-proved structural reference without overstating readback proofs."""
+"""Exercise the source-proved indexed/token reference and its tested Python adapter."""
 import os
 
 import networkx as nx

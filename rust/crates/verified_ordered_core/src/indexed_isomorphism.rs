@@ -1,7 +1,7 @@
 //! Original-pair reconstruction around the source-proved structural solvers.
 //!
 //! Whole child subtrees may be removed; grandchildren are never promoted.
-//! These reconstruction functions are tested/extracted, not yet source proved.
+//! Both reconstruction functions have total source-correctness proofs in Lean.
 //! The structural optimum still comes from the existing proved reference core.
 
 use crate::{
@@ -59,7 +59,7 @@ pub fn reconstruct_any_isomorphism(
 
 /// Unweighted reference isomorphism with original preorder pair identities.
 /// `rooted` retains both implicit parents. The existing structural solvers
-/// supply the optimum; indexed reconstruction remains a separate proof gap.
+/// supply the optimum; Lean proves the composed original-index contract.
 /// This is an exponential reference, with no production runtime claim.
 pub fn maximum_common_isomorphism_indexed(
     left: &BalancedWord,

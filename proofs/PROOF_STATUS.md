@@ -17,6 +17,33 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Complete original-index/token isomorphism reference path: 2026-11-14
+
+`Rust/IndexedIsomorphismReconstruction` proves total correctness of the actual
+rooted and arbitrary-parent reconstruction functions. A success is an independent
+whole-subtree pruning with exactly the requested shape and unchanged original
+pair identities; rejection proves independent infeasibility. Parent adjacency
+is preserved: skipping a child never promotes its grandchildren.
+
+`Paper2004/IndexedIsomorphism` defines independent indexed and token maximum
+contracts. `Rust/IndexedIsomorphismEntrypoint.maximum_common_isomorphism_indexed_spec`
+composes the source-proved structural optimum, canonical numbering and both
+reconstructions. For inputs with fewer than 2^32 pairs it proves source success,
+global optimality, exact scores and original-index witnesses for both policies.
+`Rust/TokenIsomorphismEntrypoint.maximum_common_token_isomorphism_total_spec`
+composes parsing, that indexed solver and actual token emission. Every represented
+call terminates: admitted inputs return independently maximum original-token
+witnesses; excluded inputs report the correct side, with left-input precedence.
+Token indices are increasing, unique, in bounds and read back the common shape.
+Internal solver/index errors are unreachable on admitted inputs.
+
+This closes the unweighted **reference** Rust path used by Python's opt-in
+`impl="reference-rust"`. Python/PyO3 conversion remains independently tested,
+not source proved. The reference is exponential; this does not prove the
+optimized default DP, its affinity scores or its time/space bounds. No backend
+selection or executable Rust behavior changed. All **3,743 main Lean jobs**,
+both existing example suites and pinned extraction `--check` pass.
+
 ## Original-identity affinity isomorphism mathematical optima: 2026-11-14
 
 `Paper2004/AnnotatedIsomorphism` independently defines annotated ordered-forest
@@ -1833,9 +1860,9 @@ open for this extension.
 | Pinned source statement ledgers for all three papers | Added `docs/planning/paper_statement_crosswalk.md`; open source results are explicit |
 | Paper D/R/S and actual tree-parameter state bounds | Proved, including `states_closed` / `states_least` for Definition 4 |
 | Lemma 8 recurrence optimum and tree witness | Proved; actual Rust indexed LCBE reference returns exact original edge/pair identities, independently maximum tree and score; efficient reconstruction and token/vertex conversion remain open |
-| LCBS/isomorphism's distinct ordered contract and optimum | Independent root-preserving and arbitrary-root tree contracts, witness DP, separate numeric optima and actual Rust reference APIs proved through two-sided structural/Dyck representation; input-index maps, vertex-pair API conversion and optimization open |
+| LCBS/isomorphism's distinct ordered contract and optimum | Independent rooted/arbitrary-parent optima and complete structural, indexed and token Rust reference APIs proved; Python/PyO3 vertex conversion and optimized production source refinement open |
 | Computation-specific complexity | Memo operation and association-list comparison counts proved; full structural/dictionary cost and Theorem 3 runtime still open |
-| Translated Rust ordered solvers | Reference and owned-memo entry points proved, including exact updated-cache refinement and state bound; actual indexed LCBE reference also proved; efficient dictionary/bit cost, isomorphism indices and API conversion remain open |
+| Translated Rust ordered solvers | Reference and owned-memo entry points proved, including updated-cache refinement and state bound; indexed/token LCBE and isomorphism reference paths proved; efficient dictionary/bit cost and Python/PyO3 conversion remain open |
 | Hungarian/assignment reduction and actual Rust matching correctness | Exact signed ordered-ring dummy reduction and actual square signed-i64 assignment and rectangular optional signed-i64 partial-matching public APIs total correctness proved; graph integration, floating arithmetic equivalence and complexity open |
 | 2016/2018 graph/path specifications | Nonempty unrooted witnesses, real/negative-infinity scores, finite optima and 2016 induced-isomorphism bridge proved; 2016 fixed-root Lemma 2 proved; 2016 rooted matching Eq. (1) and 2018 unrooted source correspondence proved; fixed ambient-root states and both 2018 boundary recurrences proved; executable rooted 2018 score evaluator proved; optimized algorithms and actual Rust graph refinement open |
 | Verified Python adapters and qualified performance evidence | Open |
