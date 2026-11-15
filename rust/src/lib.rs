@@ -2,6 +2,9 @@ use pyo3::prelude::*;
 use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple, PyType};
 use rustc_hash::FxHashMap as HashMap;
 use std::sync::Arc;
+use verified_ordered_core::isomorphism_choices::{
+    reconstruct_isomorphism_choices, IsomorphismChoice,
+};
 
 mod graph_bindings;
 
@@ -12,10 +15,16 @@ struct MatchResult {
     s2: Vec<u32>,
 }
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default)]
+struct IsoMatch {
+    val: f64,
+    choice: Option<usize>,
+}
+
+#[derive(Clone, Copy, Debug, Default)]
 struct IsoResult {
-    any: MatchResult,
-    lvl: MatchResult,
+    any: Option<IsoMatch>,
+    lvl: Option<IsoMatch>,
 }
 
 #[derive(Clone, Debug)]
@@ -111,6 +120,7 @@ struct Solver<'py> {
 
     memo_emb: HashMap<u64, Arc<MatchResult>>,
     memo_iso: HashMap<u64, IsoResult>,
+    iso_choices: Vec<IsomorphismChoice>,
     affinity_cache: HashMap<u64, f64>,
     empty_match: Arc<MatchResult>,
 }
@@ -228,6 +238,7 @@ impl<'py> Solver<'py> {
             decomp2: HashMap::with_capacity_and_hasher(state_cap2, Default::default()),
             memo_emb: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
             memo_iso: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            iso_choices: Vec::new(),
             affinity_cache: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
             empty_match: Arc::new(MatchResult::default()),
         })
@@ -478,37 +489,22 @@ impl<'py> Solver<'py> {
         Ok(best)
     }
 
-    fn iso(&mut self, s1: u32, s2: u32) -> PyResult<IsoResult> {
+    fn iso_level(&mut self, s1: u32, s2: u32) -> PyResult<IsoMatch> {
         if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
-            return Ok(IsoResult::default());
+            return Ok(IsoMatch::default());
         }
         let key = Self::memo_key(s1, s2);
-        if let Some(found) = self.memo_iso.get(&key) {
-            return Ok(found.clone());
+        if let Some(found) = self.memo_iso.get(&key).and_then(|result| result.lvl) {
+            return Ok(found);
         }
-
         let d1 = self.decompose1(s1)?;
         let d2 = self.decompose2(s2)?;
-
-        let r_h1s2 = self.iso(d1.head, s2)?;
-        let r_t1s2 = self.iso(d1.tail, s2)?;
-        let r_s1h2 = self.iso(s1, d2.head)?;
-        let r_s1t2 = self.iso(s1, d2.tail)?;
-
-        let mut any = MatchResult::default();
-        for cand in [
-            r_h1s2.any.clone(),
-            r_t1s2.any.clone(),
-            r_s1h2.any.clone(),
-            r_s1t2.any.clone(),
-        ] {
-            if cand.val > any.val {
-                any = cand;
-            }
-        }
-
-        let mut lvl = MatchResult::default();
-        for cand in [r_s1t2.lvl.clone(), r_t1s2.lvl.clone()] {
+        // Keep the historical tie order: right-tail before left-tail, with
+        // a matched first pair replacing either only on strict improvement.
+        let drop_right = self.iso_level(s1, d2.tail)?;
+        let drop_left = self.iso_level(d1.tail, s2)?;
+        let mut lvl = IsoMatch::default();
+        for cand in [drop_right, drop_left] {
             if cand.val > lvl.val {
                 lvl = cand;
             }
@@ -516,35 +512,53 @@ impl<'py> Solver<'py> {
 
         let aff = self.affinity(d1.a, d2.a)?;
         if aff > 0.0 {
-            let r_h1h2 = self.iso(d1.head, d2.head)?;
-            let r_t1t2 = self.iso(d1.tail, d2.tail)?;
-            let mut s1v = Vec::with_capacity(r_h1h2.lvl.s1.len() + r_t1t2.lvl.s1.len() + 2);
-            s1v.push(d1.a);
-            s1v.extend_from_slice(&r_h1h2.lvl.s1);
-            s1v.push(d1.b);
-            s1v.extend_from_slice(&r_t1t2.lvl.s1);
-            let mut s2v = Vec::with_capacity(r_h1h2.lvl.s2.len() + r_t1t2.lvl.s2.len() + 2);
-            s2v.push(d2.a);
-            s2v.extend_from_slice(&r_h1h2.lvl.s2);
-            s2v.push(d2.b);
-            s2v.extend_from_slice(&r_t1t2.lvl.s2);
-            let cand = MatchResult {
-                val: r_h1h2.lvl.val + r_t1t2.lvl.val + aff,
-                s1: s1v,
-                s2: s2v,
-            };
-            if cand.val > lvl.val {
-                lvl = cand;
+            let head = self.iso_level(d1.head, d2.head)?;
+            let tail = self.iso_level(d1.tail, d2.tail)?;
+            let val = head.val + tail.val + aff;
+            if val > lvl.val {
+                let choice = self.iso_choices.len();
+                self.iso_choices.push(IsomorphismChoice {
+                    left_open: d1.a,
+                    left_close: d1.b,
+                    right_open: d2.a,
+                    right_close: d2.b,
+                    head: head.choice,
+                    tail: tail.choice,
+                });
+                lvl = IsoMatch { val, choice: Some(choice) };
             }
         }
+        self.memo_iso.entry(key).or_default().lvl = Some(lvl);
+        Ok(lvl)
+    }
 
-        if lvl.val >= any.val {
-            any = lvl.clone();
+    fn iso_any(&mut self, s1: u32, s2: u32) -> PyResult<IsoMatch> {
+        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
+            return Ok(IsoMatch::default());
         }
-
-        let out = IsoResult { any, lvl };
-        self.memo_iso.insert(key, out.clone());
-        Ok(out)
+        let key = Self::memo_key(s1, s2);
+        if let Some(found) = self.memo_iso.get(&key).and_then(|result| result.any) {
+            return Ok(found);
+        }
+        let d1 = self.decompose1(s1)?;
+        let d2 = self.decompose2(s2)?;
+        let left_head = self.iso_any(d1.head, s2)?;
+        let left_tail = self.iso_any(d1.tail, s2)?;
+        let right_head = self.iso_any(s1, d2.head)?;
+        let right_tail = self.iso_any(s1, d2.tail)?;
+        let mut any = IsoMatch::default();
+        for cand in [left_head, left_tail, right_head, right_tail] {
+            if cand.val > any.val {
+                any = cand;
+            }
+        }
+        let lvl = self.iso_level(s1, s2)?;
+        // A current-root witness wins ties against a descendant-root witness.
+        if lvl.val >= any.val {
+            any = lvl;
+        }
+        self.memo_iso.entry(key).or_default().any = Some(any);
+        Ok(any)
     }
 
     fn indices_to_seq(&self, which: u8, idxs: &[u32]) -> PyResult<PyObject> {
@@ -627,15 +641,19 @@ fn longest_common_balanced_isomorphism(
 
     let s1 = 0u32;
     let s2 = 0u32;
-    let result = solver.iso(s1, s2)?;
-    let out = if rooted { result.lvl } else { result.any };
+    let out = if rooted { solver.iso_level(s1, s2)? } else { solver.iso_any(s1, s2)? };
     if !out.val.is_finite() {
         return Err(pyo3::exceptions::PyValueError::new_err(
             "ordered affinity total overflow: score must be finite",
         ));
     }
-    let best1 = solver.indices_to_seq(1, &out.s1)?;
-    let best2 = solver.indices_to_seq(2, &out.s2)?;
+    let (left_indices, right_indices) = reconstruct_isomorphism_choices(
+        &solver.iso_choices, out.choice,
+    ).ok_or_else(|| pyo3::exceptions::PyValueError::new_err(
+        "invalid ordered isomorphism reconstruction choices",
+    ))?;
+    let best1 = solver.indices_to_seq(1, &left_indices)?;
+    let best2 = solver.indices_to_seq(2, &right_indices)?;
     Ok((best1, best2, out.val).into_py(py))
 }
 

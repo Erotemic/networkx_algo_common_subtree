@@ -9,8 +9,8 @@ milestones; full verification remains a final verified-release requirement.
 | --- | --- | --- | --- |
 | Ordered embedding, equality/custom affinity | `maximum_common_ordered_subtree_embedding`, `balanced_embedding.longest_common_balanced_embedding`; `auto` prefers legacy Rust, then Cython, then Python | Python iterative/recursive, Cython, memoized/interned PyO3 Rust; exhaustive pair-deletion oracle and differential tests | Installed balanced API: legacy Rust median 4.43x/3.25x over Python/Cython for equality, 3.87x/3.12x for fractional affinities. Production affinity implementation not source verified |
 | Ordered embedding, unweighted | Same APIs with `node_affinity=None`; opt-in `impl="verified-rust"` | Also actual verified flat-token Rust core, original-index token readback and graph adapter tests | Lean proves core optimum, witnesses, parser, memo bounds and guided reconstruction. Installed API verified backend is 6.99x slower than legacy Rust at median (1.28–137x range); it remains opt-in. Full production runtime proof open |
-| Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; independent original-parent subset enumeration checks adjacency-preserving forest feasibility and optima | Single-label exhaustive cases, multicolor equality and fractional original-node affinity comparisons pass. The source-proved structural core is callable as opt-in unweighted `reference-rust`, including original vertices; indexed readback is tested/extracted, with its source proof open. It is exponential and stays outside `auto` |
-| Root-preserving ordered isomorphism | Both isomorphism APIs accept `rooted=True`; same backends/default | Exposes the already-computed level state; 529 exhaustive small pairs, 80 fractional original-index cases, graph root retention and independent rescoring | Installed Rust median 2.16x/1.57x faster than Python/Cython on the rooted weighted suite. Existing unweighted root-pruning math/source reference is distinct from this weighted legacy production implementation; its refinement remains open |
+| Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; independent original-parent subset enumeration checks adjacency-preserving forest feasibility and optima | Production Rust now memoizes scores/choices and reconstructs once: general cases improve 2.42–2.44× in a short installed check. The integer helper is extracted/tested; production refinement remains open. The source-proved structural core stays opt-in as unweighted `reference-rust`; its indexed readback proof is open and it is exponential |
+| Root-preserving ordered isomorphism | Both isomorphism APIs accept `rooted=True`; same backends/default | Rust now computes only the level recurrence; 529 exhaustive small pairs, 80 fractional original-index cases, graph root retention and independent rescoring | The choice/level-only change improves rooted Rust 3.35–3.88× over its previous implementation in a short installed check. Existing unweighted root-pruning math/source reference is distinct from this weighted production implementation; its refinement remains open |
 | Droschinsky 2016 weighted unordered isomorphism | Public `maximum_common_subtree_isomorphism`; `auto` selects Rust, Python exhaustive fallback | Dense oriented-state Rust DP through PyO3; signed/fractional scalar or callback weights, optional label equality, empty/nonempty objectives, original-node/path witnesses and independent rescorer | Dense oriented-state DP, fixed-left rooting and matching deletion families have independent checks and a written operation-count argument for the 2016 target. Graph Rust refinement and formal optimized runtime remain open |
 | Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Fixed-left matching families and rerooted skip DP; finite nonnegative or infinite penalty; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Fixed-left matching families, rerooted skips and distinct-branch joins are implemented/tested. Installed module cases improve 19–36×; Constant-time view/branch lookup is implemented; formal runtime and graph Rust refinement remain open |
 | Rooted graph objectives, both families | Both APIs accept `roots=(u,v)` for ambient orientations and `root_to_root=True` to require the supplied pair | Rust `RootConstraint`, independent subset/bijection/path root predicates, direct NetworkX witness checks, original-node rescorers; signed and forbidden weights retained | All 50 native and 228 installed tests pass, including high-degree repair under each policy. Rooted specs/recurrences exist in Lean; production algorithm/root/Python refinement remains open; IEEE-754 correctness is outside the initial proof scope. Rooted/forced module API and callback costs are measured separately |
@@ -21,7 +21,7 @@ milestones; full verification remains a final verified-release requirement.
 
 ## Current executed validation
 
-A fresh normal Rust+Cython wheel passes **232 tests, zero skips**, outside the
+A fresh normal Rust+Cython wheel passes **234 tests, zero skips**, outside the
 checkout with compiled parity mandatory. The earlier source-only `e79b88b` Rust-only CP310 ABI3
 wheel passes **231 tests on the glibc 2.28 floor and each CPython 3.10–3.14**,
 with strict ABI auditing clean. All nine native entries are mandatory, including
@@ -30,7 +30,7 @@ assignment permutations/injections, original indices, signed/forbidden scores,
 root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.
 
-The last executed native suites pass **50 graph**, **10 ordered-core** and
+The last executed native suites pass **50 graph**, **13 ordered-core** and
 **19 exact-assignment** tests. The last full Lean build passes **3,728 jobs**.
 Both existing Lean example suites also pass. Existing mathematical and source proofs
 survive regenerated semantics for the new indexed-isomorphism functions, whose
@@ -40,6 +40,15 @@ inside it and source proved. No new end audit was run. IEEE-754 correctness
 is deliberately excluded from the initial proof scope; [arithmetic boundary](README.md#initial-proof-scope-arithmetic-boundary).
 
 ## Measured implementation evidence
+
+- **Production ordered isomorphism** now caches scores/choices and reconstructs
+  only the winner, with a dedicated level-only rooted computation. General
+  Rust improves 2.42–2.44× and rooted Rust 3.35–3.88× in a three-sample installed
+  check of equality/fractional modes. One 128-pair star observation lowers
+  whole-process peak RSS 71,292→43,604 KiB. All 234 required-native API tests,
+  13 ordered-core tests and existing Lean proofs pass; actual optimized
+  score/choice/reconstruction refinement remains open.
+  [Measurements and assurance boundary](../../dev/benchmarks/2026-11-14-ordered-iso-choices.md).
 
 - **Exact matching with no positive edge** now returns an independently maximum
   empty witness before square construction, with the actual-source total proof

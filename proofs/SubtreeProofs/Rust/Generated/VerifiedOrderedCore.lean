@@ -18,7 +18,19 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
+/- You can remove the following line by using the CLI option `-all-computable`: -/
+noncomputable section
+
 namespace verified_ordered_core
+
+/-- [alloc::vec::{alloc::vec::Vec<T>}::pop]:
+    Source: '/rustc/library/alloc/src/vec/mod.rs', lines 2901:4-2901:38
+    Name pattern: [alloc::vec::{alloc::vec::Vec<@T>}::pop]
+    Visibility: public -/
+@[rust_fun "alloc::vec::{alloc::vec::Vec<@T>}::pop"]
+axiom alloc.vec.Vec.pop
+  {T : Type _} (A : Type _) :
+  alloc.vec.Vec T → Result ((Option T) × (alloc.vec.Vec T))
 
 /-- [verified_ordered_core::BalancedWord]
     Source: 'src/lib.rs', lines 18:0-21:1
@@ -736,6 +748,123 @@ def indexed_isomorphism.maximum_common_isomorphism_indexed
           | none => ok none
           | some value4 =>
             ok (some { left := value3, right := value4, edges := value.edges })
+
+/-- [verified_ordered_core::isomorphism_choices::IsomorphismChoice]
+    Source: 'src/isomorphism_choices.rs', lines 6:0-13:1
+    Visibility: public -/
+structure isomorphism_choices.IsomorphismChoice where
+  left_open : Std.U32
+  left_close : Std.U32
+  right_open : Std.U32
+  right_close : Std.U32
+  head : Option Std.Usize
+  tail : Option Std.Usize
+
+/-- [verified_ordered_core::isomorphism_choices::Visit]
+    Source: 'src/isomorphism_choices.rs', lines 15:0-18:1 -/
+@[discriminant isize]
+inductive isomorphism_choices.Visit where
+| Pair : Std.Usize → isomorphism_choices.Visit
+| Close : Std.U32 → Std.U32 → isomorphism_choices.Visit
+
+/-- [verified_ordered_core::isomorphism_choices::older_child]:
+    Source: 'src/isomorphism_choices.rs', lines 20:0-25:1 -/
+def isomorphism_choices.older_child
+  (child : Option Std.Usize) (parent : Std.Usize) : Result Bool := do
+  match child with
+  | none => ok true
+  | some index => ok (index < parent)
+
+/-- [verified_ordered_core::isomorphism_choices::reconstruct_isomorphism_choices]: loop body 0:
+    Source: 'src/isomorphism_choices.rs', lines 46:4-79:1
+    Visibility: public -/
+@[rust_loop_body]
+def isomorphism_choices.reconstruct_isomorphism_choices_loop.body
+  (choices : Slice isomorphism_choices.IsomorphismChoice)
+  (pending : alloc.vec.Vec isomorphism_choices.Visit)
+  (left : alloc.vec.Vec Std.U32) (right : alloc.vec.Vec Std.U32) :
+  Result (ControlFlow ((alloc.vec.Vec isomorphism_choices.Visit) ×
+    (alloc.vec.Vec Std.U32) × (alloc.vec.Vec Std.U32)) (Option ((alloc.vec.Vec
+    Std.U32) × (alloc.vec.Vec Std.U32))))
+  := do
+  let i := alloc.vec.Vec.len pending
+  if i > 0#usize
+  then
+    let (o, pending1) ← alloc.vec.Vec.pop alloc.alloc.Global pending
+    match o with
+    | none => ok (done none)
+    | some value =>
+      match value with
+      | isomorphism_choices.Visit.Pair index =>
+        let i1 := Slice.len choices
+        if index >= i1
+        then ok (done none)
+        else
+          let choice ← Slice.index_usize choices index
+          let b ← isomorphism_choices.older_child choice.head index
+          if b
+          then
+            let b1 ← isomorphism_choices.older_child choice.tail index
+            if b1
+            then
+              let left1 ← alloc.vec.Vec.push left choice.left_open
+              let right1 ← alloc.vec.Vec.push right choice.right_open
+              let pending2 ←
+                match choice.tail with
+                | none => ok pending1
+                | some tail =>
+                  alloc.vec.Vec.push pending1 (isomorphism_choices.Visit.Pair
+                    tail)
+              let pending3 ←
+                alloc.vec.Vec.push pending2 (isomorphism_choices.Visit.Close
+                  choice.left_close choice.right_close)
+              match choice.head with
+              | none => ok (cont (pending3, left1, right1))
+              | some head =>
+                let pending4 ←
+                  alloc.vec.Vec.push pending3 (isomorphism_choices.Visit.Pair
+                    head)
+                ok (cont (pending4, left1, right1))
+            else ok (done none)
+          else ok (done none)
+      | isomorphism_choices.Visit.Close left_close right_close =>
+        let left1 ← alloc.vec.Vec.push left left_close
+        let right1 ← alloc.vec.Vec.push right right_close
+        ok (cont (pending1, left1, right1))
+  else ok (done (some (left, right)))
+
+/-- [verified_ordered_core::isomorphism_choices::reconstruct_isomorphism_choices]: loop 0:
+    Source: 'src/isomorphism_choices.rs', lines 46:4-79:1
+    Visibility: public -/
+@[rust_loop]
+def isomorphism_choices.reconstruct_isomorphism_choices_loop
+  (choices : Slice isomorphism_choices.IsomorphismChoice)
+  (pending : alloc.vec.Vec isomorphism_choices.Visit)
+  (left : alloc.vec.Vec Std.U32) (right : alloc.vec.Vec Std.U32) :
+  Result (Option ((alloc.vec.Vec Std.U32) × (alloc.vec.Vec Std.U32)))
+  := do
+  loop
+    (fun (pending1, left1, right1) =>
+      isomorphism_choices.reconstruct_isomorphism_choices_loop.body choices
+      pending1 left1 right1)
+    (pending, left, right)
+
+/-- [verified_ordered_core::isomorphism_choices::reconstruct_isomorphism_choices]:
+    Source: 'src/isomorphism_choices.rs', lines 35:0-79:1
+    Visibility: public -/
+def isomorphism_choices.reconstruct_isomorphism_choices
+  (choices : Slice isomorphism_choices.IsomorphismChoice)
+  (root : Option Std.Usize) :
+  Result (Option ((alloc.vec.Vec Std.U32) × (alloc.vec.Vec Std.U32)))
+  := do
+  let pending ←
+    match root with
+    | none => ok (alloc.vec.Vec.new isomorphism_choices.Visit)
+    | some index =>
+      alloc.vec.Vec.push (alloc.vec.Vec.new isomorphism_choices.Visit)
+        (isomorphism_choices.Visit.Pair index)
+  isomorphism_choices.reconstruct_isomorphism_choices_loop choices pending
+    (alloc.vec.Vec.new Std.U32) (alloc.vec.Vec.new Std.U32)
 
 /-- [verified_ordered_core::remaining_edges_after_contraction]:
     Source: 'src/lib.rs', lines 8:0-14:1

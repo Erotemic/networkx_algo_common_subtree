@@ -17,6 +17,29 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Production ordered-isomorphism choice reconstruction: 2026-11-14
+
+The weighted optimized Rust backend now memoizes scores/choice IDs and
+materializes only the selected original-token witness. Root-preserving calls
+evaluate only the level recurrence; general calls separately memoize the
+descendant-root recurrence. This aligns the production schedule with the
+existing mathematical split without modifying or weakening any theorem.
+
+The actual integer-only `isomorphism_choices` helper is used by PyO3 and included
+in pinned maintained Charon/Aeneas semantics. Its full source refinement is
+**open**. The weighted production DP/memo/choice correspondence, original-index
+witness feasibility and actual resource/runtime proofs remain open as well.
+The extraction and existing structural-reference proofs are not an end-to-end
+proof of the optimized backend. IEEE-754 remains outside initial proof scope.
+
+All **3,728 main Lean jobs**, both Lean example suites, **13 ordered-core Rust**
+and **234 required-native installed Python tests** pass. Pinned regeneration
+`--check` passes. Independent parent-preserving subset objectives and fractional
+original-index witness checks cover both root contracts; new tests preserve tie
+order and exercise invalid/long iterative arena reconstruction. Short installed
+measurements show 2.42–2.44× general and 3.35–3.88× rooted median gains, with a
+separate 39% lower whole-process peak-RSS observation. [Scope and raw evidence](../dev/benchmarks/2026-11-14-ordered-iso-choices.md).
+
 ## Actual exact matching no-positive fast path: 2026-11-14
 
 The production exact single-instance API now returns an empty matching for

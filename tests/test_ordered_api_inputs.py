@@ -106,6 +106,22 @@ def test_hashable_tokens_need_no_ordering_for_ties(algorithm):
         assert (result, score) == solve(left, right, pairs, impl=impl)
 
 
+@pytest.mark.parametrize("rooted", [False, True])
+def test_rust_isomorphism_choice_reconstruction_retains_tie_order(rooted):
+    if "iter-rust" not in _backends("isomorphism", unweighted=False):
+        pytest.skip("optional optimized Rust backend is missing")
+    solve = balanced_isomorphism.longest_common_balanced_isomorphism
+    pairs = {0: 1, 2: 3, 100: 101}
+    cases = [((0, 1, 2, 3), ((2, 3), (100, 101))),
+             ((0, 2, 3, 1), ((0, 1), (100, 101)))]
+    for left, expected in cases:
+        for _ in range(2):
+            witness, score = solve(left, (100, 101), pairs, node_affinity=lambda u, v: .125,
+                                   impl="iter-rust", rooted=rooted)
+            assert witness == expected
+            assert score == .125
+
+
 @pytest.mark.parametrize("opening,closing", [("é", "ø"), ("🌳", "🌲"), (chr(0xd800), chr(0xd801))])
 def test_full_python_unicode_witness_roundtrip(algorithm, opening, closing):
     kind, solve = algorithm

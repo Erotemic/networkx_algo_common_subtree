@@ -248,3 +248,5 @@ pub mod tokens;
 pub mod token_matching;
 
 pub mod guided;
+
+pub mod isomorphism_choices;

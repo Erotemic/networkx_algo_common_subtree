@@ -28,6 +28,13 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
+Production ordered isomorphism now caches scores/choices and reconstructs only
+the winner. Rooted calls compute only the level recurrence. All 234 required-native
+installed API tests, 13 ordered-core tests and 3,728 Lean jobs pass; the optimized
+production score/choice refinement remains open.
+[Short timing and memory evidence](../../dev/benchmarks/2026-11-14-ordered-iso-choices.md)
+records the improvement without changing backend selection.
+
 The exact matching API now bypasses square assignment for inputs without a
 positive edge; its actual-source total-correctness theorem covers that branch.
 All 3,728 main Lean jobs and 232 required-native installed Python tests pass.
