@@ -801,5 +801,15 @@
     "lean_main_jobs_passed": 3717,
     "portable_abi3": "Not rebuilt for this integer-helper update; preceding source-only d858a55 portable wheel remains the last validated ABI3 artifact.",
     "evidence": "dev/benchmarks/2026-11-14-uniform-source.md"
+  },
+  "exact_matching_family_update": {
+    "normal_wheel_sha256": "df977ab0f00db1843539253d902956d55685439997c33a8cd2bd94936f334543",
+    "normal_required_native_tests_passed": 231,
+    "tests_skipped": 0,
+    "extension_sha256": "66287efaa186f9d6df921738ffa03d37456165ad9e2f8408b84e1954c46ca7a9",
+    "required_native_entries": 9,
+    "core_source_proof": "SubtreeProofs.Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec",
+    "portable_abi3": "Pending source-only rebuild after implementation commit; older 228-test artifact lacks the new API.",
+    "evidence": "dev/benchmarks/2026-11-14-exact-matching-families.md"
   }
 }

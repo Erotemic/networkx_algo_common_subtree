@@ -17,8 +17,9 @@ __submodules__ = {
                   'maximum_common_subtree_isomorphism',
                   'largest_weight_common_subtree_embedding_with_distance_penalty',
                   'score_common_subtree_isomorphism', 'score_common_subtree_embedding'],
-    'matching': ['AssignmentResult', 'PartialMatchingResult',
-                 'min_cost_assignment', 'max_weight_partial_matching'],
+    'matching': ['AssignmentResult', 'PartialMatchingResult', 'PartialMatchingFamily',
+                 'min_cost_assignment', 'max_weight_partial_matching',
+                 'max_weight_partial_matching_deletions'],
 }
 
 from networkx_algo_common_subtree import balanced_embedding
@@ -38,8 +39,8 @@ from networkx_algo_common_subtree.unordered import (
     score_common_subtree_isomorphism, score_common_subtree_embedding,
 )
 from networkx_algo_common_subtree.matching import (
-    AssignmentResult, PartialMatchingResult, min_cost_assignment,
-    max_weight_partial_matching,
+    AssignmentResult, PartialMatchingResult, PartialMatchingFamily, min_cost_assignment,
+    max_weight_partial_matching, max_weight_partial_matching_deletions,
 )
 
 __all__ = ['balanced_embedding', 'balanced_isomorphism',
@@ -50,4 +51,5 @@ __all__ = ['balanced_embedding', 'balanced_isomorphism',
            'largest_weight_common_subtree_embedding_with_distance_penalty',
            'score_common_subtree_isomorphism', 'score_common_subtree_embedding',
            'AssignmentResult', 'PartialMatchingResult', 'min_cost_assignment',
-           'max_weight_partial_matching']
+           'max_weight_partial_matching', 'PartialMatchingFamily',
+           'max_weight_partial_matching_deletions']

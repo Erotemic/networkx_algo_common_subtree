@@ -16,14 +16,16 @@ milestones; full verification remains a final verified-release requirement.
 | Rooted graph objectives, both families | Both APIs accept `roots=(u,v)` for ambient orientations and `root_to_root=True` to require the supplied pair | Rust `RootConstraint`, independent subset/bijection/path root predicates, direct NetworkX witness checks, original-node rescorers; signed and forbidden weights retained | All 50 native and 228 installed tests pass, including high-degree repair under each policy. Rooted specs/recurrences exist in Lean; production algorithm/root/Python refinement remains open; IEEE-754 correctness is outside the initial proof scope. Rooted/forced module API and callback costs are measured separately |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching` and all-right-deletion families, exhaustive injection tests | Used internally by graph DP. Signed optional weights; f64 arithmetic, not an exact-integer proof |
 | Exact assignment / partial matching | Public `min_cost_assignment` / `max_weight_partial_matching`, Rust required | `verified_assignment_core`; signed i64, checked i128, forbidden edges, public dual certificates; independent permutation/injection tests and integer-boundary cases | Actual total-correctness Lean endpoints prove optimum and exact indices/weight. PyO3/Python conversion remains tested, not source proved |
+| Exact right-deletion matching family | Public `max_weight_partial_matching_deletions`, Rust required | Existing source-proved `verified_assignment_core::deletion`; original and all right-deleted optima with original indices; 859 exhaustive objective comparisons plus rectangular/boundary cases | Reference family recomputes affected cases. Installed three-sample comparison spans 0.81–2.62× over separate single calls; sparse repair integration remains open. [Evidence](../../dev/benchmarks/2026-11-14-exact-matching-families.md) |
 | Exact sparse augmentation / deletion repair | Standalone Rust only | Actual one-path augmentation verified; compact deletion caller implemented, 546 induced-instance tests | Complete exact reference caller proved under the copied-graph numeric input invariant, including projections, repair, original indices and duals; original family integration open. Full-matrix cut scans; published optimized sparse queue/runtime not implemented |
 
 ## Current executed validation
 
-A fresh normal Rust+Cython wheel passes **228 tests, zero skips**, outside the
+A fresh normal Rust+Cython wheel passes **231 tests, zero skips**, outside the
 checkout with compiled parity mandatory. The earlier source-only `d858a55` Rust-only CP310 ABI3
 wheel passes **228 tests on each CPython 3.10–3.14**, with strict ABI auditing
-clean. Independent oracles cover subset/pair deletions, graph bijections/paths,
+clean; that earlier artifact predates the new exact-family Python entry. A source-only
+rebuild follows its implementation commit. Independent oracles cover subset/pair deletions, graph bijections/paths,
 assignment permutations/injections, original indices, signed/forbidden scores,
 root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.

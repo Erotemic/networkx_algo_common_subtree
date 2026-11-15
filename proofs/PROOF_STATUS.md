@@ -17,6 +17,23 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Exact matching deletion families exposed through Python: 2026-11-14
+
+`max_weight_partial_matching_deletions` now calls the existing actual Rust
+`deletion::max_weight_matching_deletions`, whose total correctness is proved by
+`Rust.MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`.
+The public frozen family contains the original optimum and every right-deleted
+optimum, with original indices and exact integer totals. This is the reference
+recomputation family, not the newly proved sparse one-augmentation integration.
+
+All 231 installed Rust+Cython tests pass, including independent exhaustive
+partial-injection objectives and witness rescoring. Nine native entries are
+mandatory in CI. Python/PyO3 conversions remain tested, not source proved;
+no main core semantics or dependency changes. The last main Lean build remains
+3,724 jobs. [Short measurements and boundary](../dev/benchmarks/2026-11-14-exact-matching-families.md)
+record the actual installed API; older ABI3 artifact evidence does not cover
+this new entry point until the source-only rebuild is executed.
+
 ## Complete actual sparse-deletion reference caller: 2026-11-14
 
 `Rust/SparseDeletionEntrypoint.repair_deleted_sparse_vertex_spec` now proves

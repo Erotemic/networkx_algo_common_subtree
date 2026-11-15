@@ -17,7 +17,7 @@ python -c '
 import importlib.util
 from networkx_algo_common_subtree import _rust
 assert _rust.__file__.endswith(".abi3.so")
-assert all(hasattr(_rust, name) for name in ["longest_common_balanced_embedding", "longest_common_balanced_isomorphism", "maximum_common_token_embedding", "maximum_common_token_isomorphism", "maximum_common_subtree_isomorphism", "largest_weight_common_subtree_embedding_with_distance_penalty", "min_cost_assignment", "max_weight_partial_matching"])
+assert all(hasattr(_rust, name) for name in ["longest_common_balanced_embedding", "longest_common_balanced_isomorphism", "maximum_common_token_embedding", "maximum_common_token_isomorphism", "maximum_common_subtree_isomorphism", "largest_weight_common_subtree_embedding_with_distance_penalty", "min_cost_assignment", "max_weight_partial_matching", "max_weight_partial_matching_deletions"])
 assert all(importlib.util.find_spec("networkx_algo_common_subtree." + name) is None for name in ["balanced_embedding_cython", "balanced_isomorphism_cython"])
 '
 python -m pytest -q "{project}/tests"

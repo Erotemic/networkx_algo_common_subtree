@@ -66,6 +66,11 @@ Exact weighted matching
     assert matching.pairs == ((0, 1),)
     assert matching.weight == 5
 
+    family = common.max_weight_partial_matching_deletions([[None, 5], [-2, 3]])
+    assert family.original == matching
+    assert family.without_right[0] == matching
+    assert family.without_right[1].weight == 0
+
 These Rust-only APIs accept i64 integer entries and return exact checked i128
 totals as Python integers. Assignment requires a square matrix and returns
 attaining dual potentials; partial matching permits rectangular matrices,
@@ -73,6 +78,11 @@ forbidden ``None`` edges and unmatched vertices. The actual integer Rust cores
 have Lean correctness/refinement proofs. The Python conversion and wrappers
 are tested, and the floating-point matching used inside the graph algorithms
 has a separate assurance boundary.
+
+The exact deletion-family API returns one optimum per original right vertex,
+with original pair indices. Its existing Lean source proof covers the Rust
+family. This reference reuses unaffected optima and recomputes affected cases;
+the sparse one-augmentation family integration remains under development.
 
 
 At its core the ``maximum_common_ordered_subtree_embedding`` function is an implementation of:

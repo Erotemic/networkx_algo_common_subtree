@@ -373,34 +373,48 @@ fn min_cost_assignment(
     }
 }
 
+type ExactMatching = (Vec<(usize, usize)>, i128);
+
+fn into_matching_tuple(result: verified_assignment_core::matching::PartialMatching) -> ExactMatching {
+    (
+        result.pairs.into_iter().map(|p| (p.left, p.right)).collect(),
+        result.weight,
+    )
+}
+
+fn matching_error(error: verified_assignment_core::matching::MatchingError) -> PyErr {
+    use verified_assignment_core::matching::MatchingError;
+    match error {
+        MatchingError::NonRectangular => PyValueError::new_err("matching weights must be rectangular"),
+        MatchingError::TooLarge => PyOverflowError::new_err("matching dimension exceeds u32 capacity"),
+        MatchingError::ArithmeticOverflow => PyOverflowError::new_err("matching arithmetic overflow"),
+        MatchingError::AssignmentFailure => PyRuntimeError::new_err("assignment solver failed"),
+    }
+}
+
 #[pyfunction]
 fn max_weight_partial_matching(
     py: Python<'_>,
     weights: Vec<Vec<Option<i64>>>,
-) -> PyResult<(Vec<(usize, usize)>, i128)> {
-    use verified_assignment_core::matching::{max_weight_partial_matching, MatchingError};
-    match py.allow_threads(|| max_weight_partial_matching(&weights)) {
-        Ok(result) => Ok((
-            result
-                .pairs
-                .into_iter()
-                .map(|p| (p.left, p.right))
-                .collect(),
-            result.weight,
-        )),
-        Err(MatchingError::NonRectangular) => Err(PyValueError::new_err(
-            "matching weights must be rectangular",
-        )),
-        Err(MatchingError::TooLarge) => Err(PyOverflowError::new_err(
-            "matching dimension exceeds u32 capacity",
-        )),
-        Err(MatchingError::ArithmeticOverflow) => {
-            Err(PyOverflowError::new_err("matching arithmetic overflow"))
-        }
-        Err(MatchingError::AssignmentFailure) => {
-            Err(PyRuntimeError::new_err("assignment solver failed"))
-        }
-    }
+) -> PyResult<ExactMatching> {
+    py.allow_threads(|| verified_assignment_core::matching::max_weight_partial_matching(&weights))
+        .map(into_matching_tuple)
+        .map_err(matching_error)
+}
+
+#[pyfunction]
+fn max_weight_partial_matching_deletions(
+    py: Python<'_>,
+    weights: Vec<Vec<Option<i64>>>,
+) -> PyResult<(ExactMatching, Vec<ExactMatching>)> {
+    py.allow_threads(|| verified_assignment_core::deletion::max_weight_matching_deletions(&weights))
+        .map(|family| {
+            (
+                into_matching_tuple(family.original),
+                family.without_right.into_iter().map(into_matching_tuple).collect(),
+            )
+        })
+        .map_err(matching_error)
 }
 
 pub fn register(module: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -414,5 +428,6 @@ pub fn register(module: &Bound<'_, PyModule>) -> PyResult<()> {
     )?)?;
     module.add_function(wrap_pyfunction!(min_cost_assignment, module)?)?;
     module.add_function(wrap_pyfunction!(max_weight_partial_matching, module)?)?;
+    module.add_function(wrap_pyfunction!(max_weight_partial_matching_deletions, module)?)?;
     Ok(())
 }

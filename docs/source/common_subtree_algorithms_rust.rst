@@ -27,7 +27,7 @@ Available functionality:
 * public Python APIs with original-node mappings and aligned path witnesses;
 * finite signed scalar/callback weights, optional labels, empty/nonempty modes;
 * independent exhaustive Python references and witness rescorers;
-* separate exact integer assignment and partial matching APIs backed by the
+* separate exact integer assignment, partial matching and right-deletion-family APIs backed by the
   source-proved ``verified_assignment_core``.
 
 For example::

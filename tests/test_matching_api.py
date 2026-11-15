@@ -11,7 +11,10 @@ import networkx_algo_common_subtree as common
 def native_matching():
     try:
         from networkx_algo_common_subtree import _rust
-        assert hasattr(_rust, "min_cost_assignment")
+        assert all(hasattr(_rust, name) for name in (
+            "min_cost_assignment", "max_weight_partial_matching",
+            "max_weight_partial_matching_deletions",
+        ))
     except (ImportError, AssertionError):
         if os.environ.get("COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS") == "1":
             pytest.fail("required exact matching Rust bindings are missing")
@@ -34,26 +37,86 @@ def test_assignment_optimum_and_dual_certificate():
             assert result == common.min_cost_assignment(costs)
 
 
+def exhaustive_weight(weights, removed=None):
+    """Enumerate partial injections, independently of the assignment solver."""
+    n = len(weights)
+    m = len(weights[0]) if n else 0
+    columns = [j for j in range(m) if j != removed]
+    optimum = 0
+    for k in range(min(n, len(columns)) + 1):
+        for rows in itertools.combinations(range(n), k):
+            for selected in itertools.permutations(columns, k):
+                values = [weights[i][j] for i, j in zip(rows, selected)]
+                if all(value is not None for value in values):
+                    optimum = max(optimum, sum(values))
+    return optimum
+
+
+def assert_matching(weights, result, removed=None):
+    n = len(weights)
+    m = len(weights[0]) if n else 0
+    assert len({i for i, _ in result.pairs}) == len(result.pairs)
+    assert len({j for _, j in result.pairs}) == len(result.pairs)
+    assert all(0 <= i < n and 0 <= j < m and j != removed
+               and weights[i][j] is not None for i, j in result.pairs)
+    assert sum(weights[i][j] for i, j in result.pairs) == result.weight
+    assert result.weight == exhaustive_weight(weights, removed)
+
+
 def test_partial_matching_independent_injection_oracle():
     rng = random.Random(2016)
     for n in range(5):
         for m in range(5):
             for _ in range(4):
                 weights = [[rng.choice([None, -7, 0, 1, 9]) for _ in range(m)] for _ in range(n)]
-                # Enumerate every partial injection, independently of assignment DP.
-                optimum = 0
-                for k in range(min(n, m) + 1):
-                    for rows in itertools.combinations(range(n), k):
-                        for cols in itertools.permutations(range(m), k):
-                            values = [weights[i][j] for i, j in zip(rows, cols)]
-                            if all(v is not None for v in values):
-                                optimum = max(optimum, sum(values))
                 result = common.max_weight_partial_matching(weights)
-                assert result.weight == optimum
-                assert len({i for i, _ in result.pairs}) == len(result.pairs)
-                assert len({j for _, j in result.pairs}) == len(result.pairs)
-                assert sum(weights[i][j] for i, j in result.pairs) == optimum
+                assert_matching(weights, result)
                 assert result == common.max_weight_partial_matching(weights)
+
+
+def test_matching_deletion_family_exhaustive_original_indices():
+    for n, m in [(0, 0), (1, 0), (2, 0), (1, 1), (1, 2), (2, 1), (2, 2)]:
+        for entries in itertools.product([None, -1, 0, 1], repeat=n * m):
+            weights = [list(entries[i*m:(i+1)*m]) for i in range(n)]
+            family = common.max_weight_partial_matching_deletions(weights)
+            assert_matching(weights, family.original)
+            assert len(family.without_right) == m
+            used = {j for _, j in family.original.pairs}
+            for removed, result in enumerate(family.without_right):
+                assert_matching(weights, result, removed)
+                if removed not in used:
+                    assert result == family.original
+
+
+def test_matching_deletion_family_rectangular_ties_and_signed_weights():
+    rng = random.Random(160218)
+    cases = [[[1] * 5 for _ in range(3)], [[1] * 3 for _ in range(5)],
+             [[0] * 3 for _ in range(2)], [[None] * 4 for _ in range(3)]]
+    for n, m in [(3, 4), (4, 2), (1, 5), (5, 1)]:
+        for _ in range(6):
+            cases.append([[rng.choice([None, -9, 0, 2, 7]) for _ in range(m)] for _ in range(n)])
+    for weights in cases:
+        family = common.max_weight_partial_matching_deletions(weights)
+        assert family == common.max_weight_partial_matching_deletions(weights)
+        assert_matching(weights, family.original)
+        for removed, result in enumerate(family.without_right):
+            assert_matching(weights, result, removed)
+
+
+def test_matching_deletion_family_exact_boundaries_and_empty_sides():
+    maximum, minimum = 2**63 - 1, -2**63
+    weights = [[maximum, None, minimum], [None, maximum, 0]]
+    family = common.max_weight_partial_matching_deletions(weights)
+    assert family.original.weight == 2 * maximum
+    assert [result.weight for result in family.without_right] == [maximum, maximum, 2 * maximum]
+    assert family.without_right[0].pairs == ((1, 1),)
+    assert family.without_right[2] == family.original
+    for weights in [[], [[]], [[], []]]:
+        family = common.max_weight_partial_matching_deletions(weights)
+        assert family.original == common.PartialMatchingResult((), 0)
+        assert family.without_right == ()
+    with pytest.raises(ValueError):
+        common.max_weight_partial_matching_deletions([[1], []])
 
 
 def test_exact_integer_boundaries_and_errors():
@@ -65,7 +128,8 @@ def test_exact_integer_boundaries_and_errors():
             common.min_cost_assignment(matrix)
     with pytest.raises(ValueError):
         common.max_weight_partial_matching([[1], []])
-    for solve in [common.min_cost_assignment, common.max_weight_partial_matching]:
+    for solve in [common.min_cost_assignment, common.max_weight_partial_matching,
+                  common.max_weight_partial_matching_deletions]:
         with pytest.raises(OverflowError):
             solve([[2**63]])
         with pytest.raises(OverflowError):

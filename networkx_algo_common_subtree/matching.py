@@ -25,6 +25,17 @@ class PartialMatchingResult:
     weight: int
 
 
+@dataclass(frozen=True)
+class PartialMatchingFamily:
+    """An original matching and a tuple indexed by deleted original right vertex.
+
+    Every entry of ``without_right`` is a :class:`PartialMatchingResult`.
+    Its pairs retain the indices of the original input matrix.
+    """
+    original: PartialMatchingResult
+    without_right: tuple
+
+
 def min_cost_assignment(cost):
     """Minimize a square integer cost matrix, matching every row and column.
 
@@ -53,4 +64,30 @@ def max_weight_partial_matching(weights):
     return PartialMatchingResult(tuple(pairs), total)
 
 
-__all__ = ["AssignmentResult", "PartialMatchingResult", "min_cost_assignment", "max_weight_partial_matching"]
+def max_weight_partial_matching_deletions(weights):
+    """Solve an exact matching and every one-right-vertex-deleted instance.
+
+    Return a :class:`PartialMatchingFamily`. ``without_right[j]`` forbids all
+    edges incident to original right vertex ``j``; pair indices remain those
+    of ``weights``. Integer, forbidden-edge, empty-matching, error and tie
+    conventions match :func:`max_weight_partial_matching`. No weight is rounded
+    through floating point. The number of deleted instances is the row width;
+    ``[]`` and zero-column matrices produce an empty ``without_right`` tuple.
+
+    This Rust reference family reuses the original optimum when its witness
+    does not use the deleted vertex, and independently solves affected cases.
+    It does not yet use the sparse one-augmentation repair algorithm.
+    """
+    from . import _rust
+    original, deleted = _rust.max_weight_partial_matching_deletions(weights)
+    return PartialMatchingFamily(
+        PartialMatchingResult(tuple(original[0]), original[1]),
+        tuple(PartialMatchingResult(tuple(pairs), weight) for pairs, weight in deleted),
+    )
+
+
+__all__ = [
+    "AssignmentResult", "PartialMatchingResult", "PartialMatchingFamily",
+    "min_cost_assignment", "max_weight_partial_matching",
+    "max_weight_partial_matching_deletions",
+]
