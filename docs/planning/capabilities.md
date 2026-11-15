@@ -21,23 +21,45 @@ milestones; full verification remains a final verified-release requirement.
 
 ## Current executed validation
 
-A fresh normal Rust+Cython wheel passes **234 tests, zero skips**, outside the
-checkout with compiled parity mandatory. The earlier source-only `e79b88b` Rust-only CP310 ABI3
-wheel passes **231 tests on the glibc 2.28 floor and each CPython 3.10–3.14**,
-with strict ABI auditing clean. All nine native entries are mandatory, including
-the new exact-family API. Independent oracles cover subset/pair deletions, graph bijections/paths,
-assignment permutations/injections, original indices, signed/forbidden scores,
-root-preserving variants, invalid inputs, overflow and malformed witnesses.
-Sphinx HTML builds with warnings treated as errors.
+Validated algorithm/proof source: **`1555b645d9196f5497c9c1c50b4da22f9d5da098`**.
+Fresh source-only normal Rust+Cython and portable CP310 ABI3 manylinux_2_28 x86_64
+wheels each pass **234 installed tests, zero skips**. Normal parity requires
+compiled Rust/Cython; ABI3 checks all nine Rust entries and Cython absence.
+The identical portable wheel passes on glibc 2.28 and each CPython **3.10–3.14**;
+strict stable-ABI auditing finds no violations or version mismatches.
+[Exact hashes and runtime evidence](../../dev/packaging/2026-11-14-manylinux.json)
+are under `indexed_isomorphism_stopping_point`.
 
-The last executed native suites pass **50 graph**, **13 ordered-core** and
-**19 exact-assignment** tests. The last full Lean build passes **3,739 jobs**.
-Both existing Lean example suites also pass. Existing mathematical and source proofs
-survive regenerated semantics for the new indexed-isomorphism functions, whose
-own refinement remains open. The production f64 graph crate remains outside the
-current extraction boundary; its integer-only uniform-index constructor is now
-inside it and source proved. No new end audit was run. IEEE-754 correctness
-is deliberately excluded from the initial proof scope; [arithmetic boundary](README.md#initial-proof-scope-arithmetic-boundary).
+All **50 graph**, **13 ordered-core**, **19 exact-assignment** Rust tests,
+**3,743 Lean jobs**, both existing Lean example suites and pinned extraction
+`--check` pass. Independent contraction/recurrence enumeration covers 197 trees
+and 19,503 unordered Dyck pairs. The [printed Definition 2 counterexample](lozano_valiente_2004_containment_definition_audit.md)
+remains documented; the operational recurrence has zero mismatches.
+
+The subsequent `a4280b2` changes only oracle-job dependency installation.
+Its complete 44-test command passes in a fresh environment. The earlier
+[remote PR run](https://github.com/Erotemic/networkx_algo_common_subtree/actions/runs/43651015446)
+passed Lean, Rust, normal wheels, ABI3 and five runtime jobs; the oracle job
+failed before collection because `xdoctest` was absent, now fixed locally.
+A remote run of these new commits is still outstanding. The final checkpoint
+commit is documentation/evidence only; no new timing campaign was run.
+
+| Assurance boundary | Established | Still required for the final verified release |
+| --- | --- | --- |
+| Unweighted ordered references | Mathematical optima; actual Rust embedding and rooted/general isomorphism through original-index/token APIs | Python/PyO3 vertex conversion; production optimized algorithms and bounds |
+| Affinity ordered isomorphism | Independent original-identity optima for both policies; conditional actual append/materializer correspondence | Actual optimized DP/memo feasibility, scores and witness provenance |
+| Production ordered embedding | Usable optimized Rust/Cython/Python, independent objective and witness checks | Production source refinement including affinity extensions and complete bounds |
+| Exact matching | Actual total-correctness proofs for assignment, partial matching and reference deletion family | Optimized family integration, applicable resource bounds and binding correspondence |
+| Droschinsky 2016/2018 | Independent graph/path specifications, mathematical recurrence proofs, usable optimized Rust APIs and exhaustive checks | Production source/schedule and witness refinement; formal time/space bounds |
+| Distribution | Fresh normal and ABI3 Linux builds, installed tests, stable-ABI audit | Current-revision remote CI, remaining platforms and final reproducibility requirements |
+
+The production floating graph crate remains outside the current extraction
+boundary; its integer-only uniform-index constructor is source proved.
+IEEE-754 correctness is deliberately excluded from the initial proof scope;
+[arithmetic boundary](README.md#initial-proof-scope-arithmetic-boundary).
+These are partially verified development artifacts. No production defaults
+changed; Cython remains available. The precise proof endpoints and resume
+commands are in [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md).
 
 ## Measured implementation evidence
 

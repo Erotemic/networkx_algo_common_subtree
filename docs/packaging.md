@@ -51,7 +51,7 @@ python -m cibuildwheel --platform linux \
 
 The profile pins the official PyPA image by digest and Rust 1.95.0. It enables
 the actual PyO3 limited API, repairs/checks the Linux symbol policy, audits the
-stable ABI, requires all seven Rust entry points and Cython absence, and runs
+stable ABI, requires all nine Rust entry points and Cython absence, and runs
 the full test directory inside the manylinux container. CI uses this profile,
 then tests the identical artifact on CPython 3.10–3.14. The normal Cython matrix
 stays available for strict compiled parity.
@@ -102,7 +102,7 @@ the independent objective/witness oracles, integer boundaries and error cases.
 and extension hashes, runtime/library versions, required entry points and the
 raw ABI audit. CI now builds/audits one wheel and tests it across the same
 runtime matrix; the existing separate job requires Rust **and Cython** parity.
-Remote execution of the new CI configuration remains pending.
+The earlier remote run has now been inspected; see the current checkpoint below.
 
 Subsequent root-preserving isomorphism and token/Unicode updates pass **161
 tests, zero skips** in the normal wheel and on each ABI3 runtime. Their wheel,
@@ -129,7 +129,8 @@ All scores agree and graph witnesses are independently rescored.
 
 The earlier local builds used `linux_x86_64`; the portable Linux path is now
 validated above. macOS/Windows stable-ABI artifacts, wider architectures and
-their runtime tests remain packaging work. Remote CI execution remains pending.
+their runtime tests remain packaging work. Current-revision remote CI remains pending;
+the earlier run and its actual oracle-job failure are recorded below.
 The default Cython-inclusive distribution is unchanged. These development artifacts are
 partially verified; complete production-source and applicable complexity
 proofs still block the final verified release.
@@ -145,3 +146,30 @@ reference API and uniform child-matching optimization. All 228 tests pass on
 glibc 2.28 and each CPython 3.10–3.14; all eight native entry points are
 mandatory, Cython is absent, and strict ABI auditing passes. The implementation
 was committed before this validation. See the portable ledger for exact hashes.
+
+## Current source checkpoint, 2026-11-14
+
+Fresh source-only archives of `1555b645d9196f5497c9c1c50b4da22f9d5da098`
+include all ordered-isomorphism production changes and the completed reference
+source proofs. The normal Rust+Cython wheel passes **234 installed tests with
+compiled parity mandatory**. The portable Rust-only wheel passes **234 tests
+on glibc 2.28 / Python 3.10.22**, then the same wheel passes **234 tests, zero
+skips on each host CPython 3.10–3.14**. All nine native entry points are checked.
+Strict ABI auditing reports a Python 3.10 baseline and zero violations/mismatches.
+The archive contains no native library; the portable wheel contains only
+`networkx_algo_common_subtree/_rust.abi3.so`.
+
+Normal wheel SHA256: `ab506654a207c25a9f2af0a7960479af881fcd7c44c9df0033e6db6bac5226b9`.
+Portable wheel SHA256: `d297d9f9fd0fb2db88dc8f9b60f5accfe6c5b1805a21836d1a9099d1575961b2`.
+The existing portable ledger's `indexed_isomorphism_stopping_point` entry records
+source/archive hashes, native payload hashes, runtime versions, audit and tests.
+This run did not repeat the historical byte-reproducibility experiment or timings.
+
+[Earlier remote run 43651015446](https://github.com/Erotemic/networkx_algo_common_subtree/actions/runs/43651015446)
+on PR head `f9b4afe` / merge `382e29c` passed Lean/extraction, Rust, normal wheels,
+ABI3 build and all five runtime jobs. Its independent-oracle job failed before
+collection: it installed pytest without the configured xdoctest plugin.
+`a4280b270075ae8aaf2cb5987a56606e56e5f0df` fixes dependency installation using the
+existing requirements files; all 44 tests pass in a fresh local environment.
+That commit changes only CI configuration. The subsequent checkpoint changes
+only documentation/evidence. A fresh remote run remains outstanding.

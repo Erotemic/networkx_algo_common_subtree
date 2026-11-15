@@ -17,6 +17,68 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Validated stopping checkpoint: 2026-11-14
+
+The exact validated source is **`1555b645d9196f5497c9c1c50b4da22f9d5da098`**.
+Fresh source-only archives contain 595 files and no native libraries. Full Lean
+build: **3,743 jobs**, both example suites pass; pinned extraction matches.
+Rust suites: **13 ordered**, **19 exact assignment**, **50 graph** tests pass.
+The normal Rust+Cython wheel passes **234 installed tests, zero skips**, with
+compiled parity mandatory. The portable CP310 ABI3 manylinux_2_28 x86_64 wheel
+passes **234 tests, zero skips** on glibc 2.28 and each CPython 3.10–3.14.
+All nine native entries are checked; ABI3 contains no Cython library, and strict
+ABI auditing finds zero violations/mismatches. Exact source/artifact hashes and
+runtime evidence are in the existing [packaging ledger](../dev/packaging/2026-11-14-manylinux.json),
+under `indexed_isomorphism_stopping_point`.
+
+The subsequent **`a4280b270075ae8aaf2cb5987a56606e56e5f0df`** changes only CI
+oracle dependency installation. Its complete 44-test oracle command passes in
+a fresh environment. It changes no algorithm, binding, test or Lean source.
+The evidence/checkpoint commit after it changes documentation/JSON only.
+
+Remote CI is no longer uninspected: [run 43651015446](https://github.com/Erotemic/networkx_algo_common_subtree/actions/runs/43651015446)
+on the earlier PR head `f9b4afe` / merge `382e29c` passed Lean/extraction, Rust,
+normal-wheel, ABI3 build and all five runtime jobs. Its oracle job failed before
+collection because `xdoctest` was absent. `a4280b2` fixes that actual failure;
+a remote run of the new commits remains outstanding. Local evidence does not
+claim a fresh remote success, macOS/Windows artifacts or a fully verified release.
+
+Independent checks again cover 197 ordered trees and **19,503** unordered Dyck
+pairs with zero operational-recurrence mismatches. The printed Definition 2
+counterexample **`001011 → 0011`** remains established and documented in the
+[containment audit](../docs/planning/lozano_valiente_2004_containment_definition_audit.md).
+No new benchmark was needed: executable algorithms and backend defaults are
+unchanged. Prior small-sample performance evidence remains in `capabilities.md`.
+
+Remaining release blockers are **optimized ordered DP/memo and witness provenance**,
+**production Droschinsky 2016/2018 source refinement**, applicable **formal time/space
+bounds**, production affinity-extension correspondence, Python/PyO3 conversion
+assurance and the remaining distribution/reproducibility/platform work. Exact
+matching/reference proofs and conditional production helper proofs do not close
+those boundaries. IEEE-754 remains excluded from the initial proof scope.
+
+Resume the maintained local validation from this checkout with:
+
+```bash
+set -e
+lake -d proofs build
+(cd proofs && lake env lean Tests/RootedDynamicProgram.lean && lake env lean Tests/OrderedIsomorphism.lean)
+dev/regenerate_rust_lean.sh --check
+for crate in verified_ordered_core verified_assignment_core common_subtree_algorithms; do
+    cargo test --locked --manifest-path "rust/crates/$crate/Cargo.toml"
+done
+python -m pip install -r requirements/tests.txt -r requirements/runtime.txt
+python proofs/checks/check_tree_contraction_oracle.py
+python proofs/checks/check_paper_dp_recurrence.py
+```
+
+Build/install the normal wheel and run tests outside the checkout with
+`COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1`; use the existing
+[packaging commands](../docs/packaging.md) for fresh source archives and the
+portable profile. The next proof target is production DP feasibility/optimality
+and witness provenance; the generic complexity campaign, sparse-family
+integration, default switching and Cython retirement remain deferred.
+
 ## Complete original-index/token isomorphism reference path: 2026-11-14
 
 `Rust/IndexedIsomorphismReconstruction` proves total correctness of the actual
@@ -2508,7 +2570,7 @@ push-loop proof. The full library builds (3,556 jobs).
 The Hungarian phase invariants, numeric bounds, full Rust entry-point optimum
 and total correctness, partial-matching adapter and cost refinement remain open.
 The floating graph API has not been replaced. CI includes the new core's tests;
-its first remote run remains pending.
+its earlier remote run is now inspected; see the validated stopping checkpoint above.
 
 ## Executable 2016 and unrooted baselines: 2026-11-14
 
