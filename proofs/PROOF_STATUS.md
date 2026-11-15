@@ -17,6 +17,37 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Actual production ordered-isomorphism materializer proved: 2026-11-14
+
+`Rust.IsomorphismChoices.reconstruct_isomorphism_choices_spec` now proves the
+actual production helper safely terminates and emits exactly the independent
+arena forest's provided token labels in both inputs, in open/head/close/tail
+order. Premises are earlier-child references, a valid optional root and a
+representable output size. No source-success/output/optimality oracle is assumed.
+
+`IsomorphismChoiceModel` defines the independent well-founded forest and task
+interpretation. `IsomorphismChoiceStack` proves actual active-prefix overwrite,
+append and enqueue behavior. `IsomorphismChoiceEmission` proves the actual loop
+preserves output/remaining-forest equality, emits one token per side and safely
+decreases remaining output length. The public entry point composes initialization
+and loop correctness, including the empty arena/root.
+
+The earlier extraction of `Vec::pop` was an unmodeled external, not a source
+proof. The actual helper now uses a logical active prefix of reusable vector
+slots; regenerated semantics remove that dependency without adding a pop
+axiom/specification or changing pins. Existing proofs are preserved.
+
+All **3,732 main Lean jobs**, both example suites, **13 ordered-core Rust** and
+**234 required-native installed Python tests** pass. Pinned extraction `--check`
+passes. [A single short regression check](../dev/benchmarks/2026-11-14-iso-choice-stack.md)
+records timing variance after the stack representation change.
+
+The caller must still be proved to construct a feasible/optimal choice forest
+with valid original-input token labels. Weighted score/memo correspondence,
+Python conversions and complete resource/runtime refinement remain open. This
+helper theorem does not establish parent constraints, uniqueness or optimality
+of arbitrary supplied arenas. IEEE-754 remains outside initial scope.
+
 ## Production ordered-isomorphism choice reconstruction: 2026-11-14
 
 The weighted optimized Rust backend now memoizes scores/choice IDs and

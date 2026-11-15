@@ -1,0 +1,61 @@
+{
+  "before_source_commit": "028727a",
+  "python": "3.13.2 (main, Mar 17 2025, 21:02:54) [Clang 20.1.0 ]",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "extension_path": "/tmp/common-subtree-iso-choice-stack-install/networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-gnu.so",
+  "extension_sha256": "3cf9d33347fb26e9b0709ffca84bc06dcf6ab2ec1cd8aab36b5e0982ee39c6f7",
+  "wheel_sha256": "08a09caf24e4241cb8399988ce60cb2b79e4a3d08a9cf60317ee833872229d31",
+  "repeat": 3,
+  "warmup": 1,
+  "sizes": [
+    8,
+    16
+  ],
+  "shapes": [
+    "random",
+    "chain",
+    "star",
+    "balanced",
+    "asymmetric"
+  ],
+  "random_cases_per_size": 1,
+  "seed": 0,
+  "ratios": [
+    {
+      "affinity": "eq",
+      "root_contract": "general",
+      "old_over_new_median": 1.0502653051727422,
+      "minimum": 0.9527317372621241,
+      "maximum": 1.5044595314164004,
+      "scores_equal": true
+    },
+    {
+      "affinity": "eq",
+      "root_contract": "rooted",
+      "old_over_new_median": 1.0748400295437812,
+      "minimum": 0.7290554962646745,
+      "maximum": 1.8942568237393431,
+      "scores_equal": true
+    },
+    {
+      "affinity": "weighted",
+      "root_contract": "general",
+      "old_over_new_median": 0.9793088806717435,
+      "minimum": 0.7720031754432388,
+      "maximum": 1.025793564635894,
+      "scores_equal": true
+    },
+    {
+      "affinity": "weighted",
+      "root_contract": "rooted",
+      "old_over_new_median": 1.113301036693577,
+      "minimum": 0.7972782524442878,
+      "maximum": 1.665302782324059,
+      "scores_equal": true
+    }
+  ],
+  "source_sha256": {
+    "rust/src/lib.rs": "f9117b3ae40138343d276153dd12cea153ca6499764d3ebfa98747cde68dea5b",
+    "rust/crates/verified_ordered_core/src/isomorphism_choices.rs": "e129e1d79bc63733895d325663b3d1cd8cc9915390a1662de1257d24d6b86eb8"
+  }
+}

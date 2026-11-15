@@ -24,14 +24,25 @@ fn older_child(child: Option<usize>, parent: usize) -> bool {
     }
 }
 
+// Keep an active prefix of reusable slots. The pinned extraction backend
+// supports these indexed reads/writes; Vec::pop is an unmodeled external.
+fn push_visit(mut pending: Vec<Visit>, length: usize, visit: Visit) -> (Vec<Visit>, usize) {
+    if length < pending.len() {
+        pending[length] = visit;
+    } else {
+        pending.push(visit);
+    }
+    (pending, length + 1)
+}
+
 /// Emit one selected ordered forest, in original token coordinates.
 ///
 /// Empty choices emit empty vectors. Invalid roots and nondecreasing child
 /// links return `None`, preventing cycles even for externally built arenas.
 /// Valid children are emitted as open, head, close, tail; shared choices are
 /// expanded at each occurrence. Output storage depends on the chosen witness,
-/// rather than all DP states. This helper is extracted/tested; its full source
-/// refinement is still open.
+/// rather than all DP states. The actual-source Lean proof derives emitted
+/// tokens and termination from valid earlier-child links and output bounds.
 pub fn reconstruct_isomorphism_choices(
     choices: &[IsomorphismChoice],
     root: Option<usize>,
@@ -43,17 +54,17 @@ pub fn reconstruct_isomorphism_choices(
     }
     let mut left = Vec::new();
     let mut right = Vec::new();
-    while pending.len() > 0 {
-        let visit = match pending.pop() {
-            None => return None,
-            Some(value) => value,
-        };
+    let mut length = pending.len();
+    while length > 0 {
+        length -= 1;
+        let visit = &pending[length];
         match visit {
             Visit::Close(left_close, right_close) => {
-                left.push(left_close);
-                right.push(right_close);
+                left.push(*left_close);
+                right.push(*right_close);
             }
             Visit::Pair(index) => {
+                let index = *index;
                 if index >= choices.len() {
                     return None;
                 }
@@ -65,12 +76,20 @@ pub fn reconstruct_isomorphism_choices(
                 right.push(choice.right_open);
                 match choice.tail {
                     None => {}
-                    Some(tail) => pending.push(Visit::Pair(tail)),
+                    Some(tail) => {
+                        (pending, length) = push_visit(pending, length, Visit::Pair(tail))
+                    }
                 }
-                pending.push(Visit::Close(choice.left_close, choice.right_close));
+                (pending, length) = push_visit(
+                    pending,
+                    length,
+                    Visit::Close(choice.left_close, choice.right_close),
+                );
                 match choice.head {
                     None => {}
-                    Some(head) => pending.push(Visit::Pair(head)),
+                    Some(head) => {
+                        (pending, length) = push_visit(pending, length, Visit::Pair(head))
+                    }
                 }
             }
         }

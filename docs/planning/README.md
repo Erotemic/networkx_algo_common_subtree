@@ -28,6 +28,13 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
+The actual integer materializer used by production ordered isomorphism now has
+a source proof of exact token emission and safe termination from valid
+arena/root/output bounds. All 3,732 main Lean jobs and 234 required-native
+installed API tests pass. DP arena construction, feasibility/optimality and
+complete runtime refinement remain open.
+[Source theorem and the small stack-representation check](../../dev/benchmarks/2026-11-14-iso-choice-stack.md).
+
 Production ordered isomorphism now caches scores/choices and reconstructs only
 the winner. Rooted calls compute only the level recurrence. All 234 required-native
 installed API tests, 13 ordered-core tests and 3,728 Lean jobs pass; the optimized

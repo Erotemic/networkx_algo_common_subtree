@@ -1,0 +1,182 @@
+[
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "random_pairs=0008_case=000",
+    "pairs1": 8,
+    "pairs2": 8,
+    "impl": "iter-rust",
+    "seconds": 1.0998e-05,
+    "samples_seconds": [
+      1.6895e-05,
+      1.0998e-05,
+      9.326e-06
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 0.625,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "chain_pairs=0008",
+    "pairs1": 8,
+    "pairs2": 8,
+    "impl": "iter-rust",
+    "seconds": 1.097e-05,
+    "samples_seconds": [
+      1.1922e-05,
+      1.097e-05,
+      9.93e-06
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 2.0,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "star_pairs=0008",
+    "pairs1": 8,
+    "pairs2": 8,
+    "impl": "iter-rust",
+    "seconds": 1.5631e-05,
+    "samples_seconds": [
+      1.6268e-05,
+      1.5631e-05,
+      1.5602e-05
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 2.0,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "balanced_pairs=0008",
+    "pairs1": 8,
+    "pairs2": 8,
+    "impl": "iter-rust",
+    "seconds": 1.3224e-05,
+    "samples_seconds": [
+      1.3682e-05,
+      1.2399e-05,
+      1.3224e-05
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 2.0,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "asymmetric_pairs=0008",
+    "pairs1": 8,
+    "pairs2": 4,
+    "impl": "iter-rust",
+    "seconds": 6.364e-06,
+    "samples_seconds": [
+      6.976e-06,
+      6.314e-06,
+      6.364e-06
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 0.75,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "random_pairs=0016_case=000",
+    "pairs1": 16,
+    "pairs2": 16,
+    "impl": "iter-rust",
+    "seconds": 1.7898e-05,
+    "samples_seconds": [
+      1.7898e-05,
+      1.743e-05,
+      4.9579e-05
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 1.625,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "chain_pairs=0016",
+    "pairs1": 16,
+    "pairs2": 16,
+    "impl": "iter-rust",
+    "seconds": 2.2706e-05,
+    "samples_seconds": [
+      1.9319e-05,
+      2.2706e-05,
+      2.7401e-05
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 4.0,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "star_pairs=0016",
+    "pairs1": 16,
+    "pairs2": 16,
+    "impl": "iter-rust",
+    "seconds": 4.466e-05,
+    "samples_seconds": [
+      4.5366e-05,
+      4.466e-05,
+      4.3997e-05
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 4.0,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "balanced_pairs=0016",
+    "pairs1": 16,
+    "pairs2": 16,
+    "impl": "iter-rust",
+    "seconds": 2.461e-05,
+    "samples_seconds": [
+      2.583e-05,
+      2.461e-05,
+      2.431e-05
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 4.0,
+    "error": null
+  },
+  {
+    "kind": "isomorphism",
+    "rooted": true,
+    "node_affinity": "weighted",
+    "case": "asymmetric_pairs=0016",
+    "pairs1": 16,
+    "pairs2": 8,
+    "impl": "iter-rust",
+    "seconds": 8.366e-06,
+    "samples_seconds": [
+      8.853e-06,
+      8.366e-06,
+      8.038e-06
+    ],
+    "speedup_vs_reference": 1.0,
+    "value": 0.75,
+    "error": null
+  }
+]

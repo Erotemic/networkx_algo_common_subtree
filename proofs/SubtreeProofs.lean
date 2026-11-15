@@ -219,3 +219,5 @@ public import SubtreeProofs.Rust.SparseDeletionData
 public import SubtreeProofs.Rust.SparseDeletionEntrypoint
 
 public import SubtreeProofs.Shared.RectangularMatchingReduction
+
+public import SubtreeProofs.Rust.IsomorphismChoiceEntrypoint
