@@ -215,3 +215,5 @@ public import SubtreeProofs.Rust.SparseDeletionVertices
 public import SubtreeProofs.Rust.UniformPairs
 
 public import SubtreeProofs.Rust.SparseDeletionData
+
+public import SubtreeProofs.Rust.SparseDeletionEntrypoint

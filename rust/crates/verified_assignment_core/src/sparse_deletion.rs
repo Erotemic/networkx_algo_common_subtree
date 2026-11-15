@@ -1,7 +1,7 @@
 //! One-path repair after deleting the same original row and column.
 //!
-//! The projection and warm-start caller are current source-refinement work.
-//! Its search and path flip use the separately verified sparse augmentation.
+//! The Lean source proof covers projection, warm starts, one augmentation and
+//! original-index readback under a feasible/tight numeric input invariant.
 
 use crate::{sparse::square_shape, sparse_search::{augment_sparse_permutation, inverse_completed}, AssignmentError};
 

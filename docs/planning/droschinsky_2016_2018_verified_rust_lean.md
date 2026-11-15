@@ -68,7 +68,7 @@ represented scalars and its exact correspondence with this equivalence.
 The actual Rust `sparse_deletion::repair_deleted_sparse_vertex` now projects
 the graph/potentials, bypass-completes the surviving assignment, reuses fixed
 deletions or calls one verified sparse augmentation, and exports original row
-and column indices. It translates, and all 17 exact-core tests pass,
+and column indices. It translates, and all 18 exact-core tests pass,
 including 546 deletions of certified old optima through dimension six against
 exhaustive induced-graph optima, both reuse/repair branches, feasible/tight
 returned duals and malformed inputs. Actual source projection, bypass completion
@@ -76,9 +76,17 @@ and original-index export are now proved in `Rust/SparseDeletionProjection`,
 `SparseDeletionSeed`, `SparseDeletionReadback`, `SparseDeletionWarmStart` and
 `SparseDeletionData`. Independent finite permutation/matrix and optimum
 correspondence closes the helpers' input premises. All 3,722 main Lean jobs and
-both example suites pass. The complete caller's source numeric-state setup and
-branch composition, original partial-matching family integration and optimized
-runtime remain open; these helper proofs do not verify the f64 graph kernel.
+both example suites passed at that helper milestone. The subsequent
+`SparseDeletionEntrypoint.repair_deleted_sparse_vertex_spec` now closes the
+complete actual caller under `DeletionReady`: old feasible/tight permutation,
+nonpositive optional costs/zero identities, and the paper's numeric invariant
+with zero initial baselines at the removed vertex. New numeric state, success,
+independent optimum, returned duals and original labels are derived for both
+branches. All 3,724 main Lean jobs, both examples and 18 exact-core tests pass;
+six new paper-baseline fixtures include `i64::MAX` costs and exhaustive optima.
+Pinned extraction reproduces. Original copied-graph matching-family source
+construction/integration and optimized sparse queue/runtime remain open;
+this theorem does not verify the distinct f64 graph kernel.
 
 ## Actual single-path sparse augmentation verified end to end: 2026-11-14
 
@@ -102,7 +110,7 @@ local-bound derivation, exact prefix writes and complete loop termination are
 proved in `SparsePathFlipInvariant`, `Bounds`, `Preservation` and `Loop`.
 
 This closes the actual generic one-deficit augmentation source refinement.
-The copied-graph initialization/deletion caller, exact original matching
+The copied-graph source initialization, exact original matching
 family integration and the paper's optimized sparse priority-queue/runtime
 remain open. The current selector scans the whole optional matrix at each
 step, so the verified reference makes no published optimized cost claim.
@@ -1628,7 +1636,8 @@ and optimized matching/cost remain outstanding.
 list equals Mathlib's canonical `Fin.succAbove` enumeration.
 `Rust/SparseDeletionVertices.surviving_vertices_spec` verifies the actual Rust
 loop returns precisely that filtered list for every represented extent and
-removed index. The deletion caller's remaining projection/refinement work is
-open. Substantial further proof development is deferred under the updated
-software-first development sequence; complete verification remains a final
-verified-release requirement.
+removed index. The complete caller is now proved by
+`Rust.SparseDeletion.repair_deleted_sparse_vertex_spec` under its explicit old
+numeric invariant. Original matching-family source integration and optimized
+queue/runtime remain open. Software correctness and short performance checks
+remain priorities; complete verification is a final-release requirement.

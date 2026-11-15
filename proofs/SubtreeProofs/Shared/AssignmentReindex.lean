@@ -88,6 +88,16 @@ theorem FeasibleOn.reindex (equiv : A ≃ B) {edges : B → B → Prop} {matrix 
       (fun row => rows (equiv row)) (fun column => columns (equiv column)) :=
   fun row column he => h (equiv row) (equiv column) he
 
+/-- Tightness is preserved by the same coordinate equivalence as feasibility
+and the independent assignment objective. -/
+theorem Tight.reindex (equiv : A ≃ B) {matrix : B → B → K} {rows columns : B → K}
+    {assignment : Equiv.Perm B} (h : Tight matrix rows columns assignment) :
+    Tight (fun row column => matrix (equiv row) (equiv column))
+      (fun row => rows (equiv row)) (fun column => columns (equiv column))
+      (equiv.trans (assignment.trans equiv.symm)) := by
+  intro row
+  simpa only [Equiv.trans_apply,Equiv.apply_symm_apply] using h (equiv row)
+
 theorem BiEnvelope.reindex (equiv : A ≃ B) {initialRows initialColumns rows columns : B → K} {increment : K}
     (h : BiEnvelope initialRows initialColumns rows columns increment) :
     BiEnvelope (fun row => initialRows (equiv row)) (fun column => initialColumns (equiv column))

@@ -17,6 +17,38 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Complete actual sparse-deletion reference caller: 2026-11-14
+
+`Rust/SparseDeletionEntrypoint.repair_deleted_sparse_vertex_spec` now proves
+the actual public Rust caller succeeds from `DeletionReady`: a represented
+feasible/tight old permutation, nonpositive optional costs with zero identity
+edges, the paper's two-sided numeric envelope/accounting, and zero initial
+row/column baselines at the removed vertex. These are old-input conditions;
+no new optimum, repair path or source-success certificate is supplied.
+
+`SparseDeletionState.projected_numeric_state` derives the actual projected
+feasibility, envelope, exact dual accounting and surviving-dimension bound.
+The complete caller then proves both fixed-vertex reuse and nonfixed one-path
+augmentation. `CorrectDeletion` includes canonical original vertices, exact
+output lengths, original-column witnesses, independent minimum assignment,
+feasible tight returned integer duals and the exact repaired-flag meaning.
+This covers the exact integer reference caller under its stated input model;
+it does not verify the distinct production f64 family or its graph callers.
+
+All **3,724 main Lean jobs**, both Lean example suites, and **18 exact-core
+Rust tests** pass. Pinned extraction `--check` reproduces the maintained source
+semantics. Six new zero-baseline 4-cycle deletions exercise the intended
+initialization regime, forbidden edges, positive repair adjustments and
+`i64::MAX` costs against independent induced-permutation optima, alongside
+the existing 546 broader deletion cases. Rust algorithm bodies and Python
+interfaces are unchanged, so no performance run was repeated.
+
+The original partial-matching copied-graph family still needs source
+initialization/construction and integration; the optimized sparse queue and
+runtime theorem remain open. Allocation/OOM/resource traces and IEEE-754 are
+not asserted by this functional integer-caller theorem. IEEE-754 remains
+intentionally outside initial scope.
+
 ## Actual sparse-deletion projection, seed and readback: 2026-11-14
 
 The actual Rust row/matrix/potential projection loops now have total source
@@ -40,9 +72,9 @@ Production Rust/Python sources and measured targets are unchanged. The last
 software validation remains 228 required-native Python, 50 graph Rust and 17
 exact-core tests; no new performance run is needed for this proof-only step.
 
-The complete public sparse-deletion caller still needs its source numeric-state
-setup and branch composition closed, followed by original partial-matching
-family integration and the optimized queue/runtime. This is the exact integer
+The subsequent complete caller theorem above closes source numeric-state
+setup and branch composition. Original partial-matching family integration
+and the optimized queue/runtime remain open. This is the exact integer
 reference caller; it does not verify the distinct production f64 matching
 families or graph schedules. Capacity/OOM/resource traces remain outside these
 functional helper contracts. IEEE-754 stays intentionally outside initial scope.
