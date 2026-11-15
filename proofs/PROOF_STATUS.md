@@ -17,6 +17,27 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Actual exact matching no-positive fast path: 2026-11-14
+
+The production exact single-instance API now returns an empty matching for
+nonpositive/forbidden inputs after shape/dimension validation, bypassing the
+square assignment construction and solve. `Rust/MatchingNonpositive` proves
+both actual scans' termination, checked-index/increment safety and exact
+independent sign predicates. `empty_correct` compares the actual empty output
+with every valid partial matching, including signed and forbidden weights.
+`MatchingEntrypoint.max_weight_partial_matching_total_spec` retains its complete
+original specification and now proves the new source branch as well.
+
+All **3,728 main Lean jobs**, both Lean example suites, **19 exact-core Rust**,
+**50 graph Rust** and **232 required-native installed Python tests** pass.
+Pinned regeneration `--check` passes. Existing matching-family, assignment,
+sparse repair and witness proofs survive the regenerated source.
+[Three-sample installed measurements](../dev/benchmarks/2026-11-14-exact-nonpositive.md)
+record the improvement and positive-case variance. There is no formal runtime
+or allocation claim. Actual one-augmentation family integration, the optimized
+sparse queue, production tree correspondence and final release gates remain
+open. IEEE-754 stays deliberately outside initial proof scope.
+
 ## Production transposed-deletion restriction: mathematical justification, 2026-11-14
 
 `Shared/TransposedMatchingDeletion.transposed_repair_global_minimum` justifies

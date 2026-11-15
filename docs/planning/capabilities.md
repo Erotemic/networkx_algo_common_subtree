@@ -15,14 +15,14 @@ milestones; full verification remains a final verified-release requirement.
 | Droschinsky 2018 distance-penalized embedding | Public `largest_weight_common_subtree_embedding_with_distance_penalty`; same backends/options | Fixed-left matching families and rerooted skip DP; finite nonnegative or infinite penalty; independent subset/bijection/path oracle and public witness rescoring | Long paths receive only skipped-vertex penalties; edge reward/compatibility applies only when both paths have one edge. Both Rust/Python corrected in `d188b67`; public regression retained. Fixed-left matching families, rerooted skips and distinct-branch joins are implemented/tested. Installed module cases improve 19–36×; Constant-time view/branch lookup is implemented; formal runtime and graph Rust refinement remain open |
 | Rooted graph objectives, both families | Both APIs accept `roots=(u,v)` for ambient orientations and `root_to_root=True` to require the supplied pair | Rust `RootConstraint`, independent subset/bijection/path root predicates, direct NetworkX witness checks, original-node rescorers; signed and forbidden weights retained | All 50 native and 228 installed tests pass, including high-degree repair under each policy. Rooted specs/recurrences exist in Lean; production algorithm/root/Python refinement remains open; IEEE-754 correctness is outside the initial proof scope. Rooted/forced module API and callback costs are measured separately |
 | Weighted matching, floating point | Standalone Rust API only | `common_subtree_algorithms::max_weight_bipartite_matching` and all-right-deletion families, exhaustive injection tests | Used internally by graph DP. The occupied-column transposed repair now has a conditional ordered-ring optimality proof and independent partial-matching reduction; actual source/warm-invariant and runtime refinement remain open. f64 execution is not an exact-integer proof |
-| Exact assignment / partial matching | Public `min_cost_assignment` / `max_weight_partial_matching`, Rust required | `verified_assignment_core`; signed i64, checked i128, forbidden edges, public dual certificates; independent permutation/injection tests and integer-boundary cases | Actual total-correctness Lean endpoints prove optimum and exact indices/weight. PyO3/Python conversion remains tested, not source proved |
+| Exact assignment / partial matching | Public `min_cost_assignment` / `max_weight_partial_matching`, Rust required | `verified_assignment_core`; signed i64, checked i128, forbidden edges, public dual certificates; independent permutation/injection tests and integer-boundary cases | Actual total-correctness Lean endpoints prove optimum and exact indices/weight, including the new no-positive early return. PyO3/Python conversion remains tested, not source proved |
 | Exact right-deletion matching family | Public `max_weight_partial_matching_deletions`, Rust required | Existing source-proved `verified_assignment_core::deletion`; original and all right-deleted optima with original indices; 859 exhaustive objective comparisons plus rectangular/boundary cases | Reference family recomputes affected cases. Installed three-sample comparison spans 0.81–2.62× over separate single calls; sparse repair integration remains open. [Evidence](../../dev/benchmarks/2026-11-14-exact-matching-families.md) |
 | Exact sparse augmentation / deletion repair | Standalone Rust only | Actual one-path augmentation verified; compact deletion caller implemented, 546 induced-instance tests | Complete exact reference caller proved under the copied-graph numeric input invariant, including projections, repair, original indices and duals; original family integration open. Full-matrix cut scans; published optimized sparse queue/runtime not implemented |
 
 ## Current executed validation
 
-A fresh normal Rust+Cython wheel passes **231 tests, zero skips**, outside the
-checkout with compiled parity mandatory. A source-only `e79b88b` Rust-only CP310 ABI3
+A fresh normal Rust+Cython wheel passes **232 tests, zero skips**, outside the
+checkout with compiled parity mandatory. The earlier source-only `e79b88b` Rust-only CP310 ABI3
 wheel passes **231 tests on the glibc 2.28 floor and each CPython 3.10–3.14**,
 with strict ABI auditing clean. All nine native entries are mandatory, including
 the new exact-family API. Independent oracles cover subset/pair deletions, graph bijections/paths,
@@ -31,7 +31,7 @@ root-preserving variants, invalid inputs, overflow and malformed witnesses.
 Sphinx HTML builds with warnings treated as errors.
 
 The last executed native suites pass **50 graph**, **10 ordered-core** and
-**18 exact-assignment** tests. The last full Lean build passes **3,727 jobs**.
+**19 exact-assignment** tests. The last full Lean build passes **3,728 jobs**.
 Both existing Lean example suites also pass. Existing mathematical and source proofs
 survive regenerated semantics for the new indexed-isomorphism functions, whose
 own refinement remains open. The production f64 graph crate remains outside the
@@ -40,6 +40,13 @@ inside it and source proved. No new end audit was run. IEEE-754 correctness
 is deliberately excluded from the initial proof scope; [arithmetic boundary](README.md#initial-proof-scope-arithmetic-boundary).
 
 ## Measured implementation evidence
+
+- **Exact matching with no positive edge** now returns an independently maximum
+  empty witness before square construction, with the actual-source total proof
+  preserved. The installed family improves 1.85–2.97× on nonpositive 4×4/8×8
+  cases and 1.39–2.32× on zero-column inputs in one three-sample check. Positive
+  cases remain noisy (0.78–1.06×); no general speedup is claimed.
+  [Evidence and remaining sparse-family work](../../dev/benchmarks/2026-11-14-exact-nonpositive.md).
 
 - **Uniform complete child matchings** use direct cardinality-optimal witnesses,
   including all right deletions; other matrices retain Hungarian matching.

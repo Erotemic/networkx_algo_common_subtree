@@ -1,7 +1,8 @@
 # Backend parity, benchmark evidence, and Cython retirement criteria
 
-Status: overlay incorporated 2026-11-14; strict compiled parity and installed-wheel
-validation pass. Comparative measurements remain pending.
+Status: overlay incorporated 2026-11-14; strict compiled parity, installed-wheel
+validation and comparative measurements pass. Remaining default-backend gates
+are production source coverage, intended scoring extensions and performance.
 
 ## Goal
 
@@ -13,8 +14,10 @@ as an explicitly selectable comparison implementation during the migration.
 **Present behavior:** `impl="auto"` already selects legacy Rust first, then
 Cython, then Python. The Aeneas/Lean-verified ordered embedding is explicitly
 selected with `impl="verified-rust"`, and currently requires
-`node_affinity=None`. The verified ordered-isomorphism core is not yet
-available through a dedicated public Python backend. Consequently, making
+`node_affinity=None`. The structural ordered-isomorphism reference is exposed
+as `impl="reference-rust"`, also unweighted; its indexed readback refinement
+remains open and its exponential performance keeps it outside `auto`.
+Consequently, making
 `verified-rust` the default is a distinct future change, not a synonym for
 preferentially using legacy `iter-rust`.
 
@@ -25,9 +28,9 @@ preferentially using legacy `iter-rust`.
    for ordered embedding and check returned witnesses belong to the deletion
    closures of the original inputs. `tests/test_backend_differential.py` covers
    exhaustive one-label Dyck words through four edges and seeded multicolor
-   equality-affinity cases. For isomorphism, the current differential tests
-   check cross-backend scores and necessary witness properties; an independent
-   isomorphism oracle remains to be added.
+   equality-affinity cases. Independent parent-preserving subset enumeration
+   now checks isomorphism objectives and forest witnesses, including rooted
+   and fractional original-index scoring modes.
 2. **Differential checks:** test Python, Cython, legacy Rust, and verified Rust
    with exactly the same inputs and compatible affinity semantics. Different
    optimum witnesses can be valid; do not require identical tie choices unless
@@ -66,8 +69,8 @@ python dev/bench_backend_speedups.py \
   --node-affinity none \
   --impls verified-rust,iter-rust,iter-cython,iter \
   --reference iter-cython \
-  --sizes 4,8,12,16,24,32 \
-  --cases 12 --warmup 2 --repeat 7 \
+  --sizes 4,8 \
+  --cases 3 --warmup 1 --repeat 3 \
   --require-impls --strict-scores \
   --csv dev/benchmarks/ordered-unweighted-backend-parity.csv
 ```
@@ -80,8 +83,8 @@ python dev/bench_backend_speedups.py \
   --node-affinity eq \
   --impls iter-rust,iter-cython,iter \
   --reference iter-cython \
-  --sizes 4,8,12,16,24,32 \
-  --cases 12 --warmup 2 --repeat 7 \
+  --sizes 4,8 \
+  --cases 3 --warmup 1 --repeat 3 \
   --require-impls --strict-scores \
   --csv dev/benchmarks/ordered-equality-backend-parity.csv
 ```
@@ -90,6 +93,10 @@ The benchmark helper enforces requested backend availability and score
 agreement when these flags are used. It is a benchmarking tool, **not** the
 witness oracle. Do not treat the output from a run missing the compiled
 extensions as a native-backend comparison.
+
+These are short development checks. Defer the larger, repeated benchmark
+campaign until implementation milestones are committed and the final campaign
+is ready; small-run variance alone is not a reason to keep repeating runs.
 
 ## Gate for changing defaults
 
@@ -113,8 +120,16 @@ extensions as a native-backend comparison.
 
 ## Status of measured performance
 
-The repository includes `dev/bench_backend_speedups.py` but no committed
-same-input Cython/legacy Rust/verified Rust comparative results as of the
-2026-11-14 snapshot. Existing `dev/benchmarks/2026-11-14-ordered-memo.md`
-and graph-reference benchmark reports describe *different* native workloads;
-they cannot yield a Cython-vs-Rust speed ratio.
+Committed same-input installed-API comparisons cover Python, Cython, legacy
+Rust and the supported verified/reference Rust modes:
+
+- [Ordered API comparisons](../../dev/benchmarks/2026-11-14-ordered-python-apis.md)
+  include equality, unweighted and fractional-affinity modes. The verified
+  embedding is 6.99× slower than legacy Rust at median, so it stays opt-in.
+- [Rooted weighted isomorphism](../../dev/benchmarks/2026-11-14-ordered-rooted-weighted.md)
+  measures all supported production backends under the same rooted contract.
+- [Structural isomorphism reference](../../dev/benchmarks/2026-11-14-ordered-isomorphism-reference.md)
+  records its public Python coverage and substantial exponential slowdown.
+- [Current capabilities](capabilities.md) distinguish mathematical, source,
+  conversion, performance and packaging evidence. Cython remains available;
+  neither its retirement nor a verified-default transition has occurred.

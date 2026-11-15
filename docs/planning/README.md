@@ -28,11 +28,13 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
-The latest proof-only milestone justifies the production matching family's
-transposed occupied-column restriction over exact ordered arithmetic, including
-its independent partial-matching objective and deletion decoding. All 3,727 main
-Lean jobs pass. The production algorithm and its performance remain unchanged;
-actual float source/control-flow and runtime refinement are still open.
+The exact matching API now bypasses square assignment for inputs without a
+positive edge; its actual-source total-correctness theorem covers that branch.
+All 3,728 main Lean jobs and 232 required-native installed Python tests pass.
+[Small before/after measurements](../../dev/benchmarks/2026-11-14-exact-nonpositive.md)
+record the effect. The preceding proof milestone also justifies the production
+float family's transposed occupied-column restriction over exact ordered
+arithmetic; actual float source/control-flow and runtime refinement remain open.
 
 Implementation stability comes from exhaustive/differential objectives, independent
 witness checks and native tests, plus short representative performance checks.

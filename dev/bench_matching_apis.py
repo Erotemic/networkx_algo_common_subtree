@@ -71,8 +71,10 @@ def main():
     cases, rows = [], []
     for size in sizes:
         for shape, left, right in [("uniform", size, size), ("signed-sparse", size, size),
-                                   ("unused-right", size, 2*size), ("tall", 2*size, size)]:
+                                   ("unused-right", size, 2*size), ("tall", 2*size, size),
+                                   ("nonpositive", size, size), ("zero-columns", size, 0)]:
             weights = [[1 if shape == "uniform" else None if shape == "unused-right" and j >= size
+                        else rng.choice([None, -7, 0]) if shape == "nonpositive"
                         else rng.choice([None, -7, 0, 1, 9]) for j in range(right)] for _ in range(left)]
             case_id = len(cases)
             cases.append(dict(shape=shape, left_size=left, right_size=right, weights=weights))

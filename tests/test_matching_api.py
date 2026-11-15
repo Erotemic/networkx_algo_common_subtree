@@ -136,3 +136,20 @@ def test_exact_integer_boundaries_and_errors():
             solve([[-2**63 - 1]])
         with pytest.raises(TypeError):
             solve([[0.5]])
+
+
+def test_nonpositive_matching_families_and_late_positive_entry():
+    for weights in [[[] for _ in range(4096)], [[None] * 8 for _ in range(4)],
+                    [[-2**63, 0, None] for _ in range(8)]]:
+        assert common.max_weight_partial_matching(weights) == common.PartialMatchingResult((), 0)
+        family = common.max_weight_partial_matching_deletions(weights)
+        assert family.original == common.PartialMatchingResult((), 0)
+        assert all(result == family.original for result in family.without_right)
+        assert len(family.without_right) == len(weights[0])
+    weights = [[-7] * 5 for _ in range(4)]
+    weights[-1][-1] = 11
+    family = common.max_weight_partial_matching_deletions(weights)
+    assert_matching(weights, family.original)
+    assert family.original.pairs == ((3, 4),)
+    for removed, result in enumerate(family.without_right):
+        assert_matching(weights, result, removed)

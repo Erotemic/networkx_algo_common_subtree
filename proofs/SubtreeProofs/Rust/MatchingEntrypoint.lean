@@ -1,7 +1,7 @@
 module
 
 public import SubtreeProofs.Rust.MatchingSolveBuiltMatrix
-public import SubtreeProofs.Rust.MatchingValidation
+public import SubtreeProofs.Rust.MatchingNonpositive
 import Mathlib.Tactic
 
 /-!
@@ -135,12 +135,22 @@ theorem max_weight_partial_matching_total_spec (weights : Slice (alloc.vec.Vec (
             have hm := usize_max_value
             scalar_tac
           have dims : Dimensions weights (Slice.len weights) (width weights) dimension := ⟨hleft.symm,hdimension,hshape⟩
-          apply WP.spec_bind (cost_matrix_spec weights (Slice.len weights) (width weights) dimension dims)
-          intro cost hCost
-          apply WP.spec_mono (solve_built_matrix_spec weights (Slice.len weights) (width weights) dimension dims cost hCost hsmall hmax)
-          rintro output ⟨result,houtput,hcorrect⟩
-          subst output
-          exact ⟨⟨hshape,by omega,by omega⟩,hcorrect⟩
+          apply WP.spec_bind (MatchingNonpositive.has_positive_spec weights)
+          intro positive hPositive
+          cases positive with
+          | true =>
+            simp only [↓reduceIte]
+            apply WP.spec_bind (cost_matrix_spec weights (Slice.len weights) (width weights) dimension dims)
+            intro cost hCost
+            apply WP.spec_mono (solve_built_matrix_spec weights (Slice.len weights) (width weights) dimension dims cost hCost hsmall hmax)
+            rintro output ⟨result,houtput,hcorrect⟩
+            subst output
+            exact ⟨⟨hshape,by omega,by omega⟩,hcorrect⟩
+          | false =>
+            simp only [Bool.false_eq_true,↓reduceIte,WP.spec_ok,ResultSpec]
+            exact ⟨⟨hshape,by omega,by omega⟩,
+              MatchingNonpositive.empty_correct weights (Slice.len weights) (width weights)
+                hleft hshape (hPositive.mp rfl)⟩
 
 /-- Every admitted rectangular optional signed matrix succeeds with an
 independently maximum matching, exact input-index witness and exact weight. -/

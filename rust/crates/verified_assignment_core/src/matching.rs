@@ -33,6 +33,34 @@ fn is_rectangular(weights: &[Vec<Option<i64>>], right: usize) -> bool {
     true
 }
 
+fn row_has_positive(row: &[Option<i64>]) -> bool {
+    let mut column = 0;
+    while column < row.len() {
+        let entry = row[column];
+        match entry {
+            Some(value) => {
+                if value > 0 {
+                    return true;
+                }
+            }
+            None => {}
+        }
+        column += 1;
+    }
+    false
+}
+
+fn has_positive(weights: &[Vec<Option<i64>>]) -> bool {
+    let mut row = 0;
+    while row < weights.len() {
+        if row_has_positive(&weights[row]) {
+            return true;
+        }
+        row += 1;
+    }
+    false
+}
+
 fn negative_profit(weight: Option<i64>) -> i64 {
     match weight {
         Some(value) => {
@@ -149,7 +177,8 @@ fn solve_built_matrix(
 /// `None` forbids an edge. Zero and negative edges may be left unmatched; the
 /// returned witness contains only positive edges. Empty sides are supported.
 /// Shape and combined-dimension errors are explicit. The square reduction uses
-/// one dummy row/column per original vertex and makes no optimized-cost claim.
+/// one dummy row/column per original vertex. Inputs without a positive edge
+/// return immediately after validation without building that square matrix.
 pub fn max_weight_partial_matching(
     weights: &[Vec<Option<i64>>],
 ) -> Result<PartialMatching, MatchingError> {
@@ -164,6 +193,12 @@ pub fn max_weight_partial_matching(
     };
     if dimension > u32::MAX as usize || dimension == usize::MAX {
         return Err(MatchingError::TooLarge);
+    }
+    if !has_positive(weights) {
+        return Ok(PartialMatching {
+            pairs: Vec::new(),
+            weight: 0,
+        });
     }
     let cost = cost_matrix(weights, left, dimension);
     solve_built_matrix(weights, left, right, &cost)

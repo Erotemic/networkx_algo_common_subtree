@@ -94,3 +94,28 @@ fn rectangular_partial_matching_matches_independent_injections() {
         }
     }
 }
+
+#[test]
+fn nonpositive_matching_and_empty_columns_need_no_square_assignment() {
+    // Large enough to catch accidentally reintroducing the cubic zero-cost
+    // solve, while the independently known optimum is always the empty set.
+    for weights in [
+        vec![vec![]; 4096],
+        vec![vec![None; 64]; 32],
+        vec![vec![Some(i64::MIN); 32]; 64],
+        vec![vec![Some(0); 48]; 48],
+    ] {
+        assert_eq!(max_weight_partial_matching(&weights).unwrap(), PartialMatching {
+            pairs: vec![], weight: 0,
+        });
+    }
+    // Both levels of the scan must reach the final positive entry. Shape
+    // validation must still reject a later ragged row before early success.
+    let mut weights = vec![vec![Some(-7); 5]; 4];
+    weights[3][4] = Some(11);
+    let result = check(&weights);
+    assert_eq!(result.pairs, vec![MatchedPair { left: 3, right: 4 }]);
+    assert_eq!(result.weight, 11);
+    assert_eq!(max_weight_partial_matching(&[vec![Some(0)], vec![]]),
+               Err(MatchingError::NonRectangular));
+}

@@ -58,6 +58,8 @@ def max_weight_partial_matching(weights):
     selected. Ragged matrices raise ``ValueError``; out-of-i64 values and
     checked arithmetic overflow raise ``OverflowError``. Ties are deterministic
     for a fixed matrix. ``[]`` and rows with zero columns have weight zero.
+    Inputs without any positive weight return the empty matching after shape
+    and size validation, without constructing a square assignment problem.
     """
     from . import _rust
     pairs, total = _rust.max_weight_partial_matching(weights)
