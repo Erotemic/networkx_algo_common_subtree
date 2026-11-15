@@ -1,10 +1,35 @@
 # Lozano-Valiente (2004): fresh Lean formalization and verified Rust implementation
 
-Status: LCBE and separate ordered-isomorphism mathematical optima proved; translated Rust LCBE and memo refinement proved; translated Rust isomorphism reference solvers proved; optimization/integration open
+Status: LCBE and affinity-aware ordered-isomorphism mathematical optima proved; reference Rust and production integer witness components source proved; full optimized/weighted Rust correspondence and complexity remain open
 Last revised: 2026-11-14
 Paper: Antoni Lozano and Gabriel Valiente, *On the Maximum Common Embedded Subtree Problem for Ordered Trees* (2004)
 Repository: `networkx_algo_common_subtree`
 Program charter: [Verified common-subtree research program](verified_common_subtree_research_program.md)
+
+## Original-identity affinity isomorphism extension: 2026-11-14
+
+`Paper2004.AnnotatedIso` now specifies whole-subtree deletion independently as
+an operational closure on annotated forests. Structural selection is proved
+equivalent; parent edges, original preorder and identities are preserved.
+Erasing annotations recovers the existing unlabelled isomorphism specification.
+Fixed-parent and freely chosen parent-region policies remain distinct.
+
+`AffinityDP.level_correct` and `AffinityDP.anywhere_correct` prove complete
+witnessed optimality for original-node affinity scores over an ordered
+commutative ring. Witnesses pair original identities, require positive affinity
+at each retained pair and preserve endpoint uniqueness for unique input IDs.
+Zero affinity forbids retention. This formalizes the project's intended
+isomorphism/scoring extension; it is not an additional recurrence from the
+original 2004 paper and does not change the LCBE containment audit.
+
+The production integer arena has an independent projection to these witnesses.
+Actual local construction preserves feasibility from head/tail invariants;
+actual emission retains the same original-endpoint witness. Its safe output
+size follows from the smaller original input once caller feasibility is proved.
+Full optimized Rust DP/memo/state/score correspondence, conversion and runtime
+remain open. IEEE-754 remains outside initial scope. All 3,739 main Lean jobs
+and both example suites pass, including six new kernel-checked affinity cases.
+Rust/Python are fixed; no benchmark or extraction run was repeated.
 
 ## Actual final-cache owned word payload: 2026-11-14
 

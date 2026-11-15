@@ -60,6 +60,16 @@ extensions, not additional statements attributed to this paper. Actual structura
 Original index maps, vertex-pair API conversion and efficient implementation
 remain open for the extension.
 
+The further original-identity/affinity extension now has separate operational
+annotated pruning contracts and witnessed mathematical optima:
+`AnnotatedIso.AffinityDP.level_correct` and `anywhere_correct`. The witness
+preserves original preorder, parent edges and endpoint uniqueness, requires
+positive matched affinities, and erases to the established unlabelled contract.
+The actual production integer arena has a conditional feasibility/readback
+bridge. Full weighted production DP/memo/score correspondence and complexity
+remain open; IEEE-754 stays outside initial scope. These are project extension
+results, not additional claims of the printed 2004 paper.
+
 ## Droschinsky--Kriege--Mutzel 2016 v4
 
 The weighted graph statements below are generic over an ordered commutative

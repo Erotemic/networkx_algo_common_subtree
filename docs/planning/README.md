@@ -28,7 +28,15 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
-The actual production choice append and materializer now have composed source
+The original-identity affinity isomorphism extension now has independently
+specified operational pruning witnesses and complete mathematical optimum
+proofs for both parent policies. Its witnesses preserve original order,
+parent edges and endpoint uniqueness. The production arena has a conditional
+feasibility/readback bridge; full weighted Rust DP/memo/score correspondence
+and runtime remain open. All 3,739 main Lean jobs and both example suites pass.
+Rust/Python and performance targets are unchanged.
+
+The preceding actual production choice append and materializer milestone has composed source
 contracts: old choices remain meaningful, new head/tail assembly is exact, and
 bounded stored endpoints produce bounded emitted coordinates. All 3,735 main
 Lean jobs, both example suites, 13 ordered-core tests and 234 required-native

@@ -17,6 +17,47 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Original-identity affinity isomorphism mathematical optima: 2026-11-14
+
+`Paper2004/AnnotatedIsomorphism` independently defines annotated ordered-forest
+pruning as the reflexive/transitive closure of whole-child-subtree deletion at
+arbitrary contexts. It proves equivalence with structural selection, original
+preorder preservation, parent-edge preservation, size bounds and erasure to the
+established unlabelled isomorphism contracts. No grandchild promotion is allowed.
+General parent regions are specified separately from fixed-parent pruning.
+
+`AffinityIsomorphism` carries pairs of original identities in the witness.
+Its projections are independent prunings of both original inputs, with strictly
+positive affinity at every selected pair (zero forbids matching). Unique input
+identities imply unique witness endpoints. `AffinityIsomorphismDP.level_correct`
+and `anywhere_correct` prove complete witnessed optimality against every such
+independent candidate over an ordered commutative ring. These are the intended
+scoring/isomorphism project extensions, not new statements attributed to the
+2004 paper. Mathematical nonpositive pairs are forbidden; existing public
+finite/nonnegative input validation is unchanged and not source proved here.
+
+`Rust/IsomorphismAffinityWitness` interprets the actual production arena as this
+paired original-endpoint witness. It equates the independent score fold with
+the existing abstract affinity fold, proves local source construction preserves
+level feasibility from its head/tail invariants, and connects actual emitted
+coordinates to both independent projections. For both policies, caller
+feasibility derives the source output-size bound from the smaller original
+input; no output-size oracle is required beyond that original-input bound.
+
+All **3,739 main Lean jobs** and both existing example suites pass. Six new
+kernel-checked examples cover forbidden root affinity, moved-parent recovery,
+original identities and zero-affinity exclusion. Rust/Python/generated semantics
+are unchanged; the last software validation remains **234 required-native
+installed Python tests and 13 ordered-core tests**. No benchmark or extraction
+run was repeated for this proof-only milestone.
+
+The actual weighted Rust DP/memo/state representation must still establish the
+feasible arena invariant and correspondence to these optimal recurrences.
+Production score refinement, conversion, complete resource/time bounds and
+the remaining affinity-embedding extension proofs remain open. The new source
+readback bridge assumes caller feasibility; it is not an end-to-end optimum
+theorem for the optimized Rust backend. IEEE-754 remains deliberately excluded.
+
 ## Actual production choice construction and coordinate preservation: 2026-11-14
 
 The optimized ordered-isomorphism solver now calls the integer-only
