@@ -3,7 +3,7 @@ use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple, PyType};
 use rustc_hash::FxHashMap as HashMap;
 use std::sync::Arc;
 use verified_ordered_core::isomorphism_choices::{
-    reconstruct_isomorphism_choices, IsomorphismChoice,
+    append_isomorphism_choice, reconstruct_isomorphism_choices, IsomorphismChoice,
 };
 
 mod graph_bindings;
@@ -516,8 +516,7 @@ impl<'py> Solver<'py> {
             let tail = self.iso_level(d1.tail, d2.tail)?;
             let val = head.val + tail.val + aff;
             if val > lvl.val {
-                let choice = self.iso_choices.len();
-                self.iso_choices.push(IsomorphismChoice {
+                let choice = append_isomorphism_choice(&mut self.iso_choices, IsomorphismChoice {
                     left_open: d1.a,
                     left_close: d1.b,
                     right_open: d2.a,

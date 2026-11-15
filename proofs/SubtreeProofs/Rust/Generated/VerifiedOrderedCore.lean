@@ -748,15 +748,27 @@ structure isomorphism_choices.IsomorphismChoice where
   head : Option Std.Usize
   tail : Option Std.Usize
 
+/-- [verified_ordered_core::isomorphism_choices::append_isomorphism_choice]:
+    Source: 'src/isomorphism_choices.rs', lines 19:0-26:1
+    Visibility: public -/
+def isomorphism_choices.append_isomorphism_choice
+  (choices : alloc.vec.Vec isomorphism_choices.IsomorphismChoice)
+  (choice : isomorphism_choices.IsomorphismChoice) :
+  Result (Std.Usize × (alloc.vec.Vec isomorphism_choices.IsomorphismChoice))
+  := do
+  let index := alloc.vec.Vec.len choices
+  let choices1 ← alloc.vec.Vec.push choices choice
+  ok (index, choices1)
+
 /-- [verified_ordered_core::isomorphism_choices::Visit]
-    Source: 'src/isomorphism_choices.rs', lines 15:0-18:1 -/
+    Source: 'src/isomorphism_choices.rs', lines 28:0-31:1 -/
 @[discriminant isize]
 inductive isomorphism_choices.Visit where
 | Pair : Std.Usize → isomorphism_choices.Visit
 | Close : Std.U32 → Std.U32 → isomorphism_choices.Visit
 
 /-- [verified_ordered_core::isomorphism_choices::older_child]:
-    Source: 'src/isomorphism_choices.rs', lines 20:0-25:1 -/
+    Source: 'src/isomorphism_choices.rs', lines 33:0-38:1 -/
 def isomorphism_choices.older_child
   (child : Option Std.Usize) (parent : Std.Usize) : Result Bool := do
   match child with
@@ -764,7 +776,7 @@ def isomorphism_choices.older_child
   | some index => ok (index < parent)
 
 /-- [verified_ordered_core::isomorphism_choices::push_visit]:
-    Source: 'src/isomorphism_choices.rs', lines 29:0-36:1 -/
+    Source: 'src/isomorphism_choices.rs', lines 42:0-49:1 -/
 def isomorphism_choices.push_visit
   (pending : alloc.vec.Vec isomorphism_choices.Visit) (length : Std.Usize)
   (visit : isomorphism_choices.Visit) :
@@ -784,7 +796,7 @@ def isomorphism_choices.push_visit
   ok (pending1, i1)
 
 /-- [verified_ordered_core::isomorphism_choices::reconstruct_isomorphism_choices]: loop body 0:
-    Source: 'src/isomorphism_choices.rs', lines 58:4-98:1
+    Source: 'src/isomorphism_choices.rs', lines 71:4-111:1
     Visibility: public -/
 @[rust_loop_body]
 def isomorphism_choices.reconstruct_isomorphism_choices_loop.body
@@ -843,7 +855,7 @@ def isomorphism_choices.reconstruct_isomorphism_choices_loop.body
   else ok (done (some (left, right)))
 
 /-- [verified_ordered_core::isomorphism_choices::reconstruct_isomorphism_choices]: loop 0:
-    Source: 'src/isomorphism_choices.rs', lines 58:4-98:1
+    Source: 'src/isomorphism_choices.rs', lines 71:4-111:1
     Visibility: public -/
 @[rust_loop]
 def isomorphism_choices.reconstruct_isomorphism_choices_loop
@@ -860,7 +872,7 @@ def isomorphism_choices.reconstruct_isomorphism_choices_loop
     (pending, left, right, length)
 
 /-- [verified_ordered_core::isomorphism_choices::reconstruct_isomorphism_choices]:
-    Source: 'src/isomorphism_choices.rs', lines 46:0-98:1
+    Source: 'src/isomorphism_choices.rs', lines 59:0-111:1
     Visibility: public -/
 def isomorphism_choices.reconstruct_isomorphism_choices
   (choices : Slice isomorphism_choices.IsomorphismChoice)

@@ -17,6 +17,41 @@ checked-arithmetic safety guarantees. Runtime finite-value, precision and
 overflow behavior remains tested independently. No theorem or assumption was
 added or changed to implement this scope decision.
 
+## Actual production choice construction and coordinate preservation: 2026-11-14
+
+The optimized ordered-isomorphism solver now calls the integer-only
+`append_isomorphism_choice` at its existing append site. Its source operations
+remain old-length read, vector push and return of that index; score comparisons,
+evaluation order, public APIs and backend selection are unchanged.
+`IsomorphismChoiceConstruction.append_isomorphism_choice_spec` proves stable
+old-length identity, exact one-entry growth, valid backward links, old-forest
+preservation and exact new head/tail forest assembly. The premises are a valid
+old arena, old child references and room for one entry. Empty-arena validity
+is established separately, and arbitrary suffix extension preserves all old
+forest meanings, even without assuming validity of unreachable records.
+
+`append_and_reconstruct_spec` composes actual construction and actual emission,
+deriving the new root and forest rather than supplying an output certificate.
+`IsomorphismChoiceCoordinates` proves coordinate bounds through both stages:
+bounded stored original endpoints produce bounded emitted token indices.
+The abstract `affinityScore` fold proves the intended head + tail + root score
+equation and preservation of every old mathematical score. This does not identify
+actual f64 arithmetic with an additive-monoid model; IEEE-754 stays outside scope.
+
+All **3,735 main Lean jobs**, both example suites, **13 ordered-core Rust** and
+**234 required-native installed Python tests** pass. Pinned extraction `--check`
+passes. The native head/tail fixture now exercises the actual append helper and
+checks that an older witness survives subsequent appends. The fresh normal-wheel
+hashes and scope are recorded in the [existing milestone artifact](../dev/benchmarks/2026-11-14-iso-choice-stack-environment.json).
+No performance measurement or portable wheel rebuild was repeated for this
+inlined source-boundary extraction.
+
+Complete recursive DP/memo invariants, provenance of child choices and original
+endpoint bounds from production states, parent/order feasibility, uniqueness,
+weighted optimality, Python conversion and runtime/allocation correspondence
+remain open. These local constructor/materializer theorems do not certify the
+whole optimized backend or arbitrary caller-built forests as valid isomorphisms.
+
 ## Actual production ordered-isomorphism materializer proved: 2026-11-14
 
 `Rust.IsomorphismChoices.reconstruct_isomorphism_choices_spec` now proves the

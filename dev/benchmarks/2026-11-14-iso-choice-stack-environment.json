@@ -57,5 +57,29 @@
   "source_sha256": {
     "rust/src/lib.rs": "f9117b3ae40138343d276153dd12cea153ca6499764d3ebfa98747cde68dea5b",
     "rust/crates/verified_ordered_core/src/isomorphism_choices.rs": "e129e1d79bc63733895d325663b3d1cd8cc9915390a1662de1257d24d6b86eb8"
+  },
+  "construction_update": {
+    "base_source_commit": "4c1af2e",
+    "normal_wheel_sha256": "51d56ce4055e56438e0b74570727797275d24c6afd8796acebd21cb23bab92f5",
+    "extension_sha256": "c07c1af7216fd72e390a46bce044201535e186d6809d4e544e953ccf629f1539",
+    "source_sha256": {
+      "rust/src/lib.rs": "50080f155aa6a4f17aa80581555391d97c4bd0c485174934f2f6a6554918fdfa",
+      "rust/crates/verified_ordered_core/src/isomorphism_choices.rs": "7a6f15fc4ca24c6bf8ff65e5dde39658c84acb2cfaabeed2c20d6381bdddf154"
+    },
+    "validation": {
+      "installed_python": 234,
+      "installed_skipped": 0,
+      "required_native_parity": true,
+      "ordered_rust": 13,
+      "lean_main_jobs": 3735,
+      "lean_examples": [
+        "RootedDynamicProgram",
+        "OrderedIsomorphism"
+      ],
+      "pinned_regeneration_check": true
+    },
+    "performance_repeated": false,
+    "portable_wheel_repeated": false,
+    "scope": "Actual production append and emission; old-choice and coordinate preservation; weighted score DP, original-parent/optimality and complete resource correspondence remain open."
   }
 }

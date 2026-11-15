@@ -69,3 +69,23 @@ not a new general speedup; no rerun was made to smooth variance. The preceding
 [choice-arena optimization measurements](2026-11-14-ordered-iso-choices.md)
 remain historical evidence for `028727a`, including its separate peak-RSS
 observation. No new memory observation was made for the cursor implementation.
+
+## Subsequent actual constructor source proof
+
+The production DP now uses `append_isomorphism_choice` for its existing
+old-length/read-and-push operation. Its actual source theorem derives stable
+old reference meanings, exact arena growth and new forest assembly. Actual
+append and materialization compose; conditional original-coordinate bounds
+are proved through both stages. The score DP and its arithmetic/control
+comparisons are unchanged. An independent abstract affinity fold supplies the
+head + tail + root score equation and old-score stability, without an f64
+refinement claim. Full production DP/memo/provenance, parent feasibility,
+optimality and resource refinement remain open.
+
+The updated fixture exercises real appends and checks an old witness after
+further construction. **13 ordered-core**, **234 required-native installed
+Python tests**, **3,735 main Lean jobs**, both example suites and pinned
+regeneration `--check` pass. The environment artifact's `construction_update`
+records the fresh normal-wheel/source hashes. No new performance/memory run or
+portable build was performed; the timing tables above remain evidence for the
+earlier cursor-stack milestone.

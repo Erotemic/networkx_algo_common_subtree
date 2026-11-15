@@ -12,6 +12,19 @@ pub struct IsomorphismChoice {
     pub tail: Option<usize>,
 }
 
+/// Append one matched-pair choice and return its stable arena index.
+/// Existing choices remain unchanged. The production DP supplies head/tail
+/// indices from the old arena, making both children older than this entry.
+#[inline]
+pub fn append_isomorphism_choice(
+    choices: &mut Vec<IsomorphismChoice>,
+    choice: IsomorphismChoice,
+) -> usize {
+    let index = choices.len();
+    choices.push(choice);
+    index
+}
+
 enum Visit {
     Pair(usize),
     Close(u32, u32),

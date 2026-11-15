@@ -1,5 +1,5 @@
 use verified_ordered_core::isomorphism_choices::{
-    reconstruct_isomorphism_choices, IsomorphismChoice,
+    append_isomorphism_choice, reconstruct_isomorphism_choices, IsomorphismChoice,
 };
 
 fn pair(open: u32, close: u32, head: Option<usize>, tail: Option<usize>) -> IsomorphismChoice {
@@ -15,13 +15,17 @@ fn pair(open: u32, close: u32, head: Option<usize>, tail: Option<usize>) -> Isom
 
 #[test]
 fn choices_preserve_head_tail_order_and_original_tokens() {
-    let choices = vec![
-        pair(2, 3, None, None),
-        pair(8, 11, None, None),
-        pair(0, 7, Some(0), Some(1)),
-        pair(20, 21, None, None), // Not part of the selected witness.
-    ];
-    let (left, right) = reconstruct_isomorphism_choices(&choices, Some(2)).unwrap();
+    let mut choices = Vec::new();
+    let head = append_isomorphism_choice(&mut choices, pair(2, 3, None, None));
+    let tail = append_isomorphism_choice(&mut choices, pair(8, 11, None, None));
+    let before = reconstruct_isomorphism_choices(&choices, Some(head));
+    let root = append_isomorphism_choice(&mut choices, pair(0, 7, Some(head), Some(tail)));
+    append_isomorphism_choice(&mut choices, pair(20, 21, None, None)); // Unselected.
+    assert_eq!(
+        reconstruct_isomorphism_choices(&choices, Some(head)),
+        before
+    );
+    let (left, right) = reconstruct_isomorphism_choices(&choices, Some(root)).unwrap();
     assert_eq!(left, vec![0, 2, 3, 7, 8, 11]);
     assert_eq!(right, vec![100, 102, 103, 107, 108, 111]);
     assert_eq!(

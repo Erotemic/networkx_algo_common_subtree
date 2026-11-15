@@ -28,11 +28,17 @@ applicable complexity verification remain blockers for the final verified
 release, while development builds and use can proceed. The concise current
 inventory and evidence are in [capabilities.md](capabilities.md).
 
-The actual integer materializer used by production ordered isomorphism now has
+The actual production choice append and materializer now have composed source
+contracts: old choices remain meaningful, new head/tail assembly is exact, and
+bounded stored endpoints produce bounded emitted coordinates. All 3,735 main
+Lean jobs, both example suites, 13 ordered-core tests and 234 required-native
+installed Python tests pass. Complete production DP/memo/choice provenance,
+parent feasibility, optimality and runtime refinement remain open.
+
+The preceding integer-materializer milestone established
 a source proof of exact token emission and safe termination from valid
-arena/root/output bounds. All 3,732 main Lean jobs and 234 required-native
-installed API tests pass. DP arena construction, feasibility/optimality and
-complete runtime refinement remain open.
+arena/root/output bounds, with 3,732 main Lean jobs and 234 required-native
+installed API tests passing at that milestone.
 [Source theorem and the small stack-representation check](../../dev/benchmarks/2026-11-14-iso-choice-stack.md).
 
 Production ordered isomorphism now caches scores/choices and reconstructs only
