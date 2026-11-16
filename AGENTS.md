@@ -1,0 +1,63 @@
+# Agent guide
+
+## Lean and Rust work
+
+- Read `docs/planning/RESUME.md`, `docs/planning/README.md`, and the relevant
+  paper/campaign plan before choosing work. `proofs/PROOF_STATUS.md` records
+  checked endpoints; `proofs/VERIFICATION.md` records reproduction commands.
+- Preserve independent mathematical specifications and source hypotheses.
+  Record corrections separately from printed claims. A reference algorithm's
+  correctness does not establish the production algorithm's complexity.
+- Inspect the pinned Mathlib/Aeneas sources before guessing APIs. Match goal
+  representations explicitly with `change`, small bridge lemmas, and `calc`.
+- Never mark a theorem proved until Lean accepts it. Do not weaken a statement
+  or introduce an admission to make a build pass. Keep incomplete obligations
+  explicit; avoid the literal admission keyword in comments and docstrings.
+- Generated files under `proofs/SubtreeProofs/Rust/Generated/` are unedited
+  Charon/Aeneas output. Change maintained Rust, regenerate with
+  `dev/regenerate_rust_lean.sh`, and prove refinements in their owning modules.
+- Validate the affected proof chain and meaningful Rust/Python behavior.
+  Update the relevant planning records with exact endpoints, assumptions,
+  commands, evidence, and remaining gaps. Report mathematical progress plainly.
+
+## Build caches on guest VMs
+
+Before any Lean or Rust build on virtiofs, run from the repository root:
+
+```bash
+dev/setup-build-caches.sh
+dev/setup-build-caches.sh --status
+```
+
+Each listed cache must be bind-mounted over VM-local ext4 (or another local
+filesystem). This includes the nested `proofs/.lake`, experiment Lake projects,
+`rust/target`, and each standalone crate's `target`. A plain directory on
+virtiofs is not ready for builds. Do not substitute symlinks: the host would
+see dangling VM paths. Bind mounts keep host and guest caches independent.
+Mounts disappear on reboot; rerun setup before resuming. Use `--unmount` to
+expose host caches again after stopping builds. Ordinary local-disk hosts and
+CI need no mount.
+
+Cargo's `--target-dir` and `CARGO_TARGET_DIR` can bypass these mounts. Inspect
+the actual output path before building. CMake wheel builds explicitly use
+`<build-dir>/cargo-target`; put the entire build directory on VM-local disk
+(see `proofs/VERIFICATION.md`). Keep Cargo/Rustup homes on local disk too.
+
+The shared tools' `setup-lake-cache.sh` resolves Git roots. Do not invoke it
+on `proofs/`: it would mount the repository root's `.lake` instead.
+
+## Shared formalization tools
+
+`submodules/aiq-lean-formalization-tools` is optional development tooling, not
+a Lake, Cargo, Python runtime, or ordinary CI dependency. Initialize/install it:
+
+```bash
+git submodule update --init submodules/aiq-lean-formalization-tools
+python3 -m pip install -e ./submodules/aiq-lean-formalization-tools
+```
+
+Use `leanq --project proofs` for elaborated declarations, statements,
+dependencies, reverse dependencies, and axiom closure. Source scans yield
+candidates, not proofs of equivalence or theorem status. See the submodule's
+`docs/leanq.md` and `README.md`. Reuse its generic tooling instead of copying
+parsers or building project-specific checkers without a concrete need.

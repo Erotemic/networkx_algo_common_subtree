@@ -1,0 +1,3 @@
+[submodule "submodules/aiq-lean-formalization-tools"]
+	path = submodules/aiq-lean-formalization-tools
+	url = https://github.com/AIQ-Kitware/aiq-lean-formalization-tools.git

@@ -16,6 +16,8 @@ After checking out this branch, follow [proofs/VERIFICATION.md](../../proofs/VER
 for toolchain/bootstrap details. From the repository root:
 
 ```bash
+dev/setup-build-caches.sh  # virtiofs VMs; skips local-disk hosts
+dev/setup-build-caches.sh --status
 (cd proofs && lake exe cache get && lake build)
 dev/regenerate_rust_lean.sh --check
 python3 proofs/checks/test_lookup_source_reifier.py

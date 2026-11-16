@@ -58,6 +58,9 @@ and representation cost, index witnesses and API conversion remain open.
 
 Build the full maintained proof chain with:
 
+On virtiofs VMs, first run `dev/setup-build-caches.sh` from the repository
+root and verify `--status`; see [VM caches](VERIFICATION.md#vm-caches).
+
 ```bash
 cd proofs
 lake exe cache get

@@ -46,24 +46,64 @@ integration, while the source-refinement theorem covers the Rust Boolean core.
 
 ## VM caches
 
-This checkout is on virtiofs. Its **nested** Lake workspace is `proofs/`, so
-mount the cache at `proofs/.lake`, rather than the repository root's `.lake`.
-The existing sibling cache script resolves Git roots and would choose the
-wrong directory for this layout. Before building on a VM, seed and mount:
+On virtiofs VMs, put build outputs on VM-local disk before running Lean,
+Cargo, Charon, or extension builds. From the repository root:
 
 ```bash
-sudo mkdir -p /var/cache/lake/networkx_algo_common_subtree-proofs/.lake
-sudo chown "$(id -u):$(id -g)" /var/cache/lake/networkx_algo_common_subtree-proofs/.lake
-cp -a proofs/.lake/. /var/cache/lake/networkx_algo_common_subtree-proofs/.lake/
-sudo mount --bind /var/cache/lake/networkx_algo_common_subtree-proofs/.lake proofs/.lake
-findmnt -T proofs/.lake
+dev/setup-build-caches.sh
+dev/setup-build-caches.sh --status
 ```
 
-Apply the copy only when initializing a new cache; on later boots remount
-without copying. The verification run on 2026-11-14 used an ext4 cache at that
-path. A bind mount leaves the host's original directory untouched and is
-VM-local. Do not replace `.lake` with a symlink. Ordinary Linux CI runners
-already use local disk and need no bind mount.
+The helper mounts the **nested** `proofs/.lake`, experiment Lake caches,
+`rust/target`, and every standalone crate's `target`. It uses local storage
+under `/var/cache/common-subtree/<device:inode>/`, so separate checkouts have
+separate caches. Override with an absolute `SUBTREE_BUILD_CACHE_ROOT` on local
+disk if necessary; use the same override when checking or unmounting.
+Every mounted path must report `bind-mounted` and a local filesystem such as
+ext4. Existing unrelated mounts and symlinks are refused. Local-disk hosts and
+CI are left alone. The helper does not copy host caches: first builds populate
+independent guest caches. It does not require the tools submodule.
+
+Mounts disappear on reboot. Rerun setup before resuming; use
+`dev/setup-build-caches.sh --unmount` after stopping builds to reveal the
+untouched host directories.
+Do not replace cache directories with symlinks into the VM. The shared tools'
+`setup-lake-cache.sh` resolves Git roots and would mount the wrong `.lake`
+for this repository's nested project.
+
+`CARGO_TARGET_DIR` or `--target-dir` can redirect Cargo away from the mounted
+paths; verify the actual output directory if either is set. CMake supplies an
+explicit `<build-dir>/cargo-target`, so `CARGO_TARGET_DIR` alone does not relocate
+wheel builds. Use a local build directory, for example:
+
+```bash
+local_build=$(mktemp -d /var/tmp/subtree-wheel.XXXXXX)
+findmnt -T "$local_build"  # must be local disk, e.g. ext4
+python3 -m pip wheel . --no-deps --wheel-dir /tmp/common-subtree-wheels \
+  --config-settings=build-dir="$local_build" \
+  --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF \
+  --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
+```
+
+Keep Cargo/Rustup homes and any additional custom output directories on local
+disk as well. Confirm with `findmnt -T <path>`.
+
+## Optional formalization tools
+
+The pinned `submodules/aiq-lean-formalization-tools` checkout provides `leanq`,
+`aiq-lean`, `lake-build-report`, and `lean-warning-fix`. It is development
+tooling; ordinary builds still fetch only their pinned Lake dependencies.
+
+```bash
+git submodule update --init submodules/aiq-lean-formalization-tools
+python3 -m pip install -e ./submodules/aiq-lean-formalization-tools
+leanq --project proofs libs
+leanq --project proofs --lib SubtreeProofs index
+leanq --project proofs --lib SubtreeProofs query --name maximum_common
+```
+
+Use `leanq axioms`, `deps`, `rdeps`, and `statement` for elaborated evidence;
+see the submodule's `docs/leanq.md`. Indexes under `.leanq/` are ignored.
 
 ## Rust extraction boundary
 
