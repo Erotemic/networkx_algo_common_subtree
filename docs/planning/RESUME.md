@@ -1,29 +1,32 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment delivers the
-[G1 backend decision at the operational C2 boundary](lean-complexity-campaign/evidence/g1-backend-decision.md).
-The native WP, charged arlib and Lax62 timed pilots now use the same four
-actual generated lookup bodies, independent values and six work currencies.
-They preserve complete successful-run costs and reject the actual compiled
-extra-comparison mutation's old comparison budget. Native Std.WP over the
-existing operational interpreter is selected for the next C2 work.
+Branch: `Droschinsky-algos`. The latest increment adds a checked
+[native memo interpreter](lean-complexity-campaign/evidence/memo-interpreter.md)
+and [statement/reuse audit](lean-complexity-campaign/evidence/memo-statement-audit.md).
+Generic modules prove independent values, cache preservation, once-only
+expansion, exact root-plus-body request accounting and closed finite warm-cache
+envelopes. List/direct-address caches satisfy the same functional contract;
+actual primitive counters and initialization costs differ. The existing
+`paperLcs` recurrence fits the body/descent interface without tree imports in
+the generic modules. No assumed total runtime bound is a field.
 
-This is not SRC-01/C3, Rust runtime, RAM/IR realization, failure-cost or heap
-completion. The Python reifier and immutable-reference interpretation remain
-trusted. G0's remaining reconnaissance and the wider program's production
-refinement, time/space, release and application-study obligations remain open.
-The [source pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md),
-[native WP](lean-complexity-campaign/evidence/lookup-native-wp.md),
-[arlib pilot](lean-complexity-campaign/evidence/lookup-arlib-source-pilot.md), and
-[Lax experiment](../../proofs/experiments/lax62_cost/README.md) give exact scopes.
+This is C1 progress, not correspondence with existing `memoLcs` or Rust.
+W04 and W05 are partial: the remaining substitution/size interfaces, LV
+counter/cache bridge, unrelated client and complete representation work
+envelopes remain open. W06-C3's checked reification and typed heap/reference
+simulation remain separate obligations. The selected native Std.WP C2 route
+and optional arlib/Lax source pilots from the
+[G1 decision](lean-complexity-campaign/evidence/g1-backend-decision.md) are unchanged.
+Production refinement, paper time/space results, release and application-study
+obligations remain open across the full planning program.
 
-The unchanged main library passed a fresh 3,751-job build, four Lean example
-suites, 95-endpoint dependency audit, seven frontend regressions and 13 ordered
-Rust tests. Both optional projects pass (3,781 arlib / 3,490 Lax jobs); the latter
-compiles its required source dependency chain, not every unrelated main target.
-The final signatures and permitted axiom closures are printed by the pilots.
-All thirteen original source-pilot hashes still match; no Rust/generated source
-or main dependency pin changed in the backend comparison.
+The main 3,756-job build, five Lean suites (including the new memo
+adversaries), and 111-endpoint dependency audit pass. New modules have no
+linter warnings and new endpoints stay within the accepted
+`propext`, `Classical.choice`, `Quot.sound` axiom set. Production Rust/generated
+sources and main dependency pins are unchanged; no regeneration was needed.
+Selected unmodified CLRS statement/execution sources compile under the main
+pins. AFP memo sources were inspected only; Isabelle is unavailable.
 
 Follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md) for bootstrap
 and pinned extraction details. From the repository root:
@@ -36,6 +39,7 @@ dev/regenerate_rust_lean.sh --check
 python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
+(cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean experiments/resource_cost_audit/LookupSourceWP.lean)
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 (cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
@@ -49,15 +53,14 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **W04: checked finite memo request/cache interfaces**, followed by W05's
-LV and unrelated clients and two representations. First finish the relevant
-upstream memoization statement/reuse audit; keep generic modules independent
-of tree/Rust imports. Preserve warm caches, multiple roots, repeated requests,
-exact small-input constants and the independent recurrence specifications.
-The [G1 report](lean-complexity-campaign/evidence/g1-backend-decision.md) names
-**W06-C3** separately: checkable reification/source semantics, typed heap/reference
-simulation, then the actual memo evaluator and one public core. Generic C1/C2
-results cannot close that source work or APP-01.
+Next is **W05: correspondence with the existing LV evaluator**, preserving
+actual table contents, call/miss/comparison counters and the `4*misses+1`
+constant. Then complete the unrelated independent edit-distance client and
+run-level priced envelopes for both representations. The toy memo tests are
+only discriminators, not the unrelated client. See the
+[remaining-work list](lean-complexity-campaign/evidence/memo-interpreter.md#remaining-work).
+Continue the named **W06-C3** source/reification and heap/reference work;
+generic C1/C2 results cannot close that source work or APP-01.
 
 Use [capabilities.md](capabilities.md), [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md)
 and the paper plans for the full mathematical, software and release scope.

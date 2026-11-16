@@ -2,6 +2,12 @@
 
 ## 1. Status and purpose
 
+A [checked native memo implementation](evidence/memo-interpreter.md) now realizes
+the D7 body/cache/counting boundary and part of D8. Its report lists exact
+modules, retained client obligations and limitations; W04 is still partial.
+The sketches below remain proposals where no executed report identifies a
+checked counterpart.
+
 The snippets in this document are **uncompiled interface sketches**. Identifiers other than explicitly cited upstream names are proposals. They are intended to constrain the first implementation experiment, not to pretend that a library already exists. G0 must produce checked signatures against an exact dependency pin before implementation assignments rely on them.
 
 The central usability test is this: changing a memo-table implementation should require a new primitive resource contract and realization proof, while leaving the dependency/counting proof intact. Changing a recurrence should require local correctness, closure, termination and request-work arguments, while preserving the generic interpreter proof. Neither change should force a client to unfold every primitive's implementation.

@@ -167,6 +167,11 @@ A useful corollary assumes at most `k(r)` assigned events, each of cost at most 
 
 ## D7. Memo interpreter: correctness, expansion uniqueness and request accounting
 
+**Executed follow-up:** [native memo core](evidence/memo-interpreter.md).
+`evalRoots_trace_spec`, `roots_request_identity`, `roots_envelope` prove the
+native interpreter results. LV evaluator correspondence and the unrelated
+client remain open; this does not close the full application acceptance gate.
+
 **Targets:** MEM-01, MEM-02.
 **Provenance:** verified memoization [I01]; existing local `memoLcs` proof [P01]. The multi-root, dynamic-request contract is a campaign formulation.
 **Proposed API:** `Memo.eval_sound`, `Memo.expands_once`, `Memo.requests_eq`, `Memo.requests_le`.

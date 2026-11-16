@@ -3,6 +3,23 @@ module
 -- Opt-in endpoint audit. Do not import this module in the library or CI.
 import SubtreeProofs
 
+#print axioms SubtreeProofs.Complexity.Memo.Body.erase_run
+#print axioms SubtreeProofs.Complexity.Memo.Body.run_spec
+#print axioms SubtreeProofs.Complexity.Memo.Problem.requestHeight_decreases
+#print axioms SubtreeProofs.Complexity.Memo.eval_correct
+#print axioms SubtreeProofs.Complexity.Memo.eval_wp
+#print axioms SubtreeProofs.Complexity.Memo.evalRoots_trace_spec
+#print axioms SubtreeProofs.Complexity.Memo.TraceInvariant.domain_eq
+#print axioms SubtreeProofs.Complexity.Memo.evalRoots_balance
+#print axioms SubtreeProofs.Complexity.Memo.roots_request_identity
+#print axioms SubtreeProofs.Complexity.Memo.roots_expansion_bound
+#print axioms SubtreeProofs.Complexity.Memo.roots_envelope
+#print axioms SubtreeProofs.Complexity.Memo.Event.totalWork_eq
+#print axioms SubtreeProofs.Complexity.Memo.Event.totalWork_le
+#print axioms SubtreeProofs.Complexity.Memo.ListCache.ops
+#print axioms SubtreeProofs.Complexity.Memo.DirectCache.ops
+#print axioms SubtreeProofs.Complexity.Paper2004.problem
+
 #print axioms SubtreeProofs.Paper2004.OrderedTree.decodeDyck_encodeDyck
 #print axioms SubtreeProofs.Paper2004.OrderedTree.encodeDyck_decodeDyck
 #print axioms SubtreeProofs.Paper2004.OrderedTree.embeds_iff_dyckEmbeds

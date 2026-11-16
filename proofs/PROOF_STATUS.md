@@ -1,5 +1,31 @@
 # Common-subtree proof status
 
+## Native generic memo interpreter: 2026-11-16
+
+`Complexity/Memo/{Body,Interpreter,Trace,Bounds,Representations}.lean` proves
+actual native sequential evaluation from an independent value function and
+local body/cache laws. Warm caches, multiple roots, repeated requests and
+value-dependent branches are included. Completed keys are proved distinct,
+initially absent, live and exactly the final cache-domain additions.
+`roots_request_identity` gives the exact root-plus-body request count;
+`roots_envelope` proves finite initially-absent expansion and nonuniform call
+bounds from request closure. Priced event partition/composition and two actual
+cache implementations are checked. `Complexity/Paper2004/MemoBody.lean` fits
+the established `paperLcs` recurrence and four-request descent interface.
+
+The 3,756-job main build, five Lean suites and 111 endpoint axiom closures
+pass. New endpoints use only the accepted baseline axiom set; new modules have
+no linter warnings. Tests include warm zero-fuel hits, cold failure, duplicate
+children/roots, an unsound cache and a value-correct broken sibling-cache reset.
+Generic modules have no tree/Rust imports; main pins and production sources
+are unchanged.
+
+This is **C1**, with native WP, not an existing-`memoLcs`/Rust cost theorem.
+W04/W05 remain partial: old evaluator value/cache/counter correspondence,
+unrelated edit-distance client, run-level representation work envelopes and
+other size/substitution interfaces remain open. W06-C3 remains separate.
+[Exact API, assumptions, audit and remaining work](../docs/planning/lean-complexity-campaign/evidence/memo-interpreter.md).
+
 ## Lax62 timed source interpretation and G1 decision: 2026-11-16
 
 The optional `LaxSpike/SourceExecution.lean` interpreter has exact timed

@@ -45,6 +45,16 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [checked native memo core](evidence/memo-interpreter.md) proves actual
+sequential evaluation, cache preservation, unique expansion, exact requests
+and closed finite warm-cache envelopes. Two counted cache representations and
+the existing LV recurrence body fit; the [reuse audit](evidence/memo-statement-audit.md)
+records selected upstream declarations. W04/W05 remain partial: existing-LV
+counter/cache correspondence, unrelated client, complete representation work
+envelopes and the remaining size/substitution interfaces are open. This is C1,
+not a source/runtime result. The 3,756-job main build, five suites and 111-endpoint
+axiom audit pass. Earlier milestones below retain their then-current scope.
+
 The [G1 backend decision](evidence/g1-backend-decision.md) compares the same
 four generated functions in native WP, charged arlib and Lax62 NREST. All three
 preserve successful operational values/costs and reject the compiled source
@@ -81,8 +91,9 @@ production algorithms remain fixed.
 ## Original first work package and current next step
 
 The comparison below has now produced the scoped C2 decision linked above.
-Next is W04's checked memo interface and remaining declaration-level reuse audit,
-then W05's two clients/two representations, alongside the named W06-C3 work.
+Next are W05's existing-LV evaluator correspondence, unrelated client and
+complete representation work envelopes, with W04's other interfaces and the
+named W06-C3 work retained.
 The original G0/G1 requirements remain recorded here; source adequacy has not
 been waived.
 
@@ -94,6 +105,10 @@ Then prove a generic memoized-work theorem and use it both for the existing 2004
 
 A campaign target is complete only when its statement, semantic model, proof, importable API, and independent consumer agree. A checked inequality for an arbitrarily annotated program is a valid annotation-model theorem, but is not automatically a source-runtime theorem. A functional refinement does not transfer cost. A RAM theorem concerns the specified RAM. A peak-residency theorem does not establish a Rust allocator budget.
 
-The proposed signatures in this directory are **design sketches, not compiled Lean declarations**. This environment had no Lean/Lake executable, so the overlay contains no `Suggested.lean` presented as checked. Signature compilation and dependency compatibility are explicit first-stage deliverables. The detailed mathematical statements and counterexamples are intended to make those deliverables precise.
+The original proposed signatures remain **design sketches** unless an executed
+report links their checked declarations. The initial overlay had no Lean/Lake
+executable; subsequent reports record the actual pinned builds and exact scope.
+The new memo core addresses D7 and part of D8; it does not silently turn every
+proposal into a checked result.
 
 This is a dated proto-roadmap. It is not a claim of Tau Ceti acceptance, a complete survey of every unpublished development, or a declaration that the proposed theorems are all absent upstream. Each absence or reuse judgment is scoped to inspected evidence.

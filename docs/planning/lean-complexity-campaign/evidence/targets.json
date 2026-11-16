@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "proto-roadmap; no new target proved by this overlay",
+  "status": "Dated roadmap with checked follow-ups; targets retain explicit interpreter/source/client boundaries",
   "targets": [
     {
       "id": "ALG-01",
@@ -255,13 +255,25 @@
       "sources": [
         "I01"
       ],
-      "status": "generalization_candidate",
+      "status": "proved_native_interpreter_clients_pending",
       "consumer": "LV2004 and edit distance",
-      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "signature_status": "compiled_native_interpreter_endpoints_partial_target_scope",
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G2"
+      "first_acceptance_gate": "G2",
+      "executed_followup": {
+        "date": "2026-11-16",
+        "evidence": "memo-interpreter.md",
+        "reuse_audit": "memo-statement-audit.md",
+        "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
+        "remaining": [
+          "Existing LV evaluator counter/cache correspondence",
+          "Unrelated independently specified client",
+          "Representation-specific complete work envelopes",
+          "Source/heap/runtime realization"
+        ]
+      }
     },
     {
       "id": "MEM-02",
@@ -275,13 +287,25 @@
         "I01",
         "P01"
       ],
-      "status": "generalization_candidate",
+      "status": "proved_native_interpreter_clients_pending",
       "consumer": "Multi-root warm-cache DP",
-      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "signature_status": "compiled_native_interpreter_endpoints_partial_target_scope",
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G2"
+      "first_acceptance_gate": "G2",
+      "executed_followup": {
+        "date": "2026-11-16",
+        "evidence": "memo-interpreter.md",
+        "reuse_audit": "memo-statement-audit.md",
+        "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
+        "remaining": [
+          "Existing LV evaluator counter/cache correspondence",
+          "Unrelated independently specified client",
+          "Representation-specific complete work envelopes",
+          "Source/heap/runtime realization"
+        ]
+      }
     },
     {
       "id": "MEM-03",
@@ -297,13 +321,25 @@
         "R01",
         "L02"
       ],
-      "status": "generalization_candidate",
+      "status": "partial_local_event_pricing_and_representations",
       "consumer": "List and direct-address memo backends",
-      "signature_status": "proposed_not_compiled_in_this_delivery",
+      "signature_status": "compiled_native_interpreter_endpoints_partial_target_scope",
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
-      "first_acceptance_gate": "G2"
+      "first_acceptance_gate": "G2",
+      "executed_followup": {
+        "date": "2026-11-16",
+        "evidence": "memo-interpreter.md",
+        "reuse_audit": "memo-statement-audit.md",
+        "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
+        "remaining": [
+          "Existing LV evaluator counter/cache correspondence",
+          "Unrelated independently specified client",
+          "Representation-specific complete work envelopes",
+          "Source/heap/runtime realization"
+        ]
+      }
     },
     {
       "id": "SCHED-01",
@@ -705,8 +741,8 @@
       "Lax62 NREST timed source interpreter"
     ],
     "next": [
-      "W04 checked memo interfaces and remaining statement/reuse audit",
-      "W05 generic memo theorem, LV/unrelated clients and two representations",
+      "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
+      "W05 existing LV evaluator correspondence, unrelated client and complete representation work envelopes",
       "W06-C3 checked source/reification and typed heap/reference simulation"
     ],
     "still_open": [

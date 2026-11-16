@@ -62,6 +62,12 @@ remain open; no machine/source claim is inferred from the comparison.
 
 ## W05. Generic memo theorem and two clients
 
+**Executed partial delivery:** [native memo core and exact scope](evidence/memo-interpreter.md).
+Interpreter correctness/once-only expansion/exact requests and finite envelopes
+compile; list/array contracts and the LV body fit. Next are old-LV evaluator
+correspondence, unrelated full client and complete representation envelopes.
+W04's other interfaces and W06-C3 remain retained work.
+
 **Depends on:** W04; source adapter work continues alongside.
 
 **Own:** MEM-01/02/03 and generic tests/examples; local LV adapter in an agreed path.

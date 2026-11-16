@@ -25,14 +25,21 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
-The [G1 comparison](lean-complexity-campaign/evidence/g1-backend-decision.md)
-now checks native WP, charged arlib and Lax62 timed interpretations of the same
-generated lookup functions and selects native Std.WP for the next C2 contracts.
-All preserve successful source-model values/costs and reject the compiled
-extra-comparison mutation's old budget. Next are W04's memo interfaces and
-remaining reuse audit, then the two-client/two-representation memo proof.
-W06-C3's reification/heap/source bridge remains explicitly separate and open;
-the decision does not establish Rust runtime or finish the wider program.
+The [native memo core](lean-complexity-campaign/evidence/memo-interpreter.md)
+now proves sequential interpreter correctness, once-only expansion, exact
+root-plus-body request counts and finite warm-cache envelopes. Two counted
+cache representations and the existing LV recurrence body fit the interface;
+the [reuse audit](lean-complexity-campaign/evidence/memo-statement-audit.md)
+records selected upstream declarations and compatibility. The 3,756-job main
+build, five Lean suites and 111-endpoint axiom audit pass.
+
+W04/W05 remain partial: next prove correspondence with the existing LV
+evaluator's table/counters, the unrelated independent client and complete
+representation work envelopes. W06-C3's reification/heap/source bridge and
+the wider program's production/runtime/release/application obligations remain
+open. The [G1 comparison](lean-complexity-campaign/evidence/g1-backend-decision.md)
+selected native Std.WP at C2; it did not establish Rust runtime. Earlier dated
+milestones follow.
 
 The [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
 adds checked instruction accounting and universal first-hit/event correspondence
