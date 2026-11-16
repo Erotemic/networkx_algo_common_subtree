@@ -1,6 +1,7 @@
 import SubtreeProofs.Complexity.Memo.Bounds
 import SubtreeProofs.Complexity.Memo.Representations
 import SubtreeProofs.Complexity.Paper2004.MemoBody
+import SubtreeProofs.Complexity.Paper2004.MemoCorrespondence
 
 /-! Interpreter discriminator cases, not a replacement for W05's independent
 edit-distance client or correspondence with the existing LV evaluator. -/
@@ -100,3 +101,39 @@ example : ∃ final, evalRoots listOps problem.body 3 [2, 2] ⟨[], []⟩ =
     (ListCache.initial_sound answer) (by simp [problem]) (by simp)
 
 end MemoTests
+
+namespace LVMemoTests
+
+open SubtreeProofs.Paper2004.OrderedTree
+open SubtreeProofs.Complexity.Memo
+open SubtreeProofs.Complexity.Paper2004
+
+private def one : DyckWord := (0 : DyckWord).nest
+
+private def observe (result : EStateM.Result Unit (EvalState MemoKey MemoTable) Nat) :
+    Option (Nat × Nat × Nat × Nat) :=
+  match result with
+  | .error _ _ => none
+  | .ok value final => some (value, Event.calls final.events,
+      (Event.completedKeys final.events).length, Event.lookupWork final.events)
+
+example : observe (eval listOps body 1 (0, 0) ⟨[], []⟩) = some (0, 1, 1, 0) := by decide +kernel
+
+example : observe (eval listOps body 0 (0, 0) ⟨[((0, 0), 0)], []⟩) = some (0, 1, 0, 1) := by
+  decide +kernel
+
+-- All four actual child requests survive, including the repeated empty pair.
+example : observe (eval listOps body 3 (one, one) ⟨[], []⟩) = some (1, 5, 4, 4) := by
+  decide +kernel
+
+example : let run := memoLcs one one []
+    (run.value, run.calls, run.misses, run.comparisons) = (1, 5, 4, 4) := by decide +kernel
+
+-- The strong operational equality does not falsely assume a warm hit is sound.
+example : observe (eval listOps body 3 (one, one) ⟨[((one, one), 17), ((one, one), 99)], []⟩) =
+    some (17, 1, 0, 1) := by decide +kernel
+
+example : (memoLcs one one []).calls ≤ 4 * (memoLcs one one []).misses + 1 :=
+  memoLcs_calls_from_generic one one [] (by simp) (by intro _ hm; simp at hm)
+
+end LVMemoTests

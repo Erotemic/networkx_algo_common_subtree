@@ -64,8 +64,10 @@ remain open; no machine/source claim is inferred from the comparison.
 
 **Executed partial delivery:** [native memo core and exact scope](evidence/memo-interpreter.md).
 Interpreter correctness/once-only expansion/exact requests and finite envelopes
-compile; list/array contracts and the LV body fit. Next are old-LV evaluator
-correspondence, unrelated full client and complete representation envelopes.
+compile; list/array contracts and the LV body fit. The
+[LV follow-up](evidence/memo-lv-correspondence.md) closes exact old-evaluator
+value/table/counter correspondence and warm D-product bounds. Next are the
+unrelated full client and complete representation envelopes.
 W04's other interfaces and W06-C3 remain retained work.
 
 **Depends on:** W04; source adapter work continues alongside.

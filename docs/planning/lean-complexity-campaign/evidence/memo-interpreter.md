@@ -1,5 +1,10 @@
 # Checked native memo core, 2026-11-16
 
+**Follow-up:** [exact LV correspondence](memo-lv-correspondence.md) now closes
+the existing-evaluator value/table/counter bridge and instantiates D-product
+warm/multi-root bounds. The initial-core evidence below records its original
+scope; the unrelated client and complete representation envelopes remain open.
+
 This is a **C1 interpreter theorem** following the native backend decision.
 It proves actual sequential evaluation and counting, rather than assuming a
 global memo runtime bound. It does not establish correspondence with the old
@@ -139,8 +144,8 @@ The final validation count and audit outcome are recorded in `RESUME.md` and
 
 ## Remaining work
 
-1. Prove exact value/cache/call/miss/comparison correspondence with existing
-   `memoLcs`, preserving warm tables and the established small-input constants.
+1. **Completed in the [LV follow-up](memo-lv-correspondence.md):** exact
+   value/cache/call/miss/comparison correspondence and warm D-product bounds.
 2. Supply the unrelated independently specified edit-distance client and its
    correctness/closure/local-cost obligations.
 3. Prove run-level primitive budgets and final priced envelopes for both

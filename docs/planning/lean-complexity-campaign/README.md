@@ -49,11 +49,11 @@ The [checked native memo core](evidence/memo-interpreter.md) proves actual
 sequential evaluation, cache preservation, unique expansion, exact requests
 and closed finite warm-cache envelopes. Two counted cache representations and
 the existing LV recurrence body fit; the [reuse audit](evidence/memo-statement-audit.md)
-records selected upstream declarations. W04/W05 remain partial: existing-LV
-counter/cache correspondence, unrelated client, complete representation work
-envelopes and the remaining size/substitution interfaces are open. This is C1,
-not a source/runtime result. The 3,756-job main build, five suites and 111-endpoint
-axiom audit pass. Earlier milestones below retain their then-current scope.
+records selected upstream declarations. The [LV follow-up](evidence/memo-lv-correspondence.md)
+now proves exact old-evaluator values/tables/counters and warm D-product bounds.
+W04/W05 remain partial: unrelated client, complete representation envelopes and
+remaining size/substitution interfaces are open. This is C1, not source/runtime.
+The 3,757-job build, updated memo suite and 115-endpoint axiom audit pass. Earlier milestones below retain their then-current scope.
 
 The [G1 backend decision](evidence/g1-backend-decision.md) compares the same
 four generated functions in native WP, charged arlib and Lax62 NREST. All three
@@ -91,8 +91,7 @@ production algorithms remain fixed.
 ## Original first work package and current next step
 
 The comparison below has now produced the scoped C2 decision linked above.
-Next are W05's existing-LV evaluator correspondence, unrelated client and
-complete representation work envelopes, with W04's other interfaces and the
+Next are W05's unrelated client and complete representation work envelopes, with W04's other interfaces and the
 named W06-C3 work retained.
 The original G0/G1 requirements remain recorded here; source adequacy has not
 been waived.

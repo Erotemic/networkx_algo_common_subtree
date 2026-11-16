@@ -1,32 +1,36 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment adds a checked
-[native memo interpreter](lean-complexity-campaign/evidence/memo-interpreter.md)
+Branch: `Droschinsky-algos`. The latest increment proves
+[exact correspondence with existing `memoLcs`](lean-complexity-campaign/evidence/memo-lv-correspondence.md):
+values, complete table order, calls, misses and comparisons for arbitrary warm
+tables. Under sound valid storage, the generic interpreter recovers
+`4 * misses + 1` and the initially-absent D-product miss bound. Multiple roots
+in the D-product also consume the generic warm-cache envelope theorem.
+The original evaluator and its unconditional counter theorem are unchanged.
+
+This builds on the [native memo core](lean-complexity-campaign/evidence/memo-interpreter.md)
 and [statement/reuse audit](lean-complexity-campaign/evidence/memo-statement-audit.md).
 Generic modules prove independent values, cache preservation, once-only
-expansion, exact root-plus-body request accounting and closed finite warm-cache
-envelopes. List/direct-address caches satisfy the same functional contract;
-actual primitive counters and initialization costs differ. The existing
-`paperLcs` recurrence fits the body/descent interface without tree imports in
-the generic modules. No assumed total runtime bound is a field.
+expansion, exact root-plus-body requests and finite warm-cache envelopes.
+List/direct-address implementations share the functional contract and have
+separate actual primitive/initialization counters. Generic modules have no
+paper or Rust imports.
 
-This is C1 progress, not correspondence with existing `memoLcs` or Rust.
-W04 and W05 are partial: the remaining substitution/size interfaces, LV
-counter/cache bridge, unrelated client and complete representation work
-envelopes remain open. W06-C3's checked reification and typed heap/reference
-simulation remain separate obligations. The selected native Std.WP C2 route
-and optional arlib/Lax source pilots from the
+This is **C1**, not a Rust/source runtime theorem. W04/W05 are partial: remaining
+substitution/size interfaces, the unrelated full client and complete
+representation work envelopes remain open. W06-C3's checked reification and
+typed heap/reference simulation remain separate obligations. The selected
+native Std.WP C2 route and optional arlib/Lax pilots from the
 [G1 decision](lean-complexity-campaign/evidence/g1-backend-decision.md) are unchanged.
-Production refinement, paper time/space results, release and application-study
-obligations remain open across the full planning program.
+Production refinement, paper time/space, release and application-study work
+remain open across the full planning program.
 
-The main 3,756-job build, five Lean suites (including the new memo
-adversaries), and 111-endpoint dependency audit pass. New modules have no
-linter warnings and new endpoints stay within the accepted
-`propext`, `Classical.choice`, `Quot.sound` axiom set. Production Rust/generated
-sources and main dependency pins are unchanged; no regeneration was needed.
-Selected unmodified CLRS statement/execution sources compile under the main
-pins. AFP memo sources were inspected only; Isabelle is unavailable.
+The main 3,757-job build, updated memo suite and 115-endpoint axiom audit pass.
+The four unchanged Lean suites passed with the preceding generic-core build.
+New modules have no warnings; endpoint axioms remain within
+`propext`, `Classical.choice`, `Quot.sound`. Main dependency pins and production
+Rust/generated sources are unchanged. Selected original CLRS sources compile
+under the main pins; AFP sources were inspected only, without Isabelle.
 
 Follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md) for bootstrap
 and pinned extraction details. From the repository root:
@@ -53,14 +57,13 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **W05: correspondence with the existing LV evaluator**, preserving
-actual table contents, call/miss/comparison counters and the `4*misses+1`
-constant. Then complete the unrelated independent edit-distance client and
-run-level priced envelopes for both representations. The toy memo tests are
-only discriminators, not the unrelated client. See the
-[remaining-work list](lean-complexity-campaign/evidence/memo-interpreter.md#remaining-work).
-Continue the named **W06-C3** source/reification and heap/reference work;
-generic C1/C2 results cannot close that source work or APP-01.
+Next is **W05: the unrelated independent edit-distance client and complete
+run-level priced envelopes for both cache representations**. Include setup,
+key conversion and finalization; do not identify word tests/cell operations
+with total source runtime. The toy memo tests are only discriminators, not the
+unrelated client. See the [remaining-work list](lean-complexity-campaign/evidence/memo-lv-correspondence.md#validation-and-remaining-work).
+Retain W04's other interfaces and the named **W06-C3** source/reification and
+heap/reference work; generic C1/C2 results cannot close that work or APP-01.
 
 Use [capabilities.md](capabilities.md), [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md)
 and the paper plans for the full mathematical, software and release scope.

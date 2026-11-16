@@ -30,12 +30,14 @@ now proves sequential interpreter correctness, once-only expansion, exact
 root-plus-body request counts and finite warm-cache envelopes. Two counted
 cache representations and the existing LV recurrence body fit the interface;
 the [reuse audit](lean-complexity-campaign/evidence/memo-statement-audit.md)
-records selected upstream declarations and compatibility. The 3,756-job main
-build, five Lean suites and 111-endpoint axiom audit pass.
+records selected upstream declarations and compatibility. The
+[LV follow-up](lean-complexity-campaign/evidence/memo-lv-correspondence.md) now
+proves exact old-evaluator values/tables/counters and warm D-product bounds.
+The 3,757-job build, updated memo suite and 115-endpoint axiom audit pass;
+the unchanged suites passed in the preceding core build.
 
-W04/W05 remain partial: next prove correspondence with the existing LV
-evaluator's table/counters, the unrelated independent client and complete
-representation work envelopes. W06-C3's reification/heap/source bridge and
+W04/W05 remain partial: next finish the unrelated independent client and
+complete representation work envelopes, retaining W04's other interfaces. W06-C3's reification/heap/source bridge and
 the wider program's production/runtime/release/application obligations remain
 open. The [G1 comparison](lean-complexity-campaign/evidence/g1-backend-decision.md)
 selected native Std.WP at C2; it did not establish Rust runtime. Earlier dated

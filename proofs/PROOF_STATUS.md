@@ -1,5 +1,27 @@
 # Common-subtree proof status
 
+## Exact existing LV memo evaluator correspondence: 2026-11-16
+
+`Complexity/Paper2004/MemoCorrespondence.lean` proves the native evaluator
+agrees with unchanged existing `memoLcs` on exact values, complete table order,
+calls, misses and comparisons. This operational equality holds for arbitrary
+warm tables, including duplicate/unsound entries, above the semilength fuel
+bound. Independent value correctness still requires a sound cache.
+
+The D-product's closure is proved from the existing decomposition rules.
+Generic trace/envelope results yield the actual old evaluator's warm miss bound
+and recover `4*misses+1` under sound valid storage, preserving the original
+unconditional theorem. Arbitrary roots in the D-product, repeated roots and
+unrelated sound warm entries are included.
+
+The 3,757-job build, updated memo suite and 115-endpoint axiom audit pass;
+four new closures stay within the established axiom set and the module has
+no warnings. Original evaluator, production Rust/generated files and main
+pins are unchanged. This closes the local C1 evaluator bridge only. W05's
+unrelated client and full representation work envelopes, W04's other interfaces
+and W06-C3 remain open.
+[Statements, proof scope and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-lv-correspondence.md).
+
 ## Native generic memo interpreter: 2026-11-16
 
 `Complexity/Memo/{Body,Interpreter,Trace,Bounds,Representations}.lean` proves

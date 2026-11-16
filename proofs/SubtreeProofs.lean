@@ -231,3 +231,4 @@ public import SubtreeProofs.Rust.LookupSourceMutation
 public import SubtreeProofs.Complexity.Memo.Bounds
 public import SubtreeProofs.Complexity.Memo.Representations
 public import SubtreeProofs.Complexity.Paper2004.MemoBody
+public import SubtreeProofs.Complexity.Paper2004.MemoCorrespondence

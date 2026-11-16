@@ -268,11 +268,11 @@
         "reuse_audit": "memo-statement-audit.md",
         "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
         "remaining": [
-          "Existing LV evaluator counter/cache correspondence",
           "Unrelated independently specified client",
           "Representation-specific complete work envelopes",
           "Source/heap/runtime realization"
-        ]
+        ],
+        "lv_correspondence": "memo-lv-correspondence.md"
       }
     },
     {
@@ -300,11 +300,11 @@
         "reuse_audit": "memo-statement-audit.md",
         "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
         "remaining": [
-          "Existing LV evaluator counter/cache correspondence",
           "Unrelated independently specified client",
           "Representation-specific complete work envelopes",
           "Source/heap/runtime realization"
-        ]
+        ],
+        "lv_correspondence": "memo-lv-correspondence.md"
       }
     },
     {
@@ -334,11 +334,11 @@
         "reuse_audit": "memo-statement-audit.md",
         "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
         "remaining": [
-          "Existing LV evaluator counter/cache correspondence",
           "Unrelated independently specified client",
           "Representation-specific complete work envelopes",
           "Source/heap/runtime realization"
-        ]
+        ],
+        "lv_correspondence": "memo-lv-correspondence.md"
       }
     },
     {
@@ -742,7 +742,7 @@
     ],
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
-      "W05 existing LV evaluator correspondence, unrelated client and complete representation work envelopes",
+      "W05 unrelated independently specified client and complete representation work envelopes",
       "W06-C3 checked source/reification and typed heap/reference simulation"
     ],
     "still_open": [

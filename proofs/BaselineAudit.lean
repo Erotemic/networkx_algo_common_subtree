@@ -19,6 +19,10 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Complexity.Memo.ListCache.ops
 #print axioms SubtreeProofs.Complexity.Memo.DirectCache.ops
 #print axioms SubtreeProofs.Complexity.Paper2004.problem
+#print axioms SubtreeProofs.Complexity.Paper2004.eval_refines_memoLcs
+#print axioms SubtreeProofs.Complexity.Paper2004.roots_envelope_spec
+#print axioms SubtreeProofs.Complexity.Paper2004.memoLcs_calls_from_generic
+#print axioms SubtreeProofs.Complexity.Paper2004.memoLcs_warm_misses_from_generic
 
 #print axioms SubtreeProofs.Paper2004.OrderedTree.decodeDyck_encodeDyck
 #print axioms SubtreeProofs.Paper2004.OrderedTree.encodeDyck_decodeDyck
