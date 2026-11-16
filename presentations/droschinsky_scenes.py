@@ -5,13 +5,121 @@ bipartite matching subproblems, without conflating their feasibility relations.
 """
 from __future__ import annotations
 
-from manim import (Create, FadeIn, Write, SurroundingRectangle, Arrow, GrowArrow,
-                   Line, VGroup, RIGHT, DOWN)
+from manim import (Create, FadeIn, FadeOut, Write, Transform, Circle,
+                   SurroundingRectangle, Arrow, GrowArrow, Line, VGroup, RIGHT, DOWN)
 
 from scenes import MathPresentation, MathTex
 from math_examples import node, EXAMPLE_MATCHING, max_weight_partial_matching, path_contribution
+from math_examples import flip_augmenting_path, skipped_path_conflicts
 from visuals import t, tree_drawing, panel, weight_matrix, TEAL, BLUE, AMBER, ROSE, FG, MUTED
 from lecture_primitives import formula, strip, show_rows, center_text, side_formula
+
+
+class D14AugmentingPath(MathPresentation):
+    intro_notes = ('A weighted partial matching can require replacing an old '
+                   'edge rather than greedily taking the largest edge. This '
+                   'small alternating path illustrates a local repair, not '
+                   'the full published matching schedule.')
+
+    def construct(self):
+        self.setup_page('Flip an alternating path', '2016 / matching and related instances',
+                        'Tiny exhaustive matching oracle; no Hungarian runtime claim')
+        weights = ((8, 7), (7, None))
+        before = ((0, 0),)
+        path = (('L', 1), ('R', 0), ('L', 0), ('R', 1))
+        after = flip_augmenting_path(before, path)
+        assert sum(weights[r][c] for r, c in after) == max_weight_partial_matching(weights)[0]
+        points = {('L', 0): [-4.6, 1.2, 0], ('L', 1): [-4.6, -.55, 0],
+                  ('R', 0): [-1.2, 1.2, 0], ('R', 1): [-1.2, -.55, 0]}
+        vertex_mobs = {}
+        for key, pos in points.items():
+            vertex = Circle(radius=.28, color=BLUE).move_to(pos)
+            label = t(('a', 'b')[key[1]] if key[0] == 'L' else ('x', 'y')[key[1]], 20).move_to(pos)
+            vertex_mobs[key] = VGroup(vertex, label)
+            self.play(Create(vertex), Write(label), run_time=.25)
+        old = Line(points[('L', 0)], points[('R', 0)], buff=.30, color=TEAL, stroke_width=7)
+        matrix = weight_matrix(weights, selected=before, x=3.25, y=1.2)
+        status = self.text_at('Current weight: 8', 3.25, -.9, 24, TEAL)
+        self.play(Create(old), FadeIn(matrix), Write(status),
+                  FadeIn(self.text_at('× = forbidden', 3.25, -1.4, 18, MUTED)))
+        self.beat(notes='b and y are free. Traverse the unused edge b-x, the matched edge x-a backwards, and the unused edge a-y.')
+        arrows = VGroup()
+        for source, target in zip(path, path[1:]):
+            arrow = Arrow(points[source], points[target], buff=.32, color=AMBER, stroke_width=5)
+            arrows.add(arrow)
+            self.play(Create(arrow), run_time=.55)
+        self.beat(notes='Flip path membership: remove a-x and add b-x and a-y. Weight changes by seven minus eight plus seven, gaining six.')
+        new = VGroup(*(Line(points[('L', r)], points[('R', c)], buff=.30,
+                            color=TEAL, stroke_width=7) for r, c in after))
+        self.play(FadeOut(old), FadeOut(arrows), Create(new),
+                  Transform(matrix, weight_matrix(weights, selected=after, x=3.25, y=1.2)),
+                  Transform(status, self.text_at('New weight: 14', 3.25, -.9, 24, TEAL)))
+        self.beat(notes='Related right-deletion instances use the same weight table with one column forbidden. Exhaustive optima are seven without x and eight without y. The 2016 optimization shares work between such instances.')
+        deletion_scores = []
+        for removed in range(2):
+            reduced = tuple(tuple(w for j, w in enumerate(row) if j != removed) for row in weights)
+            deletion_scores.append(max_weight_partial_matching(reduced)[0])
+        self.play(FadeIn(strip('RELATED INSTANCES',
+                              f'full: 14; delete x: {deletion_scores[0]}; delete y: {deletion_scores[1]}',
+                              y=-2.15, accent=AMBER)))
+        for removed, name in enumerate(('x', 'y')):
+            self.beat(notes=f'Branch from the original table and remove {name}. The remaining weights are unchanged. This tiny optimum is obtained by independent enumeration; it illustrates related instances without claiming the paper optimized solver has been animated in full.')
+            columns = [j for j in range(2) if j != removed]
+            reduced = tuple(tuple(row[j] for j in columns) for row in weights)
+            value, local_pairs = max_weight_partial_matching(reduced)
+            original_pairs = tuple((r, columns[c]) for r, c in local_pairs)
+            edges = VGroup(*(Line(points[('L', r)], points[('R', c)], buff=.30,
+                                  color=TEAL, stroke_width=7) for r, c in original_pairs))
+            next_matrix = weight_matrix(weights, selected=original_pairs, x=3.25, y=1.2)
+            for r in range(2):
+                next_matrix[2*r + removed].set_opacity(.15)
+            self.play(Transform(new, edges), Transform(matrix, next_matrix),
+                      Transform(status, self.text_at(f'Delete {name}: weight {value}', 3.25, -.9, 23, TEAL)),
+                      *(vertex_mobs[('R', j)].animate.set_opacity(.15 if j == removed else 1)
+                        for j in range(2)))
+        self.play(FadeIn(center_text('Local repair, family reuse and total runtime need separate arguments.',
+                                    y=-3.0, size=19)))
+        self.finish()
+
+
+class D15BranchCollision(MathPresentation):
+    intro_notes = ('Two skeleton branches cannot share a skipped branch point. '
+                   'Their host paths may intersect only at the mapped endpoint '
+                   'they share in the skeleton.')
+
+    def construct(self):
+        self.setup_page('A skipped branch point cannot be shared', '2018 / skeleton validity',
+                        'Droschinsky2018/Specification.lean; independent path-conflict example')
+        host = node('r', node('x', node('a'), node('b')))
+        drawing, positions = tree_drawing(host, anchor=(-3.3, 1.55), width=4.0, level_gap=1.05)
+        self.play(Create(drawing))
+        first = self.text_at('r -> x -> a', 3.0, 1.2, 26, TEAL)
+        second = self.text_at('r -> x -> b', 3.0, .35, 26, AMBER)
+        self.play(Write(first))
+        left_path = VGroup(Line(positions[()], positions[(0,)], buff=.30, color=TEAL, stroke_width=8),
+                           Line(positions[(0,)], positions[(0, 0)], buff=.30, color=TEAL, stroke_width=8))
+        self.play(Create(left_path))
+        self.beat(notes='Try to realize the other skeleton edge from the same mapped root r. Its path to b also passes through x.')
+        right_path = VGroup(Line(positions[()], positions[(0,)], buff=.30, color=AMBER, stroke_width=5),
+                            Line(positions[(0,)], positions[(0, 1)], buff=.30, color=AMBER, stroke_width=5))
+        self.play(Write(second), Create(right_path))
+        assert skipped_path_conflicts((('r', 'x', 'a'), ('r', 'x', 'b')), {'r', 'a', 'b'}) == {'x'}
+        self.beat(notes='x is an interior vertex of both paths. This is forbidden even if the numeric score would look favorable; paying twice for x does not repair feasibility.')
+        collision = Circle(radius=.42, color=ROSE, stroke_width=6).move_to(positions[(0,)])
+        status = strip('INVALID', 'x belongs to both path interiors', y=-1.65, accent=ROSE)
+        self.play(Create(collision), FadeIn(status))
+        self.beat(notes='For a different freely rooted candidate, map the skeleton branch vertex to x itself. Then the two paths x-a and x-b intersect only at their shared mapped endpoint. This changes the mapping and its score.')
+        assert not skipped_path_conflicts((('x', 'a'), ('x', 'b')), {'x', 'a', 'b'})
+        valid = VGroup(Line(positions[(0,)], positions[(0, 0)], buff=.30, color=TEAL, stroke_width=7),
+                       Line(positions[(0,)], positions[(0, 1)], buff=.30, color=TEAL, stroke_width=7))
+        self.play(FadeOut(left_path), FadeOut(right_path), Create(valid),
+                  collision.animate.set_color(TEAL),
+                  Transform(first, self.text_at('x -> a', 3.0, 1.2, 26, TEAL)),
+                  Transform(second, self.text_at('x -> b', 3.0, .35, 26, TEAL)),
+                  Transform(status, strip('VALID CANDIDATE', 'x is now a mapped branch vertex', y=-1.65, accent=TEAL)))
+        self.play(FadeIn(center_text('Freely choosing a mapped root differs from forcing r to remain mapped.',
+                                    y=-2.9, size=19, color=AMBER)))
+        self.finish()
 
 
 class D01Question(MathPresentation):
@@ -24,8 +132,8 @@ class D01Question(MathPresentation):
                         'MFCS 2016 and MFCS 2018')
         one=node('u',node('a'),node('b',node('c')))
         two=node('v',node('q',node('r')),node('p'))
-        left,_=tree_drawing(one,anchor=(-3.7,1.91),width=4.2)
-        right,_=tree_drawing(two,anchor=(3.7,1.91),width=4.2)
+        left,_=tree_drawing(one,anchor=(-3.7,1.91),width=4.2,level_gap=.80)
+        right,_=tree_drawing(two,anchor=(3.7,1.91),width=4.2,level_gap=.80)
         self.play(Create(left),Create(right))
         self.beat(notes='In 2016 we seek a connected subtree isomorphism; child order is irrelevant, and matched vertices and edges contribute weights.')
         self.play(FadeIn(strip('2016','weighted connected subtree isomorphism',y=-.75,accent=BLUE)))
@@ -201,12 +309,14 @@ class D10Bounds(MathPresentation):
 
     def construct(self):
         self.setup_page('What the fast algorithms establish', 'published bounds versus verified reference',
-                        'MFCS 2016, Theorem 4; MFCS 2018, Theorem 15')
-        self.play(Write(formula(r'\mathrm{2016:}\quad O(n^2\Delta)\ \text{for symmetric size bound}',y=1.60,scale=.79,color=BLUE)))
-        self.beat(notes='The 2016 paper gives a more precise asymmetric-degree expression. The abbreviated n-squared-delta form assumes the appropriate symmetric size/degree simplification.')
-        self.play(Write(formula(r"\mathrm{2018:}\quad O(|T|\,|T'|\,\Delta)",y=.55,scale=.94,color=TEAL)))
-        self.beat(notes='Here Delta is the minimum of the maximum degrees of the two inputs. This covers rooted and unrooted real-weight algorithms in the paper.')
-        self.play(FadeIn(strip('SOURCE PROOFS','recurrences and witness decompositions proved',y=-.75,accent=TEAL)))
+                        '2016 arXiv v4, Theorem 4; 2018 arXiv v1, Theorem 15')
+        self.play(Write(formula(r'\mathrm{2016:}\quad O(|G|\,|H|\,(\delta+\log D))',y=1.65,scale=.88,color=BLUE)))
+        self.play(Write(formula(r'\delta=\min(\Delta_G,\Delta_H),\quad D=\max(\Delta_G,\Delta_H)',
+                                y=.99,scale=.60,color=MUTED)))
+        self.beat(notes='For unrestricted weights, the pinned 2016 v4 bound keeps both degree parameters and the logarithmic term. An unqualified n-squared-delta expression loses that distinction.')
+        self.play(Write(formula(r"\mathrm{2018:}\quad O(|T|\,|T'|\,\min(\Delta_T,\Delta_{T'}))",y=.30,scale=.80,color=TEAL)))
+        self.beat(notes='The 2018 real-weight bound uses the smaller maximum degree. Correctness of reference recurrences does not imply either optimized cost theorem.')
+        self.play(FadeIn(strip('LEAN RESULTS','recurrences and witness decompositions proved',y=-.75,accent=TEAL)))
         self.beat(notes='The current Lean reference graph evaluators use repeated or exhaustive matchings; their implementation cost does not inherit the paper fast bounds.')
         self.play(FadeIn(strip('REMAINING','optimized graph runtime and Rust refinement',y=-1.73,accent=AMBER)))
         self.play(FadeIn(center_text('Proving the recurrence does not certify an optimized runtime.',y=-2.77,size=20)))
@@ -269,4 +379,5 @@ class D13Unrooted2018(MathPresentation):
 
 SCENES = [D01Question,D02Unordered,D03Score,D04RootRecurrence,
           D05MatchingAlternatives,D06Assignment,D07Rerooting,D08Topology,
-          D09TwoStateTrace,D10Bounds,D11DualCut,D12DeletionReuse,D13Unrooted2018]
+          D09TwoStateTrace,D10Bounds,D11DualCut,D12DeletionReuse,D13Unrooted2018,
+          D14AugmentingPath,D15BranchCollision]

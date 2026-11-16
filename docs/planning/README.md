@@ -17,6 +17,8 @@ program. Read these in order:
    weighted unordered isomorphism, weighted partial matching, topological
    embeddings with distance penalties, paper-correct scoring, faster
    algorithms and their verification.
+5. **[Mathematical presentations and application study](common_subtree_presentation_and_application_paper.md)**:
+   rendered standalone talks and the prospective controlled application pilot.
 
 ## Current execution order: usable software first
 

@@ -41,9 +41,9 @@ def specialized(slug: str, module: str, names: tuple[str, ...],
 LOZANO = specialized(
     'lozano-valiente-2004', 'lozano_scenes.py',
     (
-        'L01Question', 'L02Order', 'OrderedContraction', 'BalancedWords',
+        'L01Question', 'L02Order', 'OrderedContraction', 'L10ChildSiblingTraversal', 'BalancedWords',
         'L03Factorization', 'DeletionIsContraction', 'L04PrintedGap',
-        'OrderedRecurrence', 'L05ValueTrace', 'L06Witness', 'L08StructuralCases',
+        'OrderedRecurrence', 'L05ValueTrace', 'L11RecurrenceReuse', 'L06Witness', 'L08StructuralCases',
         'L07StateBound', 'L09ShapeSensitivity', 'CorrectnessAndComplexity', 'AffinityExtensions',
     ),
     MATHEMATICS.scenes,
@@ -53,9 +53,9 @@ DROSCHINSKY = specialized(
     'droschinsky-2016-2018', 'droschinsky_scenes.py',
     (
         'D01Question', 'D02Unordered', 'D03Score', 'D04RootRecurrence',
-        'WeightedUnorderedMatching', 'D05MatchingAlternatives',
+        'WeightedUnorderedMatching', 'D05MatchingAlternatives', 'D14AugmentingPath',
         'D06Assignment', 'D07Rerooting', 'SparseMatchingOptimization',
-        'D11DualCut', 'D12DeletionReuse', 'D08Topology', 'TopologicalDistancePenalties', 'MappedAndSkippedStates',
+        'D11DualCut', 'D12DeletionReuse', 'D08Topology', 'D15BranchCollision', 'TopologicalDistancePenalties', 'MappedAndSkippedStates',
         'D09TwoStateTrace', 'D13Unrooted2018', 'D10Bounds',
     ),
     MATHEMATICS.scenes,

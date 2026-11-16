@@ -6,14 +6,107 @@ objective are deliberately separated: they have different extension sets.
 from __future__ import annotations
 
 from manim import (VGroup, FadeIn, FadeOut, Create, Write, Transform,
-                   SurroundingRectangle, Arrow, Line, RIGHT, UP, DOWN)
+                   SurroundingRectangle, Arrow, Line, Dot, Circle, RIGHT, UP, DOWN)
 
 from scenes import MathPresentation, MathTex
 from math_examples import (node, encode_tree, decode_tree, contract_edge,
                            common_embedding_oracle, lozano_recurrence_candidate_scores,
                            split_first_pair, all_contractions)
+from math_examples import first_child_next_sibling, memoized_recurrence_trace
 from visuals import t, tree_drawing, panel, TEAL, BLUE, AMBER, ROSE, FG, MUTED
 from lecture_primitives import formula, strip, show_rows, center_text, side_formula
+
+
+class L10ChildSiblingTraversal(MathPresentation):
+    intro_notes = ('An ordered tree has a first-child/next-sibling representation. '
+                   'These links are a representation of the same tree; a sibling '
+                   'link is not an extra parent edge.')
+
+    def construct(self):
+        self.setup_page('First child, then next sibling', 'ordered traversal / representation',
+                        'Executable example: math_examples.first_child_next_sibling')
+        tree = node('r', node('a', node('b'), node('c')), node('d'))
+        drawing, positions = tree_drawing(tree, anchor=(-3.1, 1.6), width=4.9, level_gap=1.0)
+        self.play(Create(drawing))
+        links = first_child_next_sibling(tree)
+        pointer = Circle(radius=.36, color=TEAL, stroke_width=4).move_to(positions[()])
+        status = self.text_at('Start at r', 3.0, 1.3, 25, TEAL)
+        self.play(FadeIn(pointer), Write(status))
+        self.beat(notes='Follow the first-child pointer from r to a, then from a to b. These remain parent-child edges.')
+        for origin, target in (((), (0,)), ((0,), (0, 0))):
+            assert links[origin][0] == target
+            self.play(Create(Arrow(positions[origin], positions[target], buff=.30, color=TEAL)),
+                      pointer.animate.move_to(positions[target]),
+                      Transform(status, self.text_at('First child', 3.0, 1.3, 25, TEAL)))
+        self.beat(notes='b has no child. Its next-sibling pointer leads to c; that horizontal pointer is not a tree edge.')
+        assert links[(0, 0)][1] == (0, 1)
+        self.play(Create(Arrow(positions[(0, 0)], positions[(0, 1)], buff=.30, color=AMBER)),
+                  pointer.animate.move_to(positions[(0, 1)]),
+                  Transform(status, self.text_at('Next sibling: b to c', 3.0, 1.3, 23, AMBER)))
+        self.beat(notes='After c, return to the pending frame for a and follow a\'s sibling link to d. The stack remembers where traversal resumes.')
+        self.play(pointer.animate.move_to(positions[(0,)]),
+                  Transform(status, self.text_at('Return to a\'s frame', 3.0, 1.3, 23, MUTED)))
+        assert links[(0,)][1] == (1,)
+        self.play(Create(Arrow(positions[(0,)], positions[(1,)], buff=.30, color=AMBER)),
+                  pointer.animate.move_to(positions[(1,)]),
+                  Transform(status, self.text_at('Next sibling: a to d', 3.0, 1.3, 23, AMBER)))
+        self.play(FadeIn(center_text('Preorder: r, a, b, c, d', y=-2.2, color=FG)),
+                  FadeIn(center_text('Teal = first child; amber = next sibling', y=-2.9, size=20)))
+        self.finish()
+
+
+class L11RecurrenceReuse(MathPresentation):
+    intro_notes = ('The three recurrence branches form a dependency DAG. '
+                   'Requests can repeat a state even though a memoized evaluator '
+                   'expands that state only once.')
+
+    def construct(self):
+        self.setup_page('Three branches share subproblems', 'Lemma 8 / dynamic-programming reuse',
+                        'Didactic trace checked against exhaustive contractions')
+        left, right = '001011', '0011'
+        score, events = memoized_recurrence_trace(left, right)
+        candidates = lozano_recurrence_candidate_scores(left, right)
+        x, y = split_first_pair(left)
+        u, v = split_first_pair(right)
+
+        def state(a, b):
+            return 'L(' + (a or r'\varepsilon') + ',' + (b or r'\varepsilon') + ')'
+
+        subproblems = ('1+' + state(x, u) + '+' + state(y, v),
+                       state(x + y, right), state(left, u + v))
+        self.play(Write(formula(r'L(001011,0011)', y=1.85, scale=.95)))
+        branches = VGroup()
+        for i, (title, value, detail, color) in enumerate(zip(
+                ('retain first pairs', 'contract left', 'contract right'), candidates,
+                subproblems, (TEAL, AMBER, ROSE))):
+            x = (i - 1) * 4.1
+            box = panel(3.8, 1.35).move_to([x, .55, 0])
+            label = t(title, 19, color).move_to([x, .98, 0])
+            children = MathTex(detail, color=FG).scale(.42)
+            if children.width > 3.45:
+                children.scale_to_fit_width(3.45)
+            children.move_to([x, .55, 0])
+            number = t('score ' + str(value), 18, FG).move_to([x, .10, 0])
+            branch = VGroup(box, label, children, number)
+            branches.add(branch)
+            self.beat(notes='Reveal the next recurrence alternative and its independently checked score.')
+            self.play(Create(Arrow([0, 1.55, 0], [x, 1.27, 0], buff=.05, color=color)), FadeIn(branch))
+        key = ('01', '01')
+        assert ('expand', key, 1) in events and ('hit', key, 1) in events
+        cache = strip('CACHE', 'L(01,01) = 1', y=-1.25, accent=BLUE)
+        self.beat(notes='The first request for L(01,01) expands the state and stores score one. Its ancestors may belong to different top-level branches.')
+        self.play(FadeIn(cache))
+        cursor = Dot([-2.6, -1.25, 0], color=BLUE)
+        self.play(FadeIn(cursor))
+        hits = sum(kind == 'hit' and k == key for kind, k, _ in events)
+        for _ in range(hits):
+            self.beat(notes='A later request for exactly the same key reads the stored score. It does not expand the three branches again.')
+            self.play(cursor.animate.move_to([2.3, -1.25, 0]), run_time=.4)
+            self.play(cursor.animate.move_to([-2.6, -1.25, 0]), run_time=.4)
+        expanded = sum(kind == 'expand' for kind, _, _ in events)
+        self.play(FadeIn(center_text(f'{expanded} unique expanded states; final score {score}', y=-2.45, color=FG)),
+                  FadeIn(center_text('Cache lookup and structural copying still have costs.', y=-3.02, size=20, color=AMBER)))
+        self.finish()
 
 
 class L01Question(MathPresentation):
@@ -149,9 +242,9 @@ class L07StateBound(MathPresentation):
 
     def construct(self):
         self.setup_page('Why memoization reduces the search', 'state counting and costs',
-                        'Paper2004/Decomposition.lean; MemoizedDynamicProgram.lean')
+                        'Paper2004/TreeStateBounds.lean; MemoizedDynamicProgram.lean')
         self.play(Write(formula(r'|D(T)|\ \leq\ (n+1)\ell',y=1.67,scale=1.05,color=TEAL)))
-        self.beat(notes='The D-family cardinality is bounded using the actual leaf count and the depth structure. Here n is the edge or size parameter in the corresponding lemma.')
+        self.beat(notes='The D-family cardinality is bounded by the number of vertices times the actual leaf count. Here n is exactly the number of edges, so n plus one is the number of vertices.')
         self.play(Write(formula(r'\mathrm{states}\subseteq D(A)\times D(B)',y=.58,scale=.98,color=BLUE)))
         self.beat(notes='Cached subproblems are pairs of decomposition states. Their product is finite, and the memoized recurrence does not add the same key twice.')
         self.play(FadeIn(strip('STATE BOUND','proved structural state family',y=-.68,accent=TEAL)))
@@ -193,14 +286,17 @@ class L09ShapeSensitivity(MathPresentation):
         a,_=tree_drawing(chain,anchor=(-3.6,2.10),width=2.6,level_gap=.71)
         b,_=tree_drawing(star,anchor=(3.6,2.10),width=4.2,level_gap=.79)
         self.play(Create(a),Create(b))
-        self.beat(notes='A chain has high depth and few leaves, whereas a star has shallow depth and many leaves. Both are shaped differently with the same number of edges.')
-        self.play(FadeIn(strip('CHAIN','depth 3, leaves 1, minimum 1',y=-.72,accent=TEAL)))
-        self.beat(notes='For the star, depth one and three leaves also make the minimum equal to one. Other shapes interpolate between these extreme values.')
-        self.play(FadeIn(strip('STAR','depth 1, leaves 3, minimum 1',y=-1.72,accent=AMBER)))
+        self.beat(notes='Depth counts vertices, including the root, as in the pinned paper and Lean treeDepth definition. The chain has depth four and one leaf.')
+        self.play(FadeIn(strip('CHAIN', f'vertex depth {chain.vertex_depth}, leaves {chain.leaf_count}, '
+                              f'minimum {min(chain.vertex_depth, chain.leaf_count)}', y=-.72, accent=TEAL)))
+        self.beat(notes='The star has vertex depth two and three leaves, so its minimum is two. Counting edges instead would silently change this parameter convention.')
+        self.play(FadeIn(strip('STAR', f'vertex depth {star.vertex_depth}, leaves {star.leaf_count}, '
+                              f'minimum {min(star.vertex_depth, star.leaf_count)}', y=-1.72, accent=AMBER)))
         self.beat(notes='The paper bound multiplies the two trees\' size parameters and their minimum depth-or-leaf parameters. A full source-level runtime proof also needs operation costs.')
-        self.play(FadeIn(center_text('O(n1 n2 min(d1,l1) min(d2,l2))',y=-2.75,size=21,color=FG)))
+        self.play(FadeIn(center_text('Paper target: O(n1 n2 min(d1,l1) min(d2,l2))',y=-2.75,size=21,color=FG)))
         self.finish()
 
 
 SCENES = [L01Question,L02Order,L03Factorization,L04PrintedGap,
-          L05ValueTrace,L06Witness,L07StateBound,L08StructuralCases,L09ShapeSensitivity]
+          L05ValueTrace,L06Witness,L07StateBound,L08StructuralCases,L09ShapeSensitivity,
+          L10ChildSiblingTraversal,L11RecurrenceReuse]

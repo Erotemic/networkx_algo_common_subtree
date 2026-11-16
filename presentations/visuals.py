@@ -103,6 +103,6 @@ def weight_matrix(weights, selected=(), x=0, y=0, size=.78):
                 stroke_color=TEAL if (r, c) in selected else PANEL_BORDER,
                 stroke_width=3 if (r, c) in selected else 1,
             ).move_to([x + (c-(len(row)-1)/2)*(size*1.18), y-r*(size*1.12), 0])
-            label = t(str(value), 26, FG).move_to(box)
+            label = t("×" if value is None else str(value), 26, FG).move_to(box)
             result.add(VGroup(box, label))
     return result

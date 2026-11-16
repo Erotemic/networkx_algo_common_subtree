@@ -20,6 +20,15 @@ class OrderedTree:
     def edge_count(self) -> int:
         return sum(1 + c.edge_count for c in self.children)
 
+    @property
+    def vertex_depth(self) -> int:
+        """Root-to-leaf vertex count, including the singleton's root."""
+        return 1 + max((c.vertex_depth for c in self.children), default=0)
+
+    @property
+    def leaf_count(self) -> int:
+        return sum(c.leaf_count for c in self.children) if self.children else 1
+
 
 def node(label: str, *children: OrderedTree) -> OrderedTree:
     return OrderedTree(label, tuple(children))
@@ -203,3 +212,85 @@ def lozano_recurrence_candidate_scores(a: str, b: str) -> tuple[int, int, int]:
         len(lozano_dp_word(x + y, b)) // 2,
         len(lozano_dp_word(a, u + v)) // 2,
     )
+
+
+def first_child_next_sibling(tree: OrderedTree):
+    """Path identities mapped to (first child, next sibling), including root."""
+    links = {}
+
+    def visit(item, path, sibling):
+        links[path] = (path + (0,) if item.children else None, sibling)
+        for i, child in enumerate(item.children):
+            next_path = path + (i + 1,) if i + 1 < len(item.children) else None
+            visit(child, path + (i,), next_path)
+
+    visit(tree, (), None)
+    return links
+
+
+def memoized_recurrence_trace(a: str, b: str):
+    """Didactic request trace, checked separately against contraction optima.
+
+    Each event is (expand/hit, key, score). Empty states are cached too.
+    This is not instrumentation of the production Rust implementation.
+    """
+    cache = {}
+    events = []
+
+    def solve(left, right):
+        key = (left, right)
+        if key in cache:
+            events.append(("hit", key, cache[key]))
+            return cache[key]
+        if not left or not right:
+            score = 0
+        else:
+            x, y = split_first_pair(left)
+            u, v = split_first_pair(right)
+            score = max(1 + solve(x, u) + solve(y, v),
+                        solve(x + y, right), solve(left, u + v))
+        cache[key] = score
+        events.append(("expand", key, score))
+        return score
+
+    return solve(a, b), tuple(events)
+
+
+def flip_augmenting_path(matching, vertices):
+    """Flip a simple alternating path from a free row to a free column.
+
+    Vertices are ('L', row)/('R', column); every other edge must already be
+    matched. Return a checked matching with one additional pair.
+    """
+    pairs = set(matching)
+    if len({r for r, _ in pairs}) != len(pairs) or len({c for _, c in pairs}) != len(pairs):
+        raise ValueError("input is not a matching")
+    if len(vertices) < 2 or len(vertices) % 2 or len(set(vertices)) != len(vertices):
+        raise ValueError("expected a simple augmenting path")
+    if any(side != ("L" if i % 2 == 0 else "R") for i, (side, _) in enumerate(vertices)):
+        raise ValueError("path must alternate row/column vertices")
+    if vertices[0][1] in {r for r, _ in pairs} or vertices[-1][1] in {c for _, c in pairs}:
+        raise ValueError("path endpoints must be free")
+    for i, (a, b) in enumerate(zip(vertices, vertices[1:])):
+        edge = (a[1], b[1]) if i % 2 == 0 else (b[1], a[1])
+        if (edge in pairs) != (i % 2 == 1):
+            raise ValueError("path edges do not alternate outside/inside the matching")
+        pairs.symmetric_difference_update({edge})
+    if len({r for r, _ in pairs}) != len(pairs) or len({c for _, c in pairs}) != len(pairs):
+        raise ValueError("path flip did not produce a matching")
+    return tuple(sorted(pairs))
+
+
+def skipped_path_conflicts(paths, mapped):
+    """Skipped vertices shared by paths, or used as mapped vertices.
+
+    This diagnoses the collision drawn in the lecture. Host adjacency, endpoint
+    identities and full embedding feasibility are separate conditions.
+    """
+    seen = set()
+    conflicts = set()
+    for path in paths:
+        interior = set(path[1:-1])
+        conflicts.update(interior & (seen | set(mapped)))
+        seen.update(interior)
+    return frozenset(conflicts)

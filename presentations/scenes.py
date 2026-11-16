@@ -157,7 +157,7 @@ class OrderedContraction(MathPresentation):
         after, _ = tree_drawing(EXAMPLE_SPLICED, anchor=(3.8, 1.20), width=3.7)
         self.play(FadeIn(before), FadeIn(self.text_at("BEFORE", -3.8, 1.95, 21, MUTED)))
         self.beat(notes="The marked edge connects r to internal vertex a. Edge contraction removes a and retains its ordered descendants.")
-        contracted = Line(positions[()], positions[(0,)], color=AMBER, stroke_width=10)
+        contracted = Line(positions[()], positions[(0,)], buff=.30, color=AMBER, stroke_width=10)
         chosen = self.text_at("Contract edge (r,a)", 0, 1.68, 24, AMBER)
         self.play(Create(contracted), FadeIn(chosen))
         self.beat(notes="The children b and c are spliced into the parent at the removed vertex position, preserving left-to-right order.")
@@ -320,7 +320,7 @@ class WeightedUnorderedMatching(MathPresentation):
 class SparseMatchingOptimization(MathPresentation):
     def construct(self):
         self.setup_page("Reuse structure across matching subproblems", "Droschinsky 2016 / optimization",
-                        "MFCS 2016, O(n^2 Delta) algorithm; distinct from a generic Hungarian loop")
+                        "2016 arXiv v4, Theorem 4; distinct from a generic Hungarian loop")
         base = panel(3.4, 2.0).move_to([-4.3, .55, 0])
         sub = panel(3.4, 2.0).move_to([0, .55, 0])
         warm = panel(3.4, 2.0).move_to([4.3, .55, 0])
@@ -332,8 +332,8 @@ class SparseMatchingOptimization(MathPresentation):
                   Arrow([1.80, .55, 0], [2.55, .55, 0], color=TEAL, buff=.05)]
         self.play(*(GrowArrow(a) for a in arrows))
         self.beat()
-        rate = MathTex(r"O(n^2\Delta)", color=AMBER).scale(1.75).move_to([0, -1.66, 0])
-        explain = self.text_at("Published 2016 bound; not implied by calling Hungarian repeatedly.",
+        rate = MathTex(r"O(|G|\,|H|\,(\delta+\log D))", color=AMBER).scale(.97).move_to([0, -1.66, 0])
+        explain = self.text_at("δ = min degrees; D = max degrees. Repeated Hungarian does not prove this bound.",
                                0, -2.76, 21, MUTED)
         self.play(Write(rate), FadeIn(explain))
         self.finish()

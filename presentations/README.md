@@ -9,8 +9,8 @@ examples, proof ideas, and conclusions.
 
 | Deck key | Slides/scenes | Scope |
 | --- | ---: | --- |
-| `lozano` | 15 | Lozano--Valiente 2004: ordered contraction, Dyck encodings, first-return decomposition, printed containment counterexample, three-branch recurrence, structural witnesses, memoization and tree-shape-sensitive complexity |
-| `droschinsky` | 17 | Droschinsky--Kriege--Mutzel 2016 and 2018: weighted unordered isomorphism, matching, root selection, dummy assignments, dual search and reuse, topological paths, skip penalties and mapped/skipped states |
+| `lozano` | 17 | Lozano--Valiente 2004: ordered contraction, child/sibling traversal, Dyck encodings, first-return decomposition, printed containment counterexample, three-branch recurrence and shared states, witnesses, memoization and shape-sensitive complexity |
+| `droschinsky` | 19 | Droschinsky--Kriege--Mutzel 2016 and 2018: weighted unordered isomorphism, augmenting paths and deletion families, root selection, dummy assignments, dual search, topological paths, forbidden branch collisions and skip penalties |
 | `formalization` | 15 | Mathematical specifications, proved trees-to-Dyck equivalence, recurrence proofs and counterexample, source-derived Lean/Rust correctness via Aeneas, matching, test oracles and remaining optimized graph obligations |
 
 The previous 14-scene combined `mathematics` presentation is retained as a
@@ -85,11 +85,13 @@ is refused. The HTML viewer itself has no visible playback bar.
 - `render.py` invokes the installed Manim Slides render and HTML/PDF converters,
   without adding a web server or a second player layer.
 
-Manim is **not** installed in the artifact-authoring environment where this
-source patch was prepared. Syntax, example values, LaTeX snippets, source
-registration, and all source-only tests were checked, but visual rendering
-still needs local inspection. `--check-tex` on your installed Manim environment
-will run its full LaTeX preflight for the chosen deck:
+All four decks were rendered and exported on **2026-11-16**, including 65
+scene instances and 237 animation builds/PDF pages. Final frames and the key
+new intermediate builds were visually reviewed at 16:9. All **32** example and
+export tests pass. See [RENDER_STATUS.md](RENDER_STATUS.md) for exact scope,
+corrections, tool versions and artifact evidence. These are low-resolution
+previews; high-resolution rendering and live presentation pacing can be assessed
+with the same sources. `--check-tex` runs the LaTeX preflight:
 
 ```bash
 python3 presentations/render.py --deck lozano --check-tex
@@ -113,8 +115,8 @@ belong to the published algorithms; the current repo has independently proved
 reference recurrences and some exact Rust matching machinery, but does **not**
 yet certify the full optimized graph solver or those published runtime bounds.
 
-Formalization status is intentionally pinned to the provided **2026-11-14**
-repository snapshot (`proofs/PROOF_STATUS.md`). The deck separates theorems
+Formalization status is pinned to proof checkpoint **`267f35f` (2026-11-16)**
+and `proofs/PROOF_STATUS.md`. The deck separates theorems
 about independent specifications, translated safe Rust entry points, operation
 bounds, float API conventions, and finite regression tests.
 

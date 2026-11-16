@@ -1,6 +1,6 @@
 """Standalone talk about Lean and Aeneas correctness evidence in this repo.
 
-Status statements refer to the 2026-11-14 source snapshot and distinguish
+Status statements refer to proof checkpoint 267f35f (2026-11-16) and distinguish
 independent mathematics, executable Lean references, translated Rust and cost.
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ class F01Question(MathPresentation):
 
     def construct(self):
         self.setup_page('Proving common-subtree computations', 'Lean 4 / Aeneas / Rust',
-                        'Proof snapshot: 2026-11-14; proofs/PROOF_STATUS.md')
+                        'Proof checkpoint: 267f35f / 2026-11-16; proofs/PROOF_STATUS.md')
         show_rows(self,[
             ('MATHEMATICS','define feasible common structures',TEAL,'Start with an independent finite mathematical specification.'),
             ('ALGORITHM','prove a recurrence returns the optimum',BLUE,'The executable recurrence must be both sound and complete.'),
@@ -137,9 +137,9 @@ class F07RustMemo(MathPresentation):
         self.beat(notes='The returned structural witness and its score refine the independent optimum under the input edge-count bounds.')
         self.play(FadeIn(strip('CACHE INVARIANT','each stored pair has its verified optimum',y=.39,accent=BLUE)))
         self.beat(notes='The cache uniqueness and state-bound theorems apply to the actual translated memo entry point.')
-        self.play(FadeIn(strip('OPERATIONS','proved table growth and key comparisons',y=-.72,accent=TEAL)))
-        self.beat(notes='The actual data structure is an association list. A hash-table expected-time or full Rust bit-cost claim is not established.')
-        self.play(FadeIn(strip('NOT YET','expected hashing and end-to-end runtime bound',y=-1.83,accent=ROSE)))
+        self.play(FadeIn(strip('MODEL COUNTS','table growth; memo-model key comparisons',y=-.72,accent=TEAL)))
+        self.beat(notes='The actual data structure is an association list. LookupEvents additionally proves structural packet bounds and value erasure. Its source-event adequacy is still open; these model counts do not establish actual Rust runtime.')
+        self.play(FadeIn(strip('NOT YET','source-cost adequacy and full runtime bound',y=-1.83,accent=ROSE)))
         self.finish()
 
 
@@ -189,9 +189,9 @@ class F10Research(MathPresentation):
         self.setup_page('What remains to make the full claim?', 'research program / open obligations',
                         'docs/planning/verified_common_subtree_research_program.md')
         show_rows(self,[
-            ('EXACTNESS','witnesses with original input vertex indices',TEAL,'Return checked mappings through the public library interface.'),
+            ('EXACTNESS','optimized production witness provenance',TEAL,'Original-index reference endpoints are already proved. The optimized production witness and score correspondence remain open.'),
             ('OPTIMIZATION','matching reuse with derived source-level cost',BLUE,'Relate sparse assignment improvements to the published asymptotic analysis.'),
-            ('INTEGRATION','Python/Cython/Rust behavior against independent specs',AMBER,'Treat inherited Cython behavior as evidence of intent, not as a correctness oracle.'),
+            ('INTEGRATION','Python/PyO3 correspondence and release gates',AMBER,'Independent parity tests already pass. Conversion source proofs and the final platform/release evidence remain distinct obligations.'),
             ('EVALUATION','strong baselines and fair downstream benchmarks',ROSE,'Measure accuracy, latency, memory and application-specific outcomes.'),
         ],start=1.43,step=1.12)
         self.finish()

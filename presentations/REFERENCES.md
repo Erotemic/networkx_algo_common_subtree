@@ -10,20 +10,27 @@
 2. Andre Droschinsky, Nils M. Kriege, Petra Mutzel (2016), *Faster Algorithms
    for the Maximum Common Subtree Isomorphism Problem*, MFCS 2016,
    https://doi.org/10.4230/LIPIcs.MFCS.2016.33.
-   Scene usage: rooted child matching, unrooted matching optimization,
-   `O(n^2 Delta)` published bound.
+   The complexity slides use the repository's pinned
+   https://arxiv.org/pdf/1602.07210v4, Theorem 4:
+   `O(|G|*|H|*(min(DeltaG,DeltaH)+log(max(DeltaG,DeltaH))))`.
+   Scene usage: rooted child matching and related matching instances. The
+   logarithmic term and asymmetric degrees are retained explicitly.
 3. Andre Droschinsky, Nils M. Kriege, Petra Mutzel (2018), *Largest Weight
    Common Subtree Embeddings with Distance Penalties*, MFCS 2018,
    https://doi.org/10.4230/LIPIcs.MFCS.2018.54.
    Scene usage: topological skeleton, path penalties, direct-edge scoring rule.
 
-## Current project formalization (2026-11-14 repository snapshot)
+## Current project formalization (267f35f / 2026-11-16 proof checkpoint)
 
 - `proofs/SubtreeProofs/Paper2004/OrderedTree.lean`
 - `proofs/SubtreeProofs/Paper2004/EncodingEquivalence.lean`
 - `proofs/SubtreeProofs/Paper2004/ContractionCompleteness.lean`
 - `proofs/SubtreeProofs/Paper2004/DynamicProgram.lean`
 - `proofs/SubtreeProofs/Paper2004/Decomposition.lean`
+- `proofs/SubtreeProofs/Paper2004/TreeStateBounds.lean` — depth counts vertices,
+  with singleton depth one; actual leaves, including the singleton leaf.
+- `proofs/SubtreeProofs/Rust/LookupEvents.lean` — packet-model bounds and value
+  erasure; source-event adequacy remains open.
 - `proofs/SubtreeProofs/Droschinsky2016/RootedRecurrence.lean`
 - `proofs/SubtreeProofs/Droschinsky2018/Specification.lean`
 - `proofs/PROOF_STATUS.md` — exact current assurance status; update when source
