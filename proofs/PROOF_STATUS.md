@@ -1,5 +1,20 @@
 # Common-subtree proof status
 
+## Charged arlib source interpreter: 2026-11-16
+
+The optional `ArlibSpike/SourceExecution.lean` interpreter now has universal
+exact successful-value and six-currency correspondence with the existing
+operational source model. The four source-function contracts and rejection of
+the actual compiled extra-comparison mutation's old comparison budget compile.
+Its full optional build passes (3,781 jobs), and all eight printed endpoint
+axiom closures stay within the established baseline.
+
+This makes the native WP and charged arlib legs comparable at **C2**; it does
+not establish arlib RAM realization, Rust/heap adequacy, error-path costs or
+space residency. The Lax62 pilot and final G1 decision remain open. Main pins
+and production sources are unchanged.
+[Exact model, declarations and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-arlib-source-pilot.md).
+
 ## Native Std.WP source-model adapter: 2026-11-16
 
 The optional `experiments/resource_cost_audit/LookupSourceWP.lean` worksheet

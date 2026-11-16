@@ -45,6 +45,12 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [charged arlib source interpreter](evidence/lookup-arlib-source-pilot.md)
+proves exact successful value and six-currency correspondence for the same
+generated bodies as the native WP pilot, with all four contracts and rejection
+of the compiled source mutation's old comparison budget. The optional build
+passes. Lax62, the G1 decision, RAM realization and SRC-01/C3 remain open.
+
 The [native Std.WP adapter](evidence/lookup-native-wp.md) compiles successful-run
 WP contracts for all four existing source-model functions, sequential cost
 threading, and rejection of the compiled extra-comparison mutation's old

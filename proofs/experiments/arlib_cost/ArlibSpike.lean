@@ -3,6 +3,7 @@ Copyright (c) 2026 Kuldeep S. Meel. Apache-2.0; see LICENSE.arlib.
 Upstream revision: 8d08f89a6d05c5e8368e91659bd6e117fbb74c4e. -/
 import ArlibSpike.MemoLookup
 import ArlibSpike.Exchange
+import ArlibSpike.SourceExecution
 import Arlib.Computation.Charged
 import Arlib.Computation.Dict
 import Arlib.Computation.Std

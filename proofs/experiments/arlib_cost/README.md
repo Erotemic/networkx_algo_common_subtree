@@ -14,6 +14,14 @@ project supplies dependency isolation without switching the active work branch.
 
 ## What is actually proved
 
+The later [source-interpreter pilot](../../../docs/planning/lean-complexity-campaign/evidence/lookup-arlib-source-pilot.md)
+adds `ArlibSpike/SourceExecution.lean`: a charged interpreter for the actual
+generated four-function lookup syntax. Universal correspondence proves equality
+of successful values, instruction counts and all five packet currencies with
+the existing operational C2 model. All four contracts and the actual compiled
+extra-comparison mutation are checked. This is separate from the earlier
+abstract queue scan described below; it is not an arlib RAM realization.
+
 `ArlibSpike/MemoLookup.lean` contains a computable lookup over arlib's sealed
 queue storage, using charged dequeue and key comparison operations. It reads no
 raw table list, specification view, or cost inside the program. Fuel is supplied
@@ -86,6 +94,7 @@ cd proofs/experiments/arlib_cost
 lake update
 lake exe cache get
 lake build
+lake env lean ArlibSpike/SourceExecution.lean
 # This command must fail with three dependsOnNoncomputable errors:
 lake env lean ForbiddenAccess.lean
 ```
@@ -97,6 +106,11 @@ proof library, and all three intended negative compilation checks pass. Upstream
 upstream source was patched to suppress them.
 
 ## Adoption decision
+
+The source-interpreter pilot makes the charged arlib and native WP legs
+comparable at the established C2 boundary. Its full optional build passes
+3,781 jobs. Lax62, the final G1 decision, and source-to-RAM/Rust cost adequacy
+remain open. The earlier decision below continues to keep arlib optional.
 
 The pinned APIs support a genuine, small bridge to the current memo lookup.
 However, the main development already proves `memoFind_value`,

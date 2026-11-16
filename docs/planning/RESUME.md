@@ -19,6 +19,12 @@ the compiled extra-comparison mutation's old WP contract. Its worksheet passes
 under the same pins. This is the native leg of W03; competing adapters and G1
 route selection remain open.
 
+The following [charged arlib interpreter](lean-complexity-campaign/evidence/lookup-arlib-source-pilot.md)
+proves exact successful value and six-currency correspondence for the same
+generated bodies, all four contracts, and the source mutation. Its complete
+optional build passes. The Lax62 leg and final G1 decision remain next; no
+RAM realization or C3 theorem is claimed.
+
 After checking out this branch, follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md)
 for toolchain/bootstrap details. From the repository root:
 
