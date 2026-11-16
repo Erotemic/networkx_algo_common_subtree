@@ -45,6 +45,13 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [reified lookup operational pilot](evidence/lookup-source-pilot.md) adds
+execution-linked instruction bounds and exact packet correspondence inside a
+read-only operational model, with a compiled Rust mutation. Its reifier and
+source interpretation remain trusted. The 3,750-job library build, four Lean
+example suites and seven frontend regressions pass. This is bounded C2
+progress; SRC-01/C3 and the full G1 route-selection gate remain open.
+
 The [G0/W02 follow-up](evidence/executed-g0-w02.md) records actual declaration
 inspection, narrow upstream compilation, a checked Std.WP worksheet, an
 omitted-scan counterexample and the source-operation inventory at `0cdd643`.

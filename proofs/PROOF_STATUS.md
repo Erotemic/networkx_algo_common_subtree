@@ -1,5 +1,28 @@
 # Common-subtree proof status
 
+## Reified lookup operational pilot: 2026-11-16
+
+`Rust/LookupSourceRefinement.lean` now proves total first-hit lookup and exact
+structural event counts for the four reified normal-path functions. The
+independent operational instruction theorem composes complete call costs;
+`lookup_all_runs_bound` gives the explicit 256-times table/query envelope for
+sound caches. Fuel extension/uniqueness covers every completed run. Agreement
+with the existing Aeneas result is proved separately from costs.
+
+The full **3,750-job build**, all four Lean example suites, seven frontend
+regressions, nine new endpoint axiom audits and pinned extraction check pass.
+An actual temporary Rust edit adds a structural comparison before lookup;
+the compiled/reified mutant violates the old empty-table comparison component
+while retaining its answer. Independent review found and fixed frontend
+helper-identity and arity gaps.
+
+This is **operational C2 progress**, not C3/Rust runtime completion. The Python
+reifier, immutable-reference interpretation and compiler correspondence remain
+trusted; heap layout/lifetimes, allocator work, failure/unwinding and stack
+exhaustion are not verified by the model. G1's competing-route decision and
+the full memo/source bridge remain open. Production Rust, existing Aeneas
+modules and dependency pins are unchanged. [Exact contracts and scope](../docs/planning/lean-complexity-campaign/evidence/lookup-source-pilot.md).
+
 ## Structural lookup packet model: 2026-11-16
 
 `Rust/LookupEvents.lean` proves short-circuit comparison bounds, exact owned

@@ -41,3 +41,8 @@ for entry in verified_ordered_core:VerifiedOrderedCore verified_assignment_core:
         cp "$output_dir/$module_name.lean" "$maintained"
     fi
 done
+# Reify the normal lookup path and a compiled extra-comparison mutation. These
+# retain operation/control-flow information erased by the value translation.
+lookup_args=(--charon "$binary_dir/charon")
+if [[ $check == 1 ]]; then lookup_args+=(--check); fi
+python3 "$repo_root/dev/regenerate_lookup_source.py" "${lookup_args[@]}"

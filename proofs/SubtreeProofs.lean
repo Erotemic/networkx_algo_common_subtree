@@ -227,3 +227,4 @@ public import SubtreeProofs.Rust.IsomorphismChoiceCoordinates
 public import SubtreeProofs.Rust.IsomorphismAffinityWitness
 public import SubtreeProofs.Rust.TokenIsomorphismEntrypoint
 public import SubtreeProofs.Rust.LookupEvents
+public import SubtreeProofs.Rust.LookupSourceMutation

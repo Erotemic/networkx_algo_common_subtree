@@ -82,6 +82,12 @@ b6a57c5b06aedbcde4c414bbb1f7efe7f14ccea34448f29c918051959e6a051a  proofs/Subtree
 
 ## Remaining source obligation and decision
 
+The subsequent [reified lookup pilot](lookup-source-pilot.md) adds a checked
+operational interpreter, universal value/event correspondence inside that
+model, and a compiled Rust extra-comparison mutation. Its Python reifier and
+immutable-reference interpretation remain trusted; SRC-01/C3 and full G1 are
+still open. The paragraph below records the boundary of this earlier increment.
+
 The four erasure theorems establish **functional** correspondence. They do not
 prove that every operation in Rust/LLBC execution emits its packet, or that
 packet prices bound that execution's work. The event interpreter was written

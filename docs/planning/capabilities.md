@@ -1,5 +1,11 @@
 # Current implementation capabilities
 
+Proof-only follow-up, 2026-11-16: the [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
+now has checked instruction accounting and universal value/event contracts
+inside its declared read-only model. The 3,750-job library and four Lean
+example suites pass. Its reifier/reference interpretation remain trusted;
+production Rust runtime, backend selection and wheel evidence are unchanged.
+
 Inspected 2026-11-14, incorporating the parity overlay, the compiled Cython
 empty-input fix, and graph/matching Python integration. This matrix distinguishes exposed production
 APIs from standalone Rust/Lean implementations. Update it with implementation

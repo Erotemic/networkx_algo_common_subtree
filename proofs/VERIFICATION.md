@@ -16,6 +16,8 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 (cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
+(cd proofs && lake env lean Tests/LookupSource.lean)
+python3 proofs/checks/test_lookup_source_reifier.py
 python -m pytest tests
 # Build the opt-in proved-core extension through the actual package build:
 python -m pip wheel . --no-deps --wheel-dir /tmp/common-subtree-wheels \
@@ -78,6 +80,12 @@ sources independently at the pinned revision.
 The script regenerates both `verified_ordered_core` and
 `verified_assignment_core`; `--check` compares fresh outputs with their
 maintained generated modules.
+It also regenerates the four-function normal-path operational lookup model
+and a real temporary Rust extra-comparison mutation using the same pinned
+Charon/Rust toolchain. The reification adapter and immutable-reference model
+are explicit trusted boundaries; its cost theorems concern the reified model,
+not heapful Rust/Aeneas runtime semantics. Exact scope is in the
+[lookup pilot report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-pilot.md).
 Intermediate LLBC files are generated locally and ignored. Generated Lean
 must never be edited to make a proof pass.
 

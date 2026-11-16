@@ -122,3 +122,13 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupEvents.lookup_bound
 #print axioms SubtreeProofs.Rust.LookupEvents.sound_unit_bound
 #print axioms SubtreeProofs.Rust.LookupEvents.extra_scan_changes_cost
+
+#print axioms SubtreeProofs.Rust.LookupSource.run_bound
+#print axioms SubtreeProofs.Rust.LookupSource.run_unique
+#print axioms SubtreeProofs.Rust.LookupSource.copy_source
+#print axioms SubtreeProofs.Rust.LookupSource.compare_source
+#print axioms SubtreeProofs.Rust.LookupSource.lookup_source_spec
+#print axioms SubtreeProofs.Rust.LookupSource.lookup_source_all_runs
+#print axioms SubtreeProofs.Rust.LookupSource.lookup_aeneas_value_agreement
+#print axioms SubtreeProofs.Rust.LookupSource.lookup_all_runs_bound
+#print axioms SubtreeProofs.Rust.LookupSource.extra_compare_violates_old_bound

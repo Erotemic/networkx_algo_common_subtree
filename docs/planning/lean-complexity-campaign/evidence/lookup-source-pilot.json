@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-16",
+  "baseline": "7785776",
+  "classification": "Operational C2 pilot with trusted source provenance; G1 and SRC-01/C3 remain open",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "python": "3.13.2",
+  "dependency_revisions": {
+    "aeneas": "5a392f4b80a4d0d05abc240eb2a7fa70622a9a35",
+    "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679"
+  },
+  "rust_toolchain": "nightly-2026-09-17",
+  "aeneas_release": "nightly-2026.11.09-5a392f4",
+  "charon_serialization_version": "0.1.315",
+  "normal_path_local_budgets": {
+    "copy_word": 61,
+    "words_equal": 121,
+    "copy_result": 31,
+    "memo_lookup": 106
+  },
+  "uniform_entry_and_body_price": 256,
+  "source_sha256": {
+    "dev/reify_lookup_llbc.py": "1af1e654632642aab1de7436e462af35393eb7b6a332a522aebd6967117bad4a",
+    "dev/regenerate_lookup_source.py": "09aff367f576803e7166a205702cb49ba0fb1ae4585097c825f90ea6e8a5ab45",
+    "dev/regenerate_rust_lean.sh": "d54b0cb541861c5c4933e5268d35948072a0f2e9cad139373fa740a3d0bf491d",
+    "rust/crates/verified_ordered_core/src/lib.rs": "6bf420368c037348b65a3c20d14c2fe54aee2b55e6ac4b5b6eb3baef4b11eaf1",
+    "proofs/SubtreeProofs/Rust/Generated/VerifiedOrderedCore.lean": "b6a57c5b06aedbcde4c414bbb1f7efe7f14ccea34448f29c918051959e6a051a",
+    "proofs/SubtreeProofs/Rust/LookupSource.lean": "9e435b3158d77b5f671b2de1d3e4253b6ba12ce14c61f86199b01fc8af33ce1a",
+    "proofs/SubtreeProofs/Rust/LookupSourceDeterminism.lean": "3d69fb7fa336c94906b5d8ab0d40b3d951d123004702128883f7fa58d5af284f",
+    "proofs/SubtreeProofs/Rust/LookupSourceRefinement.lean": "f8aaf24d7f896b400dcc9d1ba789cf89958ee7026bf15396cc23b0429b50bff9",
+    "proofs/SubtreeProofs/Rust/LookupSourceMutation.lean": "fbfc2aa5ac83aa5dae0963cfae3fbad2ee24c8021a98f3276ac437b18af186b2",
+    "proofs/SubtreeProofs/Rust/Generated/LookupSourceProgram.lean": "d56c4bdd9cf3e46d7b44e282c2fe5b03720cad938e925fe7f9b9c3ad03a67db2",
+    "proofs/SubtreeProofs/Rust/Generated/LookupSourceExtraCompare.lean": "3a069be05f5ecac4ea082dae73df0ea31e803a37ad2e3e8e781520a5af19721b",
+    "proofs/Tests/LookupSource.lean": "fac18497af5e4086b7978fc6ff3520cee48a83fe16b61fb233c51b4475858fc8",
+    "proofs/checks/test_lookup_source_reifier.py": "70aae4be92fc78961828121316158627507430434c6ee37822ce9836a40740ac"
+  },
+  "mutation": {
+    "inserted_rust": "let _ = words_equal(left, left);",
+    "mutated_lib_sha256": "03b68916750cc6f45b764adbbb32fdf27401ad5204cd0161854a970c39860c85",
+    "counterexample": "empty table, empty queries: same None result; comparison visits 1 > permitted 0",
+    "refuted_contract": "comparison component, not necessarily the slack aggregate instruction envelope"
+  },
+  "validation": {
+    "lean_build_jobs": 3750,
+    "lean_example_suites": [
+      "Tests/LookupSource.lean",
+      "Tests/LookupEvents.lean",
+      "Tests/RootedDynamicProgram.lean",
+      "Tests/OrderedIsomorphism.lean"
+    ],
+    "source_examples": 11,
+    "frontend_regressions": 7,
+    "pinned_full_regeneration_check": "passed",
+    "audited_endpoints": [
+      "run_bound",
+      "run_unique",
+      "copy_source",
+      "compare_source",
+      "lookup_source_spec",
+      "lookup_source_all_runs",
+      "lookup_aeneas_value_agreement",
+      "lookup_all_runs_bound",
+      "extra_compare_violates_old_bound"
+    ],
+    "new_axioms": [],
+    "permitted_axiom_baseline": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "independent_agent_reviews": {
+    "semantics": "completed; helper identity and arity fixes independently confirmed",
+    "regeneration_ci": "completed; no remaining current-CI blocker found"
+  },
+  "trust_boundary": [
+    "Rust/Charon compilation",
+    "Python LLBC-to-Code reifier",
+    "immutable value interpretation of shared references"
+  ],
+  "not_verified": [
+    "heapful LLBC/Rust cost simulation",
+    "field typing, aliasing and lifetimes",
+    "physical layout, allocator work and bytes",
+    "unwinding, allocation failure and stack exhaustion",
+    "full memo evaluator and public wrapper costs",
+    "competing backend decision"
+  ]
+}

@@ -1,5 +1,8 @@
 # Common-subtree verification planning
 
+For the latest stopping point and new-machine commands, read
+[RESUME.md](RESUME.md).
+
 This folder contains the intended destination, proof obligations, implementation
 work and concrete status for the Lozano-Valiente and Droschinsky formalization
 program. Read these in order:
@@ -21,6 +24,13 @@ program. Read these in order:
    rendered standalone talks and the prospective controlled application pilot.
 
 ## Current execution order: usable software first
+
+The [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
+adds checked instruction accounting and universal first-hit/event correspondence
+inside the declared read-only model, plus a compiled extra-work Rust mutation.
+All 3,750 main Lean jobs, four example suites and seven frontend regressions
+pass. The reifier/reference interpretation remain trusted; full G1 and
+SRC-01/C3 are still open.
 
 The [2026-11-16 lookup packet model](lean-complexity-campaign/evidence/lookup-packets.md)
 now proves structural comparison/copy/allocation envelopes and erasure to the
