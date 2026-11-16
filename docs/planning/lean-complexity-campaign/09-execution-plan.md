@@ -1,5 +1,11 @@
 # 09. Execution plan and decision gates
 
+**Executed 2026-11-16:** [G1 route-selection decision](evidence/g1-backend-decision.md)
+is delivered at the explicit C2 boundary after checking the same source fragment
+in all three candidates. Native Std.WP is selected for W04/W05. Remaining G0
+audit, W06-C3 and application/runtime requirements below remain open; the decision
+does not establish source-to-RAM/Rust adequacy.
+
 ## 1. Campaign order
 
 The campaign should proceed by demonstrations with explicit acceptance conditions. A gate may conclude that an existing library already solves the problem. That is a successful reuse result. Do not advance merely because a package contains many declarations or a local counter increases.

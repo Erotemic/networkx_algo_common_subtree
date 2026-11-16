@@ -1,5 +1,10 @@
 # Charged arlib source interpreter: 2026-11-16
 
+Subsequent work delivers the [G1 backend decision](g1-backend-decision.md),
+including Lax62's same-source timed interpreter. Native Std.WP is selected at C2;
+the remaining-comparison section below records this increment's stopping point.
+Final signatures are now printed alongside the axiom closures.
+
 Baseline: `ad4b368`. This is W03's charged arlib pilot over the **same four
 generated source-model functions** as the native WP pilot, at their existing
 operational C2 boundary. It does not complete G1, a RAM realization, or SRC-01/C3.

@@ -1,5 +1,11 @@
 # Resource backend experiments
 
+The subsequent [G1 decision](../../../docs/planning/lean-complexity-campaign/evidence/g1-backend-decision.md)
+now checks all three candidates and selects this native route at C2. It retains
+the source/RAM/IR and W06-C3 gaps explicitly. All final function signatures and
+axiom closures are printed by `LookupSourceWP.lean`; comparison's result is stated
+as independent word equality.
+
 This directory contains the bounded G0 Std.WP signature check. It is deliberately
 outside the main Lean library and introduces no dependency. From `proofs/`:
 

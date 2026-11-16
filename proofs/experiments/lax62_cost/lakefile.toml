@@ -1,0 +1,20 @@
+name = "common_subtree_lax62_spike"
+defaultTargets = ["LaxSpike"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "56a005855ea17e0b0958f73ec801ae140b0a1679"
+
+[[require]]
+name = "subtree_proofs"
+path = "../.."
+
+[[require]]
+name = "Lax62Proofs"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e"
+subDir = "refinement-tower/proofs"
+
+[[lean_lib]]
+name = "LaxSpike"

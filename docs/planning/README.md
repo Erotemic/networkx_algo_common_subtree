@@ -25,6 +25,15 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [G1 comparison](lean-complexity-campaign/evidence/g1-backend-decision.md)
+now checks native WP, charged arlib and Lax62 timed interpretations of the same
+generated lookup functions and selects native Std.WP for the next C2 contracts.
+All preserve successful source-model values/costs and reject the compiled
+extra-comparison mutation's old budget. Next are W04's memo interfaces and
+remaining reuse audit, then the two-client/two-representation memo proof.
+W06-C3's reification/heap/source bridge remains explicitly separate and open;
+the decision does not establish Rust runtime or finish the wider program.
+
 The [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
 adds checked instruction accounting and universal first-hit/event correspondence
 inside the declared read-only model, plus a compiled extra-work Rust mutation.

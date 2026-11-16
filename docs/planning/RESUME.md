@@ -1,32 +1,32 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest completed increment is the
-[reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md).
-Its source, generated programs, tests, exact pins and validation evidence are
-committed together. No local build cache or generated media is needed to
-reproduce the source work.
+Branch: `Droschinsky-algos`. The latest increment delivers the
+[G1 backend decision at the operational C2 boundary](lean-complexity-campaign/evidence/g1-backend-decision.md).
+The native WP, charged arlib and Lax62 timed pilots now use the same four
+actual generated lookup bodies, independent values and six work currencies.
+They preserve complete successful-run costs and reject the actual compiled
+extra-comparison mutation's old comparison budget. Native Std.WP over the
+existing operational interpreter is selected for the next C2 work.
 
-The accepted stopping point has a **3,750-job Lean build**, four passing Lean
-example suites, seven passing frontend regressions, a checked endpoint axiom
-inventory and passing pinned regeneration. The pilot is operational C2 work:
-its reifier and immutable-reference interpretation remain trusted. It does
-not establish a Rust runtime theorem or complete G1/SRC-01/C3.
+This is not SRC-01/C3, Rust runtime, RAM/IR realization, failure-cost or heap
+completion. The Python reifier and immutable-reference interpretation remain
+trusted. G0's remaining reconnaissance and the wider program's production
+refinement, time/space, release and application-study obligations remain open.
+The [source pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md),
+[native WP](lean-complexity-campaign/evidence/lookup-native-wp.md),
+[arlib pilot](lean-complexity-campaign/evidence/lookup-arlib-source-pilot.md), and
+[Lax experiment](../../proofs/experiments/lax62_cost/README.md) give exact scopes.
 
-The subsequent [native Std.WP adapter](lean-complexity-campaign/evidence/lookup-native-wp.md)
-proves successful-run WP equivalence, contracts for all four source-model
-functions, complete cost threading through sequential calls, and rejection of
-the compiled extra-comparison mutation's old WP contract. Its worksheet passes
-under the same pins. This is the native leg of W03; competing adapters and G1
-route selection remain open.
+The unchanged main library passed a fresh 3,751-job build, four Lean example
+suites, 95-endpoint dependency audit, seven frontend regressions and 13 ordered
+Rust tests. Both optional projects pass (3,781 arlib / 3,490 Lax jobs); the latter
+compiles its required source dependency chain, not every unrelated main target.
+The final signatures and permitted axiom closures are printed by the pilots.
+All thirteen original source-pilot hashes still match; no Rust/generated source
+or main dependency pin changed in the backend comparison.
 
-The following [charged arlib interpreter](lean-complexity-campaign/evidence/lookup-arlib-source-pilot.md)
-proves exact successful value and six-currency correspondence for the same
-generated bodies, all four contracts, and the source mutation. Its complete
-optional build passes. The Lax62 leg and final G1 decision remain next; no
-RAM realization or C3 theorem is claimed.
-
-After checking out this branch, follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md)
-for toolchain/bootstrap details. From the repository root:
+Follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md) for bootstrap
+and pinned extraction details. From the repository root:
 
 ```bash
 dev/setup-build-caches.sh  # virtiofs VMs; skips local-disk hosts
@@ -40,28 +40,28 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 (cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
+# Optional competing backends; keep their dependencies outside the main manifest.
+(cd proofs/experiments/arlib_cost && lake build)
+(cd proofs/experiments/lax62_cost && lake build)
 ```
 
 Extraction auto-bootstrap supports Linux x86_64; other platforms require the
-exact compatible tools via `AENEAS_BIN_DIR`, as described in the verification
-instructions. Keep dependency pins and generated files unchanged when moving
-machines. Fresh dependency/build caches can be regenerated.
+exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
+pins and generated files when moving machines. Caches can be regenerated.
 
-The next bounded complexity work is **G1/W03**: compare the candidate routes
-on the same four-function fragment and make an explicit backend/semantic-boundary
-decision. Preserve the trusted reification/heap boundary; do not treat the
-checked operational model as completed source-cost refinement. Complete memo
-evaluation and wrapper costs remain separate work.
+Next is **W04: checked finite memo request/cache interfaces**, followed by W05's
+LV and unrelated clients and two representations. First finish the relevant
+upstream memoization statement/reuse audit; keep generic modules independent
+of tree/Rust imports. Preserve warm caches, multiple roots, repeated requests,
+exact small-input constants and the independent recurrence specifications.
+The [G1 report](lean-complexity-campaign/evidence/g1-backend-decision.md) names
+**W06-C3** separately: checkable reification/source semantics, typed heap/reference
+simulation, then the actual memo evaluator and one public core. Generic C1/C2
+results cannot close that source work or APP-01.
 
-The wider program still has optimized production refinement, applicable
-time/space proofs, distribution/release gates and the controlled application
-pilot open. Use [capabilities.md](capabilities.md),
-[PROOF_STATUS.md](../../proofs/PROOF_STATUS.md) and the paper plans for exact
-scope. IEEE-754 correctness remains deliberately excluded from the initial
-proof scope.
-
-The presentation sources are committed and all four decks were rendered and
-reviewed. Their Git-ignored HTML/PDF/video outputs must be regenerated on the
-new machine; [presentations/README.md](../../presentations/README.md) and
-[the render report](../../presentations/RENDER_STATUS.md) give the commands and
-scope. The application study and publication claim are still prospective.
+Use [capabilities.md](capabilities.md), [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md)
+and the paper plans for the full mathematical, software and release scope.
+IEEE-754 correctness remains excluded from the initial proof scope. All four presentation decks were rendered and reviewed; their sources and render
+evidence are committed. Ignored media must be regenerated using
+[presentations/README.md](../../presentations/README.md). The controlled
+application pilot and publication claim remain prospective.

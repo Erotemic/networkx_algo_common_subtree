@@ -1,5 +1,24 @@
 # Common-subtree proof status
 
+## Lax62 timed source interpretation and G1 decision: 2026-11-16
+
+The optional `LaxSpike/SourceExecution.lean` interpreter has exact timed
+correspondence for arbitrary generated bodies/fuel, successful singleton and
+non-failure proofs, and upstream `NRest.spec` resource refinements for the four
+lookup functions. It proves the original empty lookup meets a zero-comparison
+contract and the compiled source mutant fails it even with all other budgets
+unbounded. Its optional build passes (3,490 jobs); ten printed endpoint axiom
+closures stay within the established baseline. The module has no linter warnings.
+
+Native, arlib and Lax pilots now print their final signatures. Native comparison's
+postcondition explicitly uses independent word equality. The
+[G1 report](../docs/planning/lean-complexity-campaign/evidence/g1-backend-decision.md)
+selects native Std.WP over the existing operational interpreter for the next C2
+contracts. Remaining G0 audit, generic memo/application proofs and W06-C3
+reification/heap/source adequacy remain open. This is not a RAM/IR/Rust runtime
+or failure-cost result. Main pins, Rust/generated source and all thirteen original
+pilot source hashes are unchanged.
+
 ## Charged arlib source interpreter: 2026-11-16
 
 The optional `ArlibSpike/SourceExecution.lean` interpreter now has universal

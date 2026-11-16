@@ -694,5 +694,29 @@
       "first_acceptance_gate": "G5"
     }
   ],
-  "executed_followup": "executed-g0-w02.json"
+  "executed_followup": "executed-g0-w02.json",
+  "current_backend_decision": {
+    "date": "2026-11-16",
+    "evidence": "g1-backend-decision.md",
+    "selected": "native Std.WP over the existing deterministic operational interpreter",
+    "scope": "C2 route-selection decision; no generic/application target closure",
+    "checked_optional_candidates": [
+      "charged arlib source interpreter",
+      "Lax62 NREST timed source interpreter"
+    ],
+    "next": [
+      "W04 checked memo interfaces and remaining statement/reuse audit",
+      "W05 generic memo theorem, LV/unrelated clients and two representations",
+      "W06-C3 checked source/reification and typed heap/reference simulation"
+    ],
+    "still_open": [
+      "G0 remaining reconnaissance",
+      "SRC-01/C3",
+      "MEM-04",
+      "SRC-02",
+      "APP-01",
+      "APP-02",
+      "APP-03"
+    ]
+  }
 }

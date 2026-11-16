@@ -1,5 +1,10 @@
 # Native Std.WP lookup adapter: 2026-11-16
 
+Subsequent work delivers the [G1 backend decision](g1-backend-decision.md),
+including the same-source arlib/Lax pilots. Native Std.WP is selected at C2;
+the older remaining-comparison section below records this increment's stopping
+point. Current signatures also state comparison as independent word equality.
+
 Baseline: `895de31`, following the `a6927b0` source-operation pilot. This is
 the native-Std.WP leg of W03, at the existing operational **C2** boundary.
 G1 route selection and SRC-01/C3 remain open. Main dependency pins, source

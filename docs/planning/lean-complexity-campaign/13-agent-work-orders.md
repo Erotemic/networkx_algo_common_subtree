@@ -34,6 +34,12 @@ The standard handoff contains: target IDs; baseline/pins; exact declarations and
 
 ## W03. Competing backend pilots
 
+The [executed G1 decision](evidence/g1-backend-decision.md) now compares all
+three over the same generated source fragment and selects native Std.WP at C2.
+The optional arlib/Lax interpreters have exact value/cost correspondence and
+source-mutation rejection. Their RAM/IR realization obligations and W06-C3
+remain open; no machine/source claim is inferred from the comparison.
+
 **Own:** separate standalone/worktree experiments for the same W02 task. Each candidate has its own manifest and no main-repository dependency changes.
 
 **Task:** instantiate the task in arlib, in the selected timed-refinement route, and through a thin `Std.WP`/cost adapter. Keep input domain, independent result specification and operation model comparable. Audit the new order-maintenance stack for a reusable translation component before writing one. Add Iris only for a demonstrated ownership need.
@@ -67,6 +73,12 @@ The standard handoff contains: target IDs; baseline/pins; exact declarations and
 **Acceptance:** no tree-specific import in generic modules; no assumed global runtime bound; no loss of existing small-input constants; changed cache representation changes the cost without changing the combinatorial proof.
 
 ## W06. Source-to-cost bridge
+
+The [G1 decision](evidence/g1-backend-decision.md#w04w05-boundary-and-named-w06-c3-obligations)
+retains a named W06-C3 package: checkable reification/source semantics, typed
+heap/shared-reference/move/Box simulation, then the actual memo evaluator/core
+and separate wrappers. Native C2 is the selected contract interface, not a
+replacement for these adequacy obligations.
 
 **Depends on:** W02/W03; starts before W05 is complete.
 

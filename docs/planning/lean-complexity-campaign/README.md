@@ -18,7 +18,7 @@ The first investment is an integration and statement audit, followed by a small 
 
 The final recent-work pass also found the **October 2026 verified order-maintenance development**, with an explicit RAM and step-preserving translation [L14], and added Rocq certifying extraction/time bounds [R14] to the mandatory source-bridge references. These further narrow any claim that resource refinement is absent.
 
-The highest-value prospective contribution is therefore a **small interoperable layer for memoized and batched dynamic-programming resource proofs, plus the missing source-to-cost connection**, with precise contracts and independently useful applications. The roadmap leaves its implementation backend undecided until the experiments in [09-execution-plan.md](09-execution-plan.md) resolve that decision.
+The highest-value prospective contribution is therefore a **small interoperable layer for memoized and batched dynamic-programming resource proofs, plus the missing source-to-cost connection**, with precise contracts and independently useful applications. The original roadmap left its backend undecided. The [executed G1 comparison](evidence/g1-backend-decision.md) now selects native Std.WP for the next C2 contracts; source/RAM/IR adequacy remains separate work.
 
 ## Read in this order
 
@@ -44,6 +44,13 @@ The highest-value prospective contribution is therefore a **small interoperable 
 Machine-readable companions: [sources.json](evidence/sources.json), [targets.json](evidence/targets.json), [repository-observations.json](evidence/repository-observations.json). The [search log](evidence/search-log.md) records the scope and limits of this census. The [validation report](evidence/validation-report.md) describes what was checked for this delivery.
 
 ## Executed follow-up
+
+The [G1 backend decision](evidence/g1-backend-decision.md) compares the same
+four generated functions in native WP, charged arlib and Lax62 NREST. All three
+preserve successful operational values/costs and reject the compiled source
+mutation's old comparison budget. Native Std.WP is selected for the next C2
+memo interfaces; remaining G0 audit and W06-C3 source/heap/reification obligations
+remain open. This is not generic memo or application runtime completion.
 
 The [charged arlib source interpreter](evidence/lookup-arlib-source-pilot.md)
 proves exact successful value and six-currency correspondence for the same
@@ -71,7 +78,13 @@ G0 remains partial; G1 and the actual Rust-to-cost bridge remain open. Existing
 arlib mathematics is reused rather than recreated. The main toolchain and
 production algorithms remain fixed.
 
-## First work package
+## Original first work package and current next step
+
+The comparison below has now produced the scoped C2 decision linked above.
+Next is W04's checked memo interface and remaining declaration-level reuse audit,
+then W05's two clients/two representations, alongside the named W06-C3 work.
+The original G0/G1 requirements remain recorded here; source adequacy has not
+been waived.
 
 Run **G0: backend and statement reconnaissance** and **G1: one actual lookup and loop** before starting a broad formalization. Compare arlib, the Lax timed-refinement stack, and an adapter using Lean's existing `Std.WP` machinery on the **same task**. The comparison must include an omitted-operation test, a result specification independent of the instrumented implementation, and the current repository's toolchain. Investigate Iris as the ownership backend if the batch/shared-state contract needs it; do not require a complete Iris port to establish a deterministic scalar-cost pilot.
 

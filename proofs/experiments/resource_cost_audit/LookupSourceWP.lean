@@ -86,18 +86,19 @@ theorem compare_wp (left right : BalancedWord) (fuel : Nat)
     Std.WP.wp (call Program.body fuel .compare
       [.reference (encodeWord left), .reference (encodeWord right)])
       (fun value final =>
-        value = .boolean (LookupEvents.compare left right).1 ∧
+        value = .boolean (decide (left = right)) ∧
         final.events = initial.events.plus
           ⟨0, (LookupEvents.compare left right).2, 0, 0, 0⟩ ∧
         final.steps ≤ initial.steps + 256 * (LookupEvents.compare left right).2)
       (fun _ _ => False) initial := by
   obtain ⟨cost, hr, hc⟩ := compare_source left right fuel hf
   apply call_wp_of_run _ _ _ _ hr
-  refine ⟨rfl, congrArg (initial.events.plus) hc, ?_⟩
-  have hb := program_source_bound hr
-  rw [hc] at hb
-  simp only [LookupEvents.Events.units, Nat.zero_add, Nat.add_zero] at hb
-  exact Nat.add_le_add_left hb initial.steps
+  refine ⟨?_, congrArg (initial.events.plus) hc, ?_⟩
+  · rw [LookupEvents.compare_value]
+  · have hb := program_source_bound hr
+    rw [hc] at hb
+    simp only [LookupEvents.Events.units, Nat.zero_add, Nat.add_zero] at hb
+    exact Nat.add_le_add_left hb initial.steps
 
 /-- Complete owned copying carries the same allocation and constructor
 packets through the WP state. -/
@@ -158,6 +159,13 @@ theorem extra_compare_rejects_old_wp :
   cases ha
   have hn := hp.2
   simp [Cost.plus, LookupEvents.Events.plus, hc] at hn
+
+#check @call_wp_iff
+#check @lookup_wp
+#check @compare_wp
+#check @copy_wp
+#check @copyResult_wp
+#check @extra_compare_rejects_old_wp
 
 #print axioms call_wp_iff
 #print axioms lookup_wp

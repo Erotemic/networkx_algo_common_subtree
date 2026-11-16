@@ -372,6 +372,13 @@ theorem extra_compare_violates_old_budget :
   rw [h]
   decide
 
+#check @run_observe
+#check @lookup_spec
+#check @compare_spec
+#check @copy_spec
+#check @copyResult_spec
+#check @extra_compare_violates_old_budget
+
 #print axioms action_observe
 #print axioms execute_observe
 #print axioms run_observe
