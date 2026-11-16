@@ -20,6 +20,12 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [2026-11-16 lookup packet model](lean-complexity-campaign/evidence/lookup-packets.md)
+now proves structural comparison/copy/allocation envelopes and erasure to the
+actual extracted function results. All 3,744 main Lean jobs and three example
+suites pass. The source-event adequacy bridge remains open; this does not
+establish Rust runtime bounds or complete G1/SRC-01.
+
 The 2026-11-14 reprioritization supersedes the earlier proof-first sequencing.
 Finish public Python/PyO3 algorithm coverage, independent correctness/parity,
 and measured performance before substantial remaining proof work. Preserve

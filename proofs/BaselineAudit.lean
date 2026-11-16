@@ -114,3 +114,11 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.AssignmentVertexDeletion.compact_deletion_state
 #print axioms SubtreeProofs.Rust.SparseDeletion.compact_index_total_spec
+
+#print axioms SubtreeProofs.Rust.LookupEvents.compare_erases
+#print axioms SubtreeProofs.Rust.LookupEvents.copy_erases
+#print axioms SubtreeProofs.Rust.LookupEvents.copyResult_erases
+#print axioms SubtreeProofs.Rust.LookupEvents.lookup_erases
+#print axioms SubtreeProofs.Rust.LookupEvents.lookup_bound
+#print axioms SubtreeProofs.Rust.LookupEvents.sound_unit_bound
+#print axioms SubtreeProofs.Rust.LookupEvents.extra_scan_changes_cost

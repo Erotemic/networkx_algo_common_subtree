@@ -6,6 +6,11 @@ experiment. It supersedes neither the delivered survey nor its historical
 checksums. **G0 is partially executed; G1 and SRC-01 are not complete.** Main
 Lean/Mathlib/Aeneas pins and production algorithms remain unchanged by this audit.
 
+The [2026-11-16 packet-model increment](lookup-packets.md) proves the proposed
+structural comparison, owned-copy and lookup envelopes below, with actual-value
+erasure and an extra-scan discriminator. It does **not** discharge source-event
+adequacy; G1 and SRC-01 remain open.
+
 ## Declaration/build decisions
 
 Exact revisions, file hashes, types and commands are in

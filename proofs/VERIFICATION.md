@@ -14,6 +14,8 @@ cargo test --locked --manifest-path rust/crates/common_subtree_algorithms/Cargo.
 cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
 cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.toml
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
+(cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
+(cd proofs && lake env lean Tests/LookupEvents.lean)
 python -m pytest tests
 # Build the opt-in proved-core extension through the actual package build:
 python -m pip wheel . --no-deps --wheel-dir /tmp/common-subtree-wheels \

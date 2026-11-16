@@ -1,5 +1,21 @@
 # Common-subtree proof status
 
+## Structural lookup packet model: 2026-11-16
+
+`Rust/LookupEvents.lean` proves short-circuit comparison bounds, exact owned
+witness-copy/Box counts, first-hit table bounds and agreement with the four
+actual extracted function results. Cache soundness yields the complete
+unit-packet bound `t*(2*L+2*R+3)+4*min(L,R)+3`. Duplicate keys retain first-hit
+semantics. A second scan provably preserves the answer and increases cost.
+
+The full library passes **3,744 jobs**, all three Lean example suites pass,
+and the seven new audited endpoints use only the accepted baseline axioms.
+The new ten-case suite is included in CI. Rust/generated sources, dependency
+pins and production defaults are unchanged. This is a **packet-model bound**,
+not source-event adequacy or a Rust runtime theorem. The manually authored
+event interpretation must still be linked to source/LLBC operational execution
+before G1/SRC-01 can pass. [Exact contracts, hashes and evidence](../docs/planning/lean-complexity-campaign/evidence/lookup-packets.md).
+
 ## Initial proof scope: IEEE-754 deliberately excluded
 
 Author instruction, 2026-11-14: IEEE-754 correctness is outside the initial
