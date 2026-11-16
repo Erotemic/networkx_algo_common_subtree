@@ -12,6 +12,13 @@ inventory and passing pinned regeneration. The pilot is operational C2 work:
 its reifier and immutable-reference interpretation remain trusted. It does
 not establish a Rust runtime theorem or complete G1/SRC-01/C3.
 
+The subsequent [native Std.WP adapter](lean-complexity-campaign/evidence/lookup-native-wp.md)
+proves successful-run WP equivalence, contracts for all four source-model
+functions, complete cost threading through sequential calls, and rejection of
+the compiled extra-comparison mutation's old WP contract. Its worksheet passes
+under the same pins. This is the native leg of W03; competing adapters and G1
+route selection remain open.
+
 After checking out this branch, follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md)
 for toolchain/bootstrap details. From the repository root:
 
@@ -23,6 +30,7 @@ dev/regenerate_rust_lean.sh --check
 python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
+(cd proofs && lake env lean experiments/resource_cost_audit/LookupSourceWP.lean)
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 (cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
 (cd proofs && lake env lean BaselineAudit.lean)

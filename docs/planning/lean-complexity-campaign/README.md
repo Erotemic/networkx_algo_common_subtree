@@ -45,6 +45,12 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [native Std.WP adapter](evidence/lookup-native-wp.md) compiles successful-run
+WP contracts for all four existing source-model functions, sequential cost
+threading, and rejection of the compiled extra-comparison mutation's old
+contract. It is the native W03 leg at the established C2 boundary; competing
+adapters, G1 route selection and SRC-01/C3 remain open.
+
 The [reified lookup operational pilot](evidence/lookup-source-pilot.md) adds
 execution-linked instruction bounds and exact packet correspondence inside a
 read-only operational model, with a compiled Rust mutation. Its reifier and

@@ -1,5 +1,21 @@
 # Common-subtree proof status
 
+## Native Std.WP source-model adapter: 2026-11-16
+
+The optional `experiments/resource_cost_audit/LookupSourceWP.lean` worksheet
+compiles successful-run WP equivalence and contracts for lookup, structural
+comparison, word copy and result copy over the existing operational interpreter.
+Sequential calls retain complete prior work; the actual compiled extra-compare
+mutation cannot satisfy the old empty-table zero-comparison WP contract. The
+seven printed endpoint axiom closures stay within the established baseline.
+
+This is the native leg of W03 at the existing **C2** boundary. The reifier,
+immutable-reference interpretation and missing Rust/heap adequacy are unchanged;
+error-path costs are unspecified. Competing backend adapters, G1 route selection,
+and SRC-01/C3 remain open. The worksheet is now compiled in CI; main dependency
+pins and production source remain unchanged.
+[Exact declarations and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-native-wp.md).
+
 ## Reified lookup operational pilot: 2026-11-16
 
 `Rust/LookupSourceRefinement.lean` now proves total first-hit lookup and exact
