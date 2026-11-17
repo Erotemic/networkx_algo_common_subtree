@@ -1,6 +1,28 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
+[expanded evaluator helper reuse](lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
+Eight maintained modules prove lifted reads and numeric-domain preservation,
+statement/control/recursive driver simulation, actual six-helper body identity,
+universal native helper contracts and compositions with existing addressed
+source/type/owner/storage/spatial/loan/region results. Successful old runs retain
+identical nesting fuel and complete old work; added destruction/solver-call
+currencies are zero. Native inputs satisfy the explicit numeric-width domain.
+Generic preservation is one-way on successful old runs; live drops and over-wide
+scalar copies differ on arbitrary invalid programs. The new consumer suite
+records those boundaries and consumes actual native contracts.
+The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
+624-endpoint axiom audit pass. Shared statement inspection covers 1,239 records.
+
+Next compose evaluator typing/regions/owners/storage/local borrows/destruction,
+then universal functional/overflow/table/resource correspondence, public core,
+wrappers/input policy and G3. Do not reprove helper algorithms/safety traces.
+A small next native endpoint is `choose_longer`: two owned inputs, bounded
+score comparison, move the winner, destroy the loser, and retain the first on
+ties. Charge its actual remaining destructor visits/Boxes before composing it
+with evaluation; the helper bridge alone has zero destruction.
+
+The preceding increment establishes
 [actual evaluator source-profile execution](lean-complexity-campaign/evidence/memo-evaluator-source-profile.md).
 Six maintained `SourceEval*` modules and generated `SourceEvalInput` retain and
 kernel-read all nine actual bodies, including evaluator (113 locals), choice
@@ -13,9 +35,10 @@ counts and `original_execute` are kernel checked. Actual-program behavioral
 guards cover empty/nonempty entry points and warm-cache overflow/table return.
 The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust tests,
 full regeneration check and 592-endpoint axiom audit pass. The snapshot layer
-is not yet universal source/native refinement or typed addressed safety. Next bridge completed
-helpers, then evaluator typing/regions/owners/storage/local borrows/destruction
-and functional/resource correspondence, public core and separate wrappers.
+is not yet universal source/native refinement or typed addressed safety. The
+helper bridge now exists. Next evaluator typing/regions/owners/storage/local
+borrows/destruction and functional/resource correspondence, public core and
+separate wrappers.
 
 The preceding increment establishes
 [actual evaluator partial-local foundations](lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md).
@@ -363,8 +386,8 @@ Partial field moves and remaining destructor-work accounting are now consumed
 by `SourceEval*` primitive execution. Actual evaluator/core source reading,
 function/drop identity, ABI/signature/bounds/coverage, scalar/checked-add,
 metadata/undefined control and complete execution binding are now checked too.
-Do not repeat extraction or primitive construction. Next bridge the preceding
-helper refinements into the expanded profile; compose whole-program typing,
+Do not repeat extraction or primitive construction. The preceding helper refinements now compose with the expanded profile,
+including native/addressed results at unchanged full work. Next whole-program typing,
 source regions, owner/storage traces and addressed local-borrow/destruction
 simulation, then evaluator/core functional, overflow/table and cost refinement.
 Legitimate borrows of caller-owned locals cannot

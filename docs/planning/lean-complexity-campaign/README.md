@@ -1,5 +1,16 @@
 # Lean complexity campaign: proto-roadmap
 
+The [evaluator helper bridge](evidence/memo-evaluator-helper-bridge.md) now
+kernel-checks all six helper identities in the actual expanded program and
+transfers successful recursive runs, unchanged work and native contracts.
+Existing addressed typing/ownership/storage/spatial/loan/region results compose
+with the new source runs. Numeric-width assumptions are explicit. The evaluator
+itself still needs full typing, local-borrow/destruction and functional/resource
+composition, followed by public core/wrappers and G3. This does not close SRC-01/C3.
+The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
+624-endpoint axiom audit pass. Shared statement inspection covers 1,239 records.
+
+
 **Evidence date:** 2026-11-14.
 **Repository baseline:** `4291e8bd12d693fbb0d1a6a8737ed96c5f6705e3`.
 **Status:** research-backed campaign specification; no new Lean theorems or dependency integrations are claimed by this overlay.

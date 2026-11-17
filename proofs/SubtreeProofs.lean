@@ -259,3 +259,5 @@ public import SubtreeProofs.Rust.MemoRegionRefinement
 public import SubtreeProofs.Rust.SourcePartialLocals
 
 public import SubtreeProofs.Rust.SourceEvalCertificate
+
+public import SubtreeProofs.Rust.SourceEvalHelperSafety

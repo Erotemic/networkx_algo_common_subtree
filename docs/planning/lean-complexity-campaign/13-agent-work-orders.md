@@ -86,6 +86,19 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Expanded helper reuse:** [the checked bridge](evidence/memo-evaluator-helper-bridge.md)
+identifies all six actual helper bodies with their earlier profiles and transfers
+successful runs at identical nesting fuel/full work, with zero new destruction
+and solver-call currency. Universal native contracts and completed addressed
+owner/storage/spatial/typing/loan/region results compose with the expanded source
+program. Do not reprove helper algorithms or their safety traces. Next evaluator
+whole-program typing/regions/owners/storage/local borrows/destruction and universal
+functional/overflow/table/resource correspondence, then public core/wrappers/G3.
+The numeric-width premise is necessary and holds for every native input.
+The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
+624-endpoint axiom audit pass. Shared statement inspection covers 1,239 records.
+
+
 **Actual evaluator source follow-up:** [complete profile execution](evidence/memo-evaluator-source-profile.md)
 now retains and kernel-reads all nine actual bodies/signatures/bounds/coverage,
 including 113 evaluator locals and the public entry point. Partial moves,

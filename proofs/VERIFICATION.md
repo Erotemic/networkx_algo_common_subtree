@@ -33,6 +33,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/MemoRegions.lean)
 (cd proofs && lake env lean Tests/SourcePartial.lean)
 (cd proofs && lake env lean Tests/SourceEval.lean)
+(cd proofs && lake env lean Tests/SourceEvalHelpers.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -162,6 +163,19 @@ behavioral guards on the actual decoded program. The 3,865-job build, 25 suites,
 tests, full regeneration check and 592-endpoint axiom audit pass.
 See the [evaluator profile report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-profile.md)
 for exact reference/destruction scope and remaining universal refinement/safety.
+
+The expanded helper bridge adds `SourcePartialReadback`, four
+`SourceEvalLegacy*` and three `SourceEvalHelper*` modules, with
+`Tests/SourceEvalHelpers.lean` in CI. Kernel identity of actual helper bodies,
+recursive exact-work simulation and native/addressed safety compositions reuse
+the completed earlier helper chains. The numeric domain and one-way success
+scope have explicit regression cases. All 3,873 library jobs, 26 suites, native WP and nine Python tests pass; the
+624-endpoint audit remains within `propext`, `Classical.choice`, `Quot.sound`.
+Shared `leanq` inspected the recursive and insertion-totality statement closures
+(1,239 records). Rust/generated data, interpreters and dependency pins are
+unchanged; the preceding full regeneration and thirteen Rust tests remain the
+provenance/behavior baseline. See the
+[helper bridge report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
 
 ## VM caches
 

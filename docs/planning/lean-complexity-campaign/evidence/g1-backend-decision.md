@@ -148,6 +148,17 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [expanded evaluator helper bridge](memo-evaluator-helper-bridge.md) now
+kernel-checks the actual six-helper body identities and reuses recursive native
+and addressed safety results at unchanged fuel/full work. It adds neither
+destruction nor evaluator calls on those successful helper runs. Numeric-width
+premises are explicit and hold for native values. Whole-evaluator typing,
+local-borrow/destruction and functional/resource composition, public core,
+wrappers and G3 remain required; SRC-01/C3 remains open.
+The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
+624-endpoint axiom audit pass. Shared statement inspection covers 1,239 records.
+
+
 The [complete evaluator source-profile increment](memo-evaluator-source-profile.md)
 now kernel-reads all nine actual bodies and binds the source to full primitive
 execution, including partial moves, scalar/checked-add operations, live drops,

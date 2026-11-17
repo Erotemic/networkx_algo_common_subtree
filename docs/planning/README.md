@@ -25,6 +25,19 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [evaluator helper bridge](lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md)
+kernel-checks identity of all six actual helper bodies with their completed
+profiles. Successful recursive execution preserves the same nesting fuel and
+complete old cost, with zero additional destruction/solver-call currency.
+Native contracts and addressed typing, owner/storage/spatial, loan and region
+results are reused. Numeric-width premises are explicit and hold for all native
+inputs. Next compose evaluator typing/regions/owners/storage/local borrows and
+destruction, functional/overflow/table behavior and resources, then public core
+and separate wrappers. Full W06-C3 and remaining planning targets stay open.
+The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
+624-endpoint axiom audit pass. Shared statement inspection covers 1,239 records.
+
+
 The [actual evaluator source profile](lean-complexity-campaign/evidence/memo-evaluator-source-profile.md)
 now kernel-checks all nine retained bodies, including the 113-local evaluator
 and public entry point, and binds source reading to complete profile execution.

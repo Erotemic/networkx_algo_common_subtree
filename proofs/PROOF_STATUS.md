@@ -1,5 +1,32 @@
 # Common-subtree proof status
 
+## Expanded evaluator helper reuse: 2026-11-17
+
+Eight maintained modules add full lifted-state read compatibility and an
+explicit bounded-numeric domain, then prove statement/control/recursive-driver
+simulation at the same nesting fuel and complete old instruction/event work.
+Actual kernel `lookup_body`/`memo_body` certificates identify all six helpers
+and both Box routes in the expanded evaluator extraction. Native copy, compare,
+result-copy, first-hit lookup, concatenate and insert contracts now execute
+`SourceEval.Certificate.original`, with zero added destruction/solver calls.
+No cache-soundness assumption is imposed on these helper contracts.
+
+`Helpers.lookup_source_scoped`/`memo_source_scoped` compose typed addressed
+runs and actual region traces. The native concatenate/insert totality endpoints
+retain completed ownership, spatial/caller-frame, storage, loan, region, native
+readback and exact allocation-growth results. Insertion preserves its owned
+table under the fresh tail Box, including shared aliases into it.
+
+The bridge preserves successful old executions; arbitrary failed programs can
+differ. Numeric bounds are necessary and hold for all native inputs. Evaluator
+whole-program typing/regions/owners/storage, local borrows/live destruction,
+universal functional/overflow/table/resource refinement, public core and separate
+wrappers remain open. This does not close W06-C3 or production runtime claims.
+The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
+624-endpoint axiom audit pass. Shared statement inspection covers 1,239 records.
+
+[Exact endpoints and evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
+
 ## Actual evaluator source-profile execution: 2026-11-17
 
 Six maintained `SourceEval{Scalar,Operands,Machine,Frontend,Program,Certificate}`
