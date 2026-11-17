@@ -606,3 +606,24 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.MemoSource.Regions.ordinary_regions
 #print axioms SubtreeProofs.Rust.MemoSource.Regions.concatenate_source_total
 #print axioms SubtreeProofs.Rust.MemoSource.Regions.insert_source_total
+
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Slot.materialize_ofValue
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.materializeFields_ofFields
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Slot.eq_of_materialize
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.eq_of_materializeFields
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.DropWork.zero_plus
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.DropWork.plus_zero
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.DropWork.plus_assoc
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.DropWork.plus_comm
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.DropWork.plus_left_comm
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.dropFields_set
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Slot.take_read
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Slot.take_work
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Slot.take_hole
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Slot.take_otherField
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.lift_materialize
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.move_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.move_other
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.drop_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.drop_twice
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.move_local_lift

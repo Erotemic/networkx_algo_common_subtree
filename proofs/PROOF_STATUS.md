@@ -1,5 +1,32 @@
 # Common-subtree proof status
 
+## Actual evaluator partial-local foundations: 2026-11-17
+
+Three `SourcePartial{Value,Moves,Locals}` modules model holes after projected
+moves while retaining parent constructors, sibling values and Box shells.
+Full-value embedding/readback is an inverse; a partially moved parent cannot
+be materialized or moved as a whole. Successful moves read exactly their
+selected full value, leave a hole and preserve distinct sibling projections.
+No move crosses a shared reference.
+
+`Slot.take_work` proves exact transfer of declared destructor visits and Box
+tokens from the original to moved value plus remainder. Shared referents are
+not traversed. `Locals.move_spec`/`move_other` preserve unrelated locals;
+`drop_spec` clears exactly one local with its remaining work, and `drop_twice`
+charges zero afterwards. `move_local_lift` preserves the existing whole-local
+interpreter's complete result/environment.
+
+The actual pinned evaluator/public-entry extraction was inspected and exposes
+these operations. These primitives are not yet consumed by its source/heap
+certificate. Drop work is a declared logical currency, not exact native glue
+instructions or freed heap bytes. Addressed uniqueness, typing, local borrow
+lifetimes, source normalization, evaluator/core and wrappers remain open.
+The 3,858-job build, 24 suites, native WP, nine Python tests and
+572-endpoint axiom audit pass. All 20 new closures use accepted baseline axioms.
+The full planning goal remains active.
+
+[Statements and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md).
+
 ## Memo typed shared loans and source-region interpretation: 2026-11-17
 
 Five `MemoBorrow{Certificate,Calls,Refinement}` and `MemoRegion{Calls,Refinement}`

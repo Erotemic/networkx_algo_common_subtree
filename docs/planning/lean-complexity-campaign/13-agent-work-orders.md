@@ -86,6 +86,16 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Actual evaluator follow-up:** [partial-local foundations](evidence/memo-evaluator-partial-locals.md)
+now support projected moves, preserved siblings/Box shells, exact transfer of
+declared destructor work, unrelated locals and whole-local destruction. Pinned
+inspection confirms these are actual evaluator/wrapper needs. Next consume
+these primitives in checked normalization/execution, with scalar/checked-add,
+metadata/unreachable control, local addressed borrows and full safety/cost
+composition, then core/wrappers. This is not an evaluator source certificate;
+W06-C3 remains open. The 3,858-job build, 24 suites, native WP, nine Python tests and
+572-endpoint axiom audit pass.
+
 **Memo loan/region follow-up:** [typed shared loans and source-region interpretation](evidence/memo-loan-regions.md)
 now compose actual helper runs, parsed scoped declarations and retained-world
 lifetime witnesses. Kernel route/type/body/scope checks and fuel induction cover

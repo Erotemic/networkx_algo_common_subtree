@@ -148,6 +148,15 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [actual evaluator partial-local increment](memo-evaluator-partial-locals.md)
+inspects the real pinned evaluator/core extraction and proves partial moves,
+sibling/Box-shell preservation, declared drop-work transfer and local frame
+facts. Next consume them in actual normalization/execution with arithmetic,
+metadata/unreachable paths, local addressed borrows and full safety/cost
+composition. The primitives do not by themselves certify evaluator execution.
+The 3,858-job build, 24 suites, native WP, nine Python tests and
+572-endpoint axiom audit pass.
+
 The [memo loan/region increment](memo-loan-regions.md) now composes actual
 helper runs with typed shared-loan traces, ordinary reference-free outputs and
 actual parsed region annotations in retained-world lifetimes. Native endpoints

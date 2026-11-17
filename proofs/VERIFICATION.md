@@ -31,6 +31,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/MemoStack.lean)
 (cd proofs && lake env lean Tests/MemoBorrow.lean)
 (cd proofs && lake env lean Tests/MemoRegions.lean)
+(cd proofs && lake env lean Tests/SourcePartial.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -139,6 +140,16 @@ ordinary output closure. The 3,855-job build, 23 suites, native WP, nine Python 
 source parser, tools and pins are unchanged. See the
 [memo loan/region report](../docs/planning/lean-complexity-campaign/evidence/memo-loan-regions.md)
 for exact lifetime scope and remaining actual evaluator/core work.
+
+The evaluator partial-local increment adds `SourcePartial*.lean` and
+`Tests/SourcePartial.lean`. It proves partial readback/moves, preserved siblings,
+exact remaining declared destruction work, local frames and old whole-local
+compatibility. These primitives are not yet composed into actual evaluator
+source/heap execution. The 3,858-job build, 24 suites, native WP, nine Python tests and
+572-endpoint axiom audit pass. Rust/generated artifacts,
+parser/reifier and pins are unchanged. See the
+[partial-local report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md)
+for the pinned extraction command and exact remaining obligations.
 
 ## VM caches
 

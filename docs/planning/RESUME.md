@@ -1,6 +1,21 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment proves
+Branch: `Droschinsky-algos`. The latest increment establishes
+[actual evaluator partial-local foundations](lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md).
+Pinned extraction of `maximum_common_embedding` exposes 113 evaluator locals,
+partial field moves, live drops, scalar/checked-add operations, owned-local
+borrows, borrow-check annotations and an undefined-behavior leaf. These are
+inspection facts, not a kernel source certificate. Three `SourcePartial*`
+modules prove full-value readback, exact selected-field moves/holes, sibling
+preservation, declared destructor-work transfer, retained Box shells, unrelated
+local preservation, whole-local destruction/idempotence and old whole-local
+move compatibility. No move crosses a shared reference. The 3,858-job build,
+24 suites, native WP, nine Python tests and 572-endpoint axiom audit pass. Next
+consume these primitives in actual evaluator normalization and
+execution, compose addressed/local-borrow/type/storage/owner/loan/region/cost
+invariants, then public core/wrappers. The evaluator is not yet certified.
+
+The preceding increment proves
 [memo typed loans and source-region interpretation](lean-complexity-campaign/evidence/memo-loan-regions.md).
 Five `MemoBorrow{Certificate,Calls,Refinement}` and `MemoRegion{Calls,Refinement}`
 modules reuse generic loan soundness and actual parsed source declarations.
@@ -327,8 +342,11 @@ these helpers as well, including ordinary output closure and stable caller
 loans. Do not repeat them. Next inspect `memoized_common_embedding` and its
 public `maximum_common_embedding` wrapper. Preserve insertion's owned-table
 occurrence ledger and concatenation's shared inputs when composing them.
-Model actual evaluator checked arithmetic, owned-local borrows,
-losing-candidate destruction and overflow/table returns. Legitimate borrows of caller-owned locals cannot
+Partial field moves and remaining declared destructor-work accounting now
+have `SourcePartial*` primitives; do not repeat them. They are not yet consumed
+by the evaluator. Model actual evaluator checked arithmetic, recognized
+borrow-check metadata/unreachable control, owned-local borrows and live drops,
+then prove source and addressed execution including overflow/table returns. Legitimate borrows of caller-owned locals cannot
 all satisfy lookup's old-heap-only borrow profile. Preserve scope and ownership
 facts when extending it. Then compose one public core entry point.
 Then handle indexed/token/reconstruction wrappers, normal work, input/error

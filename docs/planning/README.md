@@ -25,6 +25,16 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [actual evaluator/partial-local increment](lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md)
+inspects the pinned evaluator/public-entry extraction and proves partial-field
+moves with exact transfer of declared destructor work. Siblings and Box shells
+remain available; shared referents are readable but cannot be moved through.
+Whole-local destruction charges the remaining structure and preserves other
+locals. These primitives are not yet consumed by an evaluator source/heap
+certificate. Next normalization/execution with arithmetic, metadata, local
+borrows and full safety/cost composition. The 3,858-job build, 24 suites, native WP, nine Python tests and
+572-endpoint axiom audit pass.
+
 The [memo loan/region proof](lean-complexity-campaign/evidence/memo-loan-regions.md)
 now composes actual helper runs with recursive typed shared loans, reference-free
 ordinary outputs and parsed region-bearing local annotations. The existing
