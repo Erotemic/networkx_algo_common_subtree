@@ -25,6 +25,17 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Recursive evaluator typing and source regions](lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md)
+now connect all nine actual type profiles to complete recursive snapshot
+execution, with typed initial locals, both intrinsics and deep ordinary-output
+closure. Actual scoped signatures/locals, call-region arities and all region-use
+positions are kernel checked. Native totality composes with these types at the
+same complete costs. Addressed moves/owners/storage/local loans/destruction,
+public maximum/wrappers and global resources/G3 remain. Full W06-C3 stays open.
+The 3,904-job build, all 32 Lean suites, native WP, nine Python tests and
+734-endpoint axiom audit pass. Shared statement inspection covers 1,046 unique
+declaration records with no unknown references.
+
 [Actual evaluator source typing](lean-complexity-campaign/evidence/memo-evaluator-source-typing.md)
 checks all nine lifetime-erased declaration/control profiles and both actual
 Option instances. Independent partial-local typing now preserves reads, owned

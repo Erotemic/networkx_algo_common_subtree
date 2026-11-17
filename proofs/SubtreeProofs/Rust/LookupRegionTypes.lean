@@ -30,6 +30,7 @@ inductive Ty where
   | u32
   | adt : Kind → Ty
   | owned : Ty → Ty
+  | option : Ty → Ty
   | tuple : List Ty → Ty
   | shared : Region → Ty → Ty
 
@@ -39,6 +40,7 @@ mutual
     | .u32 => .u32
     | .adt kind => .adt kind
     | .owned inner => .owned (erase inner)
+    | .option inner => .option (erase inner)
     | .tuple types => .tuple (eraseList types)
     | .shared _ inner => .shared (erase inner)
   termination_by ty => sizeOf ty
@@ -55,6 +57,7 @@ mutual
     | u32 : Scoped scope .u32
     | adt (kind : Kind) : Scoped scope (.adt kind)
     | owned {inner : Ty} : Scoped scope inner → Scoped scope (.owned inner)
+    | option {inner : Ty} : Scoped scope inner → Scoped scope (.option inner)
     | tuple {types : List Ty} : FieldsScoped scope types → Scoped scope (.tuple types)
     | shared {region : Region} {inner : Ty} : Bound scope region → Scoped scope inner → Scoped scope (.shared region inner)
 
@@ -69,6 +72,7 @@ mutual
     | .u32 => .u32
     | .adt kind => .adt kind
     | .owned inner => .owned (rename mapping inner)
+    | .option inner => .option (rename mapping inner)
     | .tuple types => .tuple (renameList mapping types)
     | .shared region inner => .shared (mapping region) (rename mapping inner)
   termination_by ty => sizeOf ty
@@ -84,6 +88,7 @@ mutual
     cases ty with
     | boolean | u32 | adt _ => simp only [rename, erase]
     | owned inner => simpa only [rename, erase] using congrArg Heap.Ty.owned (erase_rename mapping inner)
+    | option inner => simpa only [rename, erase] using congrArg Heap.Ty.option (erase_rename mapping inner)
     | tuple types => simpa only [rename, erase] using congrArg Heap.Ty.tuple (eraseList_rename mapping types)
     | shared region inner => simpa only [rename, erase] using congrArg Heap.Ty.shared (erase_rename mapping inner)
   termination_by sizeOf ty
@@ -105,6 +110,7 @@ mutual
     | .u32 => by simpa only [Regions.rename] using Scoped.u32 (scope := after)
     | .adt kind => by simpa only [Regions.rename] using Scoped.adt (scope := after) kind
     | .owned inner => by simpa only [Regions.rename] using Scoped.owned (inner.rename hm)
+    | .option inner => by simpa only [Regions.rename] using Scoped.option (inner.rename hm)
     | .tuple fields => by simpa only [Regions.rename] using Scoped.tuple (fields.rename hm)
     | .shared hb inner => by simpa only [Regions.rename] using Scoped.shared (hm _ hb) (inner.rename hm)
 

@@ -1,89 +1,80 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[actual evaluator source types and partial-local preservation](lean-complexity-campaign/evidence/memo-evaluator-source-typing.md).
-All nine actual declaration/control profiles, nested annotations and both Option
-instances are kernel checked. Independent partial-local reads, owned field moves,
-expressions and actions preserve declared types, holes, siblings and Box shells.
-Recursive control/callee typing and addressed safety remain next. The complete
-[evaluator/native functional correspondence](lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
-already covers all finite native queries/warm tables and every overflow/error
-path, retaining exact returned tables and full costs. W06-C3 and the full planning
-goal remain open.
+[recursive actual-source typing and region binding](lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md).
+The complete nine-definition profile now has recursive snapshot type preservation
+at every fuel, with all callee contracts discharged and typed initial locals,
+Box payloads and both checked-add outcomes. Actual region-bearing signatures and
+locals are retained and kernel checked against the existing code/type profile.
+Addressed owners/storage/local loans/destruction remain next. W06-C3 and the full
+planning goal remain open.
 
 ## Checked endpoints and scope
 
-Eight new modules extend the existing independent Heap.Ty/Shape model with
-parameterized options, accept the two actual instances in the shared type
-reader, and retain exact source definitions/counts. Static constraints use
-destination types for aggregates and reject moves through shared references.
-The generic Option declaration is checked separately at embedding and u32.
-The old lookup region reader explicitly rejects expanded options until adapted.
+Six new modules reuse the preceding actual type certificate and independent
+partial-local model. Generic source dispatch, switches and early returns preserve
+types. `BodiesTyped` and fuel induction establish actual recursive `CallsTyped`
+without a typed-callee hypothesis. Preservation constrains successful runs;
+it does not make arbitrary checked bodies total. The tests retain this false
+neighbor and the shared-reference payload exception for polymorphic Box.
 
 Public new endpoints:
 
-- `SourceEval.TypeReader.Certificate.original_checked`, `original_boundaries`,
-  `original_declarations`: all nine actual bodies, boundary prefixes, layouts
-  at both Option instances and exact typed/source definition-list alignment.
-- `LookupSource.Partial.SlotTyped.{materialize,get,read,take}` and
-  `FieldsSlotTyped.{get,set}`: independent partial-value shape/scalar preservation.
-- `LookupSource.Partial.LocalsTyped.{clear,store,read,move}` and
-  `SourceEval.Types.{operand_typed,operands_typed,expression_typed,action_typed}`:
-  expanded-source primitive preservation, with an explicit typed callee contract.
+- `SourceEval.Types.original_run_typed`: all nine ordinary functions and both
+  intrinsics, every fuel, independently typed arguments and exact existing runs.
+- `original_exec_typed`, `original_result_typed`, `original_execute_typed`:
+  actual callbacks, returned types and retained JSON execution.
+- `output_closed`, `original_represented_output_unborrowed`: deep ordinary-output
+  closure, including the option/table tuple. The latter requires an explicit
+  heap representation; it does not construct addressed evaluator execution.
+- `SourceEval.Evaluator.evaluate_typed`, `evaluate_total_typed`,
+  `evaluate_source_typed`: actual source types plus existing native agreement
+  for all finite native queries/arbitrary warm tables and every error/overflow.
+- `SourceEval.Regions.Certificate.original_checked`, `original_program`,
+  `original_mentions_bound`: actual scoped signatures/locals, exact call-region
+  arities and all descendant region-use positions, including unwind metadata.
 
-`LocalsTyped` constrains declared slots; separate static source bounds exclude
-other accesses. Empty slots retain types without asserting initialization.
-Successful snapshot typing of local references does not establish storage
-liveness or dynamic addressed loan validity. Static typing of the UB leaf does
-not prove it unreachable; execution still rejects it.
+The shared regional type/erasure/renaming/reader/value model now supports
+parameterized options. The evaluator declares two signature lifetimes for three
+value inputs and 247 body regions for 113 locals. Insertion has three lifetimes
+for four values; owned choice has none. These are parsed binders, not lifetime
+intervals. The old heap-only borrow-route restriction is not applied to new
+constructed-local borrows, and its dynamic safety theorem is not transferred.
 
+The previous [source type/partial primitive certificate](lean-complexity-campaign/evidence/memo-evaluator-source-typing.md)
+remains the foundation. `LocalsTyped` constrains declared slots; static bounds
+exclude other accesses. Holes keep types without asserting initialization.
+Source snapshot typing and binding do not establish addressed storage liveness,
+exclusive owners, live loans or destructor-instance semantics.
 
-The preceding functional increment provides shared-control extension, full-cost nesting-fuel
-monotonicity/uniqueness, all six recursive failure paths, successful choice/
-insertion composition and well-founded whole-run induction. The latter decreases
-the independent query Dyck-semilen sum and combines completed child fuels with
-local helper depth requirements. No cache-soundness or global runtime allowance
-is assumed for totality or error policy.
+The completed [functional evaluator proof](lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
+retains `Evaluator.evaluate_total`, `evaluate_source`, `evaluate_refines`,
+`evaluate_stable`, `Evaluation.unique` and `evaluate_consistent`. No cache
+soundness or witness/score consistency is needed for totality/error policy;
+independent optimality/memo results keep their original sound-cache/input-width
+hypotheses. Full costs retain syntax, destruction, helper events and solver calls.
+`destroyed` is already included in `work.steps`; do not bill it twice. Fuel bounds
+call nesting, not execution work.
 
-The public API is `SubtreeProofs.Rust.SourceEval.Evaluator`:
-
-- `evaluate_total`: completed actual source and translated-native runs for every
-  finite native word pair/table, with the same result/table and full cost.
-- `evaluate_source`: actual retained JSON reading/execution plus native agreement.
-- `evaluate_refines`: every completed source run, at any fuel, agrees with native.
-- `evaluate_stable`, `Evaluation.unique`: result/table/full-cost stability across
-  sufficient fuels. Generic `SourceEval.run_extends`/`run_unique` cover every body.
-- `evaluate_consistent`: reuses the existing independent native witness/score,
-  sound-table and exact numeric-`memoLcs` refinement under its original sound-cache
-  and input-width hypotheses.
-
-`SourceEvalFailures`, `SourceEvalContractFailures`, `SourceEvalSuccess` and their
-refinement modules retain exact syntax/drop/callee costs. New tests cover both
-checked-add overflow exits, unchanged warm tables, thirteen destructor visits
-and three calls, then recursive propagation with sixteen visits and four calls.
-The `destroyed` counters are already included in `work.steps`; do not bill them
-again. Fuel bounds call nesting, not execution work.
-
-The 3,898-job build, all 30 Lean suites, native WP, nine Python tests and
-706-endpoint axiom audit pass. Shared statement inspection covers 752 unique
-declaration records.
-The accepted axiom baseline remains `propext`, `Classical.choice`, `Quot.sound`.
-Production Rust, generated artifacts, execution semantics, source-control
-parsing and pins are unchanged. Earlier history remains in the linked reports.
+Production Rust, generated artifacts, source-control parsing/execution and pins
+are unchanged. The accepted axiom baseline remains `propext`, `Classical.choice`,
+`Quot.sound`.
+The 3,904-job build, all 32 Lean suites, native WP, nine Python tests and
+734-endpoint axiom audit pass. Shared statement inspection covers 1,046 unique
+declaration records with no unknown references.
+See the latest evidence report for validation and scope.
 
 ## Next work toward the full goal
 
-1. **Recursive typing and addressed safety.** Consume the completed new static
-   certificate and partial-local primitive preservation in shared-control
-   induction and nesting-fuel recursive callee discharge. Establish typed initial
-   locals and explicit Box/checked-add typing. Then extend/reuse addressed typed
-   reachable cells, heap simulation, owner ledgers, spatial/caller separation,
-   storage initialization, typed loans and retained-world parsed regions for
-   partial tuples/owned-field moves and live destruction, including destructor
-   glue instance typing/semantics. Do not reprove actual
-   source declarations, partial typing or functional evaluator/native agreement.
-   `Legacy.Bounded` is not a substitute for these types. Preserve insertion's
-   owned table and possible shared aliases into it.
+1. **Addressed partial moves and safety.** Reuse the completed actual
+   source/type/region certificates, generic control and recursive type discharge.
+   Extend the addressed typed reachable-cell model, heap simulation, owner
+   ledgers, spatial/caller separation, storage initialization, typed loans and
+   source-region interpretation to partial tuples/owned-field moves and live
+   destruction, including destructor-instance typing/semantics. Do not reprove
+   extraction, static/recursive snapshot typing, binder scope or functional
+   evaluator/native agreement. `Legacy.Bounded` is not a type system. Preserve
+   insertion's owned table and possible shared aliases into it.
 2. **Caller-owned-local borrows and destruction.** The old lookup borrow profile
    restricts referents to the old heap; evaluator borrows of constructed local
    values require a stronger framed interpretation. Track live local owners,
@@ -163,6 +154,8 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake exe cache get && lake build)
 (cd proofs && lake env lean Tests/SourceEvalRecursion.lean)
 (cd proofs && lake env lean Tests/SourceEvalTypes.lean)
+(cd proofs && lake env lean Tests/SourceEvalTypeExecution.lean)
+(cd proofs && lake env lean Tests/SourceEvalRegions.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

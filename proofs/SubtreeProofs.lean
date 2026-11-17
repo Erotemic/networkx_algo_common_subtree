@@ -267,3 +267,6 @@ public import SubtreeProofs.Rust.SourceEvalTotal
 
 public import SubtreeProofs.Rust.SourceEvalTypeCertificate
 public import SubtreeProofs.Rust.SourceEvalTypePrimitives
+
+public import SubtreeProofs.Rust.SourceEvalTypeRefinement
+public import SubtreeProofs.Rust.SourceEvalRegionCertificate

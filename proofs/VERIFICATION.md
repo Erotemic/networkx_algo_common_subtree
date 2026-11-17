@@ -38,6 +38,8 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceEvalBase.lean)
 (cd proofs && lake env lean Tests/SourceEvalRecursion.lean)
 (cd proofs && lake env lean Tests/SourceEvalTypes.lean)
+(cd proofs && lake env lean Tests/SourceEvalTypeExecution.lean)
+(cd proofs && lake env lean Tests/SourceEvalRegions.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -223,6 +225,17 @@ owner/storage/loan/region/destruction composition remain required. The 3,898-job
 build, all 30 Lean suites, native WP, nine Python tests and 706-endpoint axiom
 audit pass; statement inspection covers 752 unique declaration records. See the
 [type evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-typing.md).
+
+
+Six modules now discharge actual recursive source typing and retain all nine
+scoped signature/local profiles. New `SourceEvalTypeExecution` and
+`SourceEvalRegions` suites consume actual JSON/native/type and binder endpoints,
+including the polymorphic Box, fallthrough, call-region arity and dynamic-lifetime
+false neighbors. The new type/region proofs preserve the original complete
+costs; full addressed ownership/storage/local-loan/destructor interpretation
+remains required. The 3,904-job build, 32 Lean suites, native WP, nine Python
+tests and 734-endpoint audit pass; statement inspection exports 1,046 unique
+declarations with no unknown references. See the [recursive typing evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md).
 
 ## VM caches
 

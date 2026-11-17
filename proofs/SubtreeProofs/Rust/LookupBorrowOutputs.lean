@@ -17,6 +17,7 @@ mutual
     | adt (kind : Kind) : Closed (.adt kind)
     | tuple {types : List Ty} : ClosedFields types → Closed (.tuple types)
     | owned {inner : Ty} : Closed inner → Closed (.owned inner)
+    | option {inner : Ty} : Closed inner → Closed (.option inner)
 
   inductive ClosedFields : List Ty → Prop where
     | nil : ClosedFields []
@@ -40,7 +41,8 @@ end
 
 theorem shape_closed {kind : Kind} {variant : Nat} {types : List Ty} {ty : Ty}
     (hs : Shape kind variant types ty) (hc : Closed ty) : ClosedFields types := by
-  cases hs <;> cases hc <;> first | assumption | repeat constructor
+  cases hs <;> cases hc
+  all_goals repeat first | assumption | constructor
 
 mutual
   theorem typed_unborrowed {memory : Memory} {cell : Cell} {ty : Ty}

@@ -86,6 +86,21 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Recursive evaluator types and regions:** [actual recursive preservation and binding](evidence/memo-evaluator-recursive-typing.md)
+now discharge every typed callee contract, including Box/checked add, and retain
+scoped source signatures/locals with exhaustive region-use/call-arity checks for
+all nine bodies. Actual JSON/native totality composes with independently typed
+outputs and unchanged full costs. Do not repeat static/recursive snapshot typing,
+region binding, helper proofs or evaluator functional correspondence. Next
+addressed partial moves/owners/storage/spatial/local loans/regions/destruction,
+including destructor-instance semantics, then public maximum/wrappers/input
+policy/global resources/G3. Snapshot preservation and well-bound regions do not
+supply dynamic local-loan safety; full W06-C3 remains open.
+The 3,904-job build, all 32 Lean suites, native WP, nine Python tests and
+734-endpoint axiom audit pass. Shared statement inspection covers 1,046 unique
+declaration records with no unknown references.
+
+
 **Evaluator source types:** [actual declarations and partial-local preservation](evidence/memo-evaluator-source-typing.md)
 now check all nine source profiles, both actual Option layouts, complete nested
 annotations and static constraints. Partial reads/owned field moves and expanded

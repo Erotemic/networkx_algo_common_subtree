@@ -32,7 +32,13 @@ mutual
     | _ + 1, .boolean, _ => pure ⟨.boolean, by simp only [erase], .boolean⟩
     | _ + 1, .u32, _ => pure ⟨.u32, by simp only [erase], .u32⟩
     | _ + 1, .adt kind, _ => pure ⟨.adt kind, by simp only [erase], .adt kind⟩
-    | _ + 1, .option _, _ => throw "parameterized options require the expanded region profile"
+    | fuel + 1, .option inner, json => do
+      let data ← field (← field json "Untagged") "Adt"
+      match ← array (← field (← field data "generics") "types") with
+      | [rawInner] =>
+        let child ← attach scope fuel inner rawInner
+        pure ⟨.option child.type, by simp only [erase, child.erases], .option child.wf⟩
+      | _ => throw "invalid region-bearing Option type"
     | fuel + 1, .shared inner, json => do
       let data ← field (← field json "Untagged") "Ref"
       match ← array data with

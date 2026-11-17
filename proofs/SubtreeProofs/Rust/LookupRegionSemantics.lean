@@ -21,6 +21,9 @@ mutual
     | adt {cell : Cell} {kind : Kind} : Borrow.Safe base current cell (.adt kind) → Value base current valuation cell (.adt kind)
     | tuple {cells : List Cell} {types : List Ty} : FieldsValue base current valuation cells types →
         Value base current valuation (.node .tuple 0 cells) (.tuple types)
+    | optionNone (inner : Ty) : Value base current valuation (.node .optional 0 []) (.option inner)
+    | optionSome {cell : Cell} {inner : Ty} : Value base current valuation cell inner →
+        Value base current valuation (.node .optional 1 [cell]) (.option inner)
     | owned {address : Nat} {cell : Cell} {ty : Ty} : current[address]? = some cell →
         Value base current valuation cell ty → Value base current valuation (.owned address) (.owned ty)
     | shared {pointer : Pointer} {cell : Cell} {region : Region} {inner : Ty} :
@@ -42,6 +45,10 @@ mutual
     | .number hb => by simpa only [erase] using Borrow.Safe.number (base := base) (current := current) hb
     | .adt hsafe => by simpa only [erase] using hsafe
     | .tuple fields => by simpa only [erase] using Borrow.Safe.node (.tuple _) fields.erases
+    | .optionNone inner => by simpa only [erase] using
+        (Borrow.Safe.node (.optionNone (erase inner)) .nil (base := base) (current := current))
+    | .optionSome child => by simpa only [erase] using
+        (Borrow.Safe.node (.optionSome _) (.cons child.erases .nil))
     | .owned hr child => by simpa only [erase] using Borrow.Safe.owned hr child.erases
     | .shared loan _ _ _ => by simpa only [erase] using Borrow.Safe.shared (current := current) loan
 
@@ -72,6 +79,13 @@ mutual
       cases h with
       | owned hr child => exact .owned hr (realize he inner child)
       | node shape _ => cases shape
+    | option inner =>
+      simp only [erase] at h
+      cases h with
+      | node shape fields => cases shape with
+        | optionNone _ => cases fields; exact .optionNone inner
+        | optionSome _ => cases fields with
+          | cons child rest => cases rest; exact .optionSome (realize he inner child)
     | tuple types => simp only [erase] at h; cases h with
       | node shape fields => cases shape with | tuple _ => exact .tuple (realizeFields he types fields)
     | shared region inner => simp only [erase] at h; cases h with

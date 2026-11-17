@@ -139,6 +139,16 @@ all Rust/generated-source inputs are unchanged.
 
 ## W04/W05 boundary and named W06-C3 obligations
 
+The [recursive typing/region follow-up](memo-evaluator-recursive-typing.md)
+now discharges actual recursive type contracts and retains scoped signatures/
+locals for all nine source definitions, with exhaustive binder/call-region
+checks. Actual source/native totality and deep ordinary-output closure compose
+at unchanged full costs. Addressed partial moves, framed caller-local loans,
+owner/storage/spatial/destructor interpretation remain required before the
+public core/wrappers/global-resource/G3 endpoint. Bound region IDs are not a
+dynamic lifetime interpretation; full C3 remains open.
+
+
 The [whole-profile type increment](memo-evaluator-source-typing.md) now checks all
 nine actual declarations/control trees and both Option layouts, with independent
 partial-local read/move/expression/action preservation. Recursive control/callee

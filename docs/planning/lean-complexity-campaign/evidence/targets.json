@@ -576,6 +576,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_recursive_typing_followup": {
+        "baseline_commit": "f1fe947",
+        "evidence": "memo-evaluator-recursive-typing.md",
+        "status": "Actual recursive snapshot type preservation with all callee contracts discharged; deep ordinary-output closure and actual nine-definition scoped region annotations/call arities checked. Whole addressed owner/storage/local-loan/region/destructor interpretation remains open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3904,
+          "lean_suites": 32,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 734,
+          "unique_statement_records": 1046,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -764,7 +783,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 recursive whole-evaluator typing, addressed partial moves/owners/storage/local borrows/regions/live destruction and remaining source-operation adequacy. Actual nine-definition static source types/nested annotations/both Option layouts and independent partial-local read/move/expression/action preservation are now checked, alongside universal source/native totality and exact error/overflow/table/full-cost behavior. Reuse these certificates and the completed helper safety chains. Then public maximum, separate indexed/token/reconstruction wrappers, input/error policy, global resource contracts and G3. D12 permits explicit scoped source-operation boundaries; Charon/Aeneas import, compiler/runtime/provenance/mutable/unwind and physical allocator behavior remain separately declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 addressed partial moves/owners/storage/spatial/caller-local loans/regions/live destruction, including destructor-instance typing/semantics and remaining source-operation adequacy. Actual nine-definition source/static/recursive snapshot types, all typed callee contracts, deep ordinary-output closure and parsed scoped region annotations/call arities now compose with universal source/native totality and exact error/overflow/table/full-cost behavior. Reuse these certificates and completed helper safety chains. Then public maximum, separate indexed/token/reconstruction wrappers, input/error policy, global resource contracts and G3. D12 permits explicit scoped source-operation boundaries; Charon/Aeneas import, compiler/runtime/provenance/mutable/unwind and physical allocator behavior remain separately declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

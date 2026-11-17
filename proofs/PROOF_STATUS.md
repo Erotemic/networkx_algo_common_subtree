@@ -1,5 +1,32 @@
 # Common-subtree proof status
 
+## Actual recursive source typing and region binding: 2026-11-17
+
+Six modules connect all nine actual source type profiles to recursive snapshot
+execution, with typed initial locals, Box payloads, scalar options/overflow and
+no remaining typed-callee assumption. Switches, early returns and completed
+whole runs preserve independent partial-local/output types and their complete
+costs. Deep ordinary outputs are closed; polymorphic Box can contain shared
+references and is excluded from that conclusion. Represented-output borrowing
+results retain an explicit heap-representation premise.
+
+The shared regional type/reader/erasure/renaming/value model now supports options.
+All actual signatures/locals, body/signature region uses and exact callee
+lifetime arities are kernel checked. The evaluator has two signature lifetimes,
+247 body-region binders and 113 locals. Source/native totality composes with the
+actual type proofs for every finite native query/table and every error result.
+
+Addressed partial moves, active/suspended local owners, storage/spatial/loan/
+region/destructor interpretation, public maximum/wrappers and global resources/
+G3 remain required. Scope and snapshot typing do not justify freeing live loans.
+No full W06-C3 or planning-goal closure follows.
+The 3,904-job build, all 32 Lean suites, native WP, nine Python tests and
+734-endpoint axiom audit pass. Shared statement inspection covers 1,046 unique
+declaration records with no unknown references.
+
+[Exact evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md).
+
+
 ## Actual evaluator types and partial-local primitives: 2026-11-17
 
 Eight modules check all nine actual lifetime-erased signatures, local/field/
