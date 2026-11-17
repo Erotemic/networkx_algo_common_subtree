@@ -86,6 +86,20 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Universal evaluator:** [actual source/native totality](evidence/memo-evaluator-native-totality.md)
+now discharges all recursive success/failure/overflow cases for every finite
+native query and warm table, retaining exact tables, full callee/local costs and
+fuel-independent completed work. The independent consistency/memo refinement is
+reused under its original sound-cache/width assumptions. Do not repeat evaluator
+functional correspondence, primitive extraction or the seven helper proofs.
+Next actual whole-profile types/regions/owners/storage/local borrows/addressed
+live destruction, then public maximum, wrappers/input policy/global resources/G3.
+No physical allocator or complete W06-C3 claim follows.
+The 3,890-job build, all 29 Lean suites, native WP, nine Python tests and
+675-endpoint axiom audit pass. Shared statement inspection covers 837 unique
+declaration records.
+
+
 **Evaluator base paths:** [the complete body/base increment](evidence/memo-evaluator-base-paths.md)
 now kernel-checks all 113-local control and proves actual-program/native
 cache-hit and either-empty-query totality, with arbitrary warm storage and

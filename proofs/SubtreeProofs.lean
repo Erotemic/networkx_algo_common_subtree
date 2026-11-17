@@ -263,3 +263,4 @@ public import SubtreeProofs.Rust.SourceEvalCertificate
 public import SubtreeProofs.Rust.SourceEvalHelperSafety
 public import SubtreeProofs.Rust.SourceEvalChoiceRefinement
 public import SubtreeProofs.Rust.SourceEvalBaseRefinement
+public import SubtreeProofs.Rust.SourceEvalTotal

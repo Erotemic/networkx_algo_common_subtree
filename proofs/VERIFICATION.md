@@ -36,6 +36,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceEvalHelpers.lean)
 (cd proofs && lake env lean Tests/SourceEvalChoice.lean)
 (cd proofs && lake env lean Tests/SourceEvalBase.lean)
+(cd proofs && lake env lean Tests/SourceEvalRecursion.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -197,6 +198,18 @@ nine Python tests and the 645-endpoint audit pass. Shared statement inspection
 covers 838 unique declaration records. Source/profile interpreters, Rust/generated inputs and pins are unchanged.
 See the [evaluator base report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-base-paths.md)
 for exact remaining recursive and addressed safety obligations.
+
+Nine new source-control/evaluator modules add full-cost fuel monotonicity,
+all recursive success/failure/overflow composition and universal actual
+source/native totality for arbitrary finite words/warm tables. Independent
+consistency/memo results reuse their original assumptions. The new
+`Tests/SourceEvalRecursion.lean` exercises both checked-add exits and recursive
+failure propagation with exact tables, destruction and call counts. All 3,890
+library jobs, 29 Lean suites, native WP, nine Python tests and the 675-endpoint
+axiom audit pass. Shared statement inspection covers 837 unique declarations. Rust/generated data,
+interpreters/frontends and pins are unchanged. See the
+[universal evaluator report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
+for reproduction and remaining typed addressed/global resource scope.
 
 ## VM caches
 

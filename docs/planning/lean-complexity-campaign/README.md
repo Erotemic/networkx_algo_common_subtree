@@ -1,5 +1,16 @@
 # Lean complexity campaign: proto-roadmap
 
+The [universal evaluator increment](evidence/memo-evaluator-native-totality.md)
+now establishes actual source/native totality and every-completed-run refinement
+for all native query words and warm tables, including both overflows, propagated
+failures and exact tables. Complete local/callee cost composition and sufficient-
+fuel stability are checked. Whole-profile typed addressed safety, public core/
+wrappers and global resource/G3 obligations remain; SRC-01/C3 is not closed.
+The 3,890-job build, all 29 Lean suites, native WP, nine Python tests and
+675-endpoint axiom audit pass. Shared statement inspection covers 837 unique
+declaration records.
+
+
 The [actual evaluator body/base increment](evidence/memo-evaluator-base-paths.md)
 now kernel-identifies complete 113-local control and proves universal cache-hit
 and empty-query source/native paths for arbitrary warm tables, retaining exact

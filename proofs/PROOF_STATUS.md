@@ -1,5 +1,34 @@
 # Common-subtree proof status
 
+## Universal actual evaluator/native agreement: 2026-11-17
+
+Nine maintained modules complete all recursive functional paths, reusing shared
+control extension, complete-cost fuel monotonicity, seven actual helper
+contracts and checked scalars. `Evaluator.evaluate_total` proves termination in
+the source profile and translated-native agreement for every finite native word
+pair and warm table, with exact result/table and the entire source cost.
+`evaluate_refines` covers every completed fuel; `evaluate_source` binds actual
+JSON execution; `evaluate_stable`/`Evaluation.unique` retain full-cost uniqueness.
+No sound-cache, score/word consistency or global work bound is assumed.
+
+Every failure/overflow path retains its last returned table. Exact path costs
+account for actual syntax, discarded witnesses/query words, fresh matched Boxes
+and full callee costs. `evaluate_consistent` reuses independent native witness/
+score, sound-table and exact numeric `memoLcs` correspondence under its original
+sound-cache/input-width assumptions. No specification is weakened or duplicated.
+
+New consumers cover both genuine maximum-score overflow exits, exact warm
+tables/destruction/call counts, recursive propagation and universal source/native,
+stable-cost and independent consistency interfaces. Whole-profile source types,
+regions/owners/storage/local borrows and addressed live destruction, public core/
+wrappers and global time/space/G3 remain open. These are declared source-operation
+currencies, not physical allocator, interpreter wall-time or full C3 claims.
+The 3,890-job build, all 29 Lean suites, native WP, nine Python tests and
+675-endpoint axiom audit pass. Shared statement inspection covers 837 unique
+declaration records.
+
+[Exact evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-native-totality.md).
+
 ## Actual evaluator body and universal base paths: 2026-11-17
 
 Four `SourceEval{Body,BodyCertificate,Base,BaseRefinement}` modules retain all

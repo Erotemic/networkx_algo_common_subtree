@@ -25,6 +25,19 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Universal actual evaluator/native agreement](lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
+now covers every finite native word pair and warm table, all success/overflow/
+error paths and exact returned tables. Full costs compose from actual syntax,
+destruction and completed callees; sufficient fuel does not change them.
+Independent consistency/memo-table results reuse their original sound-cache and
+width premises. Whole-profile types/regions/owners/storage/local borrows and
+addressed destruction, public core/wrappers and global resources remain next.
+This functional milestone does not close W06-C3 or the full planning program.
+The 3,890-job build, all 29 Lean suites, native WP, nine Python tests and
+675-endpoint axiom audit pass. Shared statement inspection covers 837 unique
+declaration records.
+
+
 [Actual evaluator body and base paths](lean-complexity-campaign/evidence/memo-evaluator-base-paths.md)
 now kernel-check the complete 113-local control and prove actual source/native
 agreement for every cache hit and every query with either word empty. Arbitrary

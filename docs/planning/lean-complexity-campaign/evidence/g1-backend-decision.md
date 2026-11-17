@@ -148,6 +148,17 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [universal evaluator increment](memo-evaluator-native-totality.md) now
+proves all native-input actual source/native results and tables, including
+recursive failures and both overflows, with exact local/callee costs and stable
+completed work across sufficient fuels. Independent consistency/memo results
+retain their original premises. Whole-profile typed addressed safety, public
+core/wrappers and global resources/G3 remain; SRC-01/C3 is still open.
+The 3,890-job build, all 29 Lean suites, native WP, nine Python tests and
+675-endpoint axiom audit pass. Shared statement inspection covers 837 unique
+declaration records.
+
+
 The [actual evaluator body/base increment](memo-evaluator-base-paths.md)
 kernel-checks complete control and establishes universal cache-hit and
 empty-query source/native paths, preserving arbitrary warm storage, exact
