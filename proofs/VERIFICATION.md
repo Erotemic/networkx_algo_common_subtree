@@ -41,6 +41,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceEvalTypeExecution.lean)
 (cd proofs && lake env lean Tests/SourceEvalRegions.lean)
 (cd proofs && lake env lean Tests/SourcePartialHeap.lean)
+(cd proofs && lake env lean Tests/SourceLocalBorrow.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -248,6 +249,19 @@ neighbors. Whole addressed execution and loan/storage/destructor interpretation
 remain required. The 3,910-job build, 33 Lean suites, native WP, nine Python
 tests and 780-endpoint audit pass; statement inspection exports 275 unique
 declarations with no unknown references. See the [addressed partial evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-partials.md).
+
+
+The local-storage increment adds `SourceHeapReachability`, `SourceHeapPlaces`,
+`SourceHeapStorage`, `SourceEvalLocalBorrow` and `Tests/SourceLocalBorrow.lean`.
+Actual initialized partial place reads retain concrete pointers, transitive
+shared reference graphs and live classified storage roots. Source address/Box/
+drop primitives compose with retained caller frames. Mutation/initialization
+conflicts, actual recursive frame traces and dynamic region/destructor
+interpretation remain open. See the
+[local storage report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-local-storage.md).
+The 3,914-job build, all 34 Lean suites, native WP, nine Python tests and
+830-endpoint audit pass; shared statement inspection exports 278 unique
+records without unknown references. Rust/generated files and pins are unchanged.
 
 ## VM caches
 

@@ -614,6 +614,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_local_storage_followup": {
+        "baseline_commit": "e2a67e8",
+        "evidence": "memo-evaluator-local-storage.md",
+        "status": "Classified live stack/Box storage, finite transitive reference graphs, initialized partial local borrows, retained caller frame/loan guards and source address/Box/drop composition checked. Actual operation/control/call frame construction, mask/assignment conflicts, dynamic region/destructor interpretation remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3914,
+          "lean_suites": 34,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 830,
+          "unique_statement_records": 278,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -802,7 +821,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete addressed evaluator operation/control/callee simulation, addressable local storage, active/suspended caller frames, actual loan-derived guarded addresses, owner/storage/spatial/region/destructor interpretation. Addressed partial move/Box/drop data/identity/frame/retirement primitives now compose with existing source costs, alongside completed static/recursive snapshot types, parsed region scope and universal source/native full-cost behavior. Reuse all completed helper/certificate chains. Then public maximum, separate indexed/token/reconstruction wrappers, input/error policy, global resource contracts and G3. D12 permits explicit scoped source-operation boundaries; compiler/runtime/provenance/mutable/unwind and physical allocator behavior remain separately declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 full addressed operation/control/callee simulation using classified storage, partial owner moves/destruction, transitive shared graphs and addressable local frames. Construct active/suspended frames and prove mutation/initialization conflicts, guarded-read preservation for writes and actual region/destructor interpretation along all branches. Actual source address/Box/drop contracts now preserve retained frame graphs; prior static/recursive snapshot types, region binding and universal native/full-cost evaluator proofs remain reusable. Then public maximum, separate wrappers/input policy/global resources/G3. D12 accepts explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation boundaries stay declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

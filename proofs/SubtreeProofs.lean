@@ -272,3 +272,5 @@ public import SubtreeProofs.Rust.SourceEvalTypeRefinement
 public import SubtreeProofs.Rust.SourceEvalRegionCertificate
 
 public import SubtreeProofs.Rust.SourceEvalHeapMoveDrop
+
+public import SubtreeProofs.Rust.SourceEvalLocalBorrow

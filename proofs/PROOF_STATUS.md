@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+## Addressable local storage and retained reference graphs: 2026-11-17
+
+[Addressable local storage and retained reference graphs](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-local-storage.md)
+now give actual source address expressions concrete pointers into initialized
+partial locals. Classified stack roots and Box owners are distinct; transitive
+shared graphs derive caller read guards. Box creation and guarded destruction
+retain the same caller frame and costs. Full addressed execution, initialization/
+mutation conflict checking, active/suspended frame traces and dynamic region/
+destructor composition remain required, then public core/wrappers/resources/G3.
+W06-C3 and the full planning goal stay open.
+The 3,914-job build, all 34 Lean suites, native WP, nine Python tests and
+830-endpoint axiom audit pass. Shared statement inspection covers 278 unique
+declarations with no unknown references.
+
 ## Addressed partial moves and logical destruction: 2026-11-17
 
 Six modules relate existing stored cells, initialized source masks and complete

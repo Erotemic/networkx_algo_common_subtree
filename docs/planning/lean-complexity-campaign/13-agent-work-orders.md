@@ -86,6 +86,18 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Addressable local storage and retained reference graphs](evidence/memo-evaluator-local-storage.md)
+now give actual source address expressions concrete pointers into initialized
+partial locals. Classified stack roots and Box owners are distinct; transitive
+shared graphs derive caller read guards. Box creation and guarded destruction
+retain the same caller frame and costs. Full addressed execution, initialization/
+mutation conflict checking, active/suspended frame traces and dynamic region/
+destructor composition remain required, then public core/wrappers/resources/G3.
+W06-C3 and the full planning goal stay open.
+The 3,914-job build, all 34 Lean suites, native WP, nine Python tests and
+830-endpoint axiom audit pass. Shared statement inspection covers 278 unique
+declarations with no unknown references.
+
 **Addressed partial primitives:** [moves, Boxes and logical destruction](evidence/memo-evaluator-addressed-partials.md)
 now reuse existing heap cells/full representations/footprints with initialized
 source masks and complete owner lists. Concrete identities partition on field

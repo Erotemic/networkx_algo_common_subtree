@@ -25,6 +25,18 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Addressable local storage and retained reference graphs](lean-complexity-campaign/evidence/memo-evaluator-local-storage.md)
+now give actual source address expressions concrete pointers into initialized
+partial locals. Classified stack roots and Box owners are distinct; transitive
+shared graphs derive caller read guards. Box creation and guarded destruction
+retain the same caller frame and costs. Full addressed execution, initialization/
+mutation conflict checking, active/suspended frame traces and dynamic region/
+destructor composition remain required, then public core/wrappers/resources/G3.
+W06-C3 and the full planning goal stay open.
+The 3,914-job build, all 34 Lean suites, native WP, nine Python tests and
+830-endpoint axiom audit pass. Shared statement inspection covers 278 unique
+declarations with no unknown references.
+
 [Addressed partial moves and logical destruction](lean-complexity-campaign/evidence/memo-evaluator-addressed-partials.md)
 now retain concrete Box identities through owned field moves, fresh allocation
 and partial destruction, with typed readback and caller-owner frames. The actual

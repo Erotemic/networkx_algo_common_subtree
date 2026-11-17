@@ -314,3 +314,10 @@ required. The full C3 claim remains unproved.
 
 These are retained requirements of the full objective. Neither the backend
 decision nor a future generic C1/C2 memo theorem closes SRC-01, MEM-04 or APP-01.
+
+The [local storage/reference-graph increment](memo-evaluator-local-storage.md)
+adds live classified stack roots, transitive shared graphs and concrete initialized
+local borrows. Actual source address/Box/drop contracts preserve retained caller
+frames under explicit resource conditions. This advances item 2; complete
+addressed operation/control/call traces, initialization/mutation conflicts and
+dynamic region/destructor composition still precede items 3--4 and C3 closure.
