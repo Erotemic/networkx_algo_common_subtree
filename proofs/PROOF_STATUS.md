@@ -1,5 +1,40 @@
 # Common-subtree proof status
 
+## Stable typed lookup shared loans: 2026-11-17
+
+`Rust/LookupBorrow{Loans,Places,Primitives,Certificate,Execution,Calls,Outputs,Refinement}.lean`
+proves dynamic immutable shared-loan validity in the actual helper executions.
+A `Loan` contains an actual typed read in the retained caller heap and survives
+every extension. `Safe`/`EnvSafe`/`FieldsSafe`, together with the retained-base
+extension, track loans through current owned payloads, all occupied locals and
+temporary arguments. Source borrow routes cross shared pointers; field and
+owned dereferences preserve the actual earlier-heap view.
+
+Both retained programs' local types, body equalities and borrow routes pass
+kernel certificates. `exec_safe` constructs intermediate loan traces;
+`run_safe` discharges recursive callee contracts, including generic fresh Box.
+Erasure retains unchanged full execution/cost. `typed_unborrowed` proves ordinary
+helper results contain no shared references, including inside owned cells.
+`lookup_loan_total` composes native-input success, loans, borrow-free output,
+storage/spatial/frame certificates, returned ownership, independent typed
+readback and exact existing source currencies/allocation growth. Pre-existing
+typed loans and every valid external owner frame remain available afterward.
+
+The 3,815-job build, fifteen Lean suites, native WP example, seven Python tests
+and 382-endpoint audit pass. Forty-four new closures remain within the accepted
+three-axiom baseline; new modules have no warnings. Tests distinguish current
+typing from old-heap origin, show extension is essential, and reject shared
+references hidden in otherwise typed owned results. A valid fresh-root borrow
+is outside the stronger old-root profile; it is not claimed Rust-invalid.
+Rust, generated code/JSON, dependency pins and extraction tooling are unchanged.
+
+Dynamic loan validity is now proved for this immutable interpreted fragment.
+Source region binding/outlives and official typed LLBC/Rust interpretation
+adequacy remain open, as do physical provenance/stack addressing, mutable/freeing
+and failed/unwind behavior. W06-C3, the memo core/wrappers and full planning
+objective remain active.
+[Exact loans, source certificates and boundaries](../docs/planning/lean-complexity-campaign/evidence/lookup-shared-loans.md).
+
 ## Checked normal lookup storage lifetimes: 2026-11-17
 
 `Rust/LookupStack{Code,State,Primitives,Execution,Calls,Certificate,Refinement}.lean`

@@ -1,5 +1,11 @@
 # Checked normal lookup storage lifetimes: 2026-11-17
 
+Follow-up: [stable typed shared loans](lookup-shared-loans.md) now track actual
+typed reads in the retained caller heap through source-certified reborrows and
+recursive execution, with borrow-free ordinary results. Source region and
+official interpretation adequacy remain open. The storage milestone and its
+historical next steps are recorded below.
+
 Baseline: `00549d4`. This advances W06-C3 from
 [intermediate spatial ownership](lookup-spatial-ownership.md) to explicit
 normal-path local storage allocation, initialization and deallocation. The

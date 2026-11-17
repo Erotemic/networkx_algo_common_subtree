@@ -45,6 +45,13 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [stable shared-loan proof](evidence/lookup-shared-loans.md) checks the actual
+source borrow routes and retains typed earlier-heap reads through recursive
+execution. Ordinary output is borrow-free even inside owned payloads. Native
+lookup composes this with storage/spatial/frame safety and exact existing
+costs. The 3,815-job build, fifteen suites and 382-endpoint audit pass. Source
+region binding and official interpretation adequacy remain W06-C3 work.
+
 The [normal storage-lifetime proof](evidence/lookup-stack-storage.md) retains
 distinct source allocation/deallocation and proves initialized reads/allocated
 writes through recursive execution. Both real bodies and exact declaration

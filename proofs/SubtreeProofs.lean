@@ -236,6 +236,7 @@ public import SubtreeProofs.Rust.LookupTypeCertificate
 public import SubtreeProofs.Rust.LookupTypeRefinement
 public import SubtreeProofs.Rust.LookupSpatialRefinement
 public import SubtreeProofs.Rust.LookupStackRefinement
+public import SubtreeProofs.Rust.LookupBorrowRefinement
 public import SubtreeProofs.Complexity.Memo.Bounds
 public import SubtreeProofs.Complexity.Memo.Representations
 public import SubtreeProofs.Complexity.Paper2004.MemoBody

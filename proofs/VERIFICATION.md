@@ -22,6 +22,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupTypePreservation.lean)
 (cd proofs && lake env lean Tests/LookupSpatial.lean)
 (cd proofs && lake env lean Tests/LookupStack.lean)
+(cd proofs && lake env lean Tests/LookupBorrow.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -220,6 +221,18 @@ the same live build session until it finishes. Logical local-storage discipline
 does not model physical stack addresses or borrow-region/lifetime semantics,
 official source adequacy, freeing/mutation or failed/unwind paths. See the
 [storage report](../docs/planning/lean-complexity-campaign/evidence/lookup-stack-storage.md).
+
+`Rust/LookupBorrow{Loans,Places,Primitives,Certificate,Execution,Calls,Outputs,Refinement}.lean`
+proves dynamic immutable shared loans backed by actual typed earlier-heap reads.
+Both retained programs pass kernel-checked source route/type/body certificates.
+Intermediate local/temporary loan traces, recursive calls and borrow-free
+ordinary results compose with native lookup's storage/spatial/frame safety,
+typed readback and exact existing currencies. `Tests/LookupBorrow.lean` is in
+Lean CI. A fresh-root borrow can be well typed while outside this stronger
+old-root profile; the tests do not claim such a borrow is Rust-invalid.
+Source region binding/outlives and official interpretation adequacy remain
+open, as do physical provenance, mutable/freeing and failed/unwind behavior.
+See the [shared-loan report](../docs/planning/lean-complexity-campaign/evidence/lookup-shared-loans.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`

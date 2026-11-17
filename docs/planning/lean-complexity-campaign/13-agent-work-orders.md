@@ -86,6 +86,16 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Shared-loan follow-up:** [typed retained-heap loans](evidence/lookup-shared-loans.md)
+now prove actual shared-read validity through source-certified reborrows,
+locals/temporaries and recursive calls. Ordinary results are borrow-free;
+native lookup composes success, all prior safety and exact source currencies.
+Both real programs pass kernel certificates without changing their input domain.
+Next address source region/interpretation adequacy, then insertion,
+concatenation, memo evaluation/core and wrappers. Dynamic loans are not a full
+Rust borrow checker; W06-C3 remains open. Do not duplicate the completed loan
+origin/preservation or result-closure proofs.
+
 **Storage follow-up:** [normal local-storage lifetimes](evidence/lookup-stack-storage.md)
 now distinguish allocation/deallocation, require initialized reads and allocated
 writes, and produce recursive exact-cost traces on completed normal paths.

@@ -25,6 +25,14 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [shared-loan proof](lean-complexity-campaign/evidence/lookup-shared-loans.md)
+now backs each shared reference with a typed read in the retained caller heap,
+checks source borrow routes and preserves loans through all recursive completed
+runs. Ordinary results contain no shared references, including inside Boxes.
+Native lookup composes this with prior safety/readback/cost theorems. The
+3,815-job build, fifteen suites and 382-endpoint audit pass. Source region and
+official interpretation adequacy remain W06-C3 work.
+
 The [normal storage-lifetime proof](lean-complexity-campaign/evidence/lookup-stack-storage.md)
 now retains distinct allocation/deallocation markers and checks initialized
 reads plus allocated writes through every recursive completed normal run.
