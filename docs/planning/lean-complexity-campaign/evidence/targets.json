@@ -671,6 +671,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_derived_inventory_followup": {
+        "baseline_commit": "43ba691",
+        "evidence": "memo-evaluator-derived-inventories.md",
+        "status": "Computed finite read/owner/loan inventories, bounded active/caller scans, loan coverage and derived remaining contexts checked. Assignment derives its own guards/context, executes RHS once and preserves actual source/cost/frame/caller resources. Actual initial/control/callee construction, exclusive spatial transfer, all physical check success and dynamic region/destructor interpretation remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3929,
+          "lean_suites": 37,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 929,
+          "unique_statement_records": 313,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -859,7 +878,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete addressed control/callees using executable operand/RHS/assignment forward/reverse simulation. Construct actual initial/intermediate active/suspended frames, complete owner/spatial/loan coverage, physical move permissions and precise remaining contexts through storage/drop/call/switch/return steps. Compose Box/checked-add intrinsics, completed ordinary helper source/heap/owner/type/borrow/cost chains and dynamic region/destructor interpretation. Reuse universal native/typed evaluator results. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 complete addressed control/callees using computed finite inventories, derived assignment contexts and executable operand/RHS forward/reverse simulation. Construct actual initial activations from parsed layouts and thread the complete caller stack through storage/drop/call/switch/return steps. Prove all physical checks and complete exclusive owner/spatial/temporary transfer, protecting stack roots as well as Box owners. Compose Box/checked-add intrinsics, completed ordinary helper source/heap/owner/type/borrow/cost chains and dynamic region/destructor interpretation. Reuse universal native/typed evaluator results. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

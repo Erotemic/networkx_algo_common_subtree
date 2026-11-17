@@ -335,3 +335,10 @@ metadata, actual pointer graphs and independent source/cost correspondence.
 Reverse simulation consumes physical move permissions rather than an addressed
 parent result. This advances item 2; actual frame/loan/owner/control/callee and
 region/destructor traces remain required before C3 closure and public/wrapper G3.
+
+The [computed inventory increment](memo-evaluator-derived-inventories.md) now
+derives bounded local/caller read/owner/loan resources and remaining contexts.
+One-pass assignment consumes no supplied guard or post-RHS frame premise and
+preserves exact suspended caller inventories. This advances item 2; full actual
+initial/control/callee, ownership/spatial and region/destructor composition still
+precede C3 closure and the public/wrapper G3 program.

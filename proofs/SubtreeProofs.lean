@@ -278,3 +278,5 @@ public import SubtreeProofs.Rust.SourceEvalLocalBorrow
 public import SubtreeProofs.Rust.SourceEvalFrameActions
 
 public import SubtreeProofs.Rust.SourceEvalAddressedCompleteness
+
+public import SubtreeProofs.Rust.SourceEvalDerivedAssignments

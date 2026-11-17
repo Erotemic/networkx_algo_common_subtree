@@ -86,6 +86,17 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Computed frame resources and assignment](evidence/memo-evaluator-derived-inventories.md)
+now derive complete finite read/owner/loan inventories from actual roots/masks,
+extract remaining contexts and preserve suspended caller inventories. Assignment
+computes its own guards and post-RHS context while executing the RHS once, with
+actual source/cost/frame correspondence. Initial/control/callee, exclusive owner/
+spatial and dynamic region/destructor traces remain required, then public core/
+wrappers/resources/G3. W06-C3 and the full planning goal stay open.
+The 3,929-job build, all 37 Lean suites, native WP, nine Python tests and
+929-endpoint axiom audit pass. Shared statement inspection covers 313 unique
+declarations with no unknown references.
+
 [Executable addressed RHSs and assignment](evidence/memo-evaluator-addressed-rhs.md)
 now implement every operand/RHS constructor with actual cells/pointers and
 incremental initialization metadata. Forward and reverse simulation preserve
