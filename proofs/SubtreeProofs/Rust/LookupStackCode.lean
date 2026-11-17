@@ -9,19 +9,19 @@ deallocation instructions. Erasure recovers the existing exact-cost code. -/
 
 namespace SubtreeProofs.Rust.LookupSource.Stack
 
-inductive Code where
-  | done
-  | ret
-  | step : Control.Action → Code → Code
-  | branch : Scrutinee → Key → Option Key → Code → Code → Code → Code
+inductive Code (F : Type := Function) where
+  | done : Code F
+  | ret : Code F
+  | step : Control.Action F → Code F → Code F
+  | branch : Scrutinee → Key → Option Key → Code F → Code F → Code F → Code F
 
-def Code.erase : Code → LookupSource.Code
+def Code.erase {F : Type} : Code F → LookupSource.Code F
   | .done => .done
   | .ret => .ret
   | .step action rest => .step action.lower rest.erase
   | .branch scrut key other yes no rest => .branch scrut key other yes.erase no.erase rest.erase
 
-def lower : Control.Block → Option Code
+def lower {F : Type} : Control.Block F → Option (Code F)
   | .done => some .done
   | .ret => some .ret
   | .step action rest => Code.step action <$> lower rest
@@ -33,7 +33,7 @@ def lower : Control.Block → Option Code
     some (.branch scrut dispatch.key dispatch.other
       (if dispatch.swapped then one else zero) (if dispatch.swapped then zero else one) rest)
 
-theorem lower_erases {source : Control.Block} {code : Code} (h : lower source = some code) :
+theorem lower_erases {F : Type} {source : Control.Block F} {code : Code F} (h : lower source = some code) :
     Control.lower source = some code.erase := by
   induction source generalizing code with
   | done => cases h; rfl

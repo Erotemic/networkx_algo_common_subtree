@@ -1,5 +1,30 @@
 # Common-subtree proof status
 
+## Memo normal storage and initialization: 2026-11-17
+
+Three `MemoStack{Calls,Certificate,Refinement}` modules generalize the existing
+source storage analysis to memo callees. Distinct source allocation/deallocation
+markers remain in normal traces. Kernel checks validate the actual helper
+bodies and local declaration counts (10/6/13/15); initialized analysis frames
+have exactly those sizes. Fuel induction discharges recursive storage contracts.
+
+`RunSafe` records actual initialized reads, allocated writes, moved-empty
+slots, storage markers, normal frame closure and every recursive call. Erasure
+preserves the same addressed execution and complete cost. Native totality
+endpoints retain source success, typed readback, local guards, spatial/caller
+separation, exact events, returned ownership and insertion's original table
+under its new tail Box. Existing lookup APIs specialize the same generic
+checker and soundness; no parallel storage interpreter is introduced.
+
+The 3,850-job build, 21 suites, native WP, nine Python tests and
+531-endpoint axiom audit pass. The 15 new closures remain within accepted
+baseline axioms. Rust/generated inputs, parser, tools and pins are
+unchanged. This is normal logical source storage, not physical stack layout,
+loan validity, or ownership uniqueness by itself. Dynamic loan/lifetime traces,
+actual evaluator/core, wrappers and full W06-C3 remain open.
+
+[Contracts and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-stack-initialization.md).
+
 ## Memo local guards and intermediate separation: 2026-11-17
 
 Five `MemoFrame{Profile,Calls,Refinement}` and `MemoSpatial{Calls,Refinement}`

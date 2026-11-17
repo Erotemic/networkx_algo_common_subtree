@@ -28,6 +28,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/MemoHeap.lean)
 (cd proofs && lake env lean Tests/MemoTypes.lean)
 (cd proofs && lake env lean Tests/MemoSpatial.lean)
+(cd proofs && lake env lean Tests/MemoStack.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -114,6 +115,16 @@ The 3,847-job build, twenty suites, native WP, nine Python tests and
 516-endpoint audit pass. Rust/generated artifacts, readers, tools and pins are
 unchanged. See the [memo spatial report](../docs/planning/lean-complexity-campaign/evidence/memo-spatial-ownership.md)
 for explicit frame premises and remaining storage/loan/lifetime obligations.
+
+The memo storage increment adds `MemoStack*.lean` and `Tests/MemoStack.lean`.
+Generic retained-marker lowering and storage checker soundness preserve original
+lookup entry points. Kernel actual-body/count checks and fuel induction produce
+normal storage/initialization traces; native endpoints compose prior full-cost
+source/heap, typed readback, guarded/spatial and owner-transfer results.
+The 3,850-job build, 21 suites, native WP, nine Python tests and
+531-endpoint axiom audit pass. Rust/generated artifacts, parser, tools and pins are
+unchanged. See the [memo storage report](../docs/planning/lean-complexity-campaign/evidence/memo-stack-initialization.md)
+for exact scope and remaining dynamic loans/lifetimes/evaluator work.
 
 ## VM caches
 

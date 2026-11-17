@@ -25,6 +25,16 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [memo storage/initialization proof](lean-complexity-campaign/evidence/memo-stack-initialization.md)
+retains distinct source allocation/deallocation markers and exact declared local
+counts for all four helpers. Generic storage checker soundness and fuel induction
+produce recursive traces of actual initialized reads, allocated writes, moved
+slots and frame closure with unchanged complete costs. Native totality composes
+storage, guarded/spatial traces, typed readback, exact events and insertion's
+original table under its new tail Box. Dynamic loans/lifetimes are next, then
+actual evaluator/core and wrapper composition. The 3,850-job build, 21 suites, native WP, nine Python tests and
+531-endpoint axiom audit pass.
+
 The [memo guard/spatial proof](lean-complexity-campaign/evidence/memo-spatial-ownership.md)
 now traces every completed helper call through owner-safe local clobbers,
 moved drops, return cleanup and separated complete ownership lists. Insertion's

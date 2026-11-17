@@ -81,26 +81,29 @@ def inferScrutinee (state : State) : Scrutinee → Option State
 def store (state : State) (slot : Nat) : Option State :=
   if slot < state.length && status state slot != .dead then some (state.set slot .full) else none
 
-def inferAction (state : State) : Control.Action → Option State
+def inferActionWith {F : Type} (arity : F → Nat) (state : State) : Control.Action F → Option State
   | .storageLive slot => if slot < state.length then some (state.set slot .empty) else none
   | .storageDead slot => if slot < state.length then some (state.set slot .dead) else none
   | .assign slot rhs => do store (← inferRValue state rhs) slot
   | .call function args slot =>
-    if args.length == Frontend.arity function then do store (← inferOperands state args) slot else none
+    if args.length == arity function then do store (← inferOperands state args) slot else none
   | .dropConditional slot =>
     if slot < state.length && status state slot == .empty then some state else none
 
-def verify : Code → State → (State → Bool) → Bool
+def verifyWith {F : Type} (arity : F → Nat) : Code F → State → (State → Bool) → Bool
   | .done, state, post => post state
   | .ret, state, _ => status state 0 == .full
   | .step action rest, state, post =>
-    match inferAction state action with
+    match inferActionWith arity state action with
     | none => false
-    | some next => verify rest next post
+    | some next => verifyWith arity rest next post
   | .branch scrut _ _ yes no rest, state, post =>
     match inferScrutinee state scrut with
     | none => false
-    | some next => verify yes next (fun state => verify rest state post) && verify no next (fun state => verify rest state post)
+    | some next => verifyWith arity yes next (fun state => verifyWith arity rest state post) && verifyWith arity no next (fun state => verifyWith arity rest state post)
+
+abbrev inferAction := inferActionWith Frontend.arity
+abbrev verify := verifyWith Frontend.arity
 
 def initial (count arguments : Nat) : State :=
   .dead :: List.replicate arguments .full ++ List.replicate (count - (arguments + 1)) .dead

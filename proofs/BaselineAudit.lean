@@ -568,3 +568,19 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.MemoSource.Spatial.source_run_spatial
 #print axioms SubtreeProofs.Rust.MemoSource.Spatial.concatenate_spatial_total
 #print axioms SubtreeProofs.Rust.MemoSource.Spatial.insert_spatial_total
+
+#print axioms SubtreeProofs.Rust.LookupSource.Stack.action_soundWith
+#print axioms SubtreeProofs.Rust.LookupSource.Stack.TraceWith.erases
+#print axioms SubtreeProofs.Rust.LookupSource.Stack.verify_soundWith
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.RunSafe.erases
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.run_sound
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.original_lower
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.original_erase
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.original_checked
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.countsCheck_sound
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.original_counts
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.original_initial_length
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.Certificate.original_run_safe
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.source_run_stack
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.concatenate_stack_total
+#print axioms SubtreeProofs.Rust.MemoSource.Stack.insert_stack_total

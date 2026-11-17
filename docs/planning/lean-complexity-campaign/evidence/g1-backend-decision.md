@@ -148,6 +148,14 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [memo storage increment](memo-stack-initialization.md) retains actual source
+live/dead markers and declaration counts, kernel-checks storage/initialization,
+and discharges recursive storage contracts with unchanged costs. Native totality
+composes those traces with prior typing, ownership, local guards and spatial
+frames. Dynamic shared loans/lifetime interpretation remain next, followed by
+actual evaluator/core, wrappers and G3 adversaries. The 3,850-job build, 21 suites, native WP, nine Python tests and
+531-endpoint axiom audit pass.
+
 The [memo guard/spatial increment](memo-spatial-ownership.md) now proves actual
 recursive local guards and intermediate owner separation, retaining insertion's
 owned argument and all suspended caller frames. Native source/heap/readback/

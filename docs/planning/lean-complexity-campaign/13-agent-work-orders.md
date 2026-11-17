@@ -86,6 +86,16 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Memo storage follow-up:** [normal allocation/initialization traces](evidence/memo-stack-initialization.md)
+now retain distinct live/dead markers and exact actual local declaration counts.
+Generic checker soundness and fuel induction cover initialized reads, allocated
+writes, moved-empty slots, normal frame closure and all recursive calls. Native
+endpoints retain prior source/heap, typing, guard/spatial, returned-owner and
+full-cost guarantees. Next dynamic loans/lifetime interpretation for these
+helpers, then actual evaluator/core and wrappers. Logical storage alone does
+not prove loan validity; W06-C3 remains open. The 3,850-job build, 21 suites, native WP, nine Python tests and
+531-endpoint axiom audit pass.
+
 **Memo guard/spatial follow-up:** [recursive intermediate owner traces](evidence/memo-spatial-ownership.md)
 now cover clobbers, moved drops, return cleanup and complete owner lists across
 locals, temporaries and suspended callers. Insertion uses its owned-table
