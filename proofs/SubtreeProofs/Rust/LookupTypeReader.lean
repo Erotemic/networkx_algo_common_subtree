@@ -87,7 +87,12 @@ def type (ctx : Context) (parameter : Option Ty := none) : Nat → Json → Read
       return .tuple arguments
     if !builtin.isNull || kind = .tuple then throw "unsupported builtin type identity"
     if kind = .optional then
-      if !(sameList arguments [.adt .embedding]) then throw "only embedding Option is represented"
+      match arguments with
+      | [inner] =>
+        if same inner (.adt .embedding) then return .adt .optional
+        if same inner .u32 then return .option .u32
+        throw "unsupported Option instance"
+      | _ => throw "Option requires one type argument"
     else if !arguments.isEmpty then throw "unexpected named type arguments"
     return .adt kind
 termination_by structural fuel _ => fuel

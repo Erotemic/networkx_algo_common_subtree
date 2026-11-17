@@ -1,5 +1,15 @@
 # Lean complexity campaign: proto-roadmap
 
+[Actual evaluator source typing](evidence/memo-evaluator-source-typing.md) checks
+all nine declaration/control profiles and both Option instances. Independent
+partial-local reads/moves/expressions/actions preserve declared types, holes,
+siblings and Box shells. Recursive control/callee typing and whole addressed
+owner/storage/local-loan/region/live-destruction composition remain required,
+then public maximum/wrappers and global resources/G3. SRC-01/C3 stays open.
+The 3,898-job build, all 30 Lean suites, native WP, nine Python tests and
+706-endpoint axiom audit pass. Shared statement inspection covers 752 unique
+declaration records.
+
 The [universal evaluator increment](evidence/memo-evaluator-native-totality.md)
 now establishes actual source/native totality and every-completed-run refinement
 for all native query words and warm tables, including both overflows, propagated

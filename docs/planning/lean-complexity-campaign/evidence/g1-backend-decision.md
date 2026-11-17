@@ -139,6 +139,14 @@ all Rust/generated-source inputs are unchanged.
 
 ## W04/W05 boundary and named W06-C3 obligations
 
+The [whole-profile type increment](memo-evaluator-source-typing.md) now checks all
+nine actual declarations/control trees and both Option layouts, with independent
+partial-local read/move/expression/action preservation. Recursive control/callee
+composition, addressed owners/storage/local loans/regions and destruction remain
+required, followed by public core/wrappers and resources/G3. Static acceptance
+and snapshot preservation do not establish caller-local borrow lifetime safety.
+
+
 W04/W05 may now use deterministic native computation plus installed Std.WP for
 the generic finite memo request/cache contracts. Their C1 interpreter theorems
 and C2 operational adapters must remain separately named. Recover the existing

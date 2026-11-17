@@ -43,6 +43,7 @@ inductive Tree (A : Type) where
   | ret : Tree A
   | step : A → Tree A → Tree A
   | switch : Scrutinee → List (Key × Nat) → Option Nat → Tree A → Tree A → Tree A → Tree A
+  deriving DecidableEq
 
 abbrev Block (F : Type := Function) := Tree (Action F)
 

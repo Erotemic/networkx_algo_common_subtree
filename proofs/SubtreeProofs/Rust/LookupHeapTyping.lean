@@ -17,6 +17,7 @@ inductive Ty where
   | tuple : List Ty → Ty
   | shared : Ty → Ty
   | owned : Ty → Ty
+  | option : Ty → Ty
   deriving Repr
 
 inductive Shape : Kind → Nat → List Ty → Ty → Prop where
@@ -28,6 +29,8 @@ inductive Shape : Kind → Nat → List Ty → Ty → Prop where
   | embedding : Shape .embedding 0 [.adt .word, .u32] (.adt .embedding)
   | none : Shape .optional 0 [] (.adt .optional)
   | some : Shape .optional 1 [.adt .embedding] (.adt .optional)
+  | optionNone (inner : Ty) : Shape .optional 0 [] (.option inner)
+  | optionSome (inner : Ty) : Shape .optional 1 [inner] (.option inner)
   | tuple (types : List Ty) : Shape .tuple 0 types (.tuple types)
 
 mutual

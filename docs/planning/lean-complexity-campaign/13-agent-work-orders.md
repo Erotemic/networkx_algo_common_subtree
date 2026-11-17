@@ -86,6 +86,20 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Evaluator source types:** [actual declarations and partial-local preservation](evidence/memo-evaluator-source-typing.md)
+now check all nine source profiles, both actual Option layouts, complete nested
+annotations and static constraints. Partial reads/owned field moves and expanded
+operands/expressions/actions preserve independent declared types. Next shared
+control induction, typed initial locals and recursive Box/checked-add/ordinary
+callee discharge. Then addressed owners/storage/spatial/local loans/regions/live
+destruction, public maximum/wrappers/input policy/global resources/G3. Do not
+repeat source extraction, the new static certificate, partial-type primitives
+or the completed functional evaluator/native correspondence. No full C3 closure.
+The 3,898-job build, all 30 Lean suites, native WP, nine Python tests and
+706-endpoint axiom audit pass. Shared statement inspection covers 752 unique
+declaration records.
+
+
 **Universal evaluator:** [actual source/native totality](evidence/memo-evaluator-native-totality.md)
 now discharges all recursive success/failure/overflow cases for every finite
 native query and warm table, retaining exact tables, full callee/local costs and

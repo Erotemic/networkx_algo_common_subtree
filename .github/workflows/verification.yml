@@ -49,6 +49,7 @@ jobs:
           lake env lean Tests/SourceEvalChoice.lean
           lake env lean Tests/SourceEvalBase.lean
           lake env lean Tests/SourceEvalRecursion.lean
+          lake env lean Tests/SourceEvalTypes.lean
           lake env lean Tests/Memo.lean
           lake env lean Tests/EditDistance.lean
           lake env lean Tests/MemoWork.lean

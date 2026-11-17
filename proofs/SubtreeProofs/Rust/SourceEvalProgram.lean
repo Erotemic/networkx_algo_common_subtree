@@ -154,6 +154,7 @@ structure Definition where
   function : SourceEval.Function
   localCount : Nat
   code : Code
+  deriving DecidableEq
 
 structure Program where
   definitions : List Definition

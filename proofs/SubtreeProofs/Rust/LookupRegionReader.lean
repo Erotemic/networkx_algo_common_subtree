@@ -32,6 +32,7 @@ mutual
     | _ + 1, .boolean, _ => pure ⟨.boolean, by simp only [erase], .boolean⟩
     | _ + 1, .u32, _ => pure ⟨.u32, by simp only [erase], .u32⟩
     | _ + 1, .adt kind, _ => pure ⟨.adt kind, by simp only [erase], .adt kind⟩
+    | _ + 1, .option _, _ => throw "parameterized options require the expanded region profile"
     | fuel + 1, .shared inner, json => do
       let data ← field (← field json "Untagged") "Ref"
       match ← array data with

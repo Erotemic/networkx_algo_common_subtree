@@ -1,5 +1,31 @@
 # Common-subtree proof status
 
+## Actual evaluator types and partial-local primitives: 2026-11-17
+
+Eight modules check all nine actual lifetime-erased signatures, local/field/
+operand/call annotations and complete control constraints, including the
+113-local evaluator and seven-local public maximum. The shared Heap.Ty/Shape
+model supports parameterized options; the generic declaration is checked at
+both embedding and u32 instances. Typed/source definitions align exactly.
+
+Independent partial-local types retain holes, constructor tags, sibling fields
+and Box shells. Materialization/reads return independently typed values; owned
+field moves and stores/clears preserve partial types. Expanded operands,
+expressions and actions compose these results with an explicit typed callee
+contract. Snapshot local references still require addressed lifetime/loan proof.
+
+Recursive control/callee typing, addressed owners/storage/local loans/regions
+and destruction, public core/wrappers and global resources/G3 remain required.
+The undefined-behavior leaf remains a rejected execution; static acceptance
+alone does not establish unreachability. Full W06-C3 and the planning goal stay
+open. Production Rust/generated data/interpreters and pins are unchanged.
+The 3,898-job build, all 30 Lean suites, native WP, nine Python tests and
+706-endpoint axiom audit pass. Shared statement inspection covers 752 unique
+declaration records.
+
+[Exact evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-typing.md).
+
+
 ## Universal actual evaluator/native agreement: 2026-11-17
 
 Nine maintained modules complete all recursive functional paths, reusing shared

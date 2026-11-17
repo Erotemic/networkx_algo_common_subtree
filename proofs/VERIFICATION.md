@@ -37,6 +37,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceEvalChoice.lean)
 (cd proofs && lake env lean Tests/SourceEvalBase.lean)
 (cd proofs && lake env lean Tests/SourceEvalRecursion.lean)
+(cd proofs && lake env lean Tests/SourceEvalTypes.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -210,6 +211,18 @@ axiom audit pass. Shared statement inspection covers 837 unique declarations. Ru
 interpreters/frontends and pins are unchanged. See the
 [universal evaluator report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
 for reproduction and remaining typed addressed/global resource scope.
+
+
+Eight `SourceEvalType*`/`SourcePartialTyp*` modules check all nine actual source
+declaration/control profiles, both Option layouts and nested annotations,
+then prove independent partial-local read/move/store/clear and expanded
+operand/expression/action preservation. `Tests/SourceEvalTypes.lean` consumes
+actual evaluator/public-entry constraints and checks scalar/option/shared-move
+counterexamples plus typed partial tuple moves. Recursive typing and addressed
+owner/storage/loan/region/destruction composition remain required. The 3,898-job
+build, all 30 Lean suites, native WP, nine Python tests and 706-endpoint axiom
+audit pass; statement inspection covers 752 unique declaration records. See the
+[type evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-typing.md).
 
 ## VM caches
 

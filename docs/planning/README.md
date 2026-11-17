@@ -25,6 +25,18 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Actual evaluator source typing](lean-complexity-campaign/evidence/memo-evaluator-source-typing.md)
+checks all nine lifetime-erased declaration/control profiles and both actual
+Option instances. Independent partial-local typing now preserves reads, owned
+field moves, expressions and actions, retaining holes, siblings and Box shells.
+Next recursive control/callee typing, then addressed owners/storage/local loans/
+regions and live destruction. Public maximum/wrappers and global resource/G3
+obligations remain; this does not close W06-C3 or the full planning goal.
+The 3,898-job build, all 30 Lean suites, native WP, nine Python tests and
+706-endpoint axiom audit pass. Shared statement inspection covers 752 unique
+declaration records.
+
+
 [Universal actual evaluator/native agreement](lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
 now covers every finite native word pair and warm table, all success/overflow/
 error paths and exact returned tables. Full costs compose from actual syntax,

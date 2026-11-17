@@ -16,7 +16,7 @@ mutual
   def same : Ty → Ty → Bool
     | .boolean, .boolean | .u32, .u32 => true
     | .adt first, .adt second => first == second
-    | .shared first, .shared second | .owned first, .owned second => same first second
+    | .shared first, .shared second | .owned first, .owned second | .option first, .option second => same first second
     | .tuple first, .tuple second => sameList first second
     | _, _ => false
   termination_by first _ => sizeOf first
@@ -36,6 +36,7 @@ mutual
       | exact congrArg Ty.adt (by simpa using h)
       | exact congrArg Ty.shared (same_eq h)
       | exact congrArg Ty.owned (same_eq h)
+      | exact congrArg Ty.option (same_eq h)
       | exact congrArg Ty.tuple (sameList_eq h)
   termination_by sizeOf first
   decreasing_by all_goals (subst_vars; simp_wf)
@@ -60,7 +61,7 @@ mutual
     match ty with
     | .boolean | .u32 => by simp [same]
     | .adt kind => by simp [same]
-    | .shared inner | .owned inner => by simpa only [same] using same_refl inner
+    | .shared inner | .owned inner | .option inner => by simpa only [same] using same_refl inner
     | .tuple types => by simpa only [same] using sameList_refl types
   termination_by sizeOf ty
 
@@ -86,6 +87,8 @@ def constructorFields : Kind → Nat → Ty → Option (List Ty)
   | .embedding, 0, .adt .embedding => some [.adt .word, .u32]
   | .optional, 0, .adt .optional => some []
   | .optional, 1, .adt .optional => some [.adt .embedding]
+  | .optional, 0, .option _ => some []
+  | .optional, 1, .option inner => some [inner]
   | .tuple, 0, .tuple types => some types
   | _, _, _ => none
 
@@ -108,6 +111,7 @@ def fieldType (ty : Ty) (variant : Option Nat) (index : Nat) : Option Ty := do
   | .adt .entry, none => (← constructorFields .entry 0 ty)[index]?
   | .adt .embedding, none => (← constructorFields .embedding 0 ty)[index]?
   | .adt kind, some variant => (← constructorFields kind variant ty)[index]?
+  | .option _, some variant => (← constructorFields .optional variant ty)[index]?
   | _, _ => none
 
 def copyable : Ty → Bool
