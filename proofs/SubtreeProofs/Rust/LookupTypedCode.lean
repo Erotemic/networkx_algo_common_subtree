@@ -67,13 +67,13 @@ theorem sameResult_sound {actual expected : Option Ty} (h : sameResult actual ex
   subst_vars
   exact ⟨_, rfl, rfl⟩
 
-def checkAction (locals : List Ty) : Action → Bool
+def checkActionWith {F : Type} (calleeOutput : F → List Ty → Option Ty) (locals : List Ty) : Action F → Bool
   | .scope slot | .dropMoved slot => slot < locals.length
   | .assign slot rhs => sameResult (inferRValue locals rhs) locals[slot]?
   | .call function args slot =>
     match inferOperands locals args with
     | none => false
-    | some types => sameResult (callOutput function types) locals[slot]?
+    | some types => sameResult (calleeOutput function types) locals[slot]?
 
 def scrutineeType (locals : List Ty) : Scrutinee → Option (Option Kind)
   | .value op => if sameResult (inferOperand locals op) (some .boolean) then some none else none
@@ -90,49 +90,51 @@ def keyMatches : Option Kind → Key → Bool
       (if kind = .tuple then variant == 0 else (constructorFields kind variant (.adt kind)).isSome)
   | _, _ => false
 
-def checkCode (locals : List Ty) (result : Ty) : Code → Bool
+def checkCodeWith {F : Type} (calleeOutput : F → List Ty → Option Ty) (locals : List Ty) (result : Ty) : Code F → Bool
   | .done => true
   | .ret => sameResult locals[0]? (some result)
-  | .step instruction rest => checkAction locals instruction && checkCode locals result rest
+  | .step instruction rest => checkActionWith calleeOutput locals instruction && checkCodeWith calleeOutput locals result rest
   | .branch scrut key other yes no rest =>
     match scrutineeType locals scrut with
     | none => false
     | some kind => keyMatches kind key && other.all (keyMatches kind) &&
-        checkCode locals result yes && checkCode locals result no && checkCode locals result rest
+        checkCodeWith calleeOutput locals result yes && checkCodeWith calleeOutput locals result no && checkCodeWith calleeOutput locals result rest
 
-def ActionConstraints (locals : List Ty) : Action → Prop
+def ActionConstraintsWith {F : Type} (calleeOutput : F → List Ty → Option Ty) (locals : List Ty) : Action F → Prop
   | .scope slot | .dropMoved slot => slot < locals.length
   | .assign slot rhs => ∃ ty, inferRValue locals rhs = some ty ∧ locals[slot]? = some ty
   | .call function args slot => ∃ types ty,
-      inferOperands locals args = some types ∧ callOutput function types = some ty ∧ locals[slot]? = some ty
+      inferOperands locals args = some types ∧ calleeOutput function types = some ty ∧ locals[slot]? = some ty
 
-theorem checkAction_sound {locals : List Ty} {instruction : Action} (h : checkAction locals instruction = true) :
-    ActionConstraints locals instruction := by
+theorem checkActionWith_sound {F : Type} {calleeOutput : F → List Ty → Option Ty}
+    {locals : List Ty} {instruction : Action F} (h : checkActionWith calleeOutput locals instruction = true) :
+    ActionConstraintsWith calleeOutput locals instruction := by
   cases instruction with
-  | scope slot => simpa [checkAction, ActionConstraints] using h
-  | dropMoved slot => simpa [checkAction, ActionConstraints] using h
+  | scope slot => simpa [checkActionWith, ActionConstraintsWith] using h
+  | dropMoved slot => simpa [checkActionWith, ActionConstraintsWith] using h
   | assign slot rhs => exact sameResult_sound h
   | call function args slot =>
-    simp only [checkAction] at h
+    simp only [checkActionWith] at h
     cases ht : inferOperands locals args with
     | none => simp [ht] at h
     | some types =>
       obtain ⟨ty, ho, hs⟩ := sameResult_sound (by simpa only [ht] using h)
       exact ⟨types, ty, ht, ho, hs⟩
 
-inductive CodeConstraints (locals : List Ty) (result : Ty) : Code → Prop where
-  | done : CodeConstraints locals result .done
-  | ret : locals[0]? = some result → CodeConstraints locals result .ret
-  | step {instruction : Action} {rest : Code} :
-      ActionConstraints locals instruction → CodeConstraints locals result rest →
-      CodeConstraints locals result (.step instruction rest)
-  | branch {scrut : Scrutinee} {key : Key} {other : Option Key} {yes no rest : Code} {kind : Option Kind} :
+inductive CodeConstraintsWith {F : Type} (calleeOutput : F → List Ty → Option Ty) (locals : List Ty) (result : Ty) : Code F → Prop where
+  | done : CodeConstraintsWith calleeOutput locals result .done
+  | ret : locals[0]? = some result → CodeConstraintsWith calleeOutput locals result .ret
+  | step {instruction : Action F} {rest : Code F} :
+      ActionConstraintsWith calleeOutput locals instruction → CodeConstraintsWith calleeOutput locals result rest →
+      CodeConstraintsWith calleeOutput locals result (.step instruction rest)
+  | branch {scrut : Scrutinee} {key : Key} {other : Option Key} {yes no rest : Code F} {kind : Option Kind} :
       scrutineeType locals scrut = some kind → keyMatches kind key = true → other.all (keyMatches kind) = true →
-      CodeConstraints locals result yes → CodeConstraints locals result no → CodeConstraints locals result rest →
-      CodeConstraints locals result (.branch scrut key other yes no rest)
+      CodeConstraintsWith calleeOutput locals result yes → CodeConstraintsWith calleeOutput locals result no → CodeConstraintsWith calleeOutput locals result rest →
+      CodeConstraintsWith calleeOutput locals result (.branch scrut key other yes no rest)
 
-theorem checkCode_sound {locals : List Ty} {result : Ty} {code : Code}
-    (h : checkCode locals result code = true) : CodeConstraints locals result code := by
+theorem checkCodeWith_sound {F : Type} {calleeOutput : F → List Ty → Option Ty}
+    {locals : List Ty} {result : Ty} {code : Code F}
+    (h : checkCodeWith calleeOutput locals result code = true) : CodeConstraintsWith calleeOutput locals result code := by
   induction code with
   | done => exact .done
   | ret =>
@@ -141,13 +143,24 @@ theorem checkCode_sound {locals : List Ty} {result : Ty} {code : Code}
     exact .ret hl
   | step instruction rest ih =>
     have hh := Bool.and_eq_true_iff.mp h
-    exact .step (checkAction_sound hh.1) (ih hh.2)
+    exact .step (checkActionWith_sound hh.1) (ih hh.2)
   | branch scrut key other yes no rest ihYes ihNo ihRest =>
-    simp only [checkCode] at h
+    simp only [checkCodeWith] at h
     cases hs : scrutineeType locals scrut with
     | none => simp [hs] at h
     | some kind =>
       simp only [hs, Bool.and_eq_true_iff] at h
       exact .branch hs h.1.1.1.1 h.1.1.1.2 (ihYes h.1.1.2) (ihNo h.1.2) (ihRest h.2)
+
+abbrev checkAction (locals : List Ty) : Action → Bool := checkActionWith callOutput locals
+abbrev checkCode (locals : List Ty) (result : Ty) : Code → Bool := checkCodeWith callOutput locals result
+abbrev ActionConstraints (locals : List Ty) : Action → Prop := ActionConstraintsWith callOutput locals
+abbrev CodeConstraints (locals : List Ty) (result : Ty) : Code → Prop := CodeConstraintsWith callOutput locals result
+
+theorem checkAction_sound {locals : List Ty} {instruction : Action} (h : checkAction locals instruction = true) :
+    ActionConstraints locals instruction := checkActionWith_sound h
+
+theorem checkCode_sound {locals : List Ty} {result : Ty} {code : Code}
+    (h : checkCode locals result code = true) : CodeConstraints locals result code := checkCodeWith_sound h
 
 end SubtreeProofs.Rust.LookupSource.SourceTypes

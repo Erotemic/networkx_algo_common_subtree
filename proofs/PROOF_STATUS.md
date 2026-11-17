@@ -1,5 +1,35 @@
 # Common-subtree proof status
 
+## Memo source typing, scope and preservation: 2026-11-17
+
+Seven `MemoSourceTypes`, `MemoType{Reader,Certificate,Calls,Refinement}` and
+`MemoRegion{Program,Certificate}` modules kernel-check actual memo source field
+layouts, signatures, nested annotations, argument/return prefixes, static body
+constraints and free/body region binding. Insertion consumes a table value;
+its four value arguments correspond to three lifetime parameters.
+
+Shared static/annotation/scope readers and operational preservation are now
+parameterized by callee type/region maps; old lookup interfaces remain their
+original specializations. `original_run_typed` discharges actual recursive
+callee contracts for every successful typed run at every fuel. Ordinary output
+is borrow-free throughout owned payloads, with generic Box excluded.
+`scoped_source_run_typed` consumes the actual parsed, region-bearing source
+declarations and retains addressed execution, output typing/readback, full cost
+and allocation growth. This proves scope plus operational typing, not dynamic
+lifetime interpretation for the new functions.
+
+The 3,842-job build, nineteen suites, native WP, nine Python tests and
+484-endpoint audit pass. The 23 new closures stay within accepted baseline
+axioms; new modules have no warnings. Rust, generated inputs/programs, tooling
+and pins are unchanged. Existing lookup safety/certificates remain checked.
+
+Next guarded local/storage and intermediate spatial traces, dynamic shared
+loans and the scoped lifetime interpretation, then actual evaluator/core and
+wrappers. Returned ownership and operational typing alone do not supply these
+remaining invariants. Full W06-C3 remains open.
+
+[Exact signatures, scope, endpoints and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-source-typing.md).
+
 ## Addressed memo primitive ownership: 2026-11-17
 
 Six `Rust/MemoHeap*.lean` modules reuse generalized heap instruction/control

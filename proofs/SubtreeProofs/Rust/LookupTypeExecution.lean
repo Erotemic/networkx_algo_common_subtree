@@ -12,16 +12,17 @@ namespace SubtreeProofs.Rust.LookupSource.SourceTypes
 
 open Heap
 
-def CallsTyped (call : Calls) : Prop :=
+def CallsTypedWith {F : Type} (calleeOutput : F → List Ty → Option Ty) (call : CallsFor F) : Prop :=
   ∀ function cells types memory cell after cost ty,
-    FieldsTyped memory cells types → callOutput function types = some ty →
+    FieldsTyped memory cells types → calleeOutput function types = some ty →
     call function cells memory = some (cell, after, cost) →
     Typed after cell ty ∧ Extends memory after
 
-theorem action_typed {call : Calls} (hcall : CallsTyped call)
+theorem action_typedWith {F : Type} {calleeOutput : F → List Ty → Option Ty}
+    {call : CallsFor F} (hcall : CallsTypedWith calleeOutput call)
     {memory after : Memory} {locals : List Ty} {env env' : Locals} {cost : Cost}
-    (he : EnvTyped memory locals env) (instruction : Action)
-    (ht : ActionConstraints locals instruction)
+    (he : EnvTyped memory locals env) (instruction : Action F)
+    (ht : ActionConstraintsWith calleeOutput locals instruction)
     (hr : action call memory env instruction = some (env', after, cost)) :
     EnvTyped after locals env' ∧ Extends memory after := by
   cases instruction with
@@ -66,10 +67,11 @@ def OutcomeTyped (memory : Memory) (locals : List Ty) (output : Ty) : Result →
   | .next env => EnvTyped memory locals env
   | .returned cell => Typed memory cell output
 
-theorem exec_typed {call : Calls} (hcall : CallsTyped call) (code : Code)
+theorem exec_typedWith {F : Type} {calleeOutput : F → List Ty → Option Ty}
+    {call : CallsFor F} (hcall : CallsTypedWith calleeOutput call) (code : Code F)
     {memory after : Memory} {locals : List Ty} {output : Ty} {env : Locals}
     {result : Result} {cost : Cost} (he : EnvTyped memory locals env)
-    (ht : CodeConstraints locals output code)
+    (ht : CodeConstraintsWith calleeOutput locals output code)
     (hr : Heap.exec call code memory env = some (result, after, cost)) :
     OutcomeTyped after locals output result ∧ Extends memory after := by
   induction ht generalizing memory after env result cost with
@@ -94,7 +96,7 @@ theorem exec_typed {call : Calls} (hcall : CallsTyped call) (code : Code)
         rcases pair with ⟨lastResult, lastMemory, last⟩
         simp only [hx, hy, bind, Option.bind, Option.some.injEq, Prod.mk.injEq] at hr
         obtain ⟨rfl, rfl, rfl⟩ := hr
-        obtain ⟨he', hex⟩ := action_typed hcall he instruction ha hx
+        obtain ⟨he', hex⟩ := action_typedWith hcall he instruction ha hx
         obtain ⟨hout, hex'⟩ := ih he' hy
         exact ⟨hout, hex.trans hex'⟩
   | @branch scrut key other yes no rest kind hs hk ho hy hn ht ihYes ihNo ihRest =>
@@ -130,5 +132,19 @@ theorem exec_typed {call : Calls} (hcall : CallsTyped call) (code : Code)
             obtain ⟨rfl, rfl, rfl⟩ := hr
             obtain ⟨hout, hex⟩ := ihRest hselected.1 hz
             exact ⟨hout, hselected.2.trans hex⟩
+
+abbrev CallsTyped (call : Calls) : Prop := CallsTypedWith callOutput call
+
+theorem action_typed {call : Calls} (hcall : CallsTyped call)
+    {memory after : Memory} {locals : List Ty} {env env' : Locals} {cost : Cost}
+    (he : EnvTyped memory locals env) (instruction : Action) (ht : ActionConstraints locals instruction)
+    (hr : action call memory env instruction = some (env', after, cost)) :
+    EnvTyped after locals env' ∧ Extends memory after := action_typedWith hcall he instruction ht hr
+
+theorem exec_typed {call : Calls} (hcall : CallsTyped call) (code : Code)
+    {memory after : Memory} {locals : List Ty} {output : Ty} {env : Locals} {result : Result} {cost : Cost}
+    (he : EnvTyped memory locals env) (ht : CodeConstraints locals output code)
+    (hr : Heap.exec call code memory env = some (result, after, cost)) :
+    OutcomeTyped after locals output result ∧ Extends memory after := exec_typedWith hcall code he ht hr
 
 end SubtreeProofs.Rust.LookupSource.SourceTypes

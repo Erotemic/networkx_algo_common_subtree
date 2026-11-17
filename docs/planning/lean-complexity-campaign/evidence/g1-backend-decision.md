@@ -148,6 +148,14 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [memo typing/scope increment](memo-source-typing.md) now kernel-checks actual
+layouts/signatures/nested annotations/static constraints and free/body binders,
+proves recursive operational typing and ordinary output closure, and composes
+with the parsed region-bearing program. Insertion's owned table and distinct
+value/region arities are preserved. Guard/storage/spatial and dynamic loan/
+lifetime traces for these functions remain required before evaluator/core and
+wrappers; scope metadata alone is not a dynamic lifetime proof.
+
 The [addressed memo primitive follow-up](memo-heap-ownership.md) now composes
 source and heap runs, independent typed readback, exact allocation growth and
 returned ownership. Insertion's actual tail retains the original table, with

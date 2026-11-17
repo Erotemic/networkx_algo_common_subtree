@@ -25,6 +25,15 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [memo type/region-scope proof](lean-complexity-campaign/evidence/memo-source-typing.md)
+now kernel-checks actual layouts, signatures, nested annotations, static
+constraints and free/body region binding for all four memo helpers. Generic
+preservation lemmas prove actual operational typing; ordinary outputs are
+borrow-free even inside owned payloads. Insertion retains its owned table
+argument and has three lifetimes for four value inputs. The 3,842-job build,
+nineteen suites and 484-endpoint audit pass. Next guarded local/storage/spatial
+and dynamic loan/lifetime traces, then the actual evaluator/core and wrappers.
+
 The [addressed memo primitive proof](lean-complexity-campaign/evidence/memo-heap-ownership.md)
 now composes actual source runs with heap execution, independently typed append/
 prepend readback and exact allocation growth. Concatenation owns its fresh

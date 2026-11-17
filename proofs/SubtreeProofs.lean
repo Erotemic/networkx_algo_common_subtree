@@ -249,3 +249,5 @@ public import SubtreeProofs.Complexity.Paper2004.MemoWork
 public import SubtreeProofs.Rust.MemoSourceRefinement
 
 public import SubtreeProofs.Rust.MemoHeapRefinement
+
+public import SubtreeProofs.Rust.MemoTypeRefinement

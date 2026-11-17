@@ -26,6 +26,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupRegions.lean)
 (cd proofs && lake env lean Tests/MemoSource.lean)
 (cd proofs && lake env lean Tests/MemoHeap.lean)
+(cd proofs && lake env lean Tests/MemoTypes.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -91,6 +92,17 @@ WP, nine Python tests and 461-endpoint audit pass. No source regeneration is
 needed: Rust, generated artifacts and pins are unchanged. See the
 [addressed memo report](../docs/planning/lean-complexity-campaign/evidence/memo-heap-ownership.md)
 for exact assumptions and remaining intermediate invariants/evaluator work.
+
+The memo typing/scope increment adds `MemoSourceTypes`, `MemoType*.lean`,
+`MemoRegion*.lean` and `Tests/MemoTypes.lean`. Actual source type/region checks
+are kernel-certified, generic preservation consumes checked static constraints,
+and ordinary results contain no shared reference even inside owned payloads.
+Insertion's owned argument and distinct value/region arities are explicit.
+The 3,842-job build, nineteen suites, native WP, nine Python tests and
+484-endpoint audit pass. Source/generated files and pins are unchanged; no
+new regeneration is needed. See the
+[memo typing/scope report](../docs/planning/lean-complexity-campaign/evidence/memo-source-typing.md)
+for assumptions and remaining guard/storage/spatial/loan/lifetime work.
 
 ## VM caches
 

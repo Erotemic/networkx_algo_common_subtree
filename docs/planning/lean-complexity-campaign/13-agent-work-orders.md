@@ -86,6 +86,15 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Memo typing/scope follow-up:** [actual source certificates and preservation](evidence/memo-source-typing.md)
+now check declaration layouts, nested annotations, argument/return prefixes,
+static bodies and free/body region scope. Recursive operational type preservation
+and ordinary output closure compile for the new helper set. Insertion retains
+its owned input and three lifetimes for four value arguments. Shared checkers
+and proofs accept explicit callee maps. Next guarded local/storage/spatial and
+dynamic loan/lifetime traces, then actual evaluator/core and wrappers. Scope
+is not dynamic liveness; W06-C3 remains open.
+
 **Addressed memo follow-up:** [actual heap layouts and owner transfer](evidence/memo-heap-ownership.md)
 now realize the certified memo primitives with full source costs and exact
 allocation growth. Concatenation owns its fresh output; insertion preserves

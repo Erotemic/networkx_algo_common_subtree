@@ -511,3 +511,27 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.MemoSource.Heap.concatenate_total
 #print axioms SubtreeProofs.Rust.MemoSource.Heap.insert_total
 #print axioms SubtreeProofs.Rust.MemoSource.Heap.insert_return_ledger
+
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.checkActionWith_sound
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.checkCodeWith_sound
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.action_typedWith
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.exec_typedWith
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Regions.Reader.ForestWith.member
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Regions.Reader.TreeWith.descendant
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Regions.Reader.TreeWith.mentions_bound
+#print axioms SubtreeProofs.Rust.MemoSource.TypeReader.check_sound
+#print axioms SubtreeProofs.Rust.MemoSource.TypeReader.check_boundaries
+#print axioms SubtreeProofs.Rust.MemoSource.TypeReader.Certificate.original_checked
+#print axioms SubtreeProofs.Rust.MemoSource.TypeReader.Certificate.original_boundaries
+#print axioms SubtreeProofs.Rust.MemoSource.TypeReader.Certificate.original_declarations
+#print axioms SubtreeProofs.Rust.MemoSource.Types.run_typed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.original_bodies_typed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.original_run_typed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.source_run_typed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.ordinary_output_closed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.original_run_unborrowed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.scoped_bodies_typed
+#print axioms SubtreeProofs.Rust.MemoSource.Types.scoped_source_run_typed
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.check_sound
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.Certificate.original_checked
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.Certificate.original_program

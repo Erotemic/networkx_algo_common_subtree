@@ -12,7 +12,13 @@ namespace SubtreeProofs.Rust.LookupSource.Heap.Regions.Reader
 
 open Lean Frontend
 
-def roots (ctx : Frontend.Context) (json : Json) : Read (List Json) := do
+abbrev CalleeRegions := Nat → Read Nat
+
+def calleeRegions (ctx : Frontend.Context) : CalleeRegions := fun index => do
+  let function ← TypeReader.required (ctx.functions.lookup index)
+  pure (if function = .boxNew then 0 else Frontend.arity function)
+
+def rootsWith (arity : CalleeRegions) (json : Json) : Read (List Json) := do
   let mut result := []
   if let .ok untagged := field json "Untagged" then
     if let .ok ("Ref", payload) := tag untagged then
@@ -24,11 +30,12 @@ def roots (ctx : Frontend.Context) (json : Json) : Read (List Json) := do
   if let .ok call := field json "call" then
     let regular ← field (← field call "func") "Regular"
     let index ← (← field (← field regular "kind") "Fun").getNat?
-    let function ← TypeReader.required (ctx.functions.lookup index)
     let actual ← array (← field (← field regular "generics") "regions")
-    let expected := if function = .boxNew then 0 else Frontend.arity function
+    let expected ← arity index
     if actual.length != expected then throw "callee region argument count mismatch"
   pure result
+
+def roots (ctx : Frontend.Context) : Json → Read (List Json) := rootsWith (calleeRegions ctx)
 
 def children : Json → List Json
   | .arr values => values.toList
@@ -52,39 +59,39 @@ def boundRoots (scope : Scope) : (raws : List Json) → Read (BoundRoots scope r
         · exact rest.valid item hm⟩
 
 mutual
-  inductive Tree (ctx : Frontend.Context) (scope : Scope) : Json → Prop where
-    | node {json : Json} {raws : List Json} : roots ctx json = .ok raws → BoundRoots scope raws →
-        Forest ctx scope (children json) → Tree ctx scope json
+  inductive TreeWith (arity : CalleeRegions) (scope : Scope) : Json → Prop where
+    | node {json : Json} {raws : List Json} : rootsWith arity json = .ok raws → BoundRoots scope raws →
+        ForestWith arity scope (children json) → TreeWith arity scope json
 
-  inductive Forest (ctx : Frontend.Context) (scope : Scope) : List Json → Prop where
-    | nil : Forest ctx scope []
-    | cons {json : Json} {jsons : List Json} : Tree ctx scope json → Forest ctx scope jsons → Forest ctx scope (json :: jsons)
+  inductive ForestWith (arity : CalleeRegions) (scope : Scope) : List Json → Prop where
+    | nil : ForestWith arity scope []
+    | cons {json : Json} {jsons : List Json} : TreeWith arity scope json → ForestWith arity scope jsons → ForestWith arity scope (json :: jsons)
 end
 
-structure TreeCertificate (ctx : Frontend.Context) (scope : Scope) (json : Json) : Type where
-  proof : Tree ctx scope json
+structure TreeCertificateWith (arity : CalleeRegions) (scope : Scope) (json : Json) : Type where
+  proof : TreeWith arity scope json
 
-structure ForestCertificate (ctx : Frontend.Context) (scope : Scope) (jsons : List Json) : Type where
-  proof : Forest ctx scope jsons
+structure ForestCertificateWith (arity : CalleeRegions) (scope : Scope) (jsons : List Json) : Type where
+  proof : ForestWith arity scope jsons
 
 mutual
-  def scan (ctx : Frontend.Context) (scope : Scope) : Nat → (json : Json) → Read (TreeCertificate ctx scope json)
+  def scanWith (arity : CalleeRegions) (scope : Scope) : Nat → (json : Json) → Read (TreeCertificateWith arity scope json)
     | 0, _ => throw "region traversal budget exceeded"
     | fuel + 1, json =>
-      match hr : roots ctx json with
+      match hr : rootsWith arity json with
       | .error message => throw message
       | .ok raws => do
         let bound ← boundRoots scope raws
-        let rest ← scanForest ctx scope fuel (children json)
+        let rest ← scanForestWith arity scope fuel (children json)
         pure ⟨.node hr bound rest.proof⟩
   termination_by fuel _ => fuel
 
-  def scanForest (ctx : Frontend.Context) (scope : Scope) : Nat → (jsons : List Json) → Read (ForestCertificate ctx scope jsons)
+  def scanForestWith (arity : CalleeRegions) (scope : Scope) : Nat → (jsons : List Json) → Read (ForestCertificateWith arity scope jsons)
     | 0, _ => throw "region traversal list budget exceeded"
     | _ + 1, [] => pure ⟨.nil⟩
     | fuel + 1, json :: jsons => do
-      let first ← scan ctx scope fuel json
-      let rest ← scanForest ctx scope fuel jsons
+      let first ← scanWith arity scope fuel json
+      let rest ← scanForestWith arity scope fuel jsons
       pure ⟨.cons first.proof rest.proof⟩
   termination_by fuel _ => fuel
 end
@@ -93,11 +100,11 @@ inductive Descendant : Json → Json → Prop where
   | refl (json : Json) : Descendant json json
   | child {root next target : Json} : next ∈ children root → Descendant next target → Descendant root target
 
-def Mention (ctx : Frontend.Context) (root raw : Json) : Prop :=
-  ∃ node raws, Descendant root node ∧ roots ctx node = .ok raws ∧ raw ∈ raws
+def MentionWith (arity : CalleeRegions) (root raw : Json) : Prop :=
+  ∃ node raws, Descendant root node ∧ rootsWith arity node = .ok raws ∧ raw ∈ raws
 
-theorem Forest.member {ctx : Frontend.Context} {scope : Scope} {jsons : List Json}
-    (h : Forest ctx scope jsons) : ∀ json ∈ jsons, Tree ctx scope json :=
+theorem ForestWith.member {arity : CalleeRegions} {scope : Scope} {jsons : List Json}
+    (h : ForestWith arity scope jsons) : ∀ json ∈ jsons, TreeWith arity scope json :=
   match h with
   | .nil => by simp
   | .cons first rest => by
@@ -106,14 +113,14 @@ theorem Forest.member {ctx : Frontend.Context} {scope : Scope} {jsons : List Jso
     · subst json; exact first
     · exact rest.member json hm
 
-theorem Tree.descendant {ctx : Frontend.Context} {scope : Scope} {root target : Json}
-    (h : Tree ctx scope root) (hd : Descendant root target) : Tree ctx scope target := by
+theorem TreeWith.descendant {arity : CalleeRegions} {scope : Scope} {root target : Json}
+    (h : TreeWith arity scope root) (hd : Descendant root target) : TreeWith arity scope target := by
   induction hd with
   | refl => exact h
   | child hm _ ih => cases h with | node _ _ forest => exact ih (forest.member _ hm)
 
-theorem Tree.mentions_bound {ctx : Frontend.Context} {scope : Scope} {root raw : Json}
-    (h : Tree ctx scope root) (hm : Mention ctx root raw) : ∃ value, region scope raw = .ok value := by
+theorem TreeWith.mentions_bound {arity : CalleeRegions} {scope : Scope} {root raw : Json}
+    (h : TreeWith arity scope root) (hm : MentionWith arity root raw) : ∃ value, region scope raw = .ok value := by
   obtain ⟨node, raws, hd, hr, hm⟩ := hm
   have ht := h.descendant hd
   cases ht with
@@ -121,5 +128,23 @@ theorem Tree.mentions_bound {ctx : Frontend.Context} {scope : Scope} {root raw :
     rw [hr] at hr'
     cases hr'
     exact bounds.valid raw hm
+
+abbrev Tree (ctx : Frontend.Context) := TreeWith (calleeRegions ctx)
+abbrev Forest (ctx : Frontend.Context) := ForestWith (calleeRegions ctx)
+abbrev TreeCertificate (ctx : Frontend.Context) := TreeCertificateWith (calleeRegions ctx)
+abbrev ForestCertificate (ctx : Frontend.Context) := ForestCertificateWith (calleeRegions ctx)
+def scan (ctx : Frontend.Context) := scanWith (calleeRegions ctx)
+def scanForest (ctx : Frontend.Context) := scanForestWith (calleeRegions ctx)
+abbrev Mention (ctx : Frontend.Context) := MentionWith (calleeRegions ctx)
+
+theorem Forest.member {ctx : Frontend.Context} {scope : Scope} {jsons : List Json}
+    (h : Forest ctx scope jsons) : ∀ json ∈ jsons, Tree ctx scope json := ForestWith.member h
+
+theorem Tree.descendant {ctx : Frontend.Context} {scope : Scope} {root target : Json}
+    (h : Tree ctx scope root) (hd : Descendant root target) : Tree ctx scope target := TreeWith.descendant h hd
+
+theorem Tree.mentions_bound {ctx : Frontend.Context} {scope : Scope} {root raw : Json}
+    (h : Tree ctx scope root) (hm : Mention ctx root raw) : ∃ value, region scope raw = .ok value :=
+  TreeWith.mentions_bound h hm
 
 end SubtreeProofs.Rust.LookupSource.Heap.Regions.Reader

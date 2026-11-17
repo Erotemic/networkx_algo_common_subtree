@@ -109,10 +109,12 @@ def unwindAnnotations (ctx : Context) (locals : List Ty) (fuel : Nat) (json : Js
       let (constructor, payload) ← tag kind
       if constructor = "Drop" then placeAnnotations ctx locals fuel (← field payload "place")
 
-def actionAnnotations (ctx : Context) (locals : List Ty) (fuel : Nat)
-    (constructor : String) (payload : Json) : Read Unit := do
-  let action ← Frontend.action (localContext ctx locals) fuel constructor payload
-  if !checkAction locals action.lower then throw "statement disagrees with declared local types"
+def actionAnnotationsWith {F : Type}
+    (parseAction : Frontend.Context → Nat → String → Json → Read (Control.Action F))
+    (calleeOutput : F → List Ty → Option Ty) (isBox : F → Bool)
+    (ctx : Context) (locals : List Ty) (fuel : Nat) (constructor : String) (payload : Json) : Read Unit := do
+  let action ← parseAction (localContext ctx locals) fuel constructor payload
+  if !checkActionWith calleeOutput locals action.lower then throw "statement disagrees with declared local types"
   if constructor = "Assign" then
     let (dest, rhs) ← pair payload
     placeAnnotations ctx locals fuel dest
@@ -129,7 +131,7 @@ def actionAnnotations (ctx : Context) (locals : List Ty) (fuel : Nat)
     let genericTypes ← (← array (← field generics "types")).mapM (type ctx none 64)
     match action with
     | .call function args _ =>
-      let expected ← if function = .boxNew then required (inferOperands locals args) else pure []
+      let expected ← if isBox function then required (inferOperands locals args) else pure []
       if !sameList genericTypes expected then throw "callee generic instance mismatch"
     | _ => throw "call normalization mismatch"
 
@@ -151,7 +153,13 @@ def keyAnnotations (ctx : Context) (json : Json) : Read Unit := do
     if tag != "Signed" || (← payload.getStr?) != "Isize" then throw "discriminant must have isize annotation"
   else throw "unsupported switch constant annotation"
 
-def statementAnnotations (ctx : Context) (locals : List Ty) : Nat → List Json → Read Unit
+def actionAnnotations (ctx : Context) (locals : List Ty) : Nat → String → Json → Read Unit :=
+  actionAnnotationsWith Frontend.action callOutput (fun function => decide (function = .boxNew)) ctx locals
+
+def statementAnnotationsWith {F : Type}
+    (parseAction : Frontend.Context → Nat → String → Json → Read (Control.Action F))
+    (calleeOutput : F → List Ty → Option Ty) (isBox : F → Bool)
+    (ctx : Context) (locals : List Ty) : Nat → List Json → Read Unit
   | 0, _ => throw "statement annotation budget exceeded"
   | _ + 1, [] => pure ()
   | fuel + 1, statement :: rest => do
@@ -167,10 +175,13 @@ def statementAnnotations (ctx : Context) (locals : List Ty) : Nat → List Json 
           let (literal, _) ← pair branch
           keyAnnotations ctx literal
         for branch in ← array (← field payload "branches") do
-          statementAnnotations ctx locals fuel (← array (← field branch "statements"))
-      else actionAnnotations ctx locals fuel constructor payload
-      statementAnnotations ctx locals fuel rest
+          statementAnnotationsWith parseAction calleeOutput isBox ctx locals fuel (← array (← field branch "statements"))
+      else actionAnnotationsWith parseAction calleeOutput isBox ctx locals fuel constructor payload
+      statementAnnotationsWith parseAction calleeOutput isBox ctx locals fuel rest
 termination_by structural fuel _ => fuel
+
+def statementAnnotations (ctx : Context) (locals : List Ty) : Nat → List Json → Read Unit :=
+  statementAnnotationsWith Frontend.action callOutput (fun function => decide (function = .boxNew)) ctx locals
 
 structure Definition where
   function : Function
