@@ -45,6 +45,14 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [whole-run memo work envelopes](evidence/memo-work-envelopes.md) prove local
+primitive budgets along actual evaluation, then derive weighted finite bounds
+and native Std.WP. Both independent clients consume the theorem; cold list and
+dense setup are included. The 3,765-job build, seven suites and 140-endpoint
+axiom audit pass. Remaining local input/body/key/materialization and source
+realization retain MEM-03/W05, W04's other interfaces and W06-C3. These are C1
+declared-event costs. Earlier dated milestones follow.
+
 The [independent edit-distance client](evidence/memo-edit-distance.md) now adds
 an attained minimum-cost edit specification and list/dense implementations of
 the same bounded-index body. Generic correctness/once-only expansion and warm
@@ -99,7 +107,8 @@ production algorithms remain fixed.
 ## Original first work package and current next step
 
 The comparison below has now produced the scoped C2 decision linked above.
-Next are W05's complete representation work envelopes and retained local costs, with W04's other interfaces and the
+Next are W05's remaining local input/body/key/materialization cost contracts
+and W06-C3 source realization, with W04's other interfaces and the
 named W06-C3 work retained.
 The original G0/G1 requirements remain recorded here; source adequacy has not
 been waived.

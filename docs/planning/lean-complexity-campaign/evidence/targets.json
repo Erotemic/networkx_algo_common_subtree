@@ -255,7 +255,7 @@
       "sources": [
         "I01"
       ],
-      "status": "proved_native_interpreter_clients_pending",
+      "status": "proved_native_interpreter_two_clients_review_pending",
       "consumer": "LV2004 and edit distance",
       "signature_status": "compiled_native_interpreter_endpoints_partial_target_scope",
       "global_absence_claim": false,
@@ -268,12 +268,12 @@
         "reuse_audit": "memo-statement-audit.md",
         "semantic_boundary": "C1 native interpreter and exact maintained LV evaluator counters; no source/Rust runtime adequacy",
         "remaining": [
-          "Representation-specific complete work envelopes",
-          "Source/heap/runtime realization",
-          "Retained input/body/key costs and independent-review acceptance"
+          "Unpriced input/body/key/materialization operations and complete source/runtime realization",
+          "Other result-size/substitution interfaces and independent-review acceptance"
         ],
         "lv_correspondence": "memo-lv-correspondence.md",
-        "unrelated_client": "memo-edit-distance.md"
+        "unrelated_client": "memo-edit-distance.md",
+        "work_envelopes": "memo-work-envelopes.md"
       }
     },
     {
@@ -288,7 +288,7 @@
         "I01",
         "P01"
       ],
-      "status": "proved_native_interpreter_clients_pending",
+      "status": "proved_native_interpreter_two_clients_review_pending",
       "consumer": "Multi-root warm-cache DP",
       "signature_status": "compiled_native_interpreter_endpoints_partial_target_scope",
       "global_absence_claim": false,
@@ -301,12 +301,12 @@
         "reuse_audit": "memo-statement-audit.md",
         "semantic_boundary": "C1 native interpreter and exact maintained LV evaluator counters; no source/Rust runtime adequacy",
         "remaining": [
-          "Representation-specific complete work envelopes",
-          "Source/heap/runtime realization",
-          "Retained input/body/key costs and independent-review acceptance"
+          "Unpriced input/body/key/materialization operations and complete source/runtime realization",
+          "Other result-size/substitution interfaces and independent-review acceptance"
         ],
         "lv_correspondence": "memo-lv-correspondence.md",
-        "unrelated_client": "memo-edit-distance.md"
+        "unrelated_client": "memo-edit-distance.md",
+        "work_envelopes": "memo-work-envelopes.md"
       }
     },
     {
@@ -323,9 +323,9 @@
         "R01",
         "L02"
       ],
-      "status": "partial_local_event_pricing_and_representations",
+      "status": "proved_run_envelopes_for_declared_currencies_realization_pending",
       "consumer": "List and direct-address memo backends",
-      "signature_status": "compiled_native_interpreter_endpoints_partial_target_scope",
+      "signature_status": "compiled_local_models_weighted_run_bound_native_wp_and_two_clients",
       "global_absence_claim": false,
       "provenance_policy": "Audit exact upstream statement; any new combined interface is a campaign synthesis, not a verbatim attributed theorem.",
       "dossier_document": "06-theorem-dossiers.md",
@@ -336,12 +336,12 @@
         "reuse_audit": "memo-statement-audit.md",
         "semantic_boundary": "C1 native interpreter and exact maintained LV evaluator counters; no source/Rust runtime adequacy",
         "remaining": [
-          "Representation-specific complete work envelopes",
-          "Source/heap/runtime realization",
-          "Retained input/body/key costs and independent-review acceptance"
+          "Unpriced input/body/key/materialization operations and complete source/runtime realization",
+          "Other result-size/substitution interfaces and independent-review acceptance"
         ],
         "lv_correspondence": "memo-lv-correspondence.md",
-        "unrelated_client": "memo-edit-distance.md"
+        "unrelated_client": "memo-edit-distance.md",
+        "work_envelopes": "memo-work-envelopes.md"
       }
     },
     {
@@ -745,7 +745,7 @@
     ],
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
-      "W05 complete representation work envelopes and retained local input/body/key costs",
+      "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
       "W06-C3 checked source/reification and typed heap/reference simulation"
     ],
     "still_open": [

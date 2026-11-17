@@ -61,6 +61,10 @@ theorem body_request_bound (answer : MemoKey → Nat) (left right : DyckWord) :
   rw [body_requests]
   split <;> simp
 
+theorem body_local_bound (answer : MemoKey → Nat) (left right : DyckWord) :
+    (Body.meaning answer (body (left, right))).localWork ≤ 4 := by
+  by_cases hl : left = 0 <;> by_cases hr : right = 0 <;> simp [body, hl, hr]
+
 /-- Every requested state is smaller under the existing semilength rank. -/
 theorem requests_decrease (answer : MemoKey → Nat) (left right : DyckWord)
     (child : MemoKey) (hc : child ∈ (Body.meaning answer (body (left, right))).requests) :

@@ -1,5 +1,10 @@
 # Independent edit-distance memo client, 2026-11-16
 
+**Latest follow-up:** [actual-run work envelopes](memo-work-envelopes.md) now
+prove primitive budgets and weighted bounds with setup for the declared C1
+currencies. Unpriced input/body/key/materialization and source realization
+remain open. The evidence below records the earlier milestone's scope.
+
 The generic interpreter now has an unrelated client with an independently
 specified optimum, two executable cache implementations, multi-root/warm-cache
 contracts and checked request envelopes. This exercises W05 beyond the LV

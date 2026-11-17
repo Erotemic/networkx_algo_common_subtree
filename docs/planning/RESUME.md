@@ -1,38 +1,38 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment adds the
-[independent edit-distance client](lean-complexity-campaign/evidence/memo-edit-distance.md):
-valid edit sequences, an attained minimum-cost recurrence, a bounded-index
-request body, and list/dense implementations of the same problem. The generic
-interpreter supplies correctness, once-only expansion and warm/multi-root
-request envelopes. Dense operations charge their actual two-step index
-encoding, and dense cache setup explicitly initializes the entire rectangle.
+Branch: `Droschinsky-algos`. The latest increment proves
+[whole-run memo work envelopes](lean-complexity-campaign/evidence/memo-work-envelopes.md)
+from actual primitive contracts, rather than assumed final-trace caps.
+The generic native theorem includes nonuniform body/request budgets, arbitrary
+sound warm storage, finite closure and multiple roots. It also exports a
+Std.WP contract. List/direct/encoded-pair work models and LV/edit-distance
+consumers compile; both cold clients include cache setup. Edit distance uses
+its exact `n*m` interior-state count for sharper weighted bounds.
 
 The [LV bridge](lean-complexity-campaign/evidence/memo-lv-correspondence.md)
-already proves exact agreement with unchanged existing `memoLcs` on values,
-complete table order, calls, misses and comparisons for arbitrary warm tables.
-Generic trace/envelope results recover its `4*misses+1` constant and warm
-D-product miss bound. Both clients consume the
-[native memo core](lean-complexity-campaign/evidence/memo-interpreter.md), with
-no tree/Rust imports in generic or edit-distance modules. The
-[reuse audit](lean-complexity-campaign/evidence/memo-statement-audit.md) records
-inspected declarations and selected compatibility checks.
+preserves unchanged `memoLcs` values, complete table order, calls, misses and
+comparisons. The [independent edit-distance client](lean-complexity-campaign/evidence/memo-edit-distance.md)
+proves attained/minimum edit cost and fits the same generic memo theorem with
+list/dense implementations. Generic and edit-distance modules import no tree
+or Rust module. See the [reuse audit](lean-complexity-campaign/evidence/memo-statement-audit.md)
+and [native core](lean-complexity-campaign/evidence/memo-interpreter.md).
 
-This is **C1**, not a Rust/source runtime theorem. W04/W05 remain partial:
-complete run-level work envelopes, retained input/body/key costs and the other
-size/substitution interfaces remain open. W06-C3's checked reification and
-typed heap/reference simulation remain separate. The selected native Std.WP
-C2 route and optional arlib/Lax pilots from the
-[G1 decision](lean-complexity-campaign/evidence/g1-backend-decision.md) are unchanged.
-Production refinement, paper time/space, release and application-study work
-remain open across the full planning program.
+This is **C1 declared-event work**, not complete Lean/Rust runtime. The gap from
+supplied trace caps to actual run-level primitive bounds is closed. Remaining
+MEM-03/W05 work concerns unpriced input access, structural equality/copy,
+body/key construction, materialization/finalization and source realization.
+W04's other result-size/substitution interfaces and W06-C3's checked reification
+and typed heap/reference simulation remain open. The
+[G1 decision](lean-complexity-campaign/evidence/g1-backend-decision.md) and optional
+arlib/Lax pilots are unchanged. Production refinement, paper time/space,
+release and application-study work remain open in the full planning program.
 
-The main 3,761-job build, new edit-distance suite and 125-endpoint axiom audit
-pass. The five unchanged Lean suites passed at the preceding milestones.
-New modules have no warnings; endpoint axioms stay within
-`propext`, `Classical.choice`, `Quot.sound`. Main pins and production/generated
-sources are unchanged. Selected original CLRS sources compile under main pins;
-AFP sources were inspected only, without Isabelle.
+The main 3,765-job build, all seven Lean suites and 140-endpoint axiom audit
+pass. New modules have no warnings; new axioms stay within
+`propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
+weighted WP's elaborated statement closure (108 records). Main pins and
+production/generated sources are unchanged. CLRS compatibility and source-only
+AFP inspection remain recorded in the earlier reuse audit.
 
 Follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md) for bootstrap
 and pinned extraction details. From the repository root:
@@ -47,6 +47,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
+(cd proofs && lake env lean Tests/MemoWork.lean)
 (cd proofs && lake env lean experiments/resource_cost_audit/LookupSourceWP.lean)
 (cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
 (cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
@@ -60,15 +61,15 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **MEM-03/W05: run-level representation budgets and complete priced
-envelopes**. Both independent correctness/request clients now compile. Include
-setup, input access/body construction, key operations/conversion and
-finalization; do not identify narrow word tests/cell counters with total source
-runtime. `eval_spec` currently requires lookup invariant preservation for every
-work value; cost invariants may need that premise specialized to the actual
-`ops.read` counter, while preserving the actual evaluator and existing proofs.
-Retain W04's other interfaces and the named **W06-C3** source/reification and
-heap/reference work; generic C1/C2 results cannot close that work or APP-01.
+Next is **remaining local/source cost realization (MEM-03/W05 and W06-C3)**.
+The generic declared-currency work theorem is now implemented; do not duplicate
+it. Inspect the actual pinned Rust memo evaluator/LLBC operations and connect
+remaining input/key/body/materialization work to the source/heap model. Preserve
+the exact existing evaluator bridge and independently optimal clients.
+`eval_spec` now supplies valid storage and the actual `ops.read` counter to
+lookup invariants, so the former cost-invariant API blocker is resolved.
+Keep W04's size/substitution and G1's named checked-reification/typed-reference
+obligations visible; generic C1/C2 results cannot close them or APP-01.
 
 Use [capabilities.md](capabilities.md), [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md)
 and the paper plans for the full mathematical, software and release scope.

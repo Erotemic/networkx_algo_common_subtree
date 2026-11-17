@@ -202,8 +202,8 @@ local body/representation laws. Additional invariants need only survive the
 actual lookup and fresh completed insertion, not arbitrary state updates. -/
 theorem eval_spec (ops : CacheOps Key Value Storage) (problem : Problem Key Value)
     (invariant : EvalState Key Storage → Prop)
-    (lookup_preserves : ∀ key work state, invariant state →
-      invariant (recordLookup key work state))
+    (lookup_preserves : ∀ key state, invariant state → ops.Valid state.cache →
+      invariant (recordLookup key (ops.read key state.cache).2 state))
     (complete_preserves : ∀ key result state, invariant state → ops.Valid state.cache →
       ops.contents state.cache key = none →
       result = Body.meaning problem.value (problem.body key) →
@@ -217,7 +217,7 @@ theorem eval_spec (ops : CacheOps Key Value Storage) (problem : Problem Key Valu
   | zero => omega
   | succ fuel ih =>
     let queried := recordLookup key (ops.read key state.cache).2 state
-    have hqueried : invariant queried := lookup_preserves _ _ _ hinvariant
+    have hqueried : invariant queried := lookup_preserves _ _ hinvariant hv
     cases hread : (ops.read key state.cache).1 with
     | some value =>
       have hvalue : value = problem.value key :=
@@ -310,7 +310,8 @@ theorem eval_wp (ops : CacheOps Key Value Storage) (problem : Problem Key Value)
 contents and the caller's invariant through the actual sequential execution. -/
 theorem evalRoots_spec (ops : CacheOps Key Value Storage) (problem : Problem Key Value)
     (invariant : EvalState Key Storage → Prop)
-    (lookup_preserves : ∀ key work state, invariant state → invariant (recordLookup key work state))
+    (lookup_preserves : ∀ key state, invariant state → ops.Valid state.cache →
+      invariant (recordLookup key (ops.read key state.cache).2 state))
     (complete_preserves : ∀ key result state, invariant state → ops.Valid state.cache →
       ops.contents state.cache key = none →
       result = Body.meaning problem.value (problem.body key) →

@@ -25,6 +25,15 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [whole-run memo work envelopes](lean-complexity-campaign/evidence/memo-work-envelopes.md)
+now derive representation budgets from actual local operations and compose
+nonuniform finite work bounds, with native Std.WP and two independent clients.
+Cold list/dense setup and encoded index work are included. The 3,765-job build,
+seven suites and 140-endpoint axiom audit pass. This closes the declared-model
+run-budget gap; remaining input/body/key/materialization and source realization
+keep MEM-03/W05, W04's other interfaces and W06-C3 partial. Earlier milestones
+below retain their checked scope.
+
 The [native memo core](lean-complexity-campaign/evidence/memo-interpreter.md)
 now proves sequential interpreter correctness, once-only expansion, exact
 root-plus-body request counts and finite warm-cache envelopes. Two counted

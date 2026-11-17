@@ -224,7 +224,7 @@ theorem eval_trace_spec (ops : CacheOps Key Value Storage) (problem : Problem Ke
     ∃ final, eval ops problem.body fuel key state = .ok (problem.value key) final ∧
       Post ops problem key state final ∧ TraceInvariant ops problem origin final :=
   eval_spec ops problem (TraceInvariant ops problem origin)
-    (fun key work _ hi => hi.lookup key work)
+    (fun key state hi _ => hi.lookup key (ops.read key state.cache).2)
     (fun key result _ hi hvalid hfresh hr => hi.complete key result hvalid hfresh hr)
     fuel key state hv hs hbound ht
 
@@ -267,7 +267,7 @@ theorem evalRoots_trace_spec (ops : CacheOps Key Value Storage) (problem : Probl
       ops.Valid final.cache ∧ ops.Sound problem.value final.cache ∧
       ops.Extends state.cache final.cache ∧ TraceInvariant ops problem origin final :=
   evalRoots_spec ops problem (TraceInvariant ops problem origin)
-    (fun key work _ hi => hi.lookup key work)
+    (fun key state hi _ => hi.lookup key (ops.read key state.cache).2)
     (fun key result _ hi hvalid hfresh hr => hi.complete key result hvalid hfresh hr)
     fuel roots state hv hs hbound ht
 

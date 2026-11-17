@@ -68,8 +68,10 @@ compile; list/array contracts and the LV body fit. The
 [LV follow-up](evidence/memo-lv-correspondence.md) closes exact old-evaluator
 value/table/counter correspondence and warm D-product bounds. The
 [unrelated minimum-edit client](evidence/memo-edit-distance.md) now also
-compiles with both representations. Next are complete representation envelopes
-and retained local input/body/key costs.
+compiles with both representations. The [whole-run follow-up](evidence/memo-work-envelopes.md)
+now derives primitive budgets and weighted/native-WP envelopes with cache setup.
+Remaining work is local input/body/key/materialization cost and source realization,
+including the named W06-C3 requirements.
 W04's other interfaces and W06-C3 remain retained work.
 
 **Depends on:** W04; source adapter work continues alongside.

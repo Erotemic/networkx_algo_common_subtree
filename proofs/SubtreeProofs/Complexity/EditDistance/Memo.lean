@@ -74,6 +74,12 @@ theorem body_request_bound (left right : List Symbol) (answer : Key left right �
 def rank (left right : List Symbol) (key : Key left right) : Nat :=
   (left.length - key.1.val) + (right.length - key.2.val)
 
+theorem body_local_bound (left right : List Symbol) (answer : Key left right → Nat)
+    (key : Key left right) :
+    (Memo.Body.meaning answer (body left right key)).localWork ≤ 5 := by
+  by_cases hl : key.1.val < left.length <;> by_cases hr : key.2.val < right.length <;>
+    simp [body, hl, hr]
+
 theorem requests_decrease (left right : List Symbol) (key child : Key left right)
     (hc : child ∈ (Memo.Body.meaning (value left right) (body left right key)).requests) :
     rank left right child < rank left right key := by
@@ -91,6 +97,11 @@ def problem (left right : List Symbol) : Memo.Problem (Key left right) Nat where
   rank := rank left right
   body_correct := body_correct left right
   requests_decrease := requests_decrease left right
+
+theorem rank_lt_total (left right : List Symbol) (key : Key left right) :
+    (problem left right).rank key < left.length + right.length + 1 := by
+  dsimp [problem, rank]
+  omega
 
 /-- Any conforming representation can evaluate multiple suffix queries with a
 shared warm cache. The finite rectangle and request bound are local inputs;

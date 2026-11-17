@@ -1,5 +1,34 @@
 # Common-subtree proof status
 
+## Actual-run memo work envelopes: 2026-11-16
+
+`Complexity/Memo/{Work,RepresentationWork}.lean` derives emitted primitive
+budgets from local representation laws and actual execution. Initial size plus
+completed expansions bounds representation size, including unrelated warm
+entries. `roots_weighted_work_envelope` combines nonuniform request/body
+budgets with the finite initially-absent envelope; `roots_weighted_work_wp`
+exports the same native Std.WP contract. No global work or final-trace cap is
+assumed. The actual evaluator is unchanged; invariant lookup rules now use
+valid storage and the actual read counter.
+
+`Complexity/Paper2004/MemoWork.lean` and `Complexity/EditDistance/Work.lean`
+consume the same theorem. List/direct/encoded-pair local work models compile;
+cold-cache clients charge actual initialization. The edit-distance weighted
+bound counts only its `n*m` interior bodies, reusing Mathlib finite cardinality.
+Existing LV exact evaluator/counter correspondence and independent edit
+optimality remain unchanged.
+
+The 3,765-job main build, all seven suites and 140-endpoint axiom audit pass.
+Fifteen new closures use only the existing axiom set; new modules have no
+warnings. Shared `leanq` inspects 108 statement records for the weighted WP.
+No main pin or production/generated source changed.
+
+This is **C1 declared-event cost**. Remaining input access, structural-key and
+body construction, copying/materialization/finalization, arithmetic and
+source/heap realization prevent a complete source runtime claim. MEM-03/W05,
+W04's other interfaces and W06-C3 retain those obligations.
+[Formulae, assumptions, adversaries and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-work-envelopes.md).
+
 ## Independent edit-distance memo client: 2026-11-16
 
 `Complexity/EditDistance/{Specification,Memo,Clients}.lean` supplies an

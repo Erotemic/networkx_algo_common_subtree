@@ -2,6 +2,11 @@
 
 ## 1. Status and purpose
 
+The [actual-run work follow-up](evidence/memo-work-envelopes.md) now checks
+local `WorkModel` laws, weighted finite envelopes and native Std.WP with two
+clients. It resolves supplied final-trace caps for those currencies; remaining
+local/source costs and the other size/substitution interfaces stay open.
+
 A [checked native memo implementation](evidence/memo-interpreter.md) now realizes
 the D7 body/cache/counting boundary and part of D8. Its report lists exact
 modules, retained client obligations and limitations; W04 is still partial.

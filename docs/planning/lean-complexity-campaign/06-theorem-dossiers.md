@@ -205,6 +205,11 @@ The last sum uses nonnegative upper bounds. If `S` only covers newly expanded re
 
 ## D8. Representation-parametric memo cost
 
+**Executed partial follow-up:** [whole-run native work bounds](evidence/memo-work-envelopes.md)
+derive actual primitive budgets and weighted envelopes for list/direct/encoded
+caches, consumed by LV and edit distance. Complete source/input/body/key and
+materialization costs remain retained; the C1 result does not close MEM-04.
+
 **Targets:** MEM-03, MEM-04.
 **Provenance:** memoization [I01], modular cost specifications [R01], charged primitives [L02]; new combined campaign statement.
 **Proposed API:** `Memo.work_le`, list/direct-address specializations, and local evaluator/source realization.

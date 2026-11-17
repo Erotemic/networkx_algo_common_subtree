@@ -33,6 +33,21 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Complexity.EditDistance.dense_setup
 #print axioms SubtreeProofs.Complexity.Memo.DirectCache.productOps
 #print axioms SubtreeProofs.Complexity.Memo.DirectCache.product_initial_sound
+#print axioms SubtreeProofs.Complexity.Memo.WorkInvariant.lookup
+#print axioms SubtreeProofs.Complexity.Memo.WorkInvariant.complete
+#print axioms SubtreeProofs.Complexity.Memo.roots_work_spec
+#print axioms SubtreeProofs.Complexity.Memo.Event.localWork_eq
+#print axioms SubtreeProofs.Complexity.Memo.roots_weighted_work_envelope
+#print axioms SubtreeProofs.Complexity.Memo.roots_weighted_work_wp
+#print axioms SubtreeProofs.Complexity.Memo.roots_work_envelope
+#print axioms SubtreeProofs.Complexity.Memo.ListCache.workModel
+#print axioms SubtreeProofs.Complexity.Memo.DirectCache.workModel
+#print axioms SubtreeProofs.Complexity.Memo.DirectCache.productWorkModel
+#print axioms SubtreeProofs.Complexity.EditDistance.interior_card
+#print axioms SubtreeProofs.Complexity.EditDistance.list_weighted_work_spec
+#print axioms SubtreeProofs.Complexity.EditDistance.dense_weighted_work_spec
+#print axioms SubtreeProofs.Complexity.Paper2004.roots_list_work
+#print axioms SubtreeProofs.Complexity.Paper2004.cold_list_work
 
 #print axioms SubtreeProofs.Paper2004.OrderedTree.decodeDyck_encodeDyck
 #print axioms SubtreeProofs.Paper2004.OrderedTree.encodeDyck_decodeDyck

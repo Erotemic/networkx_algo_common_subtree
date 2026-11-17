@@ -171,6 +171,15 @@ theorem envelope_closed (left right : DyckWord) (key : MemoKey)
     · exact Finset.mem_product.mpr ⟨hleft.2.2, hr⟩
     · exact Finset.mem_product.mpr ⟨hl, hright.2.2⟩
 
+theorem envelope_rank_lt (left right : DyckWord) (key : MemoKey)
+    (hk : key ∈ envelope left right) :
+    problem.rank key < left.semilength + right.semilength + 1 := by
+  obtain ⟨hl, hr⟩ := Finset.mem_product.mp hk
+  have hleft := BalancedDecomposition.states_semilength_le hl
+  have hright := BalancedDecomposition.states_semilength_le hr
+  dsimp [problem]
+  omega
+
 /-- A genuine local consumer of the generic nonuniform-envelope theorem. Warm
 entries outside the D-product are allowed and need not be counted as new work. -/
 theorem roots_envelope_spec (left right : DyckWord) (table : MemoTable) (roots : List MemoKey)

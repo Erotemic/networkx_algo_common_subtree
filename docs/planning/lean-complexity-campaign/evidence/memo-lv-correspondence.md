@@ -1,5 +1,10 @@
 # Exact LV evaluator correspondence, 2026-11-16
 
+**Latest follow-up:** [actual-run work envelopes](memo-work-envelopes.md) now
+prove primitive budgets and weighted bounds with setup for the declared C1
+currencies. Unpriced input/body/key/materialization and source realization
+remain open. The evidence below records the earlier milestone's scope.
+
 **Further follow-up:** [independent edit-distance client](memo-edit-distance.md)
 now supplies minimum-edit correctness and both list/dense consumers. The
 remaining W05 work is complete priced representation/local-cost envelopes;
