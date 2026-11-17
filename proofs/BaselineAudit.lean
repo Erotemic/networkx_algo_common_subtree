@@ -178,3 +178,16 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.lookup_aeneas_value_agreement
 #print axioms SubtreeProofs.Rust.LookupSource.lookup_all_runs_bound
 #print axioms SubtreeProofs.Rust.LookupSource.extra_compare_violates_old_bound
+
+#print axioms SubtreeProofs.Rust.LookupSource.Control.dispatch_preserves
+#print axioms SubtreeProofs.Rust.LookupSource.Control.exec_lower
+#print axioms SubtreeProofs.Rust.LookupSource.Control.run_lower
+#print axioms SubtreeProofs.Rust.LookupSource.Frontend.check_iff
+#print axioms SubtreeProofs.Rust.LookupSource.Frontend.checked_run
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.original_checked
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.mutant_checked
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.mutant_rejects_original
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.original_run
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.mutant_run
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.original_run_bound
+#print axioms SubtreeProofs.Rust.LookupSource.Certificate.mutant_violates_old_comparison_budget

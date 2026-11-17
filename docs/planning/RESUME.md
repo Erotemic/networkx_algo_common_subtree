@@ -1,6 +1,18 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment proves
+Branch: `Droschinsky-algos`. The latest increment supplies
+[kernel-checked lookup source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md).
+Both original and actual Rust extra-comparison mutant retain complete pinned
+Charon JSON (only output-destination options normalized). A Lean reader checks
+supported source forms; a separate source-index interpreter and proved lowering
+preserve complete outcomes/costs for every fuel/function/argument list.
+Concrete reads/normalizations are kernel-checked, without native proof oracles.
+The mutant cannot pass the original normal-form certificate and still violates
+the old comparison allowance. The Python control reifier is no longer trusted
+for those snapshots. Charon/data import and declared snapshot primitives remain
+boundaries. Typed heap/alias/lifetime/ownership/Box adequacy remains open.
+
+The preceding increment proves
 [whole-run memo work envelopes](lean-complexity-campaign/evidence/memo-work-envelopes.md)
 from actual primitive contracts, rather than assumed final-trace caps.
 The generic native theorem includes nonuniform body/request budgets, arbitrary
@@ -21,17 +33,20 @@ This is **C1 declared-event work**, not complete Lean/Rust runtime. The gap from
 supplied trace caps to actual run-level primitive bounds is closed. Remaining
 MEM-03/W05 work concerns unpriced input access, structural equality/copy,
 body/key construction, materialization/finalization and source realization.
-W04's other result-size/substitution interfaces and W06-C3's checked reification
-and typed heap/reference simulation remain open. The
+W04's other result-size/substitution interfaces and W06-C3's typed
+heap/reference simulation remain open. Checked reification now covers the
+supported lookup control/snapshot fragment only. The
 [G1 decision](lean-complexity-campaign/evidence/g1-backend-decision.md) and optional
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,765-job build, all seven Lean suites and 140-endpoint axiom audit
-pass. New modules have no warnings; new axioms stay within
+The main 3,770-job build, all eight Lean suites, native WP example, seven Python
+reifier tests and 152-endpoint axiom audit pass. New modules have no warnings;
+new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records). Main pins and
-production/generated sources are unchanged. CLRS compatibility and source-only
+production Rust/existing Aeneas semantics are unchanged. New generated JSON
+snapshots reproduce exactly. CLRS compatibility and source-only
 AFP inspection remain recorded in the earlier reuse audit.
 
 Follow [proofs/VERIFICATION.md](../../proofs/VERIFICATION.md) for bootstrap
@@ -44,6 +59,7 @@ dev/setup-build-caches.sh --status
 dev/regenerate_rust_lean.sh --check
 python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSource.lean)
+(cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
@@ -61,14 +77,16 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **remaining local/source cost realization (MEM-03/W05 and W06-C3)**.
-The generic declared-currency work theorem is now implemented; do not duplicate
-it. Inspect the actual pinned Rust memo evaluator/LLBC operations and connect
-remaining input/key/body/materialization work to the source/heap model. Preserve
+Next is **typed source/heap realization (W06-C3), then remaining local/source
+costs (MEM-03/W05)**. The generic declared-currency work theorem and lookup
+control normalization are now implemented; do not duplicate them. Inspect the
+actual pinned Rust/LLBC operations and establish a typed shared-reference/local
+move/owned-Box simulation for read-only lookup before connecting insertion,
+concatenation and the memo evaluator/public core. Preserve
 the exact existing evaluator bridge and independently optimal clients.
 `eval_spec` now supplies valid storage and the actual `ops.read` counter to
 lookup invariants, so the former cost-invariant API blocker is resolved.
-Keep W04's size/substitution and G1's named checked-reification/typed-reference
+Keep W04's size/substitution and G1's remaining typed-reference/source-adequacy
 obligations visible; generic C1/C2 results cannot close them or APP-01.
 
 Use [capabilities.md](capabilities.md), [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md)

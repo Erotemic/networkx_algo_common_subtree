@@ -45,6 +45,12 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [kernel-checked source-control certificates](evidence/lookup-source-certificates.md)
+check retained original/mutant lookup JSON and preserve complete execution/cost
+at all fuels. They remove Python control-reifier trust for those snapshots and
+reject the mutant's old certificate/comparison budget. Typed heap/ownership/
+reference/Box and complete memo-core adequacy remain W06-C3 obligations.
+
 The [whole-run memo work envelopes](evidence/memo-work-envelopes.md) prove local
 primitive budgets along actual evaluation, then derive weighted finite bounds
 and native Std.WP. Both independent clients consume the theorem; cold list and

@@ -17,6 +17,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/LookupSource.lean)
+(cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
 (cd proofs && lake env lean Tests/MemoWork.lean)
@@ -125,10 +126,15 @@ The script regenerates both `verified_ordered_core` and
 maintained generated modules.
 It also regenerates the four-function normal-path operational lookup model
 and a real temporary Rust extra-comparison mutation using the same pinned
-Charon/Rust toolchain. The reification adapter and immutable-reference model
-are explicit trusted boundaries; its cost theorems concern the reified model,
-not heapful Rust/Aeneas runtime semantics. Exact scope is in the
-[lookup pilot report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-pilot.md).
+Charon/Rust toolchain. It also retains the entire JSON of both extractions,
+normalizing only the two output-destination options. The Lean reader and
+kernel-checked concrete certificates validate both control normalizations;
+the Python control reifier is no longer trusted for those certificates.
+The immutable-reference/primitive model, typed heap adequacy and Charon/Rust
+extraction remain explicit boundaries. These are source-control cost results,
+not heapful Rust/Aeneas runtime semantics. See the
+[source certificates](../docs/planning/lean-complexity-campaign/evidence/lookup-source-certificates.md)
+and historical [lookup pilot report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-pilot.md).
 Intermediate LLBC files are generated locally and ignored. Generated Lean
 must never be edited to make a proof pass.
 

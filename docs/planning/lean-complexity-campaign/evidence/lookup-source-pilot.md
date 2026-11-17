@@ -1,5 +1,10 @@
 # Reified lookup operational pilot: 2026-11-16
 
+Historical milestone. The subsequent
+[kernel-checked source-control certificates](lookup-source-certificates.md)
+remove Python control-reifier trust for both retained snapshots, while
+preserving the explicit snapshot-primitive/typed-heap boundary below.
+
 Baseline: `7785776`. This implements the bounded source-model part of W06 over
 the same four W02 functions. It is **operational C2 progress with reproducible
 source provenance**, not completed SRC-01/C3 or full G1. The reifier and its

@@ -25,6 +25,13 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [checked source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md)
+validate both actual lookup extractions, preserve complete outcomes/costs for
+all fuels and reject the real extra-comparison mutant's old certificate/budget.
+The 3,770-job build, eight Lean suites and 152-endpoint axiom audit pass.
+Typed heap/reference/ownership/Box adequacy and the actual memo core remain
+the next W06-C3 obligations; this is a snapshot-primitive control result.
+
 The [whole-run memo work envelopes](lean-complexity-campaign/evidence/memo-work-envelopes.md)
 now derive representation budgets from actual local operations and compose
 nonuniform finite work bounds, with native Std.WP and two independent clients.

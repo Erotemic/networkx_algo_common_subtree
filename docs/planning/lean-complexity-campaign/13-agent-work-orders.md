@@ -86,6 +86,14 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Executed partial delivery:** [kernel-checked source-control certificates](evidence/lookup-source-certificates.md)
+now validate both retained lookup JSON extractions against their normalized
+programs and preserve complete outcomes/costs at every fuel. The real extra-work
+mutant fails the original certificate and comparison allowance. This closes the
+external Python control-reifier trust gap for those snapshots in the declared
+primitive model. Typed heap/reference/move/Box adequacy, actual memo core and
+wrappers remain required; W06-C3 and SRC-01 are not complete.
+
 The [G1 decision](evidence/g1-backend-decision.md#w04w05-boundary-and-named-w06-c3-obligations)
 retains a named W06-C3 package: checkable reification/source semantics, typed
 heap/shared-reference/move/Box simulation, then the actual memo evaluator/core

@@ -1,5 +1,36 @@
 # Common-subtree proof status
 
+## Kernel-checked lookup source-control certificates: 2026-11-16
+
+`Rust/LookupSourceFrontend.lean` reads the retained complete pinned Charon
+JSON of both original and actual Rust extra-comparison mutant. It checks
+supported identities/signatures/locals/operations and rejects unsupported
+forms. `Rust/LookupSourceControl.lean` independently executes source branch
+indices and proves `exec_lower`/`run_lower`: complete outcomes and costs agree
+with normalized execution, for every environment/callee interpretation or
+fuel/function/arguments respectively.
+
+`Rust/LookupSourceCertificate.lean` kernel-checks both concrete reads and
+normalizations. `original_checked`/`mutant_checked` certify actual snapshots;
+`mutant_rejects_original` rejects the old normal form. `original_run_bound`
+transfers the instruction envelope; `mutant_violates_old_comparison_budget`
+retains the real empty-table extra-work discriminator. No native proof oracle
+is used. The Python control reifier is no longer trusted for these two
+normalizations; Charon/data import and the snapshot primitive boundary remain.
+
+The 3,770-job main build, all eight Lean suites, native WP example, seven
+Python reifier regressions and 152-endpoint axiom audit pass. Twelve new
+endpoint closures stay within `propext`, `Classical.choice`, `Quot.sound`;
+new modules have no warnings. Fresh pinned regeneration reproduces all new
+snapshot and existing normalized outputs. Main pins, production Rust and
+existing Aeneas-generated semantics are unchanged.
+
+This is checked **source control with snapshot primitives**, advancing W06's
+reification obligation. Typed heap/shared-reference/ownership/move/Box
+adequacy, actual memo core/wrappers, failure costs and machine time/space
+remain open. W06-C3/SRC-01/MEM-04 are not complete.
+[Exact statements, inputs, trust boundary and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-source-certificates.md).
+
 ## Actual-run memo work envelopes: 2026-11-16
 
 `Complexity/Memo/{Work,RepresentationWork}.lean` derives emitted primitive

@@ -148,6 +148,13 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+Follow-up: the [source-control certificates](lookup-source-certificates.md)
+now validate both retained lookup extractions and prove control/result/cost
+preservation in the declared snapshot primitive model. The external Python
+control reifier is no longer trusted for those concrete normalizations.
+This advances item 1 below; typed primitive/heap adequacy and items 2--4 remain
+required. The full C3 claim remains unproved.
+
 1. A checkable source/reification relation for the pinned LLBC fragment, with
    semantic preservation for every supported statement and rejection of unsupported
    ones. Hashes and Python regression tests alone do not prove this relation.

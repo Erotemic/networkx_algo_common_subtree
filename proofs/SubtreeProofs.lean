@@ -228,6 +228,7 @@ public import SubtreeProofs.Rust.IsomorphismAffinityWitness
 public import SubtreeProofs.Rust.TokenIsomorphismEntrypoint
 public import SubtreeProofs.Rust.LookupEvents
 public import SubtreeProofs.Rust.LookupSourceMutation
+public import SubtreeProofs.Rust.LookupSourceCertificate
 public import SubtreeProofs.Complexity.Memo.Bounds
 public import SubtreeProofs.Complexity.Memo.Representations
 public import SubtreeProofs.Complexity.Paper2004.MemoBody

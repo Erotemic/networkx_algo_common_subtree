@@ -746,7 +746,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 checked source/reification and typed heap/reference simulation"
+      "W06-C3 typed heap/reference/move/Box adequacy, actual memo core and wrappers; lookup source-control certificates checked"
     ],
     "still_open": [
       "G0 remaining reconnaissance",
