@@ -1,5 +1,36 @@
 # Common-subtree proof status
 
+## Checked lifetime-erased lookup source types: 2026-11-16
+
+`Rust/LookupSourceTypes.lean` proves executable type equality and exact
+constructor correspondence with the existing independent `Heap.Shape`.
+`Rust/LookupTypedCode.lean` checks fixed-local expression, assignment, callee,
+return and branch types; its soundness theorems produce explicit static
+constraints and independently typed aggregate signatures.
+
+`Rust/LookupType{Reader,Annotations,Certificate}.lean` validates the retained
+source field layouts, signatures, all local types, nested places, operands,
+pointer metadata, aggregate/call generic instances and switch key types.
+Box's opaque generic declaration and constructor signature are checked.
+Concrete original and real cost-mutant certificates use `decide +kernel` and
+cover all four ordinary helpers. Parsed layouts carry `Heap.Shape` witnesses;
+each corresponding normalized body has `CodeConstraints`.
+
+The 3,790-job build, all eleven Lean suites, native WP example, seven Python
+tests and 225-endpoint axiom audit pass. Fifteen new audited closures stay
+within `propext`, `Classical.choice`, `Quot.sound`; new modules have no warnings.
+The new CI suite rejects false annotations, wrong generic instances and
+constructor type errors that control/frame checking alone accepts. Main pins,
+Rust, generated inputs/semantics and extraction tooling are unchanged.
+
+This closes the supported lifetime-erased source field/static-annotation gap.
+Operational heap type preservation from these constraints, intermediate
+spatial ownership, stack allocation/liveness, borrow lifetimes and official
+LLBC/Rust adequacy remain open. This is not a full Rust type checker or a
+runtime type-preservation theorem. The memo core/wrappers, W06-C3 and full
+planning objective remain active.
+[Exact certificates, boundaries and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-source-typing.md).
+
 ## Checked intermediate lookup frame safety: 2026-11-16
 
 `Rust/LookupFrame{State,Checker,Primitives,Execution,Calls,Refinement}.lean`

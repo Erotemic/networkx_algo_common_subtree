@@ -30,6 +30,7 @@ jobs:
           lake env lean Tests/LookupSourceFrontend.lean
           lake env lean Tests/LookupHeap.lean
           lake env lean Tests/LookupFrame.lean
+          lake env lean Tests/LookupSourceTypes.lean
           lake env lean Tests/Memo.lean
           lake env lean Tests/EditDistance.lean
           lake env lean Tests/MemoWork.lean

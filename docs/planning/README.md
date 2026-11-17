@@ -25,6 +25,14 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [source type certificates](lean-complexity-campaign/evidence/lookup-source-typing.md)
+now check lifetime-erased field declarations, signatures, local/nested
+annotations and static constraints for all four helpers in both retained
+extractions. Independent `Heap.Shape` witnesses and concrete certificates are
+kernel checked. The 3,790-job build, eleven suites and 225-endpoint audit pass.
+Operational type preservation, spatial ownership and stack/borrow/source
+adequacy remain W06-C3 work.
+
 The [checked frame-safety proof](lean-complexity-campaign/evidence/lookup-frame-safety.md)
 now covers intermediate local clobbers, moved drops, callee ownership profiles
 and return cleanup for both generated programs' completed normal executions.

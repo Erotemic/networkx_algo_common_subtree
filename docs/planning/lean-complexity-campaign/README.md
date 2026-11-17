@@ -45,6 +45,13 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [source type certificates](evidence/lookup-source-typing.md) kernel-check
+the retained field layouts, lifetime-erased signatures/nested annotations and
+all four helpers' static constraints for both actual extractions. Parsed fields
+agree with independent `Heap.Shape`. The 3,790-job build, eleven suites and
+225-endpoint audit pass. Operational type preservation, spatial ownership,
+stack/borrow and official source adequacy remain open.
+
 The [intermediate frame-safety certificates](evidence/lookup-frame-safety.md)
 prove that completed lookup/copy executions reset/overwrite only non-owning or
 empty locals, respect callee ownership profiles and clean up returns. Both real

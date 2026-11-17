@@ -252,3 +252,19 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.original_run_safe
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.mutant_run_safe
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.lookup_guarded
+
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.same_eq
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.sameList_eq
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.constructorFields_sound
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.constructorFields_complete
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.aggregate_shape
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.checkAction_sound
+#print axioms SubtreeProofs.Rust.LookupSource.SourceTypes.checkCode_sound
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.layoutCheck_sound
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.layouts_sound
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.check_sound
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.check_functions
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.Certificate.original_checked
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.Certificate.mutant_checked
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.Certificate.original_functions
+#print axioms SubtreeProofs.Rust.LookupSource.TypeReader.Certificate.original_declarations

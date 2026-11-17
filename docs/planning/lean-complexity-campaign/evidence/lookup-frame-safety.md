@@ -1,5 +1,11 @@
 # Checked intermediate lookup frame safety: 2026-11-16
 
+Follow-up: [source type certificates](lookup-source-typing.md) now check the
+retained lifetime-erased field declarations and nested annotations against
+independent `Heap.Shape`, with static constraints for every helper in both
+programs. Operational type preservation and the spatial/lifetime/source
+adequacy obligations below remain open.
+
 Baseline: `aa57d78`. This advances W06-C3 from
 [exclusive returned ownership](lookup-return-ownership.md) to explicit
 certificates for intermediate local clobbers, moves, callee ownership profiles

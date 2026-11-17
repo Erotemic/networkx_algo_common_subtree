@@ -86,6 +86,14 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Source-type follow-up:** [lifetime-erased type certificates](evidence/lookup-source-typing.md)
+now kernel-check actual retained field declarations against independent
+`Heap.Shape`, nested annotations, signatures and all ordinary helper bodies'
+static constraints in both programs. Next prove operational type preservation
+from those constraints and intermediate spatial ownership, then stack/borrow
+and official source adequacy. Lifetime regions are erased, and W06-C3 remains
+open; do not repeat the completed declaration/annotation work.
+
 **Local-frame follow-up:** [checked frame safety](evidence/lookup-frame-safety.md)
 now validates moves, no-owned clobbers, empty moved drops, callee ownership
 profiles and return cleanup for every completed normal run, with recursive

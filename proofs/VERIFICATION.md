@@ -18,6 +18,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
+(cd proofs && lake env lean Tests/LookupSourceTypes.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -168,6 +169,18 @@ by fuel induction; source-certificate composition retains the complete cost.
 `Tests/LookupFrame.lean` is in Lean CI. Spatial ownership, complete source
 typing/lifetimes and failed/unwind paths remain open; see the
 [frame-safety report](../docs/planning/lean-complexity-campaign/evidence/lookup-frame-safety.md).
+
+`Rust/LookupSourceTypes.lean`, `LookupTypedCode.lean` and
+`LookupType{Reader,Annotations,Certificate}.lean` now check lifetime-erased
+field layouts, signatures, local/nested type annotations, generic instances
+and static body constraints against independent `Heap.Shape`. Both concrete
+retained extractions pass `decide +kernel`; coverage includes all four ordinary
+helpers. `Tests/LookupSourceTypes.lean` rejects false annotations and type
+errors missed by control/ownership-class checks and is in Lean CI.
+These certificates do not prove operational type preservation or borrow/region
+semantics. Intermediate spatial ownership, stack liveness/lifetimes and
+official source adequacy remain open; see the
+[source-type report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-typing.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`
