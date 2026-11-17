@@ -139,6 +139,16 @@ all Rust/generated-source inputs are unchanged.
 
 ## W04/W05 boundary and named W06-C3 obligations
 
+The [addressed partial primitive follow-up](memo-evaluator-addressed-partials.md)
+now preserves concrete owner identities through source field moves/Box creation
+and selects partial destruction addresses with exact original work. Complete
+owner frames, logical liveness and guarded-address premises remain distinct.
+This extends the completed source/type/region foundations toward C3. It does not
+construct full addressed evaluator execution, addressable caller-local borrows
+or Rust destructor/allocator interpretation. Those remain required before the
+public core/wrappers/global-resource/G3 endpoint.
+
+
 The [recursive typing/region follow-up](memo-evaluator-recursive-typing.md)
 now discharges actual recursive type contracts and retains scoped signatures/
 locals for all nine source definitions, with exhaustive binder/call-region

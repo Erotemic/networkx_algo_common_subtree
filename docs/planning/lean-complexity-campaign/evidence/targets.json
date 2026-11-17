@@ -595,6 +595,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_addressed_partials_followup": {
+        "baseline_commit": "2696690",
+        "evidence": "memo-evaluator-addressed-partials.md",
+        "status": "Addressed initialized-mask/owner representation, concrete typed field moves, fresh Box/caller-frame preservation, exact partial owner/destruction work and guarded logical retirement compose with actual source primitives. Full addressed execution and local storage/loan/region/destructor interpretation remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3910,
+          "lean_suites": 33,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 780,
+          "unique_statement_records": 275,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -783,7 +802,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 addressed partial moves/owners/storage/spatial/caller-local loans/regions/live destruction, including destructor-instance typing/semantics and remaining source-operation adequacy. Actual nine-definition source/static/recursive snapshot types, all typed callee contracts, deep ordinary-output closure and parsed scoped region annotations/call arities now compose with universal source/native totality and exact error/overflow/table/full-cost behavior. Reuse these certificates and completed helper safety chains. Then public maximum, separate indexed/token/reconstruction wrappers, input/error policy, global resource contracts and G3. D12 permits explicit scoped source-operation boundaries; Charon/Aeneas import, compiler/runtime/provenance/mutable/unwind and physical allocator behavior remain separately declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 complete addressed evaluator operation/control/callee simulation, addressable local storage, active/suspended caller frames, actual loan-derived guarded addresses, owner/storage/spatial/region/destructor interpretation. Addressed partial move/Box/drop data/identity/frame/retirement primitives now compose with existing source costs, alongside completed static/recursive snapshot types, parsed region scope and universal source/native full-cost behavior. Reuse all completed helper/certificate chains. Then public maximum, separate indexed/token/reconstruction wrappers, input/error policy, global resource contracts and G3. D12 permits explicit scoped source-operation boundaries; compiler/runtime/provenance/mutable/unwind and physical allocator behavior remain separately declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

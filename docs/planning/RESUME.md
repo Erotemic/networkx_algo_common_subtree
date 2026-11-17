@@ -1,87 +1,93 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[recursive actual-source typing and region binding](lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md).
-The complete nine-definition profile now has recursive snapshot type preservation
-at every fuel, with all callee contracts discharged and typed initial locals,
-Box payloads and both checked-add outcomes. Actual region-bearing signatures and
-locals are retained and kernel checked against the existing code/type profile.
-Addressed owners/storage/local loans/destruction remain next. W06-C3 and the full
-planning goal remain open.
+[addressed partial moves and logical destruction](lean-complexity-campaign/evidence/memo-evaluator-addressed-partials.md).
+Six modules connect the existing heap cells, source partial masks and complete
+Box occurrence lists. Moves transfer concrete identities, retain Box shells and
+caller-owner frames, and recover independently typed complete readback. Existing
+Box allocation and actual source move/Box/drop primitives compose at unchanged
+costs. Complete addressed evaluator execution and dynamic local-loan/storage/
+destructor interpretation remain next. W06-C3 and the full planning goal stay open.
 
 ## Checked endpoints and scope
 
-Six new modules reuse the preceding actual type certificate and independent
-partial-local model. Generic source dispatch, switches and early returns preserve
-types. `BodiesTyped` and fuel induction establish actual recursive `CallsTyped`
-without a typed-callee hypothesis. Preservation constrains successful runs;
-it does not make arbitrary checked bodies total. The tests retain this false
-neighbor and the shared-reference payload exception for polymorphic Box.
+`LookupSource.Partial.Addressed.Rep` relates existing stored cells to initialized
+source masks and ordered ownership occurrences. Empty fields own nothing; node
+tags, siblings and Box shells remain. `Rep.materialize` recovers old full heap
+readback/footprint; `Rep.of_full` lifts existing helper/native results without
+assuming all output owners are fresh or contiguous. Bounds, exact Box counts,
+immutable extension and fresh Box creation reuse the existing heap model.
 
 Public new endpoints:
 
-- `SourceEval.Types.original_run_typed`: all nine ordinary functions and both
-  intrinsics, every fuel, independently typed arguments and exact existing runs.
-- `original_exec_typed`, `original_result_typed`, `original_execute_typed`:
-  actual callbacks, returned types and retained JSON execution.
-- `output_closed`, `original_represented_output_unborrowed`: deep ordinary-output
-  closure, including the option/table tuple. The latter requires an explicit
-  heap representation; it does not construct addressed evaluator execution.
-- `SourceEval.Evaluator.evaluate_typed`, `evaluate_total_typed`,
-  `evaluate_source_typed`: actual source types plus existing native agreement
-  for all finite native queries/arbitrary warm tables and every error/overflow.
-- `SourceEval.Regions.Certificate.original_checked`, `original_program`,
-  `original_mentions_bound`: actual scoped signatures/locals, exact call-region
-  arities and all descendant region-use positions, including unwind metadata.
+- `Rep.take`, `Rep.take_typed`: concrete owned projection, moved full readback/
+  footprint/type, remaining represented mask and ownership permutation partition.
+- `Rep.destroy`, `Rep.unique`: independent addressed traversal selects exactly the
+  complete owner list and original source visits/Box counts.
+- `destroy_full_owned`, `destroy_packed_word`, `destroy_packed_result`: existing
+  ownership intervals/native packing reuse; no copied helper implementations.
+- `Rep.destroy_retire`, `retire_preserves`, `retired_not_alive`: explicit logical
+  live-owner consumption and guarded-address preservation. Duplicate-free live
+  owners are required; protection may contain shared aliases.
+- `Separated.{of_full,take,alloc,drop,destroy_frame}`: complete owner separation
+  and retained caller-owned addresses. This alone does not protect shared loans.
+- `EnvRep.{of_full,store,clear,remask,move}`: concrete locals, source masks and
+  per-local complete ownership lists.
+- `SourceEval.AddressedPrimitives.{operand_move,box_new,action_drop,
+  action_drop_retire,action_drop_cost}`: existing expanded-source primitives and
+  exact complete costs, with live/guarded resource premises where needed.
 
-The shared regional type/erasure/renaming/reader/value model now supports
-parameterized options. The evaluator declares two signature lifetimes for three
-value inputs and 247 body regions for 113 locals. Insertion has three lifetimes
-for four values; owned choice has none. These are parsed binders, not lifetime
-intervals. The old heap-only borrow-route restriction is not applied to new
-constructed-local borrows, and its dynamic safety theorem is not transferred.
+Stored data remains after moves/retirement. Raw projection/readback is not an
+initialization or allocation-liveness assertion. Guarded addresses must come from
+actual live references, their storage roots and reachable Box graphs; the current
+primitive contract does not derive them. Tests show an owner-separated shared
+alias can still be invalidated by retirement. Logical retirement does not prove
+Rust glue calls, physical allocator behavior or global space bounds.
 
-The previous [source type/partial primitive certificate](lean-complexity-campaign/evidence/memo-evaluator-source-typing.md)
-remains the foundation. `LocalsTyped` constrains declared slots; static bounds
-exclude other accesses. Holes keep types without asserting initialization.
-Source snapshot typing and binding do not establish addressed storage liveness,
-exclusive owners, live loans or destructor-instance semantics.
+The completed [recursive snapshot types/actual region binding](lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md)
+retain `SourceEval.Types.original_run_typed`, actual JSON typing and deep ordinary
+output closure, plus `SourceEval.Regions.Certificate.original_program` and all
+region-use bounds for all nine bodies. The evaluator has two signature lifetimes,
+247 body binders and 113 locals. These are binder IDs, not lifetime intervals.
+The preceding [source/partial type certificate](lean-complexity-campaign/evidence/memo-evaluator-source-typing.md)
+also remains complete; `Legacy.Bounded` is not a substitute for these types.
 
 The completed [functional evaluator proof](lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
 retains `Evaluator.evaluate_total`, `evaluate_source`, `evaluate_refines`,
-`evaluate_stable`, `Evaluation.unique` and `evaluate_consistent`. No cache
-soundness or witness/score consistency is needed for totality/error policy;
-independent optimality/memo results keep their original sound-cache/input-width
-hypotheses. Full costs retain syntax, destruction, helper events and solver calls.
-`destroyed` is already included in `work.steps`; do not bill it twice. Fuel bounds
-call nesting, not execution work.
+`evaluate_stable`, `Evaluation.unique`, `evaluate_consistent` and the newer typed
+corollaries. All finite queries/arbitrary warm tables and every overflow/error
+retain exact output tables/full costs. Independent optimality/memo results keep
+the original sound-cache/input-width hypotheses. `destroyed` is already included
+in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 
-Production Rust, generated artifacts, source-control parsing/execution and pins
-are unchanged. The accepted axiom baseline remains `propext`, `Classical.choice`,
-`Quot.sound`.
-The 3,904-job build, all 32 Lean suites, native WP, nine Python tests and
-734-endpoint axiom audit pass. Shared statement inspection covers 1,046 unique
-declaration records with no unknown references.
-See the latest evidence report for validation and scope.
+Production Rust, generated artifacts, existing memory/control/type/region models
+and pins are unchanged. The accepted axiom baseline remains `propext`,
+`Classical.choice`, `Quot.sound`.
+The 3,910-job build, all 33 Lean suites, native WP, nine Python tests and
+780-endpoint axiom audit pass. Shared statement inspection covers 275 unique
+declarations with no unknown references.
+See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Addressed partial moves and safety.** Reuse the completed actual
-   source/type/region certificates, generic control and recursive type discharge.
-   Extend the addressed typed reachable-cell model, heap simulation, owner
-   ledgers, spatial/caller separation, storage initialization, typed loans and
-   source-region interpretation to partial tuples/owned-field moves and live
-   destruction, including destructor-instance typing/semantics. Do not reprove
-   extraction, static/recursive snapshot typing, binder scope or functional
-   evaluator/native agreement. `Legacy.Bounded` is not a type system. Preserve
-   insertion's owned table and possible shared aliases into it.
-2. **Caller-owned-local borrows and destruction.** The old lookup borrow profile
-   restricts referents to the old heap; evaluator borrows of constructed local
-   values require a stronger framed interpretation. Track live local owners,
-   suspended callers, source regions/storage and loan validity through moves and
-   drops. Partial moves retain tags, siblings and Box shells and never move through
-   shared references. Functional source/native totality alone does not establish
-   these safety traces or physical frees.
+1. **Complete addressed evaluator execution.** Consume the new partial-data/
+   owner/move/Box/drop primitives and existing source/type/region certificates.
+   Construct the full addressed operation/control/callee simulation, retaining
+   active local owners, suspended callers, allocation/storage classes and exact
+   costs. Reuse existing helper heap/owner/spatial/storage/loan/region chains.
+   Do not reprove extraction, partial transfer/destruction, snapshot typing,
+   binder scope or functional evaluator/native agreement. Preserve insertion's
+   owned table and possible shared aliases into it.
+2. **Local borrows, liveness and destruction.** Current `Heap.Cell` data and
+   `Heap.Locals` do not provide an addressable caller-local storage interpretation.
+   Add a framed interpretation for borrows of constructed locals and ending
+   storage; derive guarded addresses from actual live loans in active/suspended
+   frames. Current raw readback still sees retained data after retirement, so it
+   cannot establish liveness. Compose owner/storage/spatial/loan/parsed-region
+   traces and destructor-instance typing/semantics along all actual branches.
+   The old heap-only borrow profile cannot be silently transferred to these
+   new local borrows. No physical allocator/whole-compiler proof is introduced
+   as an initial D12 prerequisite.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
    table teardown and the remaining safety/cost traces. Then indexed/token/
@@ -156,6 +162,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourceEvalTypes.lean)
 (cd proofs && lake env lean Tests/SourceEvalTypeExecution.lean)
 (cd proofs && lake env lean Tests/SourceEvalRegions.lean)
+(cd proofs && lake env lean Tests/SourcePartialHeap.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

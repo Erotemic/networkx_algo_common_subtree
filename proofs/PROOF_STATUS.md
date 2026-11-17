@@ -1,5 +1,32 @@
 # Common-subtree proof status
 
+## Addressed partial moves and logical destruction: 2026-11-17
+
+Six modules relate existing stored cells, initialized source masks and complete
+ordered ownership occurrences. Source field moves preserve concrete identities,
+partition ownership and retain Box shells/siblings; typed readback recovers the
+existing independent heap type. Fresh Box allocation reuses the existing heap
+primitive and caller-frame separation. A concrete-pointer traversal selects all
+remaining owners and exact original source destructor work.
+
+Logical retirement requires live, duplicate-free owners and disjoint guarded
+addresses; retained caller owners stay live. Actual source move/Box/drop
+primitives consume these representations at unchanged complete costs. Existing
+full heap/native packing and ownership proofs lift into the new partial model.
+Representation alone allows duplicate ownership and retained data after moves/
+retirement; tests reject treating it or owner separation as loan/liveness safety.
+
+Full addressed evaluator execution, active/suspended caller storage/local loans,
+loan-derived guards, region/destructor-instance interpretation, public core/
+wrappers and global resources/G3 remain open. No full W06-C3, allocator or
+planning-goal closure follows.
+The 3,910-job build, all 33 Lean suites, native WP, nine Python tests and
+780-endpoint axiom audit pass. Shared statement inspection covers 275 unique
+declarations with no unknown references.
+
+[Exact evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-partials.md).
+
+
 ## Actual recursive source typing and region binding: 2026-11-17
 
 Six modules connect all nine actual source type profiles to recursive snapshot

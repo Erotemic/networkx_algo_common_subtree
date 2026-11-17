@@ -1,5 +1,17 @@
 # Lean complexity campaign: proto-roadmap
 
+[Addressed partial moves and logical destruction](evidence/memo-evaluator-addressed-partials.md)
+now retain concrete Box identities through owned field moves, fresh allocation
+and partial destruction, with typed readback and caller-owner frames. The actual
+source move/Box/drop primitives keep their complete costs. Live, duplicate-free
+owners and guarded addresses are explicit resources. Whole addressed execution,
+caller-local storage/loans and destructor interpretation remain required, then
+public core/wrappers and global resources/G3. W06-C3 and the full goal stay open.
+The 3,910-job build, all 33 Lean suites, native WP, nine Python tests and
+780-endpoint axiom audit pass. Shared statement inspection covers 275 unique
+declarations with no unknown references.
+
+
 [Recursive evaluator typing and source regions](evidence/memo-evaluator-recursive-typing.md)
 now connect all nine actual type profiles to complete recursive snapshot
 execution, with typed initial locals, both intrinsics and deep ordinary-output

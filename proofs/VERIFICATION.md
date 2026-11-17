@@ -40,6 +40,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceEvalTypes.lean)
 (cd proofs && lake env lean Tests/SourceEvalTypeExecution.lean)
 (cd proofs && lake env lean Tests/SourceEvalRegions.lean)
+(cd proofs && lake env lean Tests/SourcePartialHeap.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -236,6 +237,17 @@ costs; full addressed ownership/storage/local-loan/destructor interpretation
 remains required. The 3,904-job build, 32 Lean suites, native WP, nine Python
 tests and 734-endpoint audit pass; statement inspection exports 1,046 unique
 declarations with no unknown references. See the [recursive typing evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md).
+
+
+Six addressed partial-value modules now connect stored cells, initialized masks,
+complete owner lists, concrete move/readback, fresh Boxes and logical destruction
+to existing source primitives. `Tests/SourcePartialHeap.lean` checks a nested
+payload move retaining its Box shell, precise retirement/visit/work counts and
+caller ownership, plus duplicate-owner, stale-data and shared-alias false
+neighbors. Whole addressed execution and loan/storage/destructor interpretation
+remain required. The 3,910-job build, 33 Lean suites, native WP, nine Python
+tests and 780-endpoint audit pass; statement inspection exports 275 unique
+declarations with no unknown references. See the [addressed partial evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-partials.md).
 
 ## VM caches
 

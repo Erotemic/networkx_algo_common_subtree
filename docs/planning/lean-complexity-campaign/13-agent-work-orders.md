@@ -86,6 +86,22 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Addressed partial primitives:** [moves, Boxes and logical destruction](evidence/memo-evaluator-addressed-partials.md)
+now reuse existing heap cells/full representations/footprints with initialized
+source masks and complete owner lists. Concrete identities partition on field
+moves, Box shells remain, fresh allocation preserves frames, and partial
+traversal selects exact owners/work. Actual source move/Box/drop costs compose.
+Reuse these primitives and the completed type/region/native/helper certificates.
+Next complete addressed operation/control/callee simulation, addressable local
+storage, active/suspended caller frames and real loan-derived guarded addresses,
+then destructor-instance interpretation and public core/wrappers/resources/G3.
+Raw stored-data readback is not liveness; owner separation does not protect
+shared targets by itself. Full W06-C3 remains open.
+The 3,910-job build, all 33 Lean suites, native WP, nine Python tests and
+780-endpoint axiom audit pass. Shared statement inspection covers 275 unique
+declarations with no unknown references.
+
+
 **Recursive evaluator types and regions:** [actual recursive preservation and binding](evidence/memo-evaluator-recursive-typing.md)
 now discharge every typed callee contract, including Box/checked add, and retain
 scoped source signatures/locals with exhaustive region-use/call-arity checks for
