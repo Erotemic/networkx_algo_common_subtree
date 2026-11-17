@@ -34,6 +34,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourcePartial.lean)
 (cd proofs && lake env lean Tests/SourceEval.lean)
 (cd proofs && lake env lean Tests/SourceEvalHelpers.lean)
+(cd proofs && lake env lean Tests/SourceEvalChoice.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -176,6 +177,15 @@ Shared `leanq` inspected the recursive and insertion-totality statement closures
 unchanged; the preceding full regeneration and thirteen Rust tests remain the
 provenance/behavior baseline. See the
 [helper bridge report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
+
+Four `SourceEvalChoice*` modules add the complete kernel-certified actual score
+choice body, universal native/tie agreement and exact losing-witness destructor
+currency. `Tests/SourceEvalChoice.lean` checks distinct-word ties, inconsistent
+scores and exact work/Box counts. All 3,877 library jobs, 27 Lean suites, native WP, nine Python tests and the
+634-endpoint axiom audit pass; shared statement inspection covers 706 records. No Rust,
+generated data, parser/executor or pins change. See the
+[owned-choice report](../docs/planning/lean-complexity-campaign/evidence/memo-owned-choice.md)
+for scope and reproduction.
 
 ## VM caches
 

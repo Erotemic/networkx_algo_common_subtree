@@ -1,5 +1,15 @@
 # Lean complexity campaign: proto-roadmap
 
+[Actual owned score choice](evidence/memo-owned-choice.md) now kernel-checks the
+complete body, source/native correspondence and first-on-ties behavior with exact
+losing-value destruction work. Native words of `n` losing pairs give `30 + 4n`
+source steps, `4n + 3` visits and `2n` Boxes in the declared partial-local model.
+Addressed live destruction, evaluator/core functional/resource/safety composition
+and wrappers/G3 remain open. Seven ordinary helper contracts are now available.
+The 3,877-job build, all 27 Lean suites, native WP, nine Python tests and
+634-endpoint axiom audit pass. Shared statement inspection covers 706 records.
+
+
 The [evaluator helper bridge](evidence/memo-evaluator-helper-bridge.md) now
 kernel-checks all six helper identities in the actual expanded program and
 transfers successful recursive runs, unchanged work and native contracts.

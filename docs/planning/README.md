@@ -25,6 +25,16 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Actual owned score choice](lean-complexity-campaign/evidence/memo-owned-choice.md)
+now has a kernel body certificate, universal source/native and first-on-ties
+contracts, and exact losing-witness destructor/work counts. For `n` losing-word
+pairs, work is `30 + 4n`, visits `4n + 3`, Boxes `2n`; no score/word consistency
+is assumed. Addressed live destruction and whole-evaluator/core composition
+remain next. This completes another source fragment, with W06-C3 still open.
+The 3,877-job build, all 27 Lean suites, native WP, nine Python tests and
+634-endpoint axiom audit pass. Shared statement inspection covers 706 records.
+
+
 The [evaluator helper bridge](lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md)
 kernel-checks identity of all six actual helper bodies with their completed
 profiles. Successful recursive execution preserves the same nesting fuel and

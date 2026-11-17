@@ -1,6 +1,32 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
+[actual owned score choice](lean-complexity-campaign/evidence/memo-owned-choice.md).
+Four `SourceEvalChoice*` modules kernel-check the complete actual body and
+prove source/native choice at every positive nesting fuel, including the first-
+on-ties rule for different witnesses. The winner is moved; only the loser
+remains live at the two conditional drops. For a losing word of `n` pairs,
+complete declared work is `30 + 4n`, destructor visits `4n + 3` and destructor
+Boxes `2n`; structural-helper events and solver calls are zero. No score/word
+consistency premise is added. The new suite consumes actual source execution
+with distinct-word ties and inconsistent stored scores, retaining exact costs.
+These are partial-local snapshot/drop currencies, not addressed deallocation.
+The 3,877-job build, all 27 Lean suites, native WP, nine Python tests and
+634-endpoint axiom audit pass. Shared statement inspection covers 706 records.
+
+
+Next actual evaluator typing/regions/owner/storage/local-borrow/live-destruction
+simulation and universal functional/error/table/resource correspondence, then
+public core, wrappers/input policy and G3. Reuse the seven now-refined ordinary
+helpers and the scalar/checked-add bridge. Reuse the existing native
+`MemoizedOrderedSolver.memoized_common_embedding_refines` and generic
+`Complexity.Memo.eval_spec` where their hypotheses apply. Preserve
+actual returned warm-table order and overflow exits, insertion's owned table
+and caller aliases; do not require cache soundness for helper execution. Only
+optimality needs the existing sound-cache assumptions. No evaluator or public
+core universal native/addressed theorem has yet been proved.
+
+The preceding increment establishes
 [expanded evaluator helper reuse](lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
 Eight maintained modules prove lifted reads and numeric-domain preservation,
 statement/control/recursive driver simulation, actual six-helper body identity,
@@ -17,10 +43,8 @@ The 3,873-job build, 26 Lean suites, native WP, nine Python tests and
 Next compose evaluator typing/regions/owners/storage/local borrows/destruction,
 then universal functional/overflow/table/resource correspondence, public core,
 wrappers/input policy and G3. Do not reprove helper algorithms/safety traces.
-A small next native endpoint is `choose_longer`: two owned inputs, bounded
-score comparison, move the winner, destroy the loser, and retain the first on
-ties. Charge its actual remaining destructor visits/Boxes before composing it
-with evaluation; the helper bridge alone has zero destruction.
+`choose_longer` now has the source/native and logical destruction-work endpoint
+above; its addressed live-destruction safety remains open.
 
 The preceding increment establishes
 [actual evaluator source-profile execution](lean-complexity-campaign/evidence/memo-evaluator-source-profile.md).

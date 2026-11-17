@@ -681,3 +681,14 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Helpers.memo_source_scoped
 #print axioms SubtreeProofs.Rust.SourceEval.Helpers.concatenate_source_total
 #print axioms SubtreeProofs.Rust.SourceEval.Helpers.insert_source_total
+
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.body_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.word_dropWork
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.result_dropWork
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.run_body
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.cost_exact
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.actual_body
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.source_run
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.source_execute
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.source_native
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.first_on_tie

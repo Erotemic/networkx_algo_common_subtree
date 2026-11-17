@@ -148,6 +148,15 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [actual owned-choice increment](memo-owned-choice.md) kernel-checks its
+source body, proves universal source/native first-on-ties choice, and accounts
+for losing-value destruction with exact structural work. This adds the seventh
+ordinary helper contract. Addressed live destruction, the actual evaluator/core
+and wrappers/G3 remain next; SRC-01/C3 is still open.
+The 3,877-job build, all 27 Lean suites, native WP, nine Python tests and
+634-endpoint axiom audit pass. Shared statement inspection covers 706 records.
+
+
 The [expanded evaluator helper bridge](memo-evaluator-helper-bridge.md) now
 kernel-checks the actual six-helper body identities and reuses recursive native
 and addressed safety results at unchanged fuel/full work. It adds neither

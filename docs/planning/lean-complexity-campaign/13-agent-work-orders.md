@@ -86,6 +86,17 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Owned choice:** [actual source/native choice](evidence/memo-owned-choice.md)
+now consumes a kernel body certificate, retains the first on equal scores and
+charges the losing witness's exact logical destructor work. The native API has
+no word/score consistency premise. Reuse it with the preceding six helpers;
+whole-evaluator typing/regions/owners/storage/local borrows/live destruction,
+functional/error/table/resource correspondence and public core/wrappers/G3
+remain required. No physical deallocation or full W06-C3 claim follows.
+The 3,877-job build, all 27 Lean suites, native WP, nine Python tests and
+634-endpoint axiom audit pass. Shared statement inspection covers 706 records.
+
+
 **Expanded helper reuse:** [the checked bridge](evidence/memo-evaluator-helper-bridge.md)
 identifies all six actual helper bodies with their earlier profiles and transfers
 successful runs at identical nesting fuel/full work, with zero new destruction

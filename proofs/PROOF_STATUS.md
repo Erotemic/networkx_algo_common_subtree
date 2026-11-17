@@ -1,5 +1,26 @@
 # Common-subtree proof status
 
+## Actual owned score choice: 2026-11-17
+
+Four `SourceEvalChoice*` modules kernel-check the actual complete body and
+prove universal source/native execution at every positive nesting fuel.
+`source_run`, `source_execute` and `source_native` retain all cost components;
+`first_on_tie` retains the first even for distinct equal-score witnesses.
+The winner is moved and the loser dropped; arbitrary native stored scores are
+supported. `word_dropWork`, `result_dropWork` and `cost_exact` prove, for `n`
+losing-word pairs, `30 + 4n` complete source steps, `4n + 3` declared visits and
+`2n` destructor Boxes, with zero helper events/evaluator calls. Scalar comparison
+is charged in source work, separately from structural comparison events.
+
+The snapshot/partial-local destructor currency does not imply addressed frees,
+physical allocator safety or peak residency. Full evaluator typing/regions/
+ownership/storage/local borrows/live destruction, universal functional/overflow/
+table/resource correspondence, public core and separate wrappers remain open.
+The 3,877-job build, all 27 Lean suites, native WP, nine Python tests and
+634-endpoint axiom audit pass. Shared statement inspection covers 706 records.
+
+[Exact endpoints and evidence](../docs/planning/lean-complexity-campaign/evidence/memo-owned-choice.md).
+
 ## Expanded evaluator helper reuse: 2026-11-17
 
 Eight maintained modules add full lifted-state read compatibility and an
