@@ -274,3 +274,5 @@ public import SubtreeProofs.Rust.SourceEvalRegionCertificate
 public import SubtreeProofs.Rust.SourceEvalHeapMoveDrop
 
 public import SubtreeProofs.Rust.SourceEvalLocalBorrow
+
+public import SubtreeProofs.Rust.SourceEvalFrameActions

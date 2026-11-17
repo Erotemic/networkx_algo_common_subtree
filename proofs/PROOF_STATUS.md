@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+## Guarded in-place writes and storage lifecycle: 2026-11-17
+
+[Guarded in-place writes and storage lifecycle](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-frame-writes.md)
+now preserve concrete read/owner graphs across unrelated mutations. Actual
+scalar assignments update existing stack roots at unchanged costs; storage
+markers retain caller resources and reject protected/dead/wrong-class roots.
+Storage-dead also handles the actual still-initialized nonowning references,
+without losing Box owners. Full RHS/move/context/control/callee traces and
+region/destructor composition remain required, then public core/wrappers/
+resources/G3. W06-C3 and the full planning goal stay open.
+The 3,918-job build, all 35 Lean suites, native WP, nine Python tests and
+867-endpoint axiom audit pass. Shared statement inspection covers 245 unique
+declarations with no unknown references.
+
 ## Addressable local storage and retained reference graphs: 2026-11-17
 
 [Addressable local storage and retained reference graphs](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-local-storage.md)

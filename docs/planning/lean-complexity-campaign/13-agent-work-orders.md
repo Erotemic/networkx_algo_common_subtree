@@ -86,6 +86,18 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Guarded in-place writes and storage lifecycle](evidence/memo-evaluator-frame-writes.md)
+now preserve concrete read/owner graphs across unrelated mutations. Actual
+scalar assignments update existing stack roots at unchanged costs; storage
+markers retain caller resources and reject protected/dead/wrong-class roots.
+Storage-dead also handles the actual still-initialized nonowning references,
+without losing Box owners. Full RHS/move/context/control/callee traces and
+region/destructor composition remain required, then public core/wrappers/
+resources/G3. W06-C3 and the full planning goal stay open.
+The 3,918-job build, all 35 Lean suites, native WP, nine Python tests and
+867-endpoint axiom audit pass. Shared statement inspection covers 245 unique
+declarations with no unknown references.
+
 [Addressable local storage and retained reference graphs](evidence/memo-evaluator-local-storage.md)
 now give actual source address expressions concrete pointers into initialized
 partial locals. Classified stack roots and Box owners are distinct; transitive

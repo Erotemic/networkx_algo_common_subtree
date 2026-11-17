@@ -46,6 +46,7 @@ jobs:
           lake env lean Tests/SourcePartial.lean
           lake env lean Tests/SourcePartialHeap.lean
           lake env lean Tests/SourceLocalBorrow.lean
+          lake env lean Tests/SourceFrameUpdates.lean
           lake env lean Tests/SourceEval.lean
           lake env lean Tests/SourceEvalHelpers.lean
           lake env lean Tests/SourceEvalChoice.lean

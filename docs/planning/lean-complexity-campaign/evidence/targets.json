@@ -633,6 +633,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_frame_writes_followup": {
+        "baseline_commit": "c5b612f",
+        "evidence": "memo-evaluator-frame-writes.md",
+        "status": "Guarded mutable-world read/owner transport, address-preserving stack writes, empty-destination store continuations, actual scalar assignment and source storage markers checked. Initialized zero-owner reference teardown covers observed source cases. Full RHS/move/frame/control/callee traces and dynamic region/destructor interpretation remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3918,
+          "lean_suites": 35,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 867,
+          "unique_statement_records": 245,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -821,7 +840,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 full addressed operation/control/callee simulation using classified storage, partial owner moves/destruction, transitive shared graphs and addressable local frames. Construct active/suspended frames and prove mutation/initialization conflicts, guarded-read preservation for writes and actual region/destructor interpretation along all branches. Actual source address/Box/drop contracts now preserve retained frame graphs; prior static/recursive snapshot types, region binding and universal native/full-cost evaluator proofs remain reusable. Then public maximum, separate wrappers/input policy/global resources/G3. D12 accepts explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation boundaries stay declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 construct actual initial/intermediate active/suspended frames and full addressed RHS/move/copy/aggregate/control/callee execution with exact owners/read guards, storage and costs. Guarded in-place write/owner transport, source scalar assignment/store continuations and storage-live/dead (including initialized zero-Box references) now compose with preceding partial move/Box/drop/local-borrow contracts. Derive actual conflict premises and dynamic region/destructor interpretation; reuse completed snapshot/type/binding/native/helper chains. Then public maximum, separate wrappers/input policy/resources/G3. D12 permits explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

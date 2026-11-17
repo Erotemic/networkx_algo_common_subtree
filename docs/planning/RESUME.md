@@ -1,18 +1,48 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[addressable local storage and retained reference graphs](lean-complexity-campaign/evidence/memo-evaluator-local-storage.md).
-Four modules give actual source address expressions concrete pointers into
-initialized partial locals. Transitive shared graphs supply read resources;
-classified live stack roots are distinct from Box owners. Source Box creation
-and guarded drop preserve retained caller frames at unchanged costs. Full
-addressed operation/control/call simulation and mutation/initialization conflicts,
-dynamic region/destructor interpretation remain next. W06-C3 and the full
-planning goal stay open.
+[guarded in-place writes and storage lifecycle](lean-complexity-campaign/evidence/memo-evaluator-frame-writes.md).
+Four modules preserve transitive read graphs and complete owner ledgers across
+unrelated mutations, initialize existing stack roots, and compose source scalar
+assignment/store continuations and storage markers. Actual still-initialized
+nonowning references may end storage; retained Box shells may not lose owners.
+Full addressed RHS/move/frame/control/callee traces and dynamic region/destructor
+composition remain next. W06-C3 and the full planning goal stay open.
 
 ## Checked endpoints and scope
 
-New public endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
+New endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
+
+- `Retains.{refl,of_extends,weaken,trans,read}`, `Graph.transport`,
+  `PartialGraph.{transport,owner_transport}` and field variants: preserve selected
+  transitive read graphs and exact existing owner ledgers outside writes.
+- `Preserves.{refl,trans,weaken}`, `Keeps.preserves`, `Loan.preserve`,
+  `Frame.preserve`: compose mutable retained worlds with earlier append/retire.
+- `World.{write_spec,write_preserves,writeStack_iff,writeStack_success}`,
+  `World.WellFormed.write`, `Loan.write`, `Frame.write`: guarded in-place writes
+  keep root identity/class/liveness/length. The raw `World.write` is not mutation
+  authorization; `writeStack` checks actual stack identity/liveness/bounds/guards.
+- `Frame.{erase,bind,store,endStorage}`, `World.endStack_success`: explicit
+  remaining-local contexts and initialized destination/storage endpoints.
+  Erasing a graph view alone does not authorize losing owners or loans.
+- `SourceEval.AddressedPrimitives.{action_storageLive,action_storageDead,
+  action_storageDead_nonowning,storageDead_no_owners,action_assign_store,
+  action_assign_number}`: actual source markers, zero-owner teardown, store
+  continuation and complete constant-number assignment at unchanged costs.
+
+Assignments currently require an empty destination mask and actual represented
+RHS/intermediate state. Full addressed evaluation of arbitrary RHS expressions
+is not assumed complete by that continuation. Storage-dead can also end an
+initialized zero-Box mask, as required by actual reference temporaries (for
+example local 23 in `Evaluator.emptyLeft`); a Box shell fails this test. Active
+contexts may include suspended callers' guard resources; complete traces must
+supply that coverage and prove every conflict condition. Guards protect entire
+roots, sufficient for these whole-local writes; arbitrary field mutation is not
+covered. Parsed regional/destructor interpretation remains open.
+
+The preceding addressable-local and reference-graph foundation remains reusable:
+
+Earlier public endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
 
 - `Graph.{represents,partial,mono}`, `graph_of_represents`, `Rep.graph`,
   `PartialGraph.{materialize,mono,locate,read}`: finite full/partial concrete
@@ -35,8 +65,8 @@ spatial accounting. A live outer pointer alone does not establish transitive
 liveness. `Loan` is retained-data/liveness evidence; it does not certify that a
 later mutation/move/mask change was legal. `Frame.keep` retains the same source
 state. Initialized creation uses the actual partial mask in `Frame.borrow`.
-`Keeps` currently uses immutable heap extension, sufficient for allocation and
-retirement; in-place writes need a guarded-read preservation rule. Stack
+The new `Preserves`/`Retains` transport supports in-place writes outside all
+retained graph roots; the original `Keeps` append/retire APIs remain reusable. Stack
 identities/generations are symbolic storage, not physical addresses or Box events.
 
 The preceding partial owner/move/destructor foundation remains reusable:
@@ -93,31 +123,30 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, existing memory/control/type/region models
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,914-job build, all 34 Lean suites, native WP, nine Python tests and
-830-endpoint axiom audit pass. Shared statement inspection covers 278 unique
+The 3,918-job build, all 35 Lean suites, native WP, nine Python tests and
+867-endpoint axiom audit pass. Shared statement inspection covers 245 unique
 declarations with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Complete addressed evaluator execution.** Consume the partial owner/move/
-   Box/drop foundation and new classified storage/graph/frame contracts, with
-   existing source/type/region certificates. Construct full addressed operands,
-   expressions, actions, shared control and recursive callee simulation. Preserve
-   exact costs, concrete pointer identities, active local owners and suspended
-   caller frames. Reuse existing helper heap/owner/spatial/storage/loan/region
-   chains and universal native totality. Do not repeat completed extraction,
-   partial transfer/destruction, snapshot typing, binder scope or graph/borrow
-   contracts. Preserve insertion's owned table and aliases into it.
-2. **Frame updates, conflicts and lifetimes.** Construct the actual initialized
-   frames along the 113-local body. Prove mask/owner updates for moves, addressable
-   local assignments and storage endpoints; `Frame.keep` only preserves an
-   unchanged source state. Generalize immutable extension to preservation of
-   guarded reads for in-place local writes. Derive conflicts from retained live
-   graphs, keep all suspended callers, and retire stack roots separately from
-   Box owners. A `Loan` by itself cannot justify a mutation or retain initialized
-   access after a source mask change. Compose parsed region interpretation and
-   destructor-instance typing/semantics along actual branches/calls. No physical
+1. **Complete addressed evaluator execution.** Construct actual initial frames
+   and all intermediate contexts using the partial owner/move/drop, classified
+   storage, read graphs, local borrows and guarded write/marker contracts.
+   Complete moves/copies, aggregate/less/address RHS, calls, control, switches and
+   returns with exact costs and pointer identities. The assignment continuation
+   consumes the represented post-RHS world; it does not replace addressed RHS
+   simulation. Reuse all completed source/type/region/native/helper chains.
+   Preserve insertion's transferred table and aliases into it.
+2. **Actual conflicts, lifetimes and destruction.** Prove mask/owner/guard updates
+   and initialization along the 113-local evaluator and all callees; preserve
+   every suspended caller frame. Initialized zero-owner references/scalars can
+   end storage, but owned values/Box shells must be moved or dropped first.
+   Empty-destination stores already preserve address/class/liveness/length;
+   compose them with actual transfers and full spatial accounting. Derive every
+   guard/conflict premise from actual live graphs. A `Loan` alone cannot justify
+   a source mask change or illegal move. Compose dynamic parsed-region and
+   destructor-instance typing/semantics along branches/calls. No physical
    allocator/whole-compiler proof is introduced as an initial D12 prerequisite.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
@@ -195,6 +224,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourceEvalRegions.lean)
 (cd proofs && lake env lean Tests/SourcePartialHeap.lean)
 (cd proofs && lake env lean Tests/SourceLocalBorrow.lean)
+(cd proofs && lake env lean Tests/SourceFrameUpdates.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

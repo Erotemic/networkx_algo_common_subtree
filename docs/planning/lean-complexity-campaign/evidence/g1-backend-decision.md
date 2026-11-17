@@ -321,3 +321,10 @@ local borrows. Actual source address/Box/drop contracts preserve retained caller
 frames under explicit resource conditions. This advances item 2; complete
 addressed operation/control/call traces, initialization/mutation conflicts and
 dynamic region/destructor composition still precede items 3--4 and C3 closure.
+
+The [guarded frame-write increment](memo-evaluator-frame-writes.md) now preserves
+transitive read graphs and complete owner ledgers across unrelated writes. Actual
+source scalar assignments and storage markers retain existing storage identities
+and caller resources; initialized nonowning references can end storage without
+losing Boxes. This advances item 2. Full RHS/move/frame/control/callee traces and
+dynamic region/destructor composition remain required before C3 closure.
