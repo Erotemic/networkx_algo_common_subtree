@@ -1,5 +1,33 @@
 # Common-subtree proof status
 
+## Actual insertion/concatenation source bridge: 2026-11-17
+
+`Rust/MemoSource{,Frontend,Certificate,Refinement}.lean` and two generated input/
+program modules retain the actual pinned extraction of insertion, concatenation
+and their copy helpers. The existing primitive/control semantics and parser are
+polymorphic in callee targets; lookup remains its unchanged specialization.
+Kernel source-read/normalization certificates preserve every supported outcome
+and complete cost for arbitrary fuel/arguments.
+
+Native-input totality yields independent append/prepend outputs, with no sound
+cache or consistent witness premise. `concatenate_checked`/`insert_checked`
+compose actual source runs, existing translated-Rust correctness and explicit
+copy/allocation events. Insertion copies keys/result and moves the table tail;
+its counts include arbitrary witness size. Concatenation has exact allocation
+and bounded copy visits. New local instructions all remain in `Cost.steps`.
+Addressed heap/owner/storage/loan/region composition for these new helpers and
+a final instruction envelope remain open; lookup's invariants are not inferred
+from source control equality.
+
+The 3,829-job build, seventeen suites, native WP, nine Python frontend tests,
+thirteen ordered Rust tests, full pinned regeneration and 430-endpoint audit
+pass. The sixteen new audit closures stay within accepted baseline axioms;
+new modules have no warnings. No maintained Rust, existing generated artifact
+or pin changes. Next addressed safety, then actual memo evaluator/core and
+wrappers, input/error policy and G3 adversaries. Full W06-C3 remains open.
+
+[Exact endpoints, resource model and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-source-primitives.md).
+
 ## Scoped lookup regions and erasure: 2026-11-17
 
 Eight `Rust/LookupRegion*.lean` modules check canonical signature binders,

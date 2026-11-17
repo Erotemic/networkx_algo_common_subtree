@@ -25,6 +25,15 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [actual memo primitive bridge](lean-complexity-campaign/evidence/memo-source-primitives.md)
+now retains and kernel-normalizes concatenation/insertion source, constructs
+successful native-input runs, and proves agreement with independent append/
+prepend models and the translated Rust functions. Structural copy/Box counts
+are explicit. The shared control semantics/parser now support different callee
+sets. The 3,829-job build, seventeen suites, nine Python tests, thirteen ordered
+Rust tests, full regeneration and 430-endpoint audit pass. Next extend addressed
+safety to these bodies, then the actual memo evaluator/core and wrappers.
+
 The [scoped region-erasure proof](lean-complexity-campaign/evidence/lookup-region-erasure.md)
 now checks actual signature/body region binders and call arities, retains
 region-bearing local types and proves their erasure equivalent to typed loans

@@ -12,11 +12,12 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "dev"))
 from reify_lookup_llbc import ARITIES, Reifier
+from regenerate_memo_source import HELPERS as MEMO_HELPERS, ARITIES as MEMO_ARITIES
 
 
-def fixture():
+def fixture(arities=ARITIES):
     functions = []
-    for index, (name, arity) in enumerate(ARITIES.items()):
+    for index, (name, arity) in enumerate(arities.items()):
         functions.append({"def_id": index, "item_meta": {"name": [
             {"Ident": ["verified_ordered_core", 0]}, {"Ident": [name, 0]}]},
             "signature": {"inputs": [None] * arity},
@@ -79,6 +80,28 @@ class ReifierIdentityTests(unittest.TestCase):
                 lookup["body"]["Structured"]["locals"]["arg_count"] += 1
             with self.assertRaisesRegex(ValueError, "argument count"):
                 Reifier(data)
+
+    def test_memo_helpers_use_their_own_identity_arity_and_namespace(self):
+        data = fixture(MEMO_ARITIES)
+        parser = Reifier(data, helpers=MEMO_HELPERS, arities=MEMO_ARITIES)
+        self.assertEqual(parser.functions[3], "insert")
+        self.assertEqual(parser.arities["memo_insert"], 4)
+        generated = parser.lean(root_namespace="SubtreeProofs.Rust.MemoSource",
+                                import_module="SubtreeProofs.Rust.MemoSource")
+        self.assertIn("def insert : Code", generated)
+        self.assertIn("namespace SubtreeProofs.Rust.MemoSource.Program", generated)
+        self.assertNotIn("def lookup", generated)
+
+    def test_memo_insert_cannot_be_replaced_by_a_nested_or_wrong_arity_helper(self):
+        for nested in (False, True):
+            data = fixture(MEMO_ARITIES)
+            insert = data["translated"]["fun_decls"][3]
+            if nested:
+                insert["item_meta"]["name"].insert(1, {"Ident": ["nested", 0]})
+            else:
+                insert["body"]["Structured"]["locals"]["arg_count"] = 3
+            with self.assertRaises(ValueError):
+                Reifier(data, helpers=MEMO_HELPERS, arities=MEMO_ARITIES)
 
     def test_unsupported_live_drop_and_mutable_ref_are_rejected(self):
         parser = Reifier(fixture())

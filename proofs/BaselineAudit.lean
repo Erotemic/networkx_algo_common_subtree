@@ -462,3 +462,20 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.Regions.source_run_scoped
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.Regions.lookup_regions
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.Regions.lookup_source_total
+
+#print axioms SubtreeProofs.Rust.MemoSource.run_succ
+#print axioms SubtreeProofs.Rust.MemoSource.run_lower
+#print axioms SubtreeProofs.Rust.MemoSource.Certificate.original_read
+#print axioms SubtreeProofs.Rust.MemoSource.Certificate.original_lower
+#print axioms SubtreeProofs.Rust.MemoSource.Certificate.original_exec
+#print axioms SubtreeProofs.Rust.MemoSource.Certificate.original_run
+#print axioms SubtreeProofs.Rust.MemoSource.box_run
+#print axioms SubtreeProofs.Rust.MemoSource.copy_empty
+#print axioms SubtreeProofs.Rust.MemoSource.copy_source
+#print axioms SubtreeProofs.Rust.MemoSource.copyResult_source
+#print axioms SubtreeProofs.Rust.MemoSource.concatenate_source
+#print axioms SubtreeProofs.Rust.MemoSource.insert_source
+#print axioms SubtreeProofs.Rust.MemoSource.insertEvents_exact
+#print axioms SubtreeProofs.Rust.MemoSource.concatenateEvents_bound
+#print axioms SubtreeProofs.Rust.MemoSource.concatenate_checked
+#print axioms SubtreeProofs.Rust.MemoSource.insert_checked

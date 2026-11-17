@@ -167,7 +167,8 @@ def unwind (ctx : Context) (json : Json) : Read Unit := do
         let _ ← localSlot ctx (← field payload "place")
       else throw "nontrivial unwind unsupported"
 
-def action (ctx : Context) (fuel : Nat) (constructor : String) (payload : Json) : Read Control.Action := do
+def actionWith {F : Type} (resolve : Nat → Read F) (callArity : F → Nat)
+    (ctx : Context) (fuel : Nat) (constructor : String) (payload : Json) : Read (Control.Action F) := do
   if constructor = "StorageLive" then return .storageLive (← slot ctx payload)
   if constructor = "StorageDead" then return .storageDead (← slot ctx payload)
   if constructor = "Assign" then
@@ -183,18 +184,22 @@ def action (ctx : Context) (fuel : Nat) (constructor : String) (payload : Json) 
     let (constructor, payload) ← tag (← field payload "kind")
     if constructor != "Fun" then throw "indirect/trait call unsupported"
     let index ← payload.getNat?
-    let function ← match ctx.functions.lookup index with
-      | some function => pure function
-      | none => throw "unsupported callee identity"
+    let function ← resolve index
     let args ← operands ctx fuel (← field call "args")
-    if args.length != arity function then throw "wrong call arity"
+    if args.length != callArity function then throw "wrong call arity"
     return .call function args dest
   if constructor = "Drop" then
     if (← (← field payload "kind").getStr?) != "Conditional" then throw "live/precise drop unsupported"
     return .dropConditional (← localSlot ctx (← field payload "place"))
   throw "unsupported source statement"
 
-def sequence (ctx : Context) : Nat → List Json → Read Control.Block
+def action (ctx : Context) : Nat → String → Json → Read Control.Action :=
+  actionWith (fun index => match ctx.functions.lookup index with
+    | some function => pure function
+    | none => throw "unsupported callee identity") arity ctx
+
+def sequenceWith {F : Type} (parseAction : Context → Nat → String → Json → Read (Control.Action F))
+    (ctx : Context) : Nat → List Json → Read (Control.Block F)
   | 0, _ => throw "statement nesting budget exceeded"
   | _ + 1, [] => pure .done
   | fuel + 1, statement :: rest => do
@@ -212,13 +217,15 @@ def sequence (ctx : Context) : Nat → List Json → Read Control.Block
         match ← array (← field payload "branches") with
         | [zero, one] =>
           return .switch (← scrutinee ctx fuel (← field data "scrutinee")) cases fallback
-            (← sequence ctx fuel (← array (← field zero "statements")))
-            (← sequence ctx fuel (← array (← field one "statements")))
-            (← sequence ctx fuel rest)
+            (← sequenceWith parseAction ctx fuel (← array (← field zero "statements")))
+            (← sequenceWith parseAction ctx fuel (← array (← field one "statements")))
+            (← sequenceWith parseAction ctx fuel rest)
         | _ => throw "exactly two source arms required"
-      else return .step (← action ctx fuel constructor payload) (← sequence ctx fuel rest)
+      else return .step (← parseAction ctx fuel constructor payload) (← sequenceWith parseAction ctx fuel rest)
 
 termination_by structural fuel _ => fuel
+
+def sequence (ctx : Context) : Nat → List Json → Read Control.Block := sequenceWith action ctx
 
 def kindName (pathName : List Json) : Read (Option Kind) := do
   match pathName with

@@ -24,6 +24,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupStack.lean)
 (cd proofs && lake env lean Tests/LookupBorrow.lean)
 (cd proofs && lake env lean Tests/LookupRegions.lean)
+(cd proofs && lake env lean Tests/MemoSource.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -66,6 +67,18 @@ The main 3,823-job build, sixteen suites, native WP example, seven Python tests
 and 414-endpoint audit pass. See the
 [region report](../docs/planning/lean-complexity-campaign/evidence/lookup-region-erasure.md)
 for exact assumptions and remaining compiler/runtime and memo-composition work.
+
+The actual concatenation/insertion pilot adds `Rust/MemoSource*.lean`,
+`Generated/MemoSource{Input,Program}.lean`, `dev/regenerate_memo_source.py` and
+`Tests/MemoSource.lean`. The main regeneration command now also checks these
+fresh pinned extractions. Shared primitive/control semantics and parsing are
+polymorphic in callees; all prior lookup refinements still specialize to their
+original targets. New kernel source certificates and native-input totality
+retain complete costs and agree with independent append/prepend models and
+translated Rust. The main 3,829-job build, seventeen suites, nine Python tests,
+thirteen ordered Rust tests, full regeneration and 430-endpoint audit pass.
+See the [memo primitive report](../docs/planning/lean-complexity-campaign/evidence/memo-source-primitives.md)
+for exact event counts and remaining addressed safety/evaluator obligations.
 
 ## VM caches
 

@@ -86,6 +86,16 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Memo primitive follow-up:** [actual insertion/concatenation](evidence/memo-source-primitives.md)
+now have retained source, kernel normalization, successful native runs,
+independent append/prepend and translated-Rust agreement, with explicit copy/
+Box events. Existing control semantics/parser are polymorphic in callee targets.
+Next extend addressed typing/ownership/storage/loans/regions to those bodies,
+then actual evaluator arithmetic, owned-local borrows, losing-candidate drops,
+overflow/table returns and one public core. Wrappers, input/error policy and G3
+adversaries remain required. Source control alone does not imply heap safety;
+W06-C3 stays open.
+
 **Region follow-up:** [scoped lookup erasure](evidence/lookup-region-erasure.md)
 checks actual source binders/uses/call arities and retains regional local types.
 An independent shared-value interpretation is equivalent to typed loans under

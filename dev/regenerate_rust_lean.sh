@@ -46,3 +46,6 @@ done
 lookup_args=(--charon "$binary_dir/charon")
 if [[ $check == 1 ]]; then lookup_args+=(--check); fi
 python3 "$repo_root/dev/regenerate_lookup_source.py" "${lookup_args[@]}"
+
+# Retain and independently certify the actual memo insertion/concatenation helpers.
+python3 "$repo_root/dev/regenerate_memo_source.py" "${lookup_args[@]}"

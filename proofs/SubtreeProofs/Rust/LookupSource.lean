@@ -136,13 +136,13 @@ def evalScrutinee (env : Env) : Scrutinee → Option (Key × Env)
     | .node kind variant _ => some (.variant kind variant, env)
     | _ => none
 
-inductive Action where
-  | scope : Nat → Action
-  | assign : Nat → RValue → Action
-  | call : Function → List Operand → Nat → Action
-  | dropMoved : Nat → Action
+inductive Action (F : Type := Function) where
+  | scope : Nat → Action F
+  | assign : Nat → RValue → Action F
+  | call : F → List Operand → Nat → Action F
+  | dropMoved : Nat → Action F
 
-def Action.weight : Action → Nat
+def Action.weight {F : Type} : Action F → Nat
   | .scope _ | .dropMoved _ => 1
   | .assign _ value => 1 + value.weight
   | .call _ args _ => 1 + (args.map Operand.weight).sum
@@ -154,9 +154,11 @@ structure Cost where
 def Cost.plus (first second : Cost) : Cost :=
   ⟨first.steps + second.steps, first.events.plus second.events⟩
 
-abbrev Callees := Function → List Value → Option (Value × Cost)
+abbrev CalleesFor (F : Type) := F → List Value → Option (Value × Cost)
 
-def evalAction (call : Callees) (env : Env) (action : Action) : Option (Env × Cost) := do
+abbrev Callees := CalleesFor Function
+
+def evalAction {F : Type} (call : CalleesFor F) (env : Env) (action : Action F) : Option (Env × Cost) := do
   match action with
   | .scope slot => some (env.set slot none, ⟨action.weight, {}⟩)
   | .assign slot value =>
@@ -173,11 +175,11 @@ def evalAction (call : Callees) (env : Env) (action : Action) : Option (Env × C
 
 /-- Switch arms can return early or resume the common continuation. The second
 key is absent exactly when the source has a fallback branch. -/
-inductive Code where
-  | done
-  | ret
-  | step : Action → Code → Code
-  | branch : Scrutinee → Key → Option Key → Code → Code → Code → Code
+inductive Code (F : Type := Function) where
+  | done : Code F
+  | ret : Code F
+  | step : Action F → Code F → Code F
+  | branch : Scrutinee → Key → Option Key → Code F → Code F → Code F → Code F
 
 inductive Outcome where
   | next : Env → Outcome
@@ -189,7 +191,7 @@ def selectBranch {α : Type} (actual key : Key) (other : Option Key)
 
 /-- Each syntax node charges its own work. No call is evaluated inside a free
 pure expression; a callee's complete cost is composed at the call occurrence. -/
-def exec (call : Callees) : Code → Env → Option (Outcome × Cost)
+def exec {F : Type} (call : CalleesFor F) : Code F → Env → Option (Outcome × Cost)
   | .done, env => some (.next env, {})
   | .ret, env => do
     let result ← env 0
@@ -211,7 +213,7 @@ def exec (call : Callees) : Code → Env → Option (Outcome × Cost)
 
 /-- Local syntax envelope. Both arms are included through their maximum;
 callee execution is excluded here and charged by its own complete contract. -/
-def Code.budget : Code → Nat
+def Code.budget {F : Type} : Code F → Nat
   | .done => 0
   | .ret => 1
   | .step action rest => action.weight + rest.budget
@@ -223,10 +225,10 @@ theorem Cost.units_plus (a b : Cost) :
   simp only [Cost.plus, LookupEvents.Events.plus, LookupEvents.Events.units]
   omega
 
-theorem action_bound (call : Callees) (price : Nat)
+theorem action_bound {F : Type} (call : CalleesFor F) (price : Nat)
     (hc : ∀ function args value cost, call function args = some (value, cost) →
       cost.steps ≤ price * cost.events.units)
-    {env next : Env} {action : Action} {cost : Cost}
+    {env next : Env} {action : Action F} {cost : Cost}
     (hr : evalAction call env action = some (next, cost)) :
     cost.steps ≤ action.weight + price * cost.events.units := by
   cases action with
@@ -271,10 +273,10 @@ theorem action_bound (call : Callees) (price : Nat)
 
 /-- A successful execution pays for every local instruction and every nested
 call. This is independent of the four functions' value specifications. -/
-theorem exec_bound (call : Callees) (price : Nat)
+theorem exec_bound {F : Type} (call : CalleesFor F) (price : Nat)
     (hc : ∀ function args value cost, call function args = some (value, cost) →
       cost.steps ≤ price * cost.events.units)
-    {code : Code} {env : Env} {outcome : Outcome} {cost : Cost}
+    {code : Code F} {env : Env} {outcome : Outcome} {cost : Cost}
     (hr : exec call code env = some (outcome, cost)) :
     cost.steps ≤ code.budget + price * cost.events.units := by
   induction code generalizing env outcome cost with

@@ -54,7 +54,7 @@ example : observe (.Entry (entry e e two) .Empty) e e =
     some (encodeOption (some (result two)), ⟨1, 2, 5, 4, 1⟩) := rfl
 
 -- Unsupported live destruction and free owned structural copies fail explicitly.
-example : evalAction (fun _ _ => none) (initialEnv [encodeWord one]) (.dropMoved 1) = none := rfl
+example : evalAction (fun (_ : Function) _ => none) (initialEnv [encodeWord one]) (.dropMoved 1) = none := rfl
 example : evalOperand (initialEnv [encodeWord one]) (.copy (.local 1)) = none := rfl
 
 end LookupSourceTests

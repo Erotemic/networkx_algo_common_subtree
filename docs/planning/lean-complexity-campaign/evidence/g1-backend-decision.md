@@ -148,6 +148,13 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [actual memo primitive bridge](memo-source-primitives.md) now retains and
+kernel-normalizes insertion/concatenation, composes source/native independent
+outputs and explicit copy/Box events, and reuses polymorphic control semantics.
+This begins item 3 below. Addressed safety for these new helpers, the actual memo
+evaluator/core, wrappers and G3 adversaries remain required. Their source
+control certificates do not transfer lookup's heap/loan invariants by themselves.
+
 Current follow-up: the [scoped interpreted lookup pilot](lookup-region-erasure.md)
 composes checked source control/types, addressed reads/moves, owner separation,
 local storage, typed immutable loans and a region-erasure equivalence with native

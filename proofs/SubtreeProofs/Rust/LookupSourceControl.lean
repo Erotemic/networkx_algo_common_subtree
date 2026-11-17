@@ -20,14 +20,14 @@ deriving instance DecidableEq for Scrutinee
 deriving instance DecidableEq for LookupSource.Action
 deriving instance DecidableEq for Code
 
-inductive Action where
-  | storageLive : Nat → Action
-  | storageDead : Nat → Action
-  | assign : Nat → RValue → Action
-  | call : Function → List Operand → Nat → Action
-  | dropConditional : Nat → Action
+inductive Action (F : Type := Function) where
+  | storageLive : Nat → Action F
+  | storageDead : Nat → Action F
+  | assign : Nat → RValue → Action F
+  | call : F → List Operand → Nat → Action F
+  | dropConditional : Nat → Action F
 
-def Action.lower : Action → LookupSource.Action
+def Action.lower {F : Type} : Action F → LookupSource.Action F
   | .storageLive slot | .storageDead slot => .scope slot
   | .assign slot rhs => .assign slot rhs
   | .call function args dest => .call function args dest
@@ -35,14 +35,14 @@ def Action.lower : Action → LookupSource.Action
 
 /-- The common primitive semantics is explicit. In particular a conditional
 drop of a live owned value fails; it is not silently given zero destruction. -/
-def Action.exec (call : Callees) (env : Env) (action : Action) : Option (Env × Cost) :=
+def Action.exec {F : Type} (call : CalleesFor F) (env : Env) (action : Action F) : Option (Env × Cost) :=
   evalAction call env action.lower
 
-inductive Block where
-  | done
-  | ret
-  | step : Action → Block → Block
-  | switch : Scrutinee → List (Key × Nat) → Option Nat → Block → Block → Block → Block
+inductive Block (F : Type := Function) where
+  | done : Block F
+  | ret : Block F
+  | step : Action F → Block F → Block F
+  | switch : Scrutinee → List (Key × Nat) → Option Nat → Block F → Block F → Block F → Block F
 
 structure Dispatch where
   key : Key
@@ -95,7 +95,7 @@ theorem dispatch_preserves {cases : List (Key × Nat)} {fallback : Option Nat} {
     by_cases hf : actual = first <;> by_cases hs : actual = second <;>
       simp_all [selectSource, selectIndex, selectBranch, eq_comm]
 
-def lower : Block → Option Code
+def lower {F : Type} : Block F → Option (Code F)
   | .done => some .done
   | .ret => some .ret
   | .step action rest => Code.step action.lower <$> lower rest
@@ -109,7 +109,7 @@ def lower : Block → Option Code
 
 /-- Normal-path source execution, including early return from a source arm.
 Every local primitive and switch has the same explicit currency as the pilot. -/
-def exec (call : Callees) : Block → Env → Option (Outcome × Cost)
+def exec {F : Type} (call : CalleesFor F) : Block F → Env → Option (Outcome × Cost)
   | .done, env => some (.next env, {})
   | .ret, env => do
     let value ← env 0
@@ -131,7 +131,7 @@ def exec (call : Callees) : Block → Env → Option (Outcome × Cost)
 
 /-- Every supported source statement/control profile preserves complete results
 and costs. This is equality before discarding the trace or work component. -/
-theorem exec_lower (call : Callees) (source : Block) (code : Code)
+theorem exec_lower {F : Type} (call : CalleesFor F) (source : Block F) (code : Code F)
     (hl : lower source = some code) (env : Env) : exec call source env = LookupSource.exec call code env := by
   induction source generalizing code env with
   | done => cases hl; rfl

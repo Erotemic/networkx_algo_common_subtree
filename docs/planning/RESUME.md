@@ -1,6 +1,18 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment proves
+Branch: `Droschinsky-algos`. The latest increment supplies
+[actual concatenation/insertion source composition](lean-complexity-campaign/evidence/memo-source-primitives.md).
+`MemoSource{,Frontend,Certificate,Refinement}` and two generated modules retain
+actual pinned Charon JSON and kernel-check its normalization. Shared instruction/
+control semantics and parsing now support arbitrary callee types; lookup is the
+original specialization. Native-input execution constructs independent append/
+prepend outputs with unchanged complete source costs, agrees with translated
+Rust, and has explicit structural copy/Box counts. Arbitrary tables and witness
+scores remain supported. Addressed heap/owner/storage/loan/region composition
+for these new functions remains open. Next extend those invariants, then the
+actual memo evaluator/core and wrappers.
+
+The preceding increment proves
 [scoped lookup region erasure](lean-complexity-campaign/evidence/lookup-region-erasure.md).
 Eight `Rust/LookupRegion*.lean` modules check actual free/body region binders,
 all nested reference/generic uses and helper call arities. Checked annotations
@@ -164,8 +176,9 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,823-job build, all sixteen Lean suites, native WP example, seven Python
-reifier tests and 414-endpoint axiom audit pass. New modules have no warnings;
+The main 3,829-job build, all seventeen Lean suites, native WP example, nine Python
+reifier tests, thirteen ordered Rust tests, full regeneration and 430-endpoint
+axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records).
@@ -194,6 +207,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupStack.lean)
 (cd proofs && lake env lean Tests/LookupBorrow.lean)
 (cd proofs && lake env lean Tests/LookupRegions.lean)
+(cd proofs && lake env lean Tests/MemoSource.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
@@ -213,8 +227,8 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **actual memo source composition (W06-C3), then remaining local/source
-costs (MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
+Next is **addressed insertion/concatenation and actual memo evaluator/core
+composition (W06-C3), then remaining local/source costs (MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
 lookup pilot are implemented. Reuse the checked source/type constraints,
 addressed execution, ownership, storage, loan and region traces. The explicit
 region valuation uses immutable retained-world extension; it is not a full Rust
@@ -222,10 +236,15 @@ borrow checker or compiler/machine simulation. D12 permits this honest
 source-operation endpoint; do not invent a whole-compiler gate before the
 actual memo pilot.
 
-Inspect maintained Rust, generated code and existing native memo refinements
-for insertion, concatenation, evaluation and one public core entry point.
-Extend the source interpreter and heap/borrow model only as needed by those
-actual operations; mutation and stack borrows will require new invariants.
+The actual insertion/concatenation source control and native functional/event
+bridge now exists; do not repeat that extraction or write a duplicate control
+interpreter. Extend addressed memory, independent static typing, ownership,
+storage and regional loans to those bodies. Insertion moves its owned table
+into the tail; concatenation reuses shared input borrows. Next inspect and model
+actual evaluator arithmetic, owned-local borrows, losing-candidate destruction
+and overflow/table returns. Legitimate borrows of caller-owned locals cannot
+all satisfy lookup's old-heap-only borrow profile. Preserve scope and ownership
+facts when extending it. Then compose one public core entry point.
 Then handle indexed/token/reconstruction wrappers, normal work, input/error
 policy and the required G3 adversaries. Preserve independent specs and the exact
 existing evaluator bridge. `eval_spec` already supplies valid storage and the
