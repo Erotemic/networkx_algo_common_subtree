@@ -1,5 +1,16 @@
 # Lean complexity campaign: proto-roadmap
 
+The [actual evaluator body/base increment](evidence/memo-evaluator-base-paths.md)
+now kernel-identifies complete 113-local control and proves universal cache-hit
+and empty-query source/native paths for arbitrary warm tables, retaining exact
+tables, local destruction and full lookup/insertion costs. Recursive pair/pair
+paths, whole-profile typed addressed safety, public core/wrappers and G3 remain
+required. This is progress toward SRC-01/C3, not a gate closure.
+The 3,881-job build, all 28 Lean suites, native WP, nine Python tests and
+645-endpoint axiom audit pass. Shared statement inspection covers 838 unique
+declaration records.
+
+
 [Actual owned score choice](evidence/memo-owned-choice.md) now kernel-checks the
 complete body, source/native correspondence and first-on-ties behavior with exact
 losing-value destruction work. Native words of `n` losing pairs give `30 + 4n`

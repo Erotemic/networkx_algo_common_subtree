@@ -1,5 +1,33 @@
 # Common-subtree proof status
 
+## Actual evaluator body and universal base paths: 2026-11-17
+
+Four `SourceEval{Body,BodyCertificate,Base,BaseRefinement}` modules retain all
+113-local control in named segments and kernel-check whole-body identity.
+`cache_hit_exec`, `empty_left_exec`, `empty_right_exec` and `empty_exec` preserve
+full results/costs with explicit callee contracts. `cache_hit_source` and
+`empty_source` discharge those contracts through the completed actual helpers;
+`cache_hit_native`, `empty_native` and `empty_source_total` establish agreement
+with the translated evaluator, including every warm table and either-empty
+query. No sound-cache or score/word consistency premise is added.
+
+Hits return the first cached witness and exact original table; misses prepend
+the empty/zero result. Exact steps including entry are `67 + lookup`,
+`129 + lookup + insert` on left-empty misses and `134 + lookup + insert` on
+pair/empty misses, retaining full helper events. Every base run has one local
+destructor visit, zero destroyed Boxes and one evaluator call. Native max-score,
+duplicate-key, cold-event and universal decoded-source consumers exercise scope.
+
+Recursive pair/pair success/overflow/error/table/resource correspondence and
+whole-profile typing/regions/owners/storage/local borrows/live destruction remain
+open, then public core and wrappers/G3. The existing scoped runtime boundary is
+unchanged; this does not establish physical frees or complete W06-C3.
+The 3,881-job build, all 28 Lean suites, native WP, nine Python tests and
+645-endpoint axiom audit pass. Shared statement inspection covers 838 unique
+declaration records.
+
+[Exact evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-base-paths.md).
+
 ## Actual owned score choice: 2026-11-17
 
 Four `SourceEvalChoice*` modules kernel-check the actual complete body and

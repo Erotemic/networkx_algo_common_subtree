@@ -35,6 +35,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceEval.lean)
 (cd proofs && lake env lean Tests/SourceEvalHelpers.lean)
 (cd proofs && lake env lean Tests/SourceEvalChoice.lean)
+(cd proofs && lake env lean Tests/SourceEvalBase.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -186,6 +187,16 @@ scores and exact work/Box counts. All 3,877 library jobs, 27 Lean suites, native
 generated data, parser/executor or pins change. See the
 [owned-choice report](../docs/planning/lean-complexity-campaign/evidence/memo-owned-choice.md)
 for scope and reproduction.
+
+Four `SourceEval{Body,BodyCertificate,Base,BaseRefinement}` modules add the
+complete kernel-identified evaluator control and universal cache-hit/empty-query
+source/native base contracts. `Tests/SourceEvalBase.lean` includes a maximal-
+score unsound duplicate-key cache, exact cold events and universal actual JSON
+execution/native agreement. All 3,881 library jobs, 28 Lean suites, native WP,
+nine Python tests and the 645-endpoint audit pass. Shared statement inspection
+covers 838 unique declaration records. Source/profile interpreters, Rust/generated inputs and pins are unchanged.
+See the [evaluator base report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-base-paths.md)
+for exact remaining recursive and addressed safety obligations.
 
 ## VM caches
 

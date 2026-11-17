@@ -86,6 +86,19 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Evaluator base paths:** [the complete body/base increment](evidence/memo-evaluator-base-paths.md)
+now kernel-checks all 113-local control and proves actual-program/native
+cache-hit and either-empty-query totality, with arbitrary warm storage and
+scores, exact output tables and complete source/helper/drop/call currencies.
+Do not re-extract the body or reprove the seven helpers. Next recursive head/
+tail and contracted-query cases, both checked-add failures and final choice/
+insertion; compose exact native/overflow/table/cost behavior plus whole-profile
+types/regions/owners/storage/local borrows/live destruction before core/wrappers/G3.
+The 3,881-job build, all 28 Lean suites, native WP, nine Python tests and
+645-endpoint axiom audit pass. Shared statement inspection covers 838 unique
+declaration records.
+
+
 **Owned choice:** [actual source/native choice](evidence/memo-owned-choice.md)
 now consumes a kernel body certificate, retains the first on equal scores and
 charges the losing witness's exact logical destructor work. The native API has

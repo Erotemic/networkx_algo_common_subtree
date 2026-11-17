@@ -692,3 +692,15 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.source_execute
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.source_native
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.first_on_tie
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.actual_body
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cache_hit_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_left_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_right_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.source_of_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cache_hit_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cache_hit_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_source_total

@@ -148,6 +148,16 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [actual evaluator body/base increment](memo-evaluator-base-paths.md)
+kernel-checks complete control and establishes universal cache-hit and
+empty-query source/native paths, preserving arbitrary warm storage, exact
+returned tables and complete local/callee costs. Recursive pair/pair, error/
+overflow, whole-profile typed addressed safety and core/wrappers/G3 stay open.
+The 3,881-job build, all 28 Lean suites, native WP, nine Python tests and
+645-endpoint axiom audit pass. Shared statement inspection covers 838 unique
+declaration records.
+
+
 The [actual owned-choice increment](memo-owned-choice.md) kernel-checks its
 source body, proves universal source/native first-on-ties choice, and accounts
 for losing-value destruction with exact structural work. This adds the seventh

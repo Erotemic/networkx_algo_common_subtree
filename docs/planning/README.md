@@ -25,6 +25,18 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Actual evaluator body and base paths](lean-complexity-campaign/evidence/memo-evaluator-base-paths.md)
+now kernel-check the complete 113-local control and prove actual source/native
+agreement for every cache hit and every query with either word empty. Arbitrary
+warm tables/scores, exact returned table order and complete helper/local costs
+are preserved. Recursive pair/pair error/overflow/success/resource composition
+and whole-profile typed addressed safety remain next, then public core/wrappers
+and G3. This does not close the full planning program or W06-C3.
+The 3,881-job build, all 28 Lean suites, native WP, nine Python tests and
+645-endpoint axiom audit pass. Shared statement inspection covers 838 unique
+declaration records.
+
+
 [Actual owned score choice](lean-complexity-campaign/evidence/memo-owned-choice.md)
 now has a kernel body certificate, universal source/native and first-on-ties
 contracts, and exact losing-witness destructor/work counts. For `n` losing-word

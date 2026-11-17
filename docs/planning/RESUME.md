@@ -1,6 +1,39 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
+[actual evaluator body and universal base paths](lean-complexity-campaign/evidence/memo-evaluator-base-paths.md).
+Four `SourceEval{Body,BodyCertificate,Base,BaseRefinement}` modules retain all
+113-local control in reviewable named segments and kernel-check whole-body
+identity. Universal actual-source/native contracts cover every cache hit and
+every query with either word empty, for arbitrary native warm tables/scores.
+Cache hits preserve the exact input table and first witness; empty misses
+prepend the zero/empty result. All old lookup/insertion costs/events survive.
+Complete source steps are `67 + lookup` on hits, `129 + lookup + insert` on
+left-empty misses, `134 + lookup + insert` for pair/empty misses. Each base
+execution has one declared destructor visit, zero destroyed Boxes and one
+evaluator call. Independent consumers cover duplicate-key/maximal unsound
+witnesses, cold exact events and universal decoded-source/native base agreement.
+The 3,881-job build, all 28 Lean suites, native WP, nine Python tests and
+645-endpoint axiom audit pass. Shared statement inspection covers 838 unique
+declaration records.
+
+
+Next recursive pair/pair paths, full error/overflow/table/cost correspondence
+and whole-profile typing/regions/owners/storage/local-borrow/live-destruction
+simulation, then public core/wrappers/input policy/G3. `SourceEvalBody` already
+contains named `recurseHeads`, `recurseTails`, `addScores`, `addRoot`,
+`contractLeft`, `contractRight`, `finish`, all failure and cleanup blocks; do not
+repeat extraction or add a second parser/interpreter. A small next recursive
+step is head-call `None`: propagate the returned table, charge both the partial
+tuple and old optional shells, and discharge its source/native recursive-call
+premises in the later induction. Source run nesting-fuel monotonicity will be
+needed when combining existential successful subruns. Use explicit/closed
+simp sets for these bodies: broad simplification explores unknown match arms
+and was much slower; the accepted base module builds in about nine seconds.
+The full evaluator and public core universal native/addressed claims remain
+open; the base theorem does not close W06-C3.
+
+The preceding increment establishes
 [actual owned score choice](lean-complexity-campaign/evidence/memo-owned-choice.md).
 Four `SourceEvalChoice*` modules kernel-check the complete actual body and
 prove source/native choice at every positive nesting fuel, including the first-
@@ -23,8 +56,8 @@ helpers and the scalar/checked-add bridge. Reuse the existing native
 `Complexity.Memo.eval_spec` where their hypotheses apply. Preserve
 actual returned warm-table order and overflow exits, insertion's owned table
 and caller aliases; do not require cache soundness for helper execution. Only
-optimality needs the existing sound-cache assumptions. No evaluator or public
-core universal native/addressed theorem has yet been proved.
+optimality needs the existing sound-cache assumptions. Universal base paths now exist above; recursive evaluator and public core
+native/addressed results remain open.
 
 The preceding increment establishes
 [expanded evaluator helper reuse](lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
