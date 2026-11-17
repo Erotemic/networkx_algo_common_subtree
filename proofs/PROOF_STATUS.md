@@ -1,5 +1,36 @@
 # Common-subtree proof status
 
+## Operational lookup type preservation: 2026-11-16
+
+`Rust/LookupType{Primitives,Execution,Calls,Refinement}.lean` now proves
+successful-run preservation from the checked static constraints, using
+independent `Heap.Typed`/`FieldsTyped`/`Shape`. Place reads return their inferred
+type and a valid optional address; borrows use that actual read. Invalidating
+moves, aggregate construction, assignments, branches and early returns preserve
+remaining local typing. Memory extension preserves all reachable typed values.
+
+The reader retains checked return/argument local-prefix witnesses. Both
+concrete source certificates are kernel-checked with this stronger reader.
+`run_typed` discharges local callee contracts by fuel induction, including
+generic fresh Box allocation. `original_run_typed` and `mutant_run_typed` cover
+all functions/fuels. `certified_run_typed` and `certified_mutant_typed` compose
+source control, addressed realization and preservation with unchanged complete
+cost and exact allocation growth. Output typing is derived from the checked
+body, independently of snapshot correctness or an assumed result type.
+
+The 3,794-job build, twelve Lean suites, native WP example, seven Python tests
+and 252-endpoint axiom audit pass. Twenty-seven new closures remain within the
+established three-axiom baseline; new modules have no warnings. Tests distinguish
+preservation from initialization/progress and spatial ownership, and exercise
+actual aliased copy/mutant lookup plus generic Box. Production/generated Rust,
+JSON, main pins and extraction tooling are unchanged.
+
+Intermediate spatial ownership, stack/borrow/lifetime semantics and official
+typed LLBC/Rust adequacy remain open. This does not prove successful execution
+from static typing alone, freeing/unwind behavior or physical costs. W06-C3,
+the memo core/wrappers and full planning objective remain active.
+[Exact preservation theorems, boundaries and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-type-preservation.md).
+
 ## Checked lifetime-erased lookup source types: 2026-11-16
 
 `Rust/LookupSourceTypes.lean` proves executable type equality and exact

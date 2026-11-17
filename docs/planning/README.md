@@ -25,6 +25,13 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [operational type-preservation proof](lean-complexity-campaign/evidence/lookup-type-preservation.md)
+now connects checked static constraints to actual addressed reads, borrows,
+moves, aggregates and recursive execution. Both programs preserve typed output
+and old memory at every fuel for successful runs, retaining complete source
+costs. The 3,794-job build, twelve suites and 252-endpoint audit pass. Spatial
+ownership, stack/borrow and official source adequacy remain W06-C3 work.
+
 The [source type certificates](lean-complexity-campaign/evidence/lookup-source-typing.md)
 now check lifetime-erased field declarations, signatures, local/nested
 annotations and static constraints for all four helpers in both retained

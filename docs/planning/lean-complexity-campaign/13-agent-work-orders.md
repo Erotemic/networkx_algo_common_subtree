@@ -86,6 +86,14 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Operational typing follow-up:** [successful-run preservation](evidence/lookup-type-preservation.md)
+now derives actual primitive/local/result types from the checked constraints.
+Recursive call contracts, argument prefixes and generic Box are discharged for
+both programs; source composition preserves complete cost. Next establish
+intermediate spatial ownership, stack/borrow and official source adequacy.
+Preservation is not initialization/progress or ownership uniqueness. W06-C3
+remains open; do not duplicate the completed operational typing work.
+
 **Source-type follow-up:** [lifetime-erased type certificates](evidence/lookup-source-typing.md)
 now kernel-check actual retained field declarations against independent
 `Heap.Shape`, nested annotations, signatures and all ordinary helper bodies'

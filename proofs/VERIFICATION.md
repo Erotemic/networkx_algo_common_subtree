@@ -19,6 +19,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/LookupSourceTypes.lean)
+(cd proofs && lake env lean Tests/LookupTypePreservation.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -181,6 +182,17 @@ These certificates do not prove operational type preservation or borrow/region
 semantics. Intermediate spatial ownership, stack liveness/lifetimes and
 official source adequacy remain open; see the
 [source-type report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-typing.md).
+
+`Rust/LookupType{Primitives,Execution,Calls,Refinement}.lean` now proves actual
+successful-run type preservation from those checked constraints. It preserves
+reachable-cell/local typing through operations and control, discharges recursive
+callee contracts including generic Box, and composes both retained source
+programs with full cost/allocation correspondence. The source reader additionally
+retains checked argument/return local-prefix proofs. Both concrete certificates
+are kernel-checked with this stronger reader. `Tests/LookupTypePreservation.lean`
+is in Lean CI. This does not establish initialization/progress, intermediate
+spatial ownership, stack/borrow lifetimes or official typed LLBC/Rust adequacy.
+See the [preservation report](../docs/planning/lean-complexity-campaign/evidence/lookup-type-preservation.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`

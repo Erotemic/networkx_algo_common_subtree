@@ -45,6 +45,13 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [operational type-preservation proof](evidence/lookup-type-preservation.md)
+connects checked source constraints to the addressed primitives/control and
+discharges recursive typed callee contracts, including generic Box, for both
+programs at every fuel. Complete source costs and allocation growth survive
+composition. The 3,794-job build, twelve suites and 252-endpoint audit pass.
+Spatial ownership, stack/borrow and official source adequacy remain open.
+
 The [source type certificates](evidence/lookup-source-typing.md) kernel-check
 the retained field layouts, lifetime-erased signatures/nested annotations and
 all four helpers' static constraints for both actual extractions. Parsed fields

@@ -1,5 +1,11 @@
 # Checked lifetime-erased lookup source types: 2026-11-16
 
+Follow-up: [operational type preservation](lookup-type-preservation.md) now
+consumes these constraints for actual addressed execution, including recursive
+callee discharge and complete source-cost composition. Spatial ownership,
+stack/borrow and official source adequacy remain open. The static milestone's
+scope and historical next steps are recorded below.
+
 Baseline: `39e2219`. This advances W06-C3 from
 [normal local frame safety](lookup-frame-safety.md) to kernel-checked source
 declaration layouts, nested annotations and static type constraints. Both

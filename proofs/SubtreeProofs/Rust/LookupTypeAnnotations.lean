@@ -176,6 +176,7 @@ structure Definition where
   function : Function
   locals : List Ty
   code : Code
+  boundary : locals.take ((inputs function).length + 1) = output function :: inputs function
   constraints : CodeConstraints locals (output function) code
 
 def definition (ctx : Context) (roots : List (Function × Json)) (fuel : Nat) (function : Function) :
@@ -193,14 +194,14 @@ def definition (ctx : Context) (roots : List (Function × Json)) (fuel : Nat) (f
   let body ← field (← field decl "body") "Structured"
   let slots ← array (← field (← field body "locals") "locals")
   let locals ← slots.mapM fun slot => do type ctx none 64 (← field slot "ty")
-  if !sameList (locals.take (parameters.length + 1)) (output function :: parameters) then
-    throw "return/argument local type mismatch"
-  let source ← Frontend.function ctx.source roots fuel function
-  let code ← required (Control.lower source)
-  statementAnnotations ctx locals fuel (← array (← field (← field body "body") "statements"))
-  if hc : checkCode locals (output function) code = true then
-    pure ⟨function, locals, code, checkCode_sound hc⟩
-  else throw "normalized code type constraints failed"
+  if hb : sameList (locals.take ((inputs function).length + 1)) (output function :: inputs function) = true then
+    let source ← Frontend.function ctx.source roots fuel function
+    let code ← required (Control.lower source)
+    statementAnnotations ctx locals fuel (← array (← field (← field body "body") "statements"))
+    if hc : checkCode locals (output function) code = true then
+      pure ⟨function, locals, code, sameList_eq hb, checkCode_sound hc⟩
+    else throw "normalized code type constraints failed"
+  else throw "return/argument local type mismatch"
 
 structure Program where
   layouts : List Layout
@@ -251,5 +252,19 @@ theorem check_functions {json : Json} {fuel : Nat} {body : Function → Code}
   have hc := ht decl hd
   rw [he] at hc
   exact ⟨decl.locals, hc⟩
+
+theorem check_boundaries {json : Json} {fuel : Nat} {body : Function → Code}
+    (h : check json fuel body = true) (function : Function) (hf : function ≠ .boxNew) :
+    ∃ locals, locals.take ((inputs function).length + 1) = output function :: inputs function ∧
+      CodeConstraints locals (output function) (body function) := by
+  obtain ⟨program, _, _, ht⟩ := check_sound h
+  have hm : function ∈ program.definitions.map Definition.function := by
+    rw [program.covers]
+    cases function <;> simp_all
+  obtain ⟨decl, hd, he⟩ := List.mem_map.mp hm
+  have hc := ht decl hd
+  have hb := decl.boundary
+  rw [he] at hc hb
+  exact ⟨decl.locals, hb, hc⟩
 
 end SubtreeProofs.Rust.LookupSource.TypeReader

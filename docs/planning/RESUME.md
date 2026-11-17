@@ -1,6 +1,19 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment supplies
+Branch: `Droschinsky-algos`. The latest increment proves
+[operational lookup type preservation](lean-complexity-campaign/evidence/lookup-type-preservation.md).
+Four `Rust/LookupType{Primitives,Execution,Calls,Refinement}.lean` modules consume
+the checked static constraints to preserve independent reachable-cell/local
+typing through actual addressed reads, borrows, moves, construction and control.
+The reader retains checked argument/return prefixes; both concrete certificates
+are kernel-checked with the stronger reader. Recursive typed callee contracts
+are discharged by fuel induction, including generic fresh Box allocation.
+Both actual programs preserve output types and old memory for every successful
+run at every fuel. Source composition retains complete costs and allocation
+growth. This is preservation, not a progress or intermediate spatial-ownership
+theorem. Stack/borrow and official source adequacy remain open.
+
+The preceding increment supplies
 [kernel-checked lifetime-erased source types](lean-complexity-campaign/evidence/lookup-source-typing.md).
 Five `Rust/LookupSourceTypes.lean`, `LookupTypedCode.lean` and
 `LookupType{Reader,Annotations,Certificate}.lean` modules check actual retained
@@ -10,8 +23,9 @@ constraints. Both original and actual cost-mutant source inputs pass
 `decide +kernel`. All four ordinary helpers are covered; the checker rejects
 false annotations and constructor errors accepted by control/frame checks.
 This closes supported lifetime-erased declaration/annotation checking.
-Operational type preservation, spatial ownership and stack/borrow/source
-adequacy remain open; reference regions are deliberately erased.
+The subsequent increment establishes operational preservation; spatial
+ownership and stack/borrow/source adequacy remain open. Reference regions are
+deliberately erased.
 
 The preceding increment proves
 [checked intermediate lookup frame safety](lean-complexity-campaign/evidence/lookup-frame-safety.md).
@@ -46,8 +60,8 @@ entire heap and permits aliased inputs. Input layouts exist for every native
 table/query. Both original and mutant connect through their source certificates.
 This is immutable logical memory. Returned exclusive ownership, normal local
 frame safety and lifetime-erased JSON field/static typing are now checked.
-Operational type preservation, spatial ownership, stack lifetimes and official
-LLBC/Rust adequacy remain open.
+Operational type preservation is now proved. Spatial ownership, stack lifetimes
+and official LLBC/Rust adequacy remain open.
 
 The earlier source-control increment supplies
 [kernel-checked lookup source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md).
@@ -60,7 +74,7 @@ The mutant cannot pass the original normal-form certificate and still violates
 the old comparison allowance. The Python control reifier is no longer trusted
 for those snapshots. Charon/data import and declared snapshot primitives remain
 boundaries. Subsequent addressed, ownership, frame and static typing results
-advance those obligations; spatial ownership, operational type preservation,
+and operational preservation advance those obligations; spatial ownership,
 lifetime and official source-adequacy gaps stay explicit.
 
 The earlier generic increment proves
@@ -92,8 +106,8 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,790-job build, all eleven Lean suites, native WP example, seven Python
-reifier tests and 225-endpoint axiom audit pass. New modules have no warnings;
+The main 3,794-job build, all twelve Lean suites, native WP example, seven Python
+reifier tests and 252-endpoint axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records). Main pins and
@@ -113,6 +127,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/LookupSourceTypes.lean)
+(cd proofs && lake env lean Tests/LookupTypePreservation.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
@@ -132,13 +147,13 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **operational type preservation and spatial/borrow adequacy (W06-C3),
+Next is **intermediate spatial ownership and stack/borrow adequacy (W06-C3),
 then remaining local/source costs (MEM-03/W05)**. Generic declared-currency work,
 lookup control normalization, addressed execution, exclusive returned ownership,
-normal local guard/cleanup safety and lifetime-erased declaration/static-type
-checking are implemented; do not duplicate them. Use the checked
-`CodeConstraints` and source-layout witnesses to establish operational heap
-type preservation, then spatial/borrow simulation. The heap model does not free cells; bare
+normal local guard/cleanup safety, lifetime-erased declaration/static-type
+checking and operational preservation are implemented; do not duplicate them.
+Use the checked `CodeConstraints`, independent operational typing and local
+frame witnesses in the spatial/borrow simulation. The heap model does not free cells; bare
 representation permits duplicate Box aliases. `Owns`/`Footprint` exclude these
 in returned values; the new frame checker tracks local ownership classes, not
 disjoint spatial footprints among every intermediate value. Establish that
