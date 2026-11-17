@@ -1,17 +1,27 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment proves
+[scoped lookup region erasure](lean-complexity-campaign/evidence/lookup-region-erasure.md).
+Eight `Rust/LookupRegion*.lean` modules check actual free/body region binders,
+all nested reference/generic uses and helper call arities. Checked annotations
+retain region-bearing types with independent scope proofs and exact erasure.
+`scoped_erasure_iff` supplies an explicit immutable retained-world lifetime
+interpretation; bounded signature substitution preserves scope and values.
+Both actual source programs pass kernel certificates. Recursive `RunScoped`
+traces use the parsed declarations and actual local annotations.
+`lookup_source_total` composes native success, regional/loan/storage/spatial/
+frame witnesses, borrow-free output, exclusive returned ownership, independent
+first-hit readback and unchanged costs/allocation growth. This completes the
+scoped immutable interpreted lookup pilot in the declared source-operation
+model. Full W06-C3 remains open for the actual memo core and wrappers. Compiler/
+machine/provenance and mutable/unwind semantics remain separate boundaries.
+
+The preceding increment proves
 [stable typed shared loans](lean-complexity-campaign/evidence/lookup-shared-loans.md).
-Eight `Rust/LookupBorrow*.lean` modules back each shared reference with an actual
-typed read in the retained caller heap. Checked source reborrows preserve this
-origin through fields/owned dereferences; loans survive immutable memory growth
-through all locals, temporary bundles and recursive calls. Both actual source
-programs pass kernel route/type/body certificates. Ordinary results contain
-no shared reference, including inside owned heap payloads. `lookup_loan_total`
-composes native success, loans, borrow-free results, storage/spatial/frame
-safety, returned ownership, independent typed first-hit readback and existing
-cost/allocation bounds. Dynamic immutable loan validity is now proved. Source
-region binding/outlives and official interpretation adequacy remain open.
+Eight `Rust/LookupBorrow*.lean` modules back shared references with typed reads
+in the retained caller heap, preserve loans through actual helper execution
+and prove ordinary output borrow-free, including owned payloads. The new region
+increment consumes these results; do not duplicate them.
 
 The preceding increment proves
 [normal local-storage lifetimes](lean-complexity-campaign/evidence/lookup-stack-storage.md).
@@ -154,13 +164,15 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,815-job build, all fifteen Lean suites, native WP example, seven Python
-reifier tests and 382-endpoint axiom audit pass. New modules have no warnings;
+The main 3,823-job build, all sixteen Lean suites, native WP example, seven Python
+reifier tests and 414-endpoint axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records).
 `lookup_spatial_total`'s statement closure also has a shared-tool inspection
-(202 records). Main pins and
+(202 records). The new `lookup_source_total` statement closure was inspected
+(623 records), retaining represented native inputs, actual source/run witnesses
+and prior safety/readback/cost conclusions. Main pins and
 production Rust/existing Aeneas semantics are unchanged. New generated JSON
 snapshots reproduce exactly. CLRS compatibility and source-only
 AFP inspection remain recorded in the earlier reuse audit.
@@ -181,6 +193,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSpatial.lean)
 (cd proofs && lake env lean Tests/LookupStack.lean)
 (cd proofs && lake env lean Tests/LookupBorrow.lean)
+(cd proofs && lake env lean Tests/LookupRegions.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
@@ -200,28 +213,25 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **source region/interpretation adequacy (W06-C3),
-then remaining local/source costs (MEM-03/W05)**. Generic declared-currency work,
-lookup control normalization, addressed execution, exclusive returned ownership,
-normal local guard/cleanup safety, lifetime-erased declaration/static-type
-checking, operational preservation, intermediate spatial separation, normal
-local storage/initialization discipline, dynamic immutable loans and borrow-free
-ordinary results are implemented; do not duplicate them.
-Use checked `CodeConstraints`, operational typing, local guard and the spatial,
-storage and loan traces in the source/region simulation. The heap model does
-not free cells; bare representation permits duplicate Box aliases. `Owns`/`Footprint` exclude these
-in returned values. The local frame checker tracks ownership classes; the new
-spatial proof separately tracks disjoint complete footprints across active
-owners, including suspended callers. Typed loans additionally prove earlier-heap
-origin and stable reads; ordinary output cannot retain them. Establish source
-region/interpretation adequacy. Extend stack
-borrows/mutation as needed for insertion, concatenation and the memo evaluator/
-public core. Preserve
-the exact existing evaluator bridge and independently optimal clients.
-`eval_spec` now supplies valid storage and the actual `ops.read` counter to
-lookup invariants, so the former cost-invariant API blocker is resolved.
-Keep W04's size/substitution and G1's remaining typed-reference/source-adequacy
-obligations visible; generic C1/C2 results cannot close them or APP-01.
+Next is **actual memo source composition (W06-C3), then remaining local/source
+costs (MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
+lookup pilot are implemented. Reuse the checked source/type constraints,
+addressed execution, ownership, storage, loan and region traces. The explicit
+region valuation uses immutable retained-world extension; it is not a full Rust
+borrow checker or compiler/machine simulation. D12 permits this honest
+source-operation endpoint; do not invent a whole-compiler gate before the
+actual memo pilot.
+
+Inspect maintained Rust, generated code and existing native memo refinements
+for insertion, concatenation, evaluation and one public core entry point.
+Extend the source interpreter and heap/borrow model only as needed by those
+actual operations; mutation and stack borrows will require new invariants.
+Then handle indexed/token/reconstruction wrappers, normal work, input/error
+policy and the required G3 adversaries. Preserve independent specs and the exact
+existing evaluator bridge. `eval_spec` already supplies valid storage and the
+actual `ops.read` counter to lookup invariants. Keep W04 size/substitution,
+MEM-03 unpriced work, SRC-01/C3, MEM-04 and APP-01 obligations explicit; generic
+C1/C2 or the lookup pilot alone cannot close them.
 
 Use [capabilities.md](capabilities.md), [PROOF_STATUS.md](../../proofs/PROOF_STATUS.md)
 and the paper plans for the full mathematical, software and release scope.

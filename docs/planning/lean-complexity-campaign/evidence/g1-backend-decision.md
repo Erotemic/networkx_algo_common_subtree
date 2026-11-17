@@ -148,6 +148,15 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+Current follow-up: the [scoped interpreted lookup pilot](lookup-region-erasure.md)
+composes checked source control/types, addressed reads/moves, owner separation,
+local storage, typed immutable loans and a region-erasure equivalence with native
+success/readback and unchanged costs. This advances items 1--2 for the named
+lookup source-operation model. Charon/data import and primitive/runtime adequacy
+remain explicit boundaries; D12 accepts this initial endpoint without requiring
+a whole-compiler theorem. Next implement item 3 for the actual memo operations,
+then wrappers and item 4. Full C3 is not closed by lookup alone.
+
 Follow-up: the [source-control certificates](lookup-source-certificates.md)
 now validate both retained lookup extractions and prove control/result/cost
 preservation in the declared snapshot primitive model. The external Python

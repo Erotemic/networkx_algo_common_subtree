@@ -1,5 +1,34 @@
 # Common-subtree proof status
 
+## Scoped lookup regions and erasure: 2026-11-17
+
+Eight `Rust/LookupRegion*.lean` modules check canonical signature binders,
+bounded body regions, all retained nested region uses and helper call arities.
+Region-bearing local annotations carry independent scope proofs and exact
+erasure equalities. `scoped_erasure_iff` proves equivalence with typed old-heap
+loans under an explicit retained-world lifetime; bounded signature substitution
+preserves scope and interpretation. The actual shared interpretation includes
+current reads, old typed loans, region liveness and recursive pointees.
+
+Both complete source snapshots pass kernel scope/body certificates.
+`run_scoped` constructs recursive regional traces using actual checked local
+types. `lookup_source_total` composes parsed source, native success, all prior
+loan/storage/spatial/frame witnesses, borrow-free output, exclusive ownership,
+independent typed first-hit readback and unchanged costs/allocation growth.
+
+The 3,823-job build, sixteen Lean suites, native WP example, seven Python tests
+and 414-endpoint audit pass. The 32 new closures use only the accepted baseline
+axioms; new modules have no warnings. Generated files, Rust and pins are unchanged.
+
+This completes the scoped immutable interpreted lookup pilot within its named
+source/primitive model. Charon import, compiler/machine correspondence, physical
+provenance, mutable loans, freeing and unwind execution are separate boundaries.
+Full W06-C3 remains open: next actual insertion, concatenation, memo evaluation/
+core, wrappers, input/error policy and G3 adversaries. D12 accepts an honest
+source-operation endpoint before a whole-compiler proof.
+
+[Exact scope, theorem endpoints and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-region-erasure.md).
+
 ## Stable typed lookup shared loans: 2026-11-17
 
 `Rust/LookupBorrow{Loans,Places,Primitives,Certificate,Execution,Calls,Outputs,Refinement}.lean`

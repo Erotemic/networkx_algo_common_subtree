@@ -45,6 +45,17 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [scoped region-erasure proof](evidence/lookup-region-erasure.md)
+now checks actual signature/body region binders and call arities, retains
+region-bearing local types and proves their erasure equivalent to typed loans
+under an explicit immutable retained-world lifetime. Both source snapshots
+pass kernel certificates. `lookup_source_total` composes parsed source,
+recursive regional traces, native success, safety, ownership, independent
+first-hit readback and existing costs. The 3,823-job build, sixteen suites and
+414-endpoint axiom audit pass. The next W06-C3 work is actual insertion,
+concatenation, memo evaluation/core and wrappers, with the source/runtime trust
+boundary explicit.
+
 The [stable shared-loan proof](evidence/lookup-shared-loans.md) checks the actual
 source borrow routes and retains typed earlier-heap reads through recursive
 execution. Ordinary output is borrow-free even inside owned payloads. Native

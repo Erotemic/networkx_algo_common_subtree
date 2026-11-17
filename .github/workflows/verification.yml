@@ -35,6 +35,7 @@ jobs:
           lake env lean Tests/LookupSpatial.lean
           lake env lean Tests/LookupStack.lean
           lake env lean Tests/LookupBorrow.lean
+          lake env lean Tests/LookupRegions.lean
           lake env lean Tests/Memo.lean
           lake env lean Tests/EditDistance.lean
           lake env lean Tests/MemoWork.lean

@@ -86,6 +86,17 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Region follow-up:** [scoped lookup erasure](evidence/lookup-region-erasure.md)
+checks actual source binders/uses/call arities and retains regional local types.
+An independent shared-value interpretation is equivalent to typed loans under
+an explicit immutable retained-world lifetime. Both source snapshots pass kernel
+certificates; native lookup composes regional recursive traces with all prior
+safety/readback/cost results. Next compose actual insertion, concatenation, memo
+evaluation/core and wrappers, then input/error policy and G3 adversaries. Keep
+the declared source/primitive and compiler/runtime boundaries explicit. D12's
+initial source-operation endpoint does not require a whole-compiler proof.
+Full W06-C3 remains open; do not duplicate the scoped lookup pilot.
+
 **Shared-loan follow-up:** [typed retained-heap loans](evidence/lookup-shared-loans.md)
 now prove actual shared-read validity through source-certified reborrows,
 locals/temporaries and recursive calls. Ordinary results are borrow-free;

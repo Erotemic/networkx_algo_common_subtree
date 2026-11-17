@@ -746,7 +746,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 source region/interpretation adequacy, then memo core/wrappers; lookup control, addressed realization, exclusive returned ownership, normal local frame/callee/return safety, lifetime-erased declarations/annotations/static constraints, successful-run operational typing, intermediate framed owner separation, normal storage/initialization, dynamic immutable shared-loan validity and borrow-free ordinary results checked; physical stack/provenance and source regions remain unmodeled"
+      "W06-C3 actual insertion/concatenation/memo evaluator/core, then wrappers, input/error policy and G3 adversaries; scoped interpreted lookup pilot composes checked control/types, addressed memory, ownership, storage, typed immutable loans, bound source regions and retained-world erasure with native success/readback/costs; Charon/primitive import and compiler/runtime/provenance/mutable/unwind boundaries remain explicit"
     ],
     "still_open": [
       "G0 remaining reconnaissance",

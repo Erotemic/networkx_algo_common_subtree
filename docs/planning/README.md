@@ -25,6 +25,17 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [scoped region-erasure proof](lean-complexity-campaign/evidence/lookup-region-erasure.md)
+now checks actual signature/body region binders and call arities, retains
+region-bearing local types and proves their erasure equivalent to typed loans
+under an explicit immutable retained-world lifetime. Both source snapshots
+pass kernel certificates. `lookup_source_total` composes parsed source,
+recursive regional traces, native success, safety, ownership, independent
+first-hit readback and existing costs. The 3,823-job build, sixteen suites and
+414-endpoint axiom audit pass. The next W06-C3 work is actual insertion,
+concatenation, memo evaluation/core and wrappers, with the source/runtime trust
+boundary explicit.
+
 The [shared-loan proof](lean-complexity-campaign/evidence/lookup-shared-loans.md)
 now backs each shared reference with a typed read in the retained caller heap,
 checks source borrow routes and preserves loans through all recursive completed

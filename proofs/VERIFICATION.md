@@ -23,6 +23,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupSpatial.lean)
 (cd proofs && lake env lean Tests/LookupStack.lean)
 (cd proofs && lake env lean Tests/LookupBorrow.lean)
+(cd proofs && lake env lean Tests/LookupRegions.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -54,6 +55,17 @@ into `/tmp/common-subtree-verified-wheel-install`; from `/tmp`, both
 that installation on `PYTHONPATH`. With the locally built source-tree extension,
 the full Python suite passes (86 tests). Python/PyO3 token conversion is tested
 integration, while the source-refinement theorem covers the Rust Boolean core.
+
+The scoped region increment adds `Rust/LookupRegion*.lean` and
+`Tests/LookupRegions.lean`. It checks actual free/body region scope and helper
+call arities, retains regional local types and proves erasure equivalence under
+an explicit immutable retained-world lifetime. Both actual source snapshots
+pass kernel certificates; `lookup_source_total` composes source parsing,
+recursive regional traces, native success, prior safety/readback and costs.
+The main 3,823-job build, sixteen suites, native WP example, seven Python tests
+and 414-endpoint audit pass. See the
+[region report](../docs/planning/lean-complexity-campaign/evidence/lookup-region-erasure.md)
+for exact assumptions and remaining compiler/runtime and memo-composition work.
 
 ## VM caches
 

@@ -134,3 +134,13 @@ then extend to insertion, concatenation, memo evaluation/core and wrappers.
 Keep remaining local/source costs and physical space/runtime obligations
 separate from this exact declared-currency result. W06-C3, SRC-01, MEM-04 and
 the full planning objective remain open.
+
+## Subsequent region increment
+
+[Scoped lookup erasure](lookup-region-erasure.md) now checks actual signature/
+body binders and all recognized region uses, retains regional local annotations
+and proves an explicit retained-world erasure equivalence. It composes these
+with the loan theorem in `lookup_source_total`. General compiler/runtime,
+mutable/provenance and unwind boundaries remain explicit. Next is actual memo
+source composition; the earlier remaining-work paragraph records this report's
+baseline, not a requirement to repeat the completed lookup region pilot.
