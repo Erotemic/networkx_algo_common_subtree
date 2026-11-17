@@ -46,6 +46,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
+(cd proofs && lake env lean Tests/SourceAddressedControl.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -314,6 +315,19 @@ remain open. See the
 [storage/action report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md).
 The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
 949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
+declarations with no unknown references.
+
+Four modules add `SourceEvalAddressedScrutinees`, `SourceEvalAddressedReturn`,
+`SourceEvalAddressedControl` and `SourceEvalAddressedChoice`, with
+`Tests/SourceAddressedControl.lean`. Retained concrete tags support partial moves;
+boolean routing and return packets reuse the shared control engine. Successful
+addressed runs preserve source results/complete costs and frame/caller/packet
+validity. The actual choice bridge reuses the checked native rule and source
+body. Calls, all actual physical check success and complete exclusive/storage/
+region/destructor composition remain open. See the
+[addressed control report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-control.md).
+The 3,937-job build, all 39 Lean suites, native WP, nine Python tests and
+962-endpoint axiom audit pass. Shared statement inspection covers 920 unique
 declarations with no unknown references.
 
 ## VM caches

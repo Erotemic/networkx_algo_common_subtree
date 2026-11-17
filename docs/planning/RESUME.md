@@ -1,17 +1,38 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[initial activations and executable storage/drop actions](lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md).
-Four modules build actual parameter frames from parsed local counts, execute
-storage/drop with computed contexts and compose successful non-call action
-sequences at unchanged complete source costs. Drop protects initialization roots
-as well as unique classified Box owners. Calls, switches/returns, actual branch
-check success, global ownership/spatial and dynamic region/destructor traces
-remain next. W06-C3 and the full planning goal stay open.
+[addressed switches, return packets and actual choice](lean-complexity-campaign/evidence/memo-evaluator-addressed-control.md).
+Four modules inspect actual retained tags after partial moves, execute boolean
+scrutinees/early returns through the shared source-control engine, and prove
+source result/cost and active/caller/packet validity. The actual choice bridge
+reuses the checked source body and independent native tie rule. Calls, universal
+physical check success, complete exclusive transfer and callee storage/region/
+destructor closure remain next. W06-C3 and the full planning goal stay open.
 
 ## Checked endpoints and scope
 
-Latest public endpoints:
+Latest public endpoints, in `SourceEval.Addressed` / `.Derived` unless qualified:
+
+- `Storage.Frame.locate_node`, `Addressed.{discriminant_complete,discriminant_spec}`:
+  actual initialized partial node/tag inspection without materializing moved
+  fields, with full read guards and liveness.
+- `Addressed.scrutinee_spec`, `Derived.scrutinee_spec`: actual constructor/boolean
+  keys, moved masks and computed active/caller guards preserve source agreement,
+  frame identity/bounds/roots and activation validity.
+- `Derived.returnValue_spec`: actual local-zero packet extraction agrees with
+  source return/cost, clears its source mask and retains the packet's complete
+  live read graph. Stack closure and returned-loan escape safety remain separate.
+- `Derived.{exec_done,exec_ret,exec_step,exec_switch,exec_spec}`: shared source
+  routing, continuation and early-return execution preserve exact source results/
+  complete costs, frame/count, active/caller/world validity and returned packet
+  readback for every successful concrete execution. Selected calls and undefined
+  behavior still fail; universal source-path physical success is not assumed.
+- `Choice.addressed_refines`: the pinned actual choice body, initial source masks
+  and successful addressed run yield an actual readable native selected-result
+  cell, unchanged complete body cost and final frame/caller/world validity,
+  reusing the existing independent tie rule and functional theorem.
+
+The preceding initial/storage/action endpoints remain reusable:
 
 - `LookupSource.Partial.Addressed.Storage.World.stackCells_keeps` and
   `World.WellFormed.stackCells`: fresh argument storage retains old memory,
@@ -190,8 +211,8 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, existing memory/control/type/region models
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
-949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
+The 3,937-job build, all 39 Lean suites, native WP, nine Python tests and
+962-endpoint axiom audit pass. Shared statement inspection covers 920 unique
 declarations with no unknown references.
 See the latest evidence report for reproduction and scope.
 
@@ -199,10 +220,13 @@ See the latest evidence report for reproduction and scope.
 
 1. **Complete addressed control and callees.** Use the executable operand/RHS/
    assignment layer and its forward/reverse simulation. Reuse the completed
-   parsed-layout initial constructor and non-call action sequences. Execute
-   switches/returns and calls while threading the complete actual caller stack.
-   Prove every physical route/check succeeds along every actual branch. Add
-   Box/checked-add intrinsics and reuse completed ordinary helper heap/owner/borrow/type/source/cost chains. Preserve insertion's
+   parsed-layout initial constructor and completed addressed control/return
+   extraction. Execute ordinary/intrinsic callees while threading the complete
+   actual caller stack, argument moves, temporary owners and guarded destination
+   initialization. Prove every physical route/check succeeds along every actual
+   branch; `exec_spec` still has an explicit concrete-success premise. Add
+   Box/checked-add intrinsics and reuse completed ordinary helper heap/owner/
+   borrow/type/source/cost chains. Preserve insertion's
    transferred table and aliases. Do not repeat extraction, snapshot/native
    evaluator totality, typing/binding, RHS simulation or graph/store primitives.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
@@ -213,9 +237,10 @@ See the latest evidence report for reproduction and scope.
    guard cannot do so either. Initialized zero-owner locals can end storage;
    owners/Box shells must move or drop first. The new drop/storage operations
    check affected stack roots and Box owners, including scalar/zero-owner
-   teardown. Compose those checks with global exclusive transfer and dynamic
-   parsed-region and destructor-instance typing/semantics along actual branches/calls. Keep
-   physical allocator/compiler/runtime boundaries explicit under D12.
+   teardown. Return extraction retains readable packets but leaves stack roots;
+   close actual callee storage and reject escaping local loans. Compose global
+   exclusive transfer and dynamic parsed-region/destructor-instance semantics
+   along actual branches/calls. Keep physical allocator/compiler/runtime boundaries explicit under D12.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
    table teardown and the remaining safety/cost traces. Then indexed/token/
@@ -296,6 +321,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
+(cd proofs && lake env lean Tests/SourceAddressedControl.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

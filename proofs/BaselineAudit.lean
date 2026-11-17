@@ -1018,3 +1018,17 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.enter_definition
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_spec
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_spec
+
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Frame.locate_node
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.discriminant_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.discriminant_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.scrutinee_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.scrutinee_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.returnValue_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.exec_done
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.exec_ret
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.exec_step
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.exec_switch
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.selectSource_simulation
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.exec_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.addressed_refines

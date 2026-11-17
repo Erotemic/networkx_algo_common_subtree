@@ -349,3 +349,10 @@ non-call storage/drop/assignment sequences at unchanged costs. Drop guards both
 stack initialization roots and exact unique classified Box owners. This advances
 item 2; ordinary/intrinsic calls, switches/returns, complete branch check success,
 global exclusive transfer and dynamic regions/destructors remain before C3.
+
+The [addressed control increment](memo-evaluator-addressed-control.md) now reads
+actual retained tags, executes boolean routing/early returns through the shared
+control engine, and extracts live concrete output packets at unchanged costs.
+The actual choice bridge reuses the checked source body and native tie rule.
+Item 2 still requires ordinary/intrinsic calls, universal physical check success,
+exclusive transfer and callee storage/returned-loan/region/destructor closure.

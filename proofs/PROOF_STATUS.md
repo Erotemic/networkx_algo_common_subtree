@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+## Addressed switches, return packets and actual choice: 2026-11-17
+
+[Addressed switches, return packets and actual choice](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-control.md)
+now read concrete retained tags after partial moves, execute boolean routing and
+early returns through the shared source-control engine, and preserve exact
+source results/costs and active/caller/packet validity. The actual choice bridge
+reuses the checked source body and native tie rule. Ordinary/intrinsic calls,
+universal physical check success, global exclusive transfer and callee storage/
+region/destructor closure remain required, then public core/wrappers/resources/
+G3. W06-C3 and the full planning goal stay open.
+The 3,937-job build, all 39 Lean suites, native WP, nine Python tests and
+962-endpoint axiom audit pass. Shared statement inspection covers 920 unique
+declarations with no unknown references.
+
 ## Initial activations and executable storage/drop actions: 2026-11-17
 
 [Initial activations and executable storage/drop actions](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md)

@@ -283,3 +283,5 @@ public import SubtreeProofs.Rust.SourceEvalDerivedAssignments
 
 public import SubtreeProofs.Rust.SourceActivationInitial
 public import SubtreeProofs.Rust.SourceEvalDerivedActions
+
+public import SubtreeProofs.Rust.SourceEvalAddressedChoice
