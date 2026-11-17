@@ -266,13 +266,14 @@
         "date": "2026-11-16",
         "evidence": "memo-interpreter.md",
         "reuse_audit": "memo-statement-audit.md",
-        "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
+        "semantic_boundary": "C1 native interpreter and exact maintained LV evaluator counters; no source/Rust runtime adequacy",
         "remaining": [
-          "Unrelated independently specified client",
           "Representation-specific complete work envelopes",
-          "Source/heap/runtime realization"
+          "Source/heap/runtime realization",
+          "Retained input/body/key costs and independent-review acceptance"
         ],
-        "lv_correspondence": "memo-lv-correspondence.md"
+        "lv_correspondence": "memo-lv-correspondence.md",
+        "unrelated_client": "memo-edit-distance.md"
       }
     },
     {
@@ -298,13 +299,14 @@
         "date": "2026-11-16",
         "evidence": "memo-interpreter.md",
         "reuse_audit": "memo-statement-audit.md",
-        "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
+        "semantic_boundary": "C1 native interpreter and exact maintained LV evaluator counters; no source/Rust runtime adequacy",
         "remaining": [
-          "Unrelated independently specified client",
           "Representation-specific complete work envelopes",
-          "Source/heap/runtime realization"
+          "Source/heap/runtime realization",
+          "Retained input/body/key costs and independent-review acceptance"
         ],
-        "lv_correspondence": "memo-lv-correspondence.md"
+        "lv_correspondence": "memo-lv-correspondence.md",
+        "unrelated_client": "memo-edit-distance.md"
       }
     },
     {
@@ -332,13 +334,14 @@
         "date": "2026-11-16",
         "evidence": "memo-interpreter.md",
         "reuse_audit": "memo-statement-audit.md",
-        "semantic_boundary": "C1 native sequential interpreter; no existing-evaluator or source-runtime correspondence",
+        "semantic_boundary": "C1 native interpreter and exact maintained LV evaluator counters; no source/Rust runtime adequacy",
         "remaining": [
-          "Unrelated independently specified client",
           "Representation-specific complete work envelopes",
-          "Source/heap/runtime realization"
+          "Source/heap/runtime realization",
+          "Retained input/body/key costs and independent-review acceptance"
         ],
-        "lv_correspondence": "memo-lv-correspondence.md"
+        "lv_correspondence": "memo-lv-correspondence.md",
+        "unrelated_client": "memo-edit-distance.md"
       }
     },
     {
@@ -742,7 +745,7 @@
     ],
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
-      "W05 unrelated independently specified client and complete representation work envelopes",
+      "W05 complete representation work envelopes and retained local input/body/key costs",
       "W06-C3 checked source/reification and typed heap/reference simulation"
     ],
     "still_open": [

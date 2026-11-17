@@ -36,12 +36,14 @@ proves exact old-evaluator values/tables/counters and warm D-product bounds.
 The 3,757-job build, updated memo suite and 115-endpoint axiom audit pass;
 the unchanged suites passed in the preceding core build.
 
-W04/W05 remain partial: next finish the unrelated independent client and
-complete representation work envelopes, retaining W04's other interfaces. W06-C3's reification/heap/source bridge and
-the wider program's production/runtime/release/application obligations remain
-open. The [G1 comparison](lean-complexity-campaign/evidence/g1-backend-decision.md)
-selected native Std.WP at C2; it did not establish Rust runtime. Earlier dated
-milestones follow.
+The [independent edit-distance client](lean-complexity-campaign/evidence/memo-edit-distance.md)
+now proves minimum-cost edits and consumes the same generic memo theorem with
+list/dense caches. The 3,761-job build, new suite and 125-endpoint axiom audit
+pass. Dense index conversion and full cache setup are explicitly counted.
+W04/W05 remain partial: complete representation work envelopes and other
+size/substitution interfaces are open, including local input/body costs.
+W06-C3 and the wider program's production/runtime/release/application work
+remain open. Earlier dated milestones follow.
 
 The [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
 adds checked instruction accounting and universal first-hit/event correspondence

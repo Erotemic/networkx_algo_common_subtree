@@ -23,6 +23,16 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Complexity.Paper2004.roots_envelope_spec
 #print axioms SubtreeProofs.Complexity.Paper2004.memoLcs_calls_from_generic
 #print axioms SubtreeProofs.Complexity.Paper2004.memoLcs_warm_misses_from_generic
+#print axioms SubtreeProofs.Complexity.EditDistance.distance_optimum
+#print axioms SubtreeProofs.Complexity.EditDistance.body_correct
+#print axioms SubtreeProofs.Complexity.EditDistance.requests_decrease
+#print axioms SubtreeProofs.Complexity.EditDistance.roots_spec
+#print axioms SubtreeProofs.Complexity.EditDistance.initial_value_optimum
+#print axioms SubtreeProofs.Complexity.EditDistance.list_roots_spec
+#print axioms SubtreeProofs.Complexity.EditDistance.dense_roots_spec
+#print axioms SubtreeProofs.Complexity.EditDistance.dense_setup
+#print axioms SubtreeProofs.Complexity.Memo.DirectCache.productOps
+#print axioms SubtreeProofs.Complexity.Memo.DirectCache.product_initial_sound
 
 #print axioms SubtreeProofs.Paper2004.OrderedTree.decodeDyck_encodeDyck
 #print axioms SubtreeProofs.Paper2004.OrderedTree.encodeDyck_decodeDyck

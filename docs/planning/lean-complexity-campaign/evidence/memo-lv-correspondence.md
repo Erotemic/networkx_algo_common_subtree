@@ -1,5 +1,11 @@
 # Exact LV evaluator correspondence, 2026-11-16
 
+**Further follow-up:** [independent edit-distance client](memo-edit-distance.md)
+now supplies minimum-edit correctness and both list/dense consumers. The
+remaining W05 work is complete priced representation/local-cost envelopes;
+source adequacy and W04's other interfaces remain open. The evidence below
+records this earlier milestone's checked scope.
+
 `Complexity/Paper2004/MemoCorrespondence.lean` connects the
 [native memo interpreter](memo-interpreter.md) to the **unchanged existing
 `memoLcs` computation**, preserving values, full table order and all three

@@ -45,6 +45,14 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [independent edit-distance client](evidence/memo-edit-distance.md) now adds
+an attained minimum-cost edit specification and list/dense implementations of
+the same bounded-index body. Generic correctness/once-only expansion and warm
+multi-root envelopes are reused. The 3,761-job build, new suite and 125-endpoint
+axiom audit pass. W05's complete representation work envelopes and retained
+local input/body/key costs remain open, along with W04's other interfaces and
+W06-C3. This is C1, not source/runtime completion.
+
 The [checked native memo core](evidence/memo-interpreter.md) proves actual
 sequential evaluation, cache preservation, unique expansion, exact requests
 and closed finite warm-cache envelopes. Two counted cache representations and
@@ -91,7 +99,7 @@ production algorithms remain fixed.
 ## Original first work package and current next step
 
 The comparison below has now produced the scoped C2 decision linked above.
-Next are W05's unrelated client and complete representation work envelopes, with W04's other interfaces and the
+Next are W05's complete representation work envelopes and retained local costs, with W04's other interfaces and the
 named W06-C3 work retained.
 The original G0/G1 requirements remain recorded here; source adequacy has not
 been waived.

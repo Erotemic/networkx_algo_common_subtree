@@ -18,6 +18,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
+(cd proofs && lake env lean Tests/EditDistance.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 python -m pytest tests
 # Build the opt-in proved-core extension through the actual package build:

@@ -28,6 +28,7 @@ jobs:
           lake env lean Tests/LookupEvents.lean
           lake env lean Tests/LookupSource.lean
           lake env lean Tests/Memo.lean
+          lake env lean Tests/EditDistance.lean
           lake env lean experiments/resource_cost_audit/LookupSourceWP.lean
           python3 checks/test_lookup_source_reifier.py
   rust:

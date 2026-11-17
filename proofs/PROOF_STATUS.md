@@ -1,5 +1,29 @@
 # Common-subtree proof status
 
+## Independent edit-distance memo client: 2026-11-16
+
+`Complexity/EditDistance/{Specification,Memo,Clients}.lean` supplies an
+independent edit relation, proved attained/minimum recurrence, bounded-index
+body and list/dense cache clients. Both representations use the unchanged
+generic memo correctness, unique-expansion and warm/multi-root envelope proof.
+The value at initial indices is independently minimum edit cost; changed input
+symbols require a fresh soundness justification even at identical dimensions.
+
+`Complexity/Memo/ProductCache.lean` reuses Mathlib's proved dense index
+equivalence. Each actual cache operation charges two encoding arithmetic units
+plus a cell unit; dense cache initialization costs the whole rectangle plus one.
+The 3,761-job main build, new kernel-checked suite and 125-endpoint axiom audit
+pass. Ten new endpoint closures stay within the established axiom set; new
+modules have no warnings. Main pins and production/generated sources are
+unchanged.
+
+This closes the unrelated correctness/request-client obligation at C1, with
+both representations exercised. W05's complete run-level work envelopes,
+including local input/body/key costs, remain open. No total quadratic or
+source/Rust runtime result follows. W04's other interfaces, W06-C3 and wider
+application obligations remain open.
+[Exact scope, counters and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-edit-distance.md).
+
 ## Exact existing LV memo evaluator correspondence: 2026-11-16
 
 `Complexity/Paper2004/MemoCorrespondence.lean` proves the native evaluator
