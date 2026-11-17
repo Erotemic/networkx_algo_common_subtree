@@ -25,6 +25,13 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [addressed lookup realization](lean-complexity-campaign/evidence/lookup-heap-realization.md)
+now preserves typed readback, complete costs and fresh Box-cell growth in an
+immutable heap with shared aliases. Lookup succeeds for all represented native
+inputs at sufficient fuel; input layouts are constructible. The 3,776-job build,
+nine suites and 175-endpoint audit pass. Unique ownership/destruction, stack
+lifetimes, checked JSON field typing and official source adequacy remain open.
+
 The [checked source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md)
 validate both actual lookup extractions, preserve complete outcomes/costs for
 all fuels and reject the real extra-comparison mutant's old certificate/budget.

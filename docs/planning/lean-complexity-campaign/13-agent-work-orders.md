@@ -86,6 +86,13 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Heap follow-up:** [addressed memory realization](evidence/lookup-heap-realization.md)
+proves primitive and complete-call simulation, typed first-hit readback, exact
+costs and fresh Box-cell growth for the immutable fragment. It constructs input
+layouts and allows shared aliases. Next prove unique ownership/frame safety,
+owned resets/destruction, JSON field typing and official source adequacy before
+extending to memo insertion/evaluation and wrappers. This does not close W06-C3.
+
 **Executed partial delivery:** [kernel-checked source-control certificates](evidence/lookup-source-certificates.md)
 now validate both retained lookup JSON extractions against their normalized
 programs and preserve complete outcomes/costs at every fuel. The real extra-work

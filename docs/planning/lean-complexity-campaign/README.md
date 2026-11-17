@@ -45,6 +45,13 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [addressed lookup memory realization](evidence/lookup-heap-realization.md)
+now constructs sufficient-fuel heap executions with typed first-hit readback,
+shared aliases, complete source costs, old-memory preservation and fresh
+Box-allocation growth. Input layouts exist for all native values. Unique
+ownership/destruction, stack lifetimes, JSON field signatures and official
+source adequacy remain W06-C3 work, followed by the actual memo core/wrappers.
+
 The [kernel-checked source-control certificates](evidence/lookup-source-certificates.md)
 check retained original/mutant lookup JSON and preserve complete execution/cost
 at all fuels. They remove Python control-reifier trust for those snapshots and

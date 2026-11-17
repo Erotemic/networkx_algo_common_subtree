@@ -18,6 +18,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
+(cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
 (cd proofs && lake env lean Tests/MemoWork.lean)
@@ -137,6 +138,15 @@ not heapful Rust/Aeneas runtime semantics. See the
 and historical [lookup pilot report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-pilot.md).
 Intermediate LLBC files are generated locally and ignored. Generated Lean
 must never be edited to make a proof pass.
+
+`Rust/LookupHeap{Memory,Typing,Primitives,Execution,Inputs,Refinement}.lean`
+adds addressed execution and typed readback for represented immutable heap
+inputs, with exact source currencies and fresh Box-cell growth. It proves
+lookup success at sufficient fuel and constructs input layouts for every native
+table/query. Unique ownership/destruction, stack references, checked JSON field
+typing and official LLBC/Rust adequacy remain open. These are logical source
+currencies, not constant-time list-store or physical memory/runtime guarantees.
+See the [heap realization report](../docs/planning/lean-complexity-campaign/evidence/lookup-heap-realization.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`

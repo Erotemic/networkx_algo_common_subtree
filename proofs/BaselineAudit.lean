@@ -191,3 +191,27 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Certificate.mutant_run
 #print axioms SubtreeProofs.Rust.LookupSource.Certificate.original_run_bound
 #print axioms SubtreeProofs.Rust.LookupSource.Certificate.mutant_violates_old_comparison_budget
+
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.alloc_fresh
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.alloc_rep
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Represents.mono
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Represents.typed
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.word_typed
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.table_typed
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.locate_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.borrow_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.operand_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.rvalue_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.scrutinee_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.action_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.exec_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.run_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.packWord_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.packTable_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.inputs_exist
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.certified_run_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.certified_mutant_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.copy_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.compare_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_all_runs

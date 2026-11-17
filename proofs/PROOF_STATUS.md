@@ -1,5 +1,36 @@
 # Common-subtree proof status
 
+## Addressed lookup memory realization: 2026-11-16
+
+`Rust/LookupHeap{Memory,Typing,Primitives,Execution,Inputs,Refinement}.lean`
+implements actual addresses/inline field paths, shared aliases, owned Box cells,
+invalidating local moves, guarded reads and fresh allocation. Independent field
+signatures and `u32` bounds type represented values. Primitive and interpreter
+proofs construct concrete successful executions from represented snapshot runs,
+preserving the complete result/cost and old heap. `run_spec` discharges the
+callee contract by fuel induction and proves heap growth equals Box allocations.
+
+`certified_run_spec`/`certified_mutant_spec` connect both retained source-control
+programs. `copy_spec`, `compare_spec`, `lookup_spec` and `lookup_all_runs` prove
+sufficient-fuel typed readback and exact events; comparison preserves the entire
+heap. Lookup returns independent first-hit `findResult`, including duplicate and
+unsound caches. Arbitrary shared aliasing is permitted. `inputs_exist` constructs
+valid layouts for every native table/query, preserving existing memory.
+
+The 3,776-job main build, all nine Lean suites, native WP example, seven Python
+reifier regressions and 175-endpoint axiom audit pass. All 23 new audited
+closures stay within the established three-axiom baseline; new modules have no
+warnings. Main pins, production Rust, generated semantics/snapshots and tooling
+are unchanged. Full pinned regeneration passed in the preceding baseline.
+
+This is an explicit immutable-heap realization of the declared source currency.
+Unique Box ownership, safe owned-value resets/destruction, stack borrow lifetimes,
+checked JSON field-signature correspondence and official typed LLBC/Rust
+simulation remain open. Logical store list operations are not claimed constant
+time; no physical peak-space or allocator/CPU runtime theorem follows. Actual
+memo insertion/evaluation and wrappers remain W06-C3 work.
+[Exact statements, input construction, tests and remaining obligations](../docs/planning/lean-complexity-campaign/evidence/lookup-heap-realization.md).
+
 ## Kernel-checked lookup source-control certificates: 2026-11-16
 
 `Rust/LookupSourceFrontend.lean` reads the retained complete pinned Charon

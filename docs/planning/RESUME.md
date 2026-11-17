@@ -1,6 +1,18 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment supplies
+Branch: `Droschinsky-algos`. The latest increment proves an
+[addressed lookup memory realization](lean-complexity-campaign/evidence/lookup-heap-realization.md).
+Six `Rust/LookupHeap*.lean` modules implement addressed shared reads, invalidating
+local moves, guarded field paths, independently typed represented values and
+fresh Box cells. Primitive/control/call simulation preserves complete costs and
+proves heap growth equals Box allocations. Actual lookup succeeds with independent
+first-hit readback at the established sufficient fuel; comparison preserves the
+entire heap and permits aliased inputs. Input layouts exist for every native
+table/query. Both original and mutant connect through their source certificates.
+This is immutable logical memory: unique ownership/destruction, stack lifetimes,
+checked JSON field typing and official LLBC/Rust adequacy remain open.
+
+The preceding increment supplies
 [kernel-checked lookup source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md).
 Both original and actual Rust extra-comparison mutant retain complete pinned
 Charon JSON (only output-destination options normalized). A Lean reader checks
@@ -10,9 +22,10 @@ Concrete reads/normalizations are kernel-checked, without native proof oracles.
 The mutant cannot pass the original normal-form certificate and still violates
 the old comparison allowance. The Python control reifier is no longer trusted
 for those snapshots. Charon/data import and declared snapshot primitives remain
-boundaries. Typed heap/alias/lifetime/ownership/Box adequacy remains open.
+boundaries. The new addressed model advances the heap obligation; its remaining
+ownership, lifetime, declaration-typing and source-adequacy gaps stay explicit.
 
-The preceding increment proves
+The earlier generic increment proves
 [whole-run memo work envelopes](lean-complexity-campaign/evidence/memo-work-envelopes.md)
 from actual primitive contracts, rather than assumed final-trace caps.
 The generic native theorem includes nonuniform body/request budgets, arbitrary
@@ -33,15 +46,16 @@ This is **C1 declared-event work**, not complete Lean/Rust runtime. The gap from
 supplied trace caps to actual run-level primitive bounds is closed. Remaining
 MEM-03/W05 work concerns unpriced input access, structural equality/copy,
 body/key construction, materialization/finalization and source realization.
-W04's other result-size/substitution interfaces and W06-C3's typed
-heap/reference simulation remain open. Checked reification now covers the
-supported lookup control/snapshot fragment only. The
+W04's other result-size/substitution interfaces and W06-C3's remaining
+ownership/lifetime/source adequacy remain open. Checked reification covers the
+supported lookup control fragment; the addressed model realizes its immutable
+primitive interpretation. The
 [G1 decision](lean-complexity-campaign/evidence/g1-backend-decision.md) and optional
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,770-job build, all eight Lean suites, native WP example, seven Python
-reifier tests and 152-endpoint axiom audit pass. New modules have no warnings;
+The main 3,776-job build, all nine Lean suites, native WP example, seven Python
+reifier tests and 175-endpoint axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records). Main pins and
@@ -60,6 +74,7 @@ dev/regenerate_rust_lean.sh --check
 python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
+(cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
@@ -77,12 +92,16 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **typed source/heap realization (W06-C3), then remaining local/source
-costs (MEM-03/W05)**. The generic declared-currency work theorem and lookup
-control normalization are now implemented; do not duplicate them. Inspect the
-actual pinned Rust/LLBC operations and establish a typed shared-reference/local
-move/owned-Box simulation for read-only lookup before connecting insertion,
-concatenation and the memo evaluator/public core. Preserve
+Next is **ownership/frame and typed source adequacy (W06-C3), then remaining
+local/source costs (MEM-03/W05)**. Generic declared-currency work, lookup control
+normalization and immutable addressed execution are implemented; do not duplicate
+them. Prove unique owned footprints, safe local resets/moves/return escape and
+conditional destruction for the actual generated bodies. The current heap model
+does not free cells, and its representation relation does not assert unique Box
+ownership. Check retained JSON field declarations against the independent
+signatures, then connect the official typed source semantics. Extend stack
+borrows/mutation as needed for insertion, concatenation and the memo evaluator/
+public core. Preserve
 the exact existing evaluator bridge and independently optimal clients.
 `eval_spec` now supplies valid storage and the actual `ops.read` counter to
 lookup invariants, so the former cost-invariant API blocker is resolved.
