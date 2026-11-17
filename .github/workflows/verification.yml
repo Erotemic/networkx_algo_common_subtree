@@ -49,6 +49,7 @@ jobs:
           lake env lean Tests/SourceFrameUpdates.lean
           lake env lean Tests/SourceAddressedExpressions.lean
           lake env lean Tests/SourceFrameInventory.lean
+          lake env lean Tests/SourceStorageLifecycle.lean
           lake env lean Tests/SourceEval.lean
           lake env lean Tests/SourceEvalHelpers.lean
           lake env lean Tests/SourceEvalChoice.lean

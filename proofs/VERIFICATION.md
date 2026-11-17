@@ -45,6 +45,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceFrameUpdates.lean)
 (cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
+(cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -300,6 +301,19 @@ destructor traces remain open. See the
 [computed inventory report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-derived-inventories.md).
 The 3,929-job build, all 37 Lean suites, native WP, nine Python tests and
 929-endpoint axiom audit pass. Shared statement inspection covers 313 unique
+declarations with no unknown references.
+
+Four modules add `SourceActivationInitial`, `SourceEvalDerivedStorage`,
+`SourceEvalDerivedDrop` and `SourceEvalDerivedActions`, with
+`Tests/SourceStorageLifecycle.lean`. Initial frames use actual parsed local
+counts. Computed storage/drop guards protect stack roots and classified unique
+Box owners; non-call sequences retain original complete source execution/costs
+and final activation/caller/world validity. Calls, switches/returns, all actual
+branch check success, global exclusive transfer and region/destructor traces
+remain open. See the
+[storage/action report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md).
+The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
+949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
 declarations with no unknown references.
 
 ## VM caches

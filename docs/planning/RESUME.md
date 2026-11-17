@@ -1,17 +1,41 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[computed frame resources and assignment](lean-complexity-campaign/evidence/memo-evaluator-derived-inventories.md).
-Four modules compute finite read/owner/loan inventories from actual cells,
-roots and masks, scan active/suspended activations and derive remaining store
-contexts. Assignment executes the RHS once using those computed resources and
-preserves source results/costs, activation validity and exact caller inventories.
-Actual initial/control/callee, exclusive owner/spatial and dynamic region/
-destructor traces remain next. W06-C3 and the full planning goal stay open.
+[initial activations and executable storage/drop actions](lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md).
+Four modules build actual parameter frames from parsed local counts, execute
+storage/drop with computed contexts and compose successful non-call action
+sequences at unchanged complete source costs. Drop protects initialization roots
+as well as unique classified Box owners. Calls, switches/returns, actual branch
+check success, global ownership/spatial and dynamic region/destructor traces
+remain next. W06-C3 and the full planning goal stay open.
 
 ## Checked endpoints and scope
 
-Latest public endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
+Latest public endpoints:
+
+- `LookupSource.Partial.Addressed.Storage.World.stackCells_keeps` and
+  `World.WellFormed.stackCells`: fresh argument storage retains old memory,
+  classes/liveness and well-formedness.
+- `Storage.{packetReads_spec,initialActivation_valid,enter_complete}`: initial
+  roots occupy parameter locals one through the arity; source masks equal
+  `SourceEval.initialState`; independently readable inputs yield a valid bounded
+  frame, unchanged old resources and successful construction.
+- `Storage.enter_definition`: the parsed typed declaration's signature boundary
+  and actual local count derive the bound. A maintained consumer instantiates
+  every declaration read from the pinned original source.
+- `SourceEval.Addressed.Derived.{scanContext_spec,storageLive_spec,storageDead_spec}`:
+  compute remaining/caller guards, open fresh storage or end initialized
+  nonowning storage, with actual source/cost and caller resource preservation.
+- `Derived.drop_spec`: exact concrete destructor owner/work result, unique live
+  Box-class victims, protected stack root and remaining/caller reads, empty
+  source mask and exact logical Box retirement while stack storage stays live.
+- `Derived.{action_spec,actions_spec}`: every successful supported non-call
+  action and finite sequence agrees with existing source execution and total
+  cost, preserving activation/caller/world validity. Calls and undefined behavior
+  are rejected; switches and returns are not yet executed by this layer.
+
+The preceding computed inventory endpoints remain reusable, in
+`LookupSource.Partial.Addressed` / `.Storage`:
 
 - `PartialGraph.resources`, `PartialGraphFields.resources`: executable tracing
   returns complete `ResourceRep` read/owner/loan lists from concrete cells/masks.
@@ -166,20 +190,19 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, existing memory/control/type/region models
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,929-job build, all 37 Lean suites, native WP, nine Python tests and
-929-endpoint axiom audit pass. Shared statement inspection covers 313 unique
+The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
+949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
 declarations with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
 1. **Complete addressed control and callees.** Use the executable operand/RHS/
-   assignment layer and its forward/reverse simulation. Construct actual initial
-   activations from parsed local layouts, thread the complete suspended caller
-   stack, and use the computed inventories/contexts through storage/drop/call/
-   switch/return/control steps. Prove every physical route/check succeeds. Add
-   Box/checked-add intrinsics and reuse completed
-   ordinary helper heap/owner/borrow/type/source/cost chains. Preserve insertion's
+   assignment layer and its forward/reverse simulation. Reuse the completed
+   parsed-layout initial constructor and non-call action sequences. Execute
+   switches/returns and calls while threading the complete actual caller stack.
+   Prove every physical route/check succeeds along every actual branch. Add
+   Box/checked-add intrinsics and reuse completed ordinary helper heap/owner/borrow/type/source/cost chains. Preserve insertion's
    transferred table and aliases. Do not repeat extraction, snapshot/native
    evaluator totality, typing/binding, RHS simulation or graph/store primitives.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
@@ -188,10 +211,10 @@ See the latest evidence report for reproduction and scope.
    during operand lists and newly created references. `Frame.move` retains data
    resources but cannot authorize invalidating a loan; a supplied incomplete
    guard cannot do so either. Initialized zero-owner locals can end storage;
-   owners/Box shells must move or drop first. Protect the affected stack root
-   as well as owned Box roots, including scalar/zero-owner teardown. Complete
-   dynamic parsed-region
-   and destructor-instance typing/semantics along actual branches/calls. Keep
+   owners/Box shells must move or drop first. The new drop/storage operations
+   check affected stack roots and Box owners, including scalar/zero-owner
+   teardown. Compose those checks with global exclusive transfer and dynamic
+   parsed-region and destructor-instance typing/semantics along actual branches/calls. Keep
    physical allocator/compiler/runtime boundaries explicit under D12.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
@@ -272,6 +295,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourceFrameUpdates.lean)
 (cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
+(cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

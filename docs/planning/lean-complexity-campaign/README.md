@@ -1,5 +1,17 @@
 # Lean complexity campaign: proto-roadmap
 
+[Initial activations and executable storage/drop actions](evidence/memo-evaluator-storage-actions.md)
+now construct argument frames from parsed local counts, derive storage/drop
+contexts and compose successful non-call sequences with actual source execution
+and unchanged complete costs. Drop protects stack roots as well as unique,
+classified Box owners; reopening a local gets fresh storage. Calls, switches/
+returns, actual branch check success, global owner/spatial and dynamic region/
+destructor composition remain required, then public core/wrappers/resources/G3.
+W06-C3 and the full planning goal stay open.
+The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
+949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
+declarations with no unknown references.
+
 [Computed frame resources and assignment](evidence/memo-evaluator-derived-inventories.md)
 now derive complete finite read/owner/loan inventories from actual roots/masks,
 extract remaining contexts and preserve suspended caller inventories. Assignment

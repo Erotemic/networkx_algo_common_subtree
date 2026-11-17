@@ -997,3 +997,24 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_eq_store
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_run
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_spec
+
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Bounded.set_none
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Bounded.set_some
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.scanContext_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.Step.callers
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.storageLive_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.storageDead_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Rep.subset_reads
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.FieldsRep.subset_reads
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.ResourceRep.owners_subset_reads
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.LocalResources.owners_subset_reads
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Frame.inspectSlot_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.drop_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.World.stackCells_keeps
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.World.WellFormed.stackCells
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.packetReads_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.initialActivation_valid
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.enter_complete
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.enter_definition
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_spec

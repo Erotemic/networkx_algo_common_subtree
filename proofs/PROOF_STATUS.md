@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+## Initial activations and executable storage/drop actions: 2026-11-17
+
+[Initial activations and executable storage/drop actions](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md)
+now construct argument frames from parsed local counts, derive storage/drop
+contexts and compose successful non-call sequences with actual source execution
+and unchanged complete costs. Drop protects stack roots as well as unique,
+classified Box owners; reopening a local gets fresh storage. Calls, switches/
+returns, actual branch check success, global owner/spatial and dynamic region/
+destructor composition remain required, then public core/wrappers/resources/G3.
+W06-C3 and the full planning goal stay open.
+The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
+949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
+declarations with no unknown references.
+
 ## Computed frame resources and assignment: 2026-11-17
 
 [Computed frame resources and assignment](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-derived-inventories.md)

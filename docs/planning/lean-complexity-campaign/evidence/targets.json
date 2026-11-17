@@ -690,6 +690,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_storage_actions_followup": {
+        "baseline_commit": "d8eb3fb",
+        "evidence": "memo-evaluator-storage-actions.md",
+        "status": "Actual parameter frames from parsed declaration counts, computed storage-live/dead/drop contexts, root and unique classified owner conflict checks, exact logical destruction and original source costs checked. Non-call action sequences preserve source execution and final activation/caller/world validity. Calls, switches/returns, every actual branch check success, global exclusive spatial transfer and dynamic region/destructor composition remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3933,
+          "lean_suites": 38,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 949,
+          "unique_statement_records": 456,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -878,7 +897,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete addressed control/callees using computed finite inventories, derived assignment contexts and executable operand/RHS forward/reverse simulation. Construct actual initial activations from parsed layouts and thread the complete caller stack through storage/drop/call/switch/return steps. Prove all physical checks and complete exclusive owner/spatial/temporary transfer, protecting stack roots as well as Box owners. Compose Box/checked-add intrinsics, completed ordinary helper source/heap/owner/type/borrow/cost chains and dynamic region/destructor interpretation. Reuse universal native/typed evaluator results. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 complete addressed switches/returns and ordinary/intrinsic calls using parsed-layout initial activations, computed inventories/contexts and executable non-call action sequences. Thread the complete actual caller stack and prove every physical route/check succeeds on every actual branch. Compose complete exclusive owner/spatial/temporary transfer, classified unique drops and source storage lifecycles, Box/checked-add intrinsics and completed ordinary helper source/heap/owner/type/borrow/cost chains. Complete dynamic region/destructor interpretation; reuse universal native/typed evaluator results. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

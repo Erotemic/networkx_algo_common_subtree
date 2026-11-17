@@ -342,3 +342,10 @@ One-pass assignment consumes no supplied guard or post-RHS frame premise and
 preserves exact suspended caller inventories. This advances item 2; full actual
 initial/control/callee, ownership/spatial and region/destructor composition still
 precede C3 closure and the public/wrapper G3 program.
+
+The [initial-frame/storage/action increment](memo-evaluator-storage-actions.md)
+now constructs parameter roots from actual parsed layouts and composes successful
+non-call storage/drop/assignment sequences at unchanged costs. Drop guards both
+stack initialization roots and exact unique classified Box owners. This advances
+item 2; ordinary/intrinsic calls, switches/returns, complete branch check success,
+global exclusive transfer and dynamic regions/destructors remain before C3.
