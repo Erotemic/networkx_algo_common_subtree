@@ -231,3 +231,24 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_return_owns
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_return_footprint
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_no_old_owned_alias
+
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.Plain.footprint
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.disposable_no_owned
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.return_frame_disposable
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.certified_run_safe
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.store_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.return_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.operand_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.operands_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.rvalue_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.profile_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.action_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.Guarded.erases
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.verify_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.RunSafe.erases
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.run_sound
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.original_checked
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.mutant_checked
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.original_run_safe
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.mutant_run_safe
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Frame.lookup_guarded

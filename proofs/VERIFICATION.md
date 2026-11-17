@@ -19,6 +19,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
+(cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
 (cd proofs && lake env lean Tests/MemoWork.lean)
@@ -157,6 +158,16 @@ owned output. Intermediate resets/destruction, stack lifetimes and official
 source adequacy remain separate. The existing `Tests/LookupHeap.lean` command
 also checks ownership countermodels. See the
 [returned ownership report](../docs/planning/lean-complexity-campaign/evidence/lookup-return-ownership.md).
+
+`Rust/LookupFrame*.lean` now kernel-checks both actual bodies' local ownership
+transitions and proves soundness with concrete guarded execution traces.
+Completed normal runs discard no owned Box at local reset/overwrite, consume
+moved drops only when empty, satisfy callee ownership profiles and leave no
+owned non-result locals on return. Recursive callee contracts are discharged
+by fuel induction; source-certificate composition retains the complete cost.
+`Tests/LookupFrame.lean` is in Lean CI. Spatial ownership, complete source
+typing/lifetimes and failed/unwind paths remain open; see the
+[frame-safety report](../docs/planning/lean-complexity-campaign/evidence/lookup-frame-safety.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`

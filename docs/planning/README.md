@@ -25,6 +25,13 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [checked frame-safety proof](lean-complexity-campaign/evidence/lookup-frame-safety.md)
+now covers intermediate local clobbers, moved drops, callee ownership profiles
+and return cleanup for both generated programs' completed normal executions.
+Its sound analysis and recursive call proof preserve exact execution/cost.
+The 3,785-job build, ten suites and 210-endpoint audit pass. Spatial ownership,
+checked source typing/lifetimes and official adequacy remain W06-C3 work.
+
 The [returned ownership proof](lean-complexity-campaign/evidence/lookup-return-ownership.md)
 connects actual generated lookup/copy execution to exclusive fresh output
 regions. Every new Box occurs once in the returned footprint; input Boxes are

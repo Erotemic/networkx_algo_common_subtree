@@ -45,6 +45,13 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [intermediate frame-safety certificates](evidence/lookup-frame-safety.md)
+prove that completed lookup/copy executions reset/overwrite only non-owning or
+empty locals, respect callee ownership profiles and clean up returns. Both real
+bodies pass; soundness and recursive call safety preserve actual complete
+execution/cost. Spatial ownership and typed source/lifetime adequacy remain
+W06-C3 requirements, alongside the memo core and wrappers.
+
 The [exclusive returned ownership proof](evidence/lookup-return-ownership.md)
 strengthens addressed lookup with exact cell/heap layouts and duplicate-free
 ownership-occurrence accounting. Every fresh Box is returned exactly once;

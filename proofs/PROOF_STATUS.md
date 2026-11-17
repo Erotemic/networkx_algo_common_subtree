@@ -1,5 +1,39 @@
 # Common-subtree proof status
 
+## Checked intermediate lookup frame safety: 2026-11-16
+
+`Rust/LookupFrame{State,Checker,Primitives,Execution,Calls,Refinement}.lean`
+checks local ownership transitions and proves its analysis sound against the
+unchanged addressed interpreter. `Plain` values have an empty owned-occurrence
+list. Tracked moves empty their source; reset/overwrite destinations contain no
+owned Box; moved conditional drops see empty slots. Borrow-only callee profiles
+and return cleanup are checked. Continuations retain every branch's own state
+and early returns skip the common continuation.
+
+`Guarded` records actual intermediate operations, callee occurrences and full
+cost; `verify_sound` constructs it and `Guarded.erases` recovers exactly that
+execution. `run_sound` discharges recursive callee safety by fuel induction.
+Both actual original/mutant bodies pass kernel-checked certificates for all
+ordinary helpers. `certified_run_safe` composes the retained source certificate
+with the same complete-cost addressed execution. `lookup_guarded` adds native
+input success, independent first-hit/typed readback, final exclusive ownership
+and exact costs, without assuming checker acceptance implies totality.
+
+The 3,785-job build, all ten Lean suites, native WP example, seven Python
+reifier tests and 210-endpoint axiom audit pass. Twenty new audited closures
+stay within the accepted three-axiom baseline; new modules have no warnings.
+The new CI suite rejects live-owner reset/overwrite/abandoned-return fragments
+that still return the expected Boolean under the old interpreter. Main pins,
+production Rust, generated code/JSON and extraction tooling are unchanged.
+
+This proves local guard/cleanup safety for completed normal paths, including
+recursive calls, at all fuels. It does not prove disjoint spatial ownership of
+every intermediate object, stack allocation/liveness/borrow lifetimes, complete
+typing of retained JSON or official typed LLBC/Rust adequacy. Failure/unwind,
+freeing/physical memory costs and the memo core/wrappers remain open. W06-C3
+and the full objective remain active.
+[Exact scope, soundness, countermodels and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-frame-safety.md).
+
 ## Exclusive returned lookup ownership: 2026-11-16
 
 `Rust/LookupHeapOwnership.lean` defines independent ownership intervals and

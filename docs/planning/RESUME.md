@@ -1,14 +1,26 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment proves
+[checked intermediate lookup frame safety](lean-complexity-campaign/evidence/lookup-frame-safety.md).
+Six `Rust/LookupFrame*.lean` modules analyze empty/non-owning/potentially-owned
+locals and prove the analysis sound against concrete execution. Every completed
+normal run of both generated programs has safe reset/overwrite destinations,
+empty moved drops, tracked moves, callee ownership profiles and return cleanup.
+Recursive contracts are discharged by fuel induction. `certified_run_safe`
+preserves the retained source execution's complete cost; `lookup_guarded`
+includes native-input success, typed first-hit readback and final exclusive
+ownership. This is not a full type checker or spatial/lifetime proof.
+
+The preceding increment proves
 [exclusive returned lookup ownership](lean-complexity-campaign/evidence/lookup-return-ownership.md).
 `Rust/LookupHeap{Ownership,Layout,ReturnOwnership}.lean` defines ownership
 intervals and occurrence lists, proves exact generated copy/result-copy/lookup
 output cell/heap layouts, and shows that each new Box is owned exactly once by
 the returned result. The occurrence count equals actual Box allocations and
 excludes old input Boxes. Shared input aliases, duplicate keys and unsound
-cached witnesses remain supported. Intermediate frame/reset/move/destruction
-safety is still required; final reachability alone does not prove it.
+cached witnesses remain supported. The new frame analysis separately supplies
+local guard/cleanup evidence; final reachability alone does not prove it.
+Intermediate spatial ownership and typed source/lifetime adequacy remain open.
 
 The preceding increment proves an
 [addressed lookup memory realization](lean-complexity-campaign/evidence/lookup-heap-realization.md).
@@ -19,9 +31,9 @@ proves heap growth equals Box allocations. Actual lookup succeeds with independe
 first-hit readback at the established sufficient fuel; comparison preserves the
 entire heap and permits aliased inputs. Input layouts exist for every native
 table/query. Both original and mutant connect through their source certificates.
-This is immutable logical memory. Returned exclusive ownership is now proved;
-intermediate ownership/destruction, stack lifetimes, checked JSON field typing
-and official LLBC/Rust adequacy remain open.
+This is immutable logical memory. Returned exclusive ownership and normal local
+frame safety are now proved. Spatial ownership, stack lifetimes, checked JSON
+field typing and official LLBC/Rust adequacy remain open.
 
 The earlier source-control increment supplies
 [kernel-checked lookup source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md).
@@ -65,8 +77,8 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,779-job build, all nine Lean suites, native WP example, seven Python
-reifier tests and 190-endpoint axiom audit pass. New modules have no warnings;
+The main 3,785-job build, all ten Lean suites, native WP example, seven Python
+reifier tests and 210-endpoint axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records). Main pins and
@@ -86,6 +98,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSource.lean)
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
+(cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
 (cd proofs && lake env lean Tests/EditDistance.lean)
@@ -103,16 +116,16 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **ownership/frame and typed source adequacy (W06-C3), then remaining
+Next is **checked source typing and spatial/borrow adequacy (W06-C3), then remaining
 local/source costs (MEM-03/W05)**. Generic declared-currency work, lookup control
-normalization, immutable addressed execution and exclusive returned ownership
-are implemented; do not duplicate them. Prove safe intermediate local resets/
-overwrites, moves, callee argument ownership and conditional destruction for the
-actual generated bodies. The current heap model does not free cells; its bare
-representation relation permits duplicate Box aliases. New `Owns`/`Footprint`
-proofs rule these out in returned values and account for all new allocations,
-but do not supply the intermediate frame invariant. Check retained JSON field declarations against the independent
-signatures, then connect the official typed source semantics. Extend stack
+normalization, addressed execution, exclusive returned ownership and normal
+local guard/cleanup safety are implemented; do not duplicate them. Next check
+the retained JSON field/type declarations against the independent `Heap.Shape`
+signatures and source places/calls. The heap model does not free cells; bare
+representation permits duplicate Box aliases. `Owns`/`Footprint` exclude these
+in returned values; the new frame checker tracks local ownership classes, not
+disjoint spatial footprints among every intermediate value. Establish that
+spatial/borrow invariant and connect the typed source semantics. Extend stack
 borrows/mutation as needed for insertion, concatenation and the memo evaluator/
 public core. Preserve
 the exact existing evaluator bridge and independently optimal clients.

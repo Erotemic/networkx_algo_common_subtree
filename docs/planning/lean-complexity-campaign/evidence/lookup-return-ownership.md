@@ -1,5 +1,10 @@
 # Exclusive returned lookup ownership: 2026-11-16
 
+Follow-up: [checked intermediate frame safety](lookup-frame-safety.md) now
+covers local reset/overwrite guards, moved drops, callee ownership profiles and
+return cleanup on completed normal paths. Intermediate spatial ownership and
+source typing/lifetime adequacy below remain required.
+
 Baseline: `685a12f`. This advances W06-C3's ownership obligation for the
 [addressed lookup realization](lookup-heap-realization.md). It proves unique
 returned Box ownership and complete fresh-allocation readback. Intermediate

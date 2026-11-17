@@ -86,6 +86,13 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Local-frame follow-up:** [checked frame safety](evidence/lookup-frame-safety.md)
+now validates moves, no-owned clobbers, empty moved drops, callee ownership
+profiles and return cleanup for every completed normal run, with recursive
+callee contracts discharged. Both original/mutant bodies pass and retained
+source composition preserves full cost. Spatial ownership, stack/lifetime and
+checked typed source adequacy remain open; this does not close W06-C3.
+
 **Returned-ownership follow-up:** [exclusive returned regions](evidence/lookup-return-ownership.md)
 now follow from exact generated copy/result-copy/lookup layout proofs. The
 complete ownership-occurrence list is duplicate-free, covers every new Box,
