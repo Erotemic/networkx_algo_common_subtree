@@ -1,5 +1,33 @@
 # Common-subtree proof status
 
+## Memo local guards and intermediate separation: 2026-11-17
+
+Five `MemoFrame{Profile,Calls,Refinement}` and `MemoSpatial{Calls,Refinement}`
+modules extend generic local guard/spatial soundness to the actual memo helper
+set. Insertion's profile admits its possibly owned table and three non-owning
+arguments. Actual argument occurrences are retained in initial locals instead
+of removed by lookup's all-plain shortcut.
+
+Kernel body checks and fuel induction produce recursive `RunSafe`/`RunSpatial`
+witnesses with unchanged execution/costs. Traces cover clobbers, moved drops,
+return cleanup, complete owner lists in locals/temporaries and every suspended
+caller frame. Valid separated argument/frame inputs remain separated through
+all recursive calls. Final owner reachability is not substituted for this
+intermediate proof. Native totality endpoints retain source/heap success,
+typed readback, native agreement, exact events/allocation growth, fresh concat
+ownership and insertion's original table under its new tail Box.
+
+The 3,847-job build, twenty suites, native WP, nine Python tests and
+516-endpoint audit pass. All 32 new audited closures remain within accepted
+baseline axioms; new modules have no warnings. Existing lookup safety remains
+checked; Rust/generated inputs, readers, tools and pins are unchanged.
+
+Next storage allocation/initialization traces and dynamic loans/lifetime
+interpretation, then actual evaluator/core and wrappers. Owner-safe `.scope`
+does not establish storage liveness. Full W06-C3 remains open.
+
+[Exact contracts, frames and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-spatial-ownership.md).
+
 ## Memo source typing, scope and preservation: 2026-11-17
 
 Seven `MemoSourceTypes`, `MemoType{Reader,Certificate,Calls,Refinement}` and

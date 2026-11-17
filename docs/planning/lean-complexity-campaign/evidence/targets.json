@@ -746,7 +746,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 guarded local/storage/intermediate spatial and dynamic loan/lifetime traces for insertion/concatenation (source type/annotation/static constraints, binder scope, operational typing, ordinary result closure, source/native/heap runs, exact allocation growth and returned owner transfer now checked), actual memo evaluator/core, then wrappers, input/error policy and G3 adversaries; scoped interpreted lookup pilot composes checked control/types, addressed memory, ownership, storage, typed immutable loans, bound source regions and retained-world erasure with native success/readback/costs; Charon/primitive import and compiler/runtime/provenance/mutable/unwind boundaries remain explicit"
+      "W06-C3 storage allocation/initialization and dynamic loan/lifetime traces for insertion/concatenation (guarded locals, intermediate spatial/caller separation, source type/annotation/static constraints, binder scope, operational typing, ordinary result closure, source/native/heap runs, exact allocation growth and returned owner transfer now checked), actual memo evaluator/core, then wrappers, input/error policy and G3 adversaries; scoped interpreted lookup pilot composes checked control/types, addressed memory, ownership, storage, typed immutable loans, bound source regions and retained-world erasure with native success/readback/costs; Charon/primitive import and compiler/runtime/provenance/mutable/unwind boundaries remain explicit"
     ],
     "still_open": [
       "G0 remaining reconnaissance",

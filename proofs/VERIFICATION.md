@@ -27,6 +27,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/MemoSource.lean)
 (cd proofs && lake env lean Tests/MemoHeap.lean)
 (cd proofs && lake env lean Tests/MemoTypes.lean)
+(cd proofs && lake env lean Tests/MemoSpatial.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -103,6 +104,16 @@ The 3,842-job build, nineteen suites, native WP, nine Python tests and
 new regeneration is needed. See the
 [memo typing/scope report](../docs/planning/lean-complexity-campaign/evidence/memo-source-typing.md)
 for assumptions and remaining guard/storage/spatial/loan/lifetime work.
+
+The memo guard/spatial increment adds `MemoFrame*.lean`, `MemoSpatial*.lean`
+and `Tests/MemoSpatial.lean`. Generic checker/soundness interfaces retain old
+lookup entry points and allow insertion's owned table role. Recursive concrete
+traces preserve complete local/temporary/caller ownership lists and all costs;
+native source/heap endpoints retain typed readback, events and old-table identity.
+The 3,847-job build, twenty suites, native WP, nine Python tests and
+516-endpoint audit pass. Rust/generated artifacts, readers, tools and pins are
+unchanged. See the [memo spatial report](../docs/planning/lean-complexity-campaign/evidence/memo-spatial-ownership.md)
+for explicit frame premises and remaining storage/loan/lifetime obligations.
 
 ## VM caches
 

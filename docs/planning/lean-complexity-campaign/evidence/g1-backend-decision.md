@@ -148,6 +148,14 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [memo guard/spatial increment](memo-spatial-ownership.md) now proves actual
+recursive local guards and intermediate owner separation, retaining insertion's
+owned argument and all suspended caller frames. Native source/heap/readback/
+returned-owner/cost endpoints compose these traces. Normal storage allocation/
+initialization and dynamic loan/lifetime interpretation remain next, followed
+by actual evaluator/core, wrappers and G3 adversaries. Final ownership and
+owner-safe `.scope` are not substitutes for those remaining obligations.
+
 The [memo typing/scope increment](memo-source-typing.md) now kernel-checks actual
 layouts/signatures/nested annotations/static constraints and free/body binders,
 proves recursive operational typing and ordinary output closure, and composes

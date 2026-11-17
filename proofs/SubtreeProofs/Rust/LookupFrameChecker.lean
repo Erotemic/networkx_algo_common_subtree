@@ -46,16 +46,19 @@ def store (state : State) (slot : Nat) (flag : Option Bool) : Option State :=
 def callProfile (function : Function) (flags : List Bool) : Bool :=
   flags.length == arity function && (function == .boxNew || !(flags.any id))
 
-def inferAction (state : State) : Action → Option State
+def inferActionWith {F : Type} (profile : F → List Bool → Bool) (resultFlag : F → Bool)
+    (state : State) : Action F → Option State
   | .scope slot => store state slot none
   | .assign slot rhs => do
     let (flag, state) ← inferRValue state rhs
     store state slot (some flag)
   | .call function args slot => do
     let (flags, state) ← inferOperands state args
-    if callProfile function flags then store state slot (some (outputFlag function)) else none
+    if profile function flags then store state slot (some (resultFlag function)) else none
   | .dropMoved slot =>
     if slot < state.length && lookup state slot == none then some state else none
+
+abbrev inferAction (state : State) : Action → Option State := inferActionWith callProfile outputFlag state
 
 def returnCheck (state : State) (output : Bool) : Bool :=
   lookup state 0 == some output &&
@@ -63,19 +66,22 @@ def returnCheck (state : State) (output : Bool) : Bool :=
 
 /-- Continuations check all fallthrough states; early returns check cleanup
 and skip that continuation. This avoids an unsound join of owned slot states. -/
-def verify : Code → State → Bool → (State → Bool) → Bool
+def verifyWith {F : Type} (profile : F → List Bool → Bool) (resultFlag : F → Bool) :
+    Code F → State → Bool → (State → Bool) → Bool
   | .done, state, _, post => post state
   | .ret, state, output, _ => returnCheck state output
   | .step instruction rest, state, output, post =>
-    match inferAction state instruction with
+    match inferActionWith profile resultFlag state instruction with
     | none => false
-    | some next => verify rest next output post
+    | some next => verifyWith profile resultFlag rest next output post
   | .branch scrut _ _ yes no rest, state, output, post =>
     match inferScrutinee state scrut with
     | none => false
     | some next =>
-      verify yes next output (fun s => verify rest s output post) &&
-      verify no next output (fun s => verify rest s output post)
+      verifyWith profile resultFlag yes next output (fun s => verifyWith profile resultFlag rest s output post) &&
+      verifyWith profile resultFlag no next output (fun s => verifyWith profile resultFlag rest s output post)
+
+abbrev verify : Code → State → Bool → (State → Bool) → Bool := verifyWith callProfile outputFlag
 
 theorem store_spec {state next : State} {env : Locals} {slot : Nat}
     {flag : Option Bool} {cell : Option Cell} (he : StateRep state env)

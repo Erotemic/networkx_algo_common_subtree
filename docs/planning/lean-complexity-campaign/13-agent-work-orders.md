@@ -86,6 +86,15 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Memo guard/spatial follow-up:** [recursive intermediate owner traces](evidence/memo-spatial-ownership.md)
+now cover clobbers, moved drops, return cleanup and complete owner lists across
+locals, temporaries and suspended callers. Insertion uses its owned-table
+profile; initial enumeration retains that owner. Kernel checks and fuel induction
+discharge actual recursive contracts. Native endpoints retain prior source/heap/
+readback/cost/returned-owner guarantees. Next normal storage/initialization and
+dynamic loans/lifetimes, then actual evaluator/core and wrappers. `.scope`
+owner guards are not storage liveness; W06-C3 remains open.
+
 **Memo typing/scope follow-up:** [actual source certificates and preservation](evidence/memo-source-typing.md)
 now check declaration layouts, nested annotations, argument/return prefixes,
 static bodies and free/body region scope. Recursive operational type preservation

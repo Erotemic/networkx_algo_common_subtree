@@ -1,6 +1,20 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment proves
+[memo local guards and intermediate separation](lean-complexity-campaign/evidence/memo-spatial-ownership.md).
+Five `MemoFrame{Profile,Calls,Refinement}` and `MemoSpatial{Calls,Refinement}`
+modules reuse generic guard/spatial checking and soundness with explicit callee
+profiles. Insertion's owned table is preserved in actual initial owner lists;
+plain values can widen into its may-own role. Kernel body checks and fuel
+induction produce recursive guarded/spatial traces with unchanged costs,
+including temporary bundles and all suspended caller owners. Native totality
+retains source/heap success, typed readback, native agreement, exact events,
+returned ownership and insertion's original table under its new tail Box.
+All frame preservation is conditional on the explicit valid separated input/
+frame premise. Next storage/initialization and dynamic loan/lifetime traces,
+then actual evaluator/core and wrappers.
+
+The preceding increment proves
 [memo source typing and region scope](lean-complexity-campaign/evidence/memo-source-typing.md).
 Seven new `MemoSourceTypes`, `MemoType{Reader,Certificate,Calls,Refinement}` and
 `MemoRegion{Program,Certificate}` modules check actual declarations, signatures,
@@ -204,8 +218,8 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,842-job build, all nineteen Lean suites, native WP example, nine Python
-reifier tests and 484-endpoint axiom audit pass. The preceding `63f929f` full
+The main 3,847-job build, all twenty Lean suites, native WP example, nine Python
+reifier tests and 516-endpoint axiom audit pass. The preceding `63f929f` full
 regeneration and thirteen ordered Rust tests remain the unchanged provenance/
 behavior baseline. New modules have no warnings;
 new axioms stay within
@@ -243,6 +257,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/MemoSource.lean)
 (cd proofs && lake env lean Tests/MemoHeap.lean)
 (cd proofs && lake env lean Tests/MemoTypes.lean)
+(cd proofs && lake env lean Tests/MemoSpatial.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
@@ -262,7 +277,7 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **guard/storage/spatial and dynamic loan/lifetime traces for memo
+Next is **storage/initialization and dynamic loan/lifetime traces for memo
 helpers, then actual evaluator/core composition (W06-C3) and remaining
 local/source costs (MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
 lookup pilot are implemented. Reuse the checked source/type constraints,
@@ -277,10 +292,12 @@ bridge now exists; do not repeat that extraction or write a duplicate control
 interpreter. Addressed simulation, exact output layouts, returned ownership,
 old-table transfer and native input inhabitation now exist too. The actual static signatures, nested annotations, statement constraints,
 operational typing, ordinary output closure and source binder scope are now
-checked too. Do not repeat them. Next generalize guarded local/storage and
-intermediate spatial traces and dynamic shared-loan preservation to the memo
-function set, then consume its scoped annotations in the retained-world
-lifetime interpretation. Scope checking alone is not dynamic lifetime validity. Insertion's initial profile includes an owned table. Preserve its old
+checked too. Do not repeat them. Guarded local and intermediate spatial traces now exist as well, including
+the owned argument occurrence and all suspended caller frames. Next generalize
+normal storage allocation/initialization traces and dynamic shared-loan
+preservation to the memo function set, then consume its scoped annotations in
+the retained-world lifetime interpretation. Owner guards on `.scope` do not
+supply storage liveness. Scope checking alone is not dynamic lifetime validity. Insertion's initial profile includes an owned table. Preserve its old
 occurrence ledger instead of using lookup's fresh-only output interval.
 Concatenation reuses shared input borrows. Next inspect and model
 actual evaluator arithmetic, owned-local borrows, losing-candidate destruction

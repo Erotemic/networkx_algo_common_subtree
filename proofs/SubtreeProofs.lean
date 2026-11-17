@@ -251,3 +251,5 @@ public import SubtreeProofs.Rust.MemoSourceRefinement
 public import SubtreeProofs.Rust.MemoHeapRefinement
 
 public import SubtreeProofs.Rust.MemoTypeRefinement
+
+public import SubtreeProofs.Rust.MemoSpatialRefinement

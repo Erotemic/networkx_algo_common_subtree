@@ -45,6 +45,15 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [memo guard/spatial proof](evidence/memo-spatial-ownership.md)
+now traces every completed helper call through owner-safe local clobbers,
+moved drops, return cleanup and separated complete ownership lists. Insertion's
+owned table is retained in initial locals and suspended callers; no all-shared
+shortcut is used. Native source/heap endpoints retain full costs, typed readback,
+old-table identity and returned ownership. The 3,847-job build, twenty suites and
+516-endpoint audit pass. Next storage/initialization and dynamic loan/lifetime
+traces, then actual evaluator/core and wrapper composition.
+
 The [memo type/region-scope proof](evidence/memo-source-typing.md)
 now kernel-checks actual layouts, signatures, nested annotations, static
 constraints and free/body region binding for all four memo helpers. Generic
