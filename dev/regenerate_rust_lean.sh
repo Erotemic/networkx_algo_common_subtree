@@ -49,3 +49,6 @@ python3 "$repo_root/dev/regenerate_lookup_source.py" "${lookup_args[@]}"
 
 # Retain and independently certify the actual memo insertion/concatenation helpers.
 python3 "$repo_root/dev/regenerate_memo_source.py" "${lookup_args[@]}"
+
+# Retain the complete evaluator and public-core source for the expanded Lean reader.
+python3 "$repo_root/dev/regenerate_eval_source.py" "${lookup_args[@]}"

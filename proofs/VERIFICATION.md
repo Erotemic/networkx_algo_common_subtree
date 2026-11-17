@@ -32,6 +32,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/MemoBorrow.lean)
 (cd proofs && lake env lean Tests/MemoRegions.lean)
 (cd proofs && lake env lean Tests/SourcePartial.lean)
+(cd proofs && lake env lean Tests/SourceEval.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -150,6 +151,17 @@ source/heap execution. The 3,858-job build, 24 suites, native WP, nine Python te
 parser/reifier and pins are unchanged. See the
 [partial-local report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md)
 for the pinned extraction command and exact remaining obligations.
+
+The actual evaluator profile adds six `SourceEval*.lean` modules and
+`Generated/SourceEvalInput.lean`. The full regeneration command now runs
+`dev/regenerate_eval_source.py`, reusing pinned extraction/data generation.
+Actual source reading/covers/counts/execution binding and native checked-add
+agreement are kernel certified; common control/frontend semantics are reused.
+`Tests/SourceEval.lean` includes kernel primitive/rejection checks and native
+behavioral guards on the actual decoded program. The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust
+tests, full regeneration check and 592-endpoint axiom audit pass.
+See the [evaluator profile report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-profile.md)
+for exact reference/destruction scope and remaining universal refinement/safety.
 
 ## VM caches
 

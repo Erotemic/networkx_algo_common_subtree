@@ -1,6 +1,23 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
+[actual evaluator source-profile execution](lean-complexity-campaign/evidence/memo-evaluator-source-profile.md).
+Six maintained `SourceEval*` modules and generated `SourceEvalInput` retain and
+kernel-read all nine actual bodies, including evaluator (113 locals), choice
+(6), public maximum (7), and previous six helpers. Shared `Control.Tree`/
+`execWith` and frontend hooks replace duplicate control/parser work; original
+normalization/safety APIs remain checked. Partial moves, bounded scalars, pinned
+checked-add semantics, live drops, metadata, tags and early returns execute with
+full source, destruction and solver-call currencies. `original_read`, covers,
+counts and `original_execute` are kernel checked. Actual-program behavioral
+guards cover empty/nonempty entry points and warm-cache overflow/table return.
+The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust tests,
+full regeneration check and 592-endpoint axiom audit pass. The snapshot layer
+is not yet universal source/native refinement or typed addressed safety. Next bridge completed
+helpers, then evaluator typing/regions/owners/storage/local borrows/destruction
+and functional/resource correspondence, public core and separate wrappers.
+
+The preceding increment establishes
 [actual evaluator partial-local foundations](lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md).
 Pinned extraction of `maximum_common_embedding` exposes 113 evaluator locals,
 partial field moves, live drops, scalar/checked-add operations, owned-local
@@ -342,11 +359,15 @@ these helpers as well, including ordinary output closure and stable caller
 loans. Do not repeat them. Next inspect `memoized_common_embedding` and its
 public `maximum_common_embedding` wrapper. Preserve insertion's owned-table
 occurrence ledger and concatenation's shared inputs when composing them.
-Partial field moves and remaining declared destructor-work accounting now
-have `SourcePartial*` primitives; do not repeat them. They are not yet consumed
-by the evaluator. Model actual evaluator checked arithmetic, recognized
-borrow-check metadata/unreachable control, owned-local borrows and live drops,
-then prove source and addressed execution including overflow/table returns. Legitimate borrows of caller-owned locals cannot
+Partial field moves and remaining destructor-work accounting are now consumed
+by `SourceEval*` primitive execution. Actual evaluator/core source reading,
+function/drop identity, ABI/signature/bounds/coverage, scalar/checked-add,
+metadata/undefined control and complete execution binding are now checked too.
+Do not repeat extraction or primitive construction. Next bridge the preceding
+helper refinements into the expanded profile; compose whole-program typing,
+source regions, owner/storage traces and addressed local-borrow/destruction
+simulation, then evaluator/core functional, overflow/table and cost refinement.
+Legitimate borrows of caller-owned locals cannot
 all satisfy lookup's old-heap-only borrow profile. Preserve scope and ownership
 facts when extending it. Then compose one public core entry point.
 Then handle indexed/token/reconstruction wrappers, normal work, input/error

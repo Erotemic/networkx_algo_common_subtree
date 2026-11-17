@@ -82,16 +82,31 @@ def boolLiteral (json : Json) : Read Bool := do
   let (constructor, payload) ← tag json
   if constructor = "Bool" then payload.getBool? else throw "boolean literal required"
 
-def operand (ctx : Context) (fuel : Nat) (json : Json) : Read Operand := do
+/-- Strict decimal spelling used by serialized unsigned integer literals.
+The structural list fold stays reducible in kernel source certificates. -/
+def unsignedDecimal (digits : String) : Read Nat := do
+  let chars := digits.toList
+  if chars.isEmpty then throw "empty unsigned literal"
+  chars.foldlM (fun value digit =>
+    if '0'.toNat ≤ digit.toNat ∧ digit.toNat ≤ '9'.toNat then
+      pure (10 * value + (digit.toNat - '0'.toNat))
+    else throw "nondecimal unsigned literal") 0
+
+def operandWith {O : Type} (move : Context → Nat → Json → Read O) (copy : Place → O)
+    (literal : Json → Json → Read O) (ctx : Context) (fuel : Nat) (json : Json) : Read O := do
   let (constructor, payload) ← tag json
-  if constructor = "Move" then return .move (← localSlot ctx payload)
+  if constructor = "Move" then return ← move ctx fuel payload
   if constructor = "Copy" then
     let (source, _trait) ← pair payload
-    return .copy (← place ctx fuel source)
+    return copy (← place ctx fuel source)
   if constructor = "Const" then
-    let (literal, _type) ← pair (← field payload "Untagged")
-    return .boolean (← boolLiteral literal)
+    let (value, type) ← pair (← field payload "Untagged")
+    return ← literal value type
   throw "unsupported operand"
+
+def operand (ctx : Context) (fuel : Nat) (json : Json) : Read Operand :=
+  operandWith (fun ctx _ source => Operand.move <$> localSlot ctx source) Operand.copy
+    (fun value _ => Operand.boolean <$> boolLiteral value) ctx fuel json
 
 def operands (ctx : Context) (fuel : Nat) (json : Json) : Read (List Operand) := do
   (← array json).mapM (operand ctx fuel)
@@ -107,27 +122,34 @@ def thinMetadata (ctx : Context) (json : Json) : Read Unit := do
   let (constructor, payload) ← tag (← field type "Untagged")
   if constructor != "Adt" || (← kindRef ctx payload) != .tuple then throw "unit metadata type required"
 
-def rvalue (ctx : Context) (fuel : Nat) (json : Json) : Read RValue := do
+def rvalueWith {O R : Type} (operand : Context → Nat → Json → Read O)
+    (use : O → R) (address : Place → R) (aggregate : Kind → Nat → List O → R)
+    (extra : Context → Nat → String → Json → Read R)
+    (ctx : Context) (fuel : Nat) (json : Json) : Read R := do
   let (constructor, payload) ← tag json
   if constructor = "Use" then
     let (source, marker) ← pair payload
     if (← marker.getStr?) != "Yes" then throw "unsupported Use retag marker"
-    return .use (← operand ctx fuel source)
+    return use (← operand ctx fuel source)
   if constructor = "Ref" then
     if (← (← field payload "kind").getStr?) != "Shared" then throw "shared references only"
     thinMetadata ctx (← field payload "ptr_metadata")
-    return .address (← place ctx fuel (← field payload "place"))
+    return address (← place ctx fuel (← field payload "place"))
   if constructor = "Aggregate" then
-    let (aggregate, values) ← pair payload
-    let (constructor, payload) ← tag aggregate
+    let (shape, values) ← pair payload
+    let (constructor, payload) ← tag shape
     if constructor != "Adt" then throw "ADT aggregate required"
     match ← array payload with
     | [reference, variant, unionField] =>
       if !unionField.isNull then throw "union initialization unsupported"
-      return .aggregate (← kindRef ctx reference) ((← optionalNat variant).getD 0)
-        (← operands ctx fuel values)
+      return aggregate (← kindRef ctx reference) ((← optionalNat variant).getD 0)
+        (← (← array values).mapM (operand ctx fuel))
     | _ => throw "invalid aggregate descriptor"
-  throw "unsupported rvalue"
+  extra ctx fuel constructor payload
+
+def rvalue (ctx : Context) (fuel : Nat) (json : Json) : Read RValue :=
+  rvalueWith operand RValue.use RValue.address RValue.aggregate
+    (fun _ _ _ _ => throw "unsupported rvalue") ctx fuel json
 
 def key (ctx : Context) (json : Json) : Read Key := do
   let (literal, _type) ← pair (← field json "Untagged")
@@ -153,11 +175,12 @@ def arity : Function → Nat
   | .compare => 2
   | .lookup => 3
 
-def unwind (ctx : Context) (json : Json) : Read Unit := do
+def unwindWith (allowTerminate : Bool) (ctx : Context) (json : Json) : Read Unit := do
   for statement in ← array (← field json "statements") do
     let kind ← field statement "kind"
     match kind with
     | .str "UnwindResume" => pure ()
+    | .str "UnwindTerminate" => if allowTerminate then pure () else throw "unwind termination unsupported"
     | _ =>
       let (constructor, payload) ← tag kind
       if constructor = "StorageDead" then
@@ -167,6 +190,24 @@ def unwind (ctx : Context) (json : Json) : Read Unit := do
         let _ ← localSlot ctx (← field payload "place")
       else throw "nontrivial unwind unsupported"
 
+def unwind (ctx : Context) (json : Json) : Read Unit := unwindWith false ctx json
+
+def callWith {F O : Type} (resolve : Nat → Read F) (callArity : F → Nat)
+    (operands : Context → Nat → Json → Read (List O)) (unwind : Context → Json → Read Unit)
+    (ctx : Context) (fuel : Nat) (payload : Json) : Read (F × List O × Nat) := do
+  let dest ← localSlot ctx (← field payload "dest")
+  unwind ctx (← field payload "on_unwind")
+  let call ← field payload "call"
+  if (← (← field call "safety").getStr?) != "Inherit" then throw "explicit unsafe call unsupported"
+  let (constructor, payload) ← tag (← field call "func")
+  if constructor != "Regular" then throw "nonregular call unsupported"
+  let (constructor, payload) ← tag (← field payload "kind")
+  if constructor != "Fun" then throw "indirect/trait call unsupported"
+  let function ← resolve (← payload.getNat?)
+  let args ← operands ctx fuel (← field call "args")
+  if args.length != callArity function then throw "wrong call arity"
+  pure (function, args, dest)
+
 def actionWith {F : Type} (resolve : Nat → Read F) (callArity : F → Nat)
     (ctx : Context) (fuel : Nat) (constructor : String) (payload : Json) : Read (Control.Action F) := do
   if constructor = "StorageLive" then return .storageLive (← slot ctx payload)
@@ -175,18 +216,7 @@ def actionWith {F : Type} (resolve : Nat → Read F) (callArity : F → Nat)
     let (dest, rhs) ← pair payload
     return .assign (← localSlot ctx dest) (← rvalue ctx fuel rhs)
   if constructor = "Call" then
-    let dest ← localSlot ctx (← field payload "dest")
-    unwind ctx (← field payload "on_unwind")
-    let call ← field payload "call"
-    if (← (← field call "safety").getStr?) != "Inherit" then throw "explicit unsafe call unsupported"
-    let (constructor, payload) ← tag (← field call "func")
-    if constructor != "Regular" then throw "nonregular call unsupported"
-    let (constructor, payload) ← tag (← field payload "kind")
-    if constructor != "Fun" then throw "indirect/trait call unsupported"
-    let index ← payload.getNat?
-    let function ← resolve index
-    let args ← operands ctx fuel (← field call "args")
-    if args.length != callArity function then throw "wrong call arity"
+    let (function, args, dest) ← callWith resolve callArity operands unwind ctx fuel payload
     return .call function args dest
   if constructor = "Drop" then
     if (← (← field payload "kind").getStr?) != "Conditional" then throw "live/precise drop unsupported"
@@ -198,15 +228,16 @@ def action (ctx : Context) : Nat → String → Json → Read Control.Action :=
     | some function => pure function
     | none => throw "unsupported callee identity") arity ctx
 
-def sequenceWith {F : Type} (parseAction : Context → Nat → String → Json → Read (Control.Action F))
-    (ctx : Context) : Nat → List Json → Read (Control.Block F)
+def sequenceWithActions {A : Type} (parseAction : Context → Nat → String → Json → Read A)
+    (terminal : String → Read (Control.Tree A))
+    (ctx : Context) : Nat → List Json → Read (Control.Tree A)
   | 0, _ => throw "statement nesting budget exceeded"
   | _ + 1, [] => pure .done
   | fuel + 1, statement :: rest => do
     let kind ← field statement "kind"
     match kind with
-    | .str "Return" =>
-      if rest.isEmpty then pure .ret else throw "statements after unconditional return"
+    | .str label =>
+      if rest.isEmpty then terminal label else throw "statements after unconditional terminal"
     | _ =>
       let (constructor, payload) ← tag kind
       if constructor = "Switch" then
@@ -217,13 +248,18 @@ def sequenceWith {F : Type} (parseAction : Context → Nat → String → Json �
         match ← array (← field payload "branches") with
         | [zero, one] =>
           return .switch (← scrutinee ctx fuel (← field data "scrutinee")) cases fallback
-            (← sequenceWith parseAction ctx fuel (← array (← field zero "statements")))
-            (← sequenceWith parseAction ctx fuel (← array (← field one "statements")))
-            (← sequenceWith parseAction ctx fuel rest)
+            (← sequenceWithActions parseAction terminal ctx fuel (← array (← field zero "statements")))
+            (← sequenceWithActions parseAction terminal ctx fuel (← array (← field one "statements")))
+            (← sequenceWithActions parseAction terminal ctx fuel rest)
         | _ => throw "exactly two source arms required"
-      else return .step (← parseAction ctx fuel constructor payload) (← sequenceWith parseAction ctx fuel rest)
+      else return .step (← parseAction ctx fuel constructor payload) (← sequenceWithActions parseAction terminal ctx fuel rest)
 
 termination_by structural fuel _ => fuel
+
+def sequenceWith {F : Type} (parseAction : Context → Nat → String → Json → Read (Control.Action F))
+    (ctx : Context) : Nat → List Json → Read (Control.Block F) :=
+  sequenceWithActions parseAction (fun label =>
+    if label = "Return" then pure .ret else throw "unsupported source terminal") ctx
 
 def sequence (ctx : Context) : Nat → List Json → Read Control.Block := sequenceWith action ctx
 

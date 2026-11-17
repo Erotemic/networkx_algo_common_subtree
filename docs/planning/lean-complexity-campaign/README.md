@@ -45,6 +45,15 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [actual evaluator source profile](evidence/memo-evaluator-source-profile.md)
+now kernel-checks all nine retained bodies, including the 113-local evaluator
+and public entry point, and binds source reading to complete profile execution.
+Partial moves, scalar/checked-add operations, live drops, metadata and early
+returns use the shared control executor/frontend. Native guards exercise actual
+empty/nonempty and warm-cache overflow paths. Universal source/native and typed
+addressed safety/resource composition remain next. The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust
+tests, full regeneration check and 592-endpoint axiom audit pass.
+
 The [actual evaluator/partial-local increment](evidence/memo-evaluator-partial-locals.md)
 inspects the pinned evaluator/public-entry extraction and proves partial-field
 moves with exact transfer of declared destructor work. Siblings and Box shells

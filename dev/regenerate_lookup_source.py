@@ -63,10 +63,11 @@ def source_lean(data, namespace, *, root_namespace="SubtreeProofs.Rust.LookupSou
             f"end {root_namespace}.{namespace}\n")
 
 
-def extract(charon: Path, crate: Path, llbc: Path):
-    subprocess.run([str(charon), "cargo", "--preset=aeneas", "--start-from",
-                    "verified_ordered_core::memo_lookup", "--no-dedup-serialized-ast",
-                    "--dest-file", str(llbc)], cwd=crate, check=True,
+def extract(charon: Path, crate: Path, llbc: Path, *, roots=None):
+    roots = ["verified_ordered_core::memo_lookup"] if roots is None else roots
+    starts = [argument for root in roots for argument in ("--start-from", root)]
+    subprocess.run([str(charon), "cargo", "--preset=aeneas", *starts,
+                    "--no-dedup-serialized-ast", "--dest-file", str(llbc)], cwd=crate, check=True,
                    env={**os.environ, "RUSTUP_TOOLCHAIN": "nightly-2026-09-17"})
     return json.loads(llbc.read_bytes())
 

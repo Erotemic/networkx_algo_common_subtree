@@ -86,6 +86,17 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Actual evaluator source follow-up:** [complete profile execution](evidence/memo-evaluator-source-profile.md)
+now retains and kernel-reads all nine actual bodies/signatures/bounds/coverage,
+including 113 evaluator locals and the public entry point. Partial moves,
+scalars/checked add, live drops, tags and metadata use shared control/frontend
+semantics; complete work is retained. Actual-program guards cover empty/nonempty
+and overflow/table behavior. Next bridge helper refinements and compose whole
+program typing/regions/owner/storage/addressed safety and universal functional/
+resource correspondence, then separate wrappers/G3. Full W06-C3 stays open.
+The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust
+tests, full regeneration check and 592-endpoint axiom audit pass.
+
 **Actual evaluator follow-up:** [partial-local foundations](evidence/memo-evaluator-partial-locals.md)
 now support projected moves, preserved siblings/Box shells, exact transfer of
 declared destructor work, unrelated locals and whole-local destruction. Pinned

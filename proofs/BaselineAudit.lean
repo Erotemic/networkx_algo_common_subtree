@@ -627,3 +627,24 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.drop_spec
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.drop_twice
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Locals.move_local_lift
+
+#print axioms SubtreeProofs.Rust.LookupSource.Control.exec_done
+#print axioms SubtreeProofs.Rust.LookupSource.Control.exec_ret
+#print axioms SubtreeProofs.Rust.LookupSource.Control.exec_step
+#print axioms SubtreeProofs.Rust.LookupSource.Control.exec_switch
+#print axioms SubtreeProofs.Rust.SourceEval.checkedAdd32_native
+#print axioms SubtreeProofs.Rust.SourceEval.less32_values
+#print axioms SubtreeProofs.Rust.SourceEval.checkedAdd32_success
+#print axioms SubtreeProofs.Rust.SourceEval.checkedAdd32_overflow
+#print axioms SubtreeProofs.Rust.SourceEval.copy_nonowning
+#print axioms SubtreeProofs.Rust.SourceEval.address_nonowning
+#print axioms SubtreeProofs.Rust.SourceEval.move_transfer
+#print axioms SubtreeProofs.Rust.SourceEval.exec_step
+#print axioms SubtreeProofs.Rust.SourceEval.exec_ret
+#print axioms SubtreeProofs.Rust.SourceEval.action_drop
+#print axioms SubtreeProofs.Rust.SourceEval.action_drop_other
+#print axioms SubtreeProofs.Rust.SourceEval.run_checkedAdd
+#print axioms SubtreeProofs.Rust.SourceEval.Certificate.original_read
+#print axioms SubtreeProofs.Rust.SourceEval.Certificate.original_covers
+#print axioms SubtreeProofs.Rust.SourceEval.Certificate.original_counts
+#print axioms SubtreeProofs.Rust.SourceEval.Certificate.original_execute

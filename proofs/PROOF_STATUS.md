@@ -1,5 +1,32 @@
 # Common-subtree proof status
 
+## Actual evaluator source-profile execution: 2026-11-17
+
+Six maintained `SourceEval{Scalar,Operands,Machine,Frontend,Program,Certificate}`
+modules and new generated `SourceEvalInput` retain the complete evaluator/core
+extraction. Kernel `original_read`, `original_covers` and `original_counts`
+validate all nine ordinary helpers, including the 113-local evaluator and public
+entry point. `original_execute` binds actual source decoding to its complete
+optional result/cost pair at every fuel, function and argument list.
+
+Shared `Control.Tree`/`execWith` and frontend hooks serve both profiles; existing
+`exec_lower` and original safety APIs remain checked. Partial locals, bounded
+numeric literals/comparison, pinned native checked-add semantics, live drops,
+retained tags, metadata and early returns are interpreted with full source work,
+declared destruction and solver-call currencies. Copies/borrows are non-owning;
+move transfer and drop frame/cost facts are proved.
+
+The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust
+tests, full regeneration check and 592-endpoint axiom audit pass. All 20 new
+closures use accepted baseline axioms. Actual-program native guards cover
+empty/nonempty public calls and warm-cache overflow/table return. These are behavioral checks,
+not universal source/native equivalence. The new layer still uses snapshot
+references; whole-program static/operational typing, source-region interpretation,
+addressed local borrows/destruction, owner/storage composition and general
+functional/resource refinement remain open. W06-C3 and the full goal stay active.
+
+[Exact profile and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-profile.md).
+
 ## Actual evaluator partial-local foundations: 2026-11-17
 
 Three `SourcePartial{Value,Moves,Locals}` modules model holes after projected

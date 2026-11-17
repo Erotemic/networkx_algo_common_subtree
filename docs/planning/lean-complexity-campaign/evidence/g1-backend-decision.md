@@ -148,6 +148,15 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [complete evaluator source-profile increment](memo-evaluator-source-profile.md)
+now kernel-reads all nine actual bodies and binds the source to full primitive
+execution, including partial moves, scalar/checked-add operations, live drops,
+metadata and public-core table destruction. Common control/frontend semantics
+are reused. Next bridge completed helpers and compose whole-program typing,
+regions, addressed local borrows/destruction, ownership/storage and universal
+functional/resource correspondence. Native guards are not those universal
+proofs. Validation is in progress; the same D12 boundary remains explicit.
+
 The [actual evaluator partial-local increment](memo-evaluator-partial-locals.md)
 inspects the real pinned evaluator/core extraction and proves partial moves,
 sibling/Box-shell preservation, declared drop-work transfer and local frame

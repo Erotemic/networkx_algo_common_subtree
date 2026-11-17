@@ -38,11 +38,13 @@ drop of a live owned value fails; it is not silently given zero destruction. -/
 def Action.exec {F : Type} (call : CalleesFor F) (env : Env) (action : Action F) : Option (Env × Cost) :=
   evalAction call env action.lower
 
-inductive Block (F : Type := Function) where
-  | done : Block F
-  | ret : Block F
-  | step : Action F → Block F → Block F
-  | switch : Scrutinee → List (Key × Nat) → Option Nat → Block F → Block F → Block F → Block F
+inductive Tree (A : Type) where
+  | done : Tree A
+  | ret : Tree A
+  | step : A → Tree A → Tree A
+  | switch : Scrutinee → List (Key × Nat) → Option Nat → Tree A → Tree A → Tree A → Tree A
+
+abbrev Block (F : Type := Function) := Tree (Action F)
 
 structure Dispatch where
   key : Key
@@ -107,27 +109,76 @@ def lower {F : Type} : Block F → Option (Code F)
     some (.branch scrutinee dispatch.key dispatch.other
       (if dispatch.swapped then one else zero) (if dispatch.swapped then zero else one) rest)
 
-/-- Normal-path source execution, including early return from a source arm.
-Every local primitive and switch has the same explicit currency as the pilot. -/
-def exec {F : Type} (call : CalleesFor F) : Block F → Env → Option (Outcome × Cost)
-  | .done, env => some (.next env, {})
-  | .ret, env => do
-    let value ← env 0
-    some (.returned value, ⟨1, {}⟩)
-  | .step action rest, env => do
-    let (next, first) ← action.exec call env
-    let (result, last) ← exec call rest next
-    some (result, first.plus last)
-  | .switch scrutinee cases fallback zero one rest, env => do
-    let (actual, state) ← evalScrutinee env scrutinee
+/-- Shared source-control execution. Primitive state, outcomes and work are
+supplied by the language profile; routing and early return are implemented once. -/
+def execWith {A S R C : Type}
+    (instruction : S → A → Option (S × C))
+    (scrutinee : S → Scrutinee → Option (Key × S))
+    (returnValue : S → Option (R × C)) (finish : S → R) (nextState : R → Option S)
+    (zero : C) (plus : C → C → C) (branchWork : Scrutinee → C) :
+    Tree A → S → Option (R × C)
+  | .done, state => some (finish state, zero)
+  | .ret, state => returnValue state
+  | .step action rest, state => do
+    let (next, first) ← instruction state action
+    let (result, last) ← execWith instruction scrutinee returnValue finish nextState zero plus branchWork rest next
+    some (result, plus first last)
+  | .switch scrut cases fallback left right rest, state => do
+    let (actual, state) ← scrutinee state scrut
     let (result, first) ← selectSource actual cases fallback
-      (fun _ => exec call zero state) (fun _ => exec call one state)
-    let charged := (⟨1 + scrutinee.weight, {}⟩ : Cost).plus first
-    match result with
-    | .returned value => some (.returned value, charged)
-    | .next next =>
+      (fun _ => execWith instruction scrutinee returnValue finish nextState zero plus branchWork left state)
+      (fun _ => execWith instruction scrutinee returnValue finish nextState zero plus branchWork right state)
+    let charged := plus (branchWork scrut) first
+    match nextState result with
+    | none => some (result, charged)
+    | some next =>
+      let (result, last) ← execWith instruction scrutinee returnValue finish nextState zero plus branchWork rest next
+      some (result, plus charged last)
+
+def nextState : Outcome → Option Env
+  | .next env => some env
+  | .returned _ => none
+
+def returnValue (env : Env) : Option (Outcome × Cost) := do
+  let value ← env 0
+  some (.returned value, ⟨1, {}⟩)
+
+/-- Original snapshot profile of the shared executor. -/
+def exec {F : Type} (call : CalleesFor F) : Block F → Env → Option (Outcome × Cost) :=
+  execWith (fun env action => action.exec call env) evalScrutinee returnValue Outcome.next nextState
+    {} Cost.plus (fun scrut => ⟨1 + scrut.weight, {}⟩)
+
+theorem exec_done {F : Type} (call : CalleesFor F) (env : Env) : exec call .done env = some (.next env, {}) := rfl
+
+theorem exec_ret {F : Type} (call : CalleesFor F) (env : Env) : exec call .ret env = returnValue env := rfl
+
+theorem exec_step {F : Type} (call : CalleesFor F) (action : Action F) (rest : Block F) (env : Env) :
+    exec call (.step action rest) env = (do
+      let (next, first) ← action.exec call env
       let (result, last) ← exec call rest next
-      some (result, charged.plus last)
+      some (result, first.plus last)) := rfl
+
+theorem exec_switch {F : Type} (call : CalleesFor F) (scrut : Scrutinee) (cases : List (Key × Nat))
+    (fallback : Option Nat) (left right rest : Block F) (env : Env) :
+    exec call (.switch scrut cases fallback left right rest) env = (do
+      let (actual, state) ← evalScrutinee env scrut
+      let (result, first) ← selectSource actual cases fallback
+        (fun _ => exec call left state) (fun _ => exec call right state)
+      let charged := (⟨1 + scrut.weight, {}⟩ : Cost).plus first
+      match result with
+      | .returned value => some (.returned value, charged)
+      | .next next =>
+        let (result, last) ← exec call rest next
+        some (result, charged.plus last)) := by
+  simp only [exec, execWith]
+  cases hs : evalScrutinee env scrut with
+  | none => rfl
+  | some pair =>
+    rcases pair with ⟨actual, state⟩
+    simp only [bind, Option.bind]
+    cases hb : selectSource actual cases fallback _ _ with
+    | none => rfl
+    | some pair => rcases pair with ⟨result, first⟩; cases result <;> rfl
 
 /-- Every supported source statement/control profile preserves complete results
 and costs. This is equality before discarding the trace or work component. -/
@@ -144,7 +195,7 @@ theorem exec_lower {F : Type} (call : CalleesFor F) (source : Block F) (code : C
       change some (Code.step action.lower next) = some code at hl
       have hcode := Option.some.inj hl
       subst code
-      simp only [exec, LookupSource.exec, Action.exec]
+      simp only [exec_step, LookupSource.exec, Action.exec]
       cases he : evalAction call env action.lower with
       | none => simp
       | some pair => simp [ih next hr]
@@ -163,7 +214,7 @@ theorem exec_lower {F : Type} (call : CalleesFor F) (source : Block F) (code : C
           | some cr =>
             simp only [lower, hd, hz, ho, hr, bind, Option.bind, Option.some.injEq] at hl
             subst code
-            simp only [exec, LookupSource.exec]
+            simp only [exec_switch, LookupSource.exec]
             cases he : evalScrutinee env scrutinee with
             | none => simp
             | some pair =>
