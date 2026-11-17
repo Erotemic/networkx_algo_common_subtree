@@ -86,6 +86,15 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Spatial follow-up:** [framed intermediate ownership](evidence/lookup-spatial-ownership.md)
+now proves duplicate-free complete owned occurrences across live locals,
+temporaries and all suspended caller frames for completed normal executions.
+Recursive contracts are discharged for both real programs; actual traces retain
+complete cost and native-input lookup has composed success/readback/ownership.
+Next address stack storage/liveness, borrow/lifetime and official source
+adequacy, then memo insertion/concatenation/evaluation and wrappers. W06-C3
+remains open; do not duplicate completed intermediate separation.
+
 **Operational typing follow-up:** [successful-run preservation](evidence/lookup-type-preservation.md)
 now derives actual primitive/local/result types from the checked constraints.
 Recursive call contracts, argument prefixes and generic Box are discharged for

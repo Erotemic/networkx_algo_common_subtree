@@ -1,5 +1,11 @@
 # Operational lookup type preservation: 2026-11-16
 
+Follow-up: [framed intermediate ownership](lookup-spatial-ownership.md) now
+establishes separation across live locals, temporaries and recursive suspended
+caller frames on completed normal paths. Stack/borrow/lifetime and official
+source adequacy remain open. The preservation milestone and its historical
+next steps are recorded below.
+
 Baseline: `304edc1`. This advances the
 [checked lifetime-erased source types](lookup-source-typing.md) to successful-run
 operational type preservation for the actual addressed interpreter. The proof

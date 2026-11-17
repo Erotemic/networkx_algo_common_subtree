@@ -25,6 +25,14 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [intermediate spatial-ownership proof](lean-complexity-campaign/evidence/lookup-spatial-ownership.md)
+now tracks duplicate-free Box occurrences across all live locals, temporaries
+and suspended caller frames on completed normal paths. Both real programs have
+recursive traces with unchanged complete costs; native lookup composes this
+with success, final ownership and typed first-hit readback. The 3,800-job build,
+thirteen suites and 304-endpoint audit pass. Stack/borrow/lifetime and official
+source adequacy remain W06-C3 work.
+
 The [operational type-preservation proof](lean-complexity-campaign/evidence/lookup-type-preservation.md)
 now connects checked static constraints to actual addressed reads, borrows,
 moves, aggregates and recursive execution. Both programs preserve typed output

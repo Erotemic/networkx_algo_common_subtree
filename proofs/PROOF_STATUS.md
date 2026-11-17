@@ -1,5 +1,37 @@
 # Common-subtree proof status
 
+## Intermediate framed lookup ownership: 2026-11-16
+
+`Rust/LookupSpatial{Ownership,Locals,Primitives,Execution,Calls,Refinement}.lean`
+proves separation of simultaneous owned roots using complete Box occurrence
+lists with no duplicate addresses. `Bounded` and `values_covers` ensure every
+live local is included. Framed transfers preserve invalidating moves,
+sequential temporary arguments, aggregate construction and no-owner clobbers.
+Actual fresh Box allocation is separated from payload and retained owners.
+
+`Trace` records actual intermediate statement/control states, temporary bundles
+and callee occurrences; `Trace.erases` preserves unchanged execution/full cost.
+`run_spatial` discharges recursive contracts by fuel induction. Each callee
+retains the caller's remaining locals and the entire suspended external frame.
+Both original/mutant programs are covered for all functions/fuels.
+`lookup_spatial_total` composes native-input success, recursive spatial/frame
+safety, final exclusive ownership, independent typed first-hit readback and
+the existing complete source-cost/allocation bounds.
+
+The 3,800-job build, thirteen Lean suites, native WP example, seven Python
+tests and 304-endpoint audit pass. Fifty-two new audited closures stay within
+the established three-axiom baseline; new modules have no warnings. Tests
+reject joint ownership of individually typed duplicate aliases and validate
+moves, fresh allocation and shared aliases beside retained owners. Production/
+generated semantics, JSON, main pins and extraction tooling are unchanged.
+
+This closes intermediate spatial separation of traced owner roots on completed
+normal paths. Stack allocation/liveness, borrow lifetimes and official typed
+LLBC/Rust adequacy remain open, as do freeing/mutation, failed/unwind paths and
+physical costs. Shared pointees do not become owners merely by representation.
+W06-C3, the memo core/wrappers and full planning objective remain active.
+[Exact spatial judgments, traces and boundaries](../docs/planning/lean-complexity-campaign/evidence/lookup-spatial-ownership.md).
+
 ## Operational lookup type preservation: 2026-11-16
 
 `Rust/LookupType{Primitives,Execution,Calls,Refinement}.lean` now proves

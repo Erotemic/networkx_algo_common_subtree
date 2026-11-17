@@ -45,6 +45,14 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [intermediate spatial-ownership proof](evidence/lookup-spatial-ownership.md)
+now covers simultaneous live locals, temporary values and suspended caller
+frames with duplicate-free complete Box occurrence lists. Actual recursive
+traces retain full source costs in both programs; native-input lookup composes
+success, spatial/frame safety, returned ownership and typed readback. The
+3,800-job build, thirteen suites and 304-endpoint audit pass. Stack/borrow and
+official source adequacy remain W06-C3 work.
+
 The [operational type-preservation proof](evidence/lookup-type-preservation.md)
 connects checked source constraints to the addressed primitives/control and
 discharges recursive typed callee contracts, including generic Box, for both

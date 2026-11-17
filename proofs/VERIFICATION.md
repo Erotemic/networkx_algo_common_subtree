@@ -20,6 +20,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
 (cd proofs && lake env lean Tests/LookupSourceTypes.lean)
 (cd proofs && lake env lean Tests/LookupTypePreservation.lean)
+(cd proofs && lake env lean Tests/LookupSpatial.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -193,6 +194,18 @@ are kernel-checked with this stronger reader. `Tests/LookupTypePreservation.lean
 is in Lean CI. This does not establish initialization/progress, intermediate
 spatial ownership, stack/borrow lifetimes or official typed LLBC/Rust adequacy.
 See the [preservation report](../docs/planning/lean-complexity-campaign/evidence/lookup-type-preservation.md).
+
+`Rust/LookupSpatial{Ownership,Locals,Primitives,Execution,Calls,Refinement}.lean`
+proves duplicate-free complete Box footprints across all active owner roots:
+live locals, operand temporaries and suspended caller frames. Recursive traces
+erase to the actual completed normal execution and retain complete cost.
+Both real programs are covered at all fuels; `lookup_spatial_total` composes
+native-input success, spatial/frame safety, exclusive returned ownership,
+independent typed readback and exact event/allocation bounds.
+`Tests/LookupSpatial.lean` is in Lean CI. Stack allocation/liveness, borrow
+lifetimes, official source adequacy, freeing/mutation and failure/unwind paths
+remain open. Shared pointees do not become owners merely by representation.
+See the [spatial report](../docs/planning/lean-complexity-campaign/evidence/lookup-spatial-ownership.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`
