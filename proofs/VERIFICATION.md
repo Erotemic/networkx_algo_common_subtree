@@ -21,6 +21,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupSourceTypes.lean)
 (cd proofs && lake env lean Tests/LookupTypePreservation.lean)
 (cd proofs && lake env lean Tests/LookupSpatial.lean)
+(cd proofs && lake env lean Tests/LookupStack.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -206,6 +207,19 @@ independent typed readback and exact event/allocation bounds.
 lifetimes, official source adequacy, freeing/mutation and failure/unwind paths
 remain open. Shared pointees do not become owners merely by representation.
 See the [spatial report](../docs/planning/lean-complexity-campaign/evidence/lookup-spatial-ownership.md).
+
+`Rust/LookupStack{Code,State,Primitives,Execution,Calls,Certificate,Refinement}.lean`
+retains distinct allocation/deallocation markers and proves initialized reads,
+allocated writes and exact local storage/value-state consistency through
+completed normal recursive runs. Both retained source bodies and exact local
+declaration counts pass kernel certificates. `lookup_stack_total` composes
+storage/spatial/frame traces, native success, returned ownership, typed readback
+and existing costs. `Tests/LookupStack.lean` is in Lean CI. The concrete
+certificate module can take several minutes for full kernel reduction; keep
+the same live build session until it finishes. Logical local-storage discipline
+does not model physical stack addresses or borrow-region/lifetime semantics,
+official source adequacy, freeing/mutation or failed/unwind paths. See the
+[storage report](../docs/planning/lean-complexity-campaign/evidence/lookup-stack-storage.md).
 
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`

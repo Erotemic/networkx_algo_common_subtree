@@ -45,6 +45,14 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [normal storage-lifetime proof](evidence/lookup-stack-storage.md) retains
+distinct source allocation/deallocation and proves initialized reads/allocated
+writes through recursive execution. Both real bodies and exact declaration
+counts pass kernel certificates; native lookup composes stack/spatial/frame
+safety and independent typed readback with unchanged costs. The 3,807-job
+build, fourteen suites and 338-endpoint audit pass. Shared-borrow lifetimes and
+official source adequacy remain W06-C3 work.
+
 The [intermediate spatial-ownership proof](evidence/lookup-spatial-ownership.md)
 now covers simultaneous live locals, temporary values and suspended caller
 frames with duplicate-free complete Box occurrence lists. Actual recursive

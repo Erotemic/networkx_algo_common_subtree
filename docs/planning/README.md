@@ -25,6 +25,14 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [normal storage-lifetime proof](lean-complexity-campaign/evidence/lookup-stack-storage.md)
+now retains distinct allocation/deallocation markers and checks initialized
+reads plus allocated writes through every recursive completed normal run.
+Both source bodies and exact declaration counts pass kernel certificates.
+Native lookup composes storage, spatial/frame safety, typed readback and costs.
+The 3,807-job build, fourteen suites and 338-endpoint audit pass. Shared-borrow
+lifetimes and official source adequacy remain W06-C3 work.
+
 The [intermediate spatial-ownership proof](lean-complexity-campaign/evidence/lookup-spatial-ownership.md)
 now tracks duplicate-free Box occurrences across all live locals, temporaries
 and suspended caller frames on completed normal paths. Both real programs have

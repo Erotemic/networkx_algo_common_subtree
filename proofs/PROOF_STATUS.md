@@ -1,5 +1,39 @@
 # Common-subtree proof status
 
+## Checked normal lookup storage lifetimes: 2026-11-17
+
+`Rust/LookupStack{Code,State,Primitives,Execution,Calls,Certificate,Refinement}.lean`
+retains distinct source allocation/deallocation markers and proves normal
+local storage/initialization discipline. States distinguish dead, allocated
+empty and allocated initialized slots. Moves leave allocated empty storage;
+copy/borrow roots require initialization and writes require allocation after
+operand moves. Reallocation and repeated deallocation follow the pinned source
+convention. Branches retain separate states; early returns skip continuations.
+
+`verify_sound` constructs actual storage traces; `Trace.erases` recovers the
+unchanged heap execution and complete cost. Return records logical frame
+closure; safe ownership cleanup remains supplied by the separate frame proof.
+Recursive callee storage safety is discharged by fuel induction. Both retained
+source programs, their stack lowerings/erasures and exact parsed declaration
+counts pass kernel certificates: 10/15/6/20 locals, with 23 for mutant lookup.
+`lookup_stack_total` composes native success, stack/spatial/frame certificates,
+exclusive returned ownership, independent typed readback and exact existing
+source currencies/allocation growth.
+
+The 3,807-job build, fourteen Lean suites, native WP example, seven Python
+tests and 338-endpoint axiom audit pass. Thirty-four new closures stay within
+the established three-axiom baseline; new modules have no warnings. The new CI
+suite rejects never-allocated/dead writes that succeed in the old reset-only
+model and covers reallocation, moves, branches and early returns. Main pins,
+Rust, generated code/JSON and extraction tools are unchanged.
+
+This establishes logical normal-path local storage discipline. Physical stack
+addresses, borrow regions/lifetimes, official typed LLBC/Rust adequacy and
+failed/unwind/freeing/mutable behavior remain open. Initialization flags alone
+do not prove pointer/variant validity, ownership cleanup or progress. W06-C3,
+the memo core/wrappers and full planning objective remain active.
+[Exact source conventions, certificates and boundaries](../docs/planning/lean-complexity-campaign/evidence/lookup-stack-storage.md).
+
 ## Intermediate framed lookup ownership: 2026-11-16
 
 `Rust/LookupSpatial{Ownership,Locals,Primitives,Execution,Calls,Refinement}.lean`

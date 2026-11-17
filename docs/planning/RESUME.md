@@ -1,6 +1,20 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment proves
+[normal local-storage lifetimes](lean-complexity-campaign/evidence/lookup-stack-storage.md).
+Seven `Rust/LookupStack*.lean` modules retain distinct source allocation and
+deallocation and check initialized reads/allocated writes, with exact state
+consistency against actual value environments. Moves preserve allocated empty
+storage; reallocation/repeated deallocation follow pinned Charon conventions.
+Actual recursive traces retain the unchanged heap execution and full cost.
+Both real source bodies and exact declaration counts pass kernel certificates:
+10/15/6/20 locals, with 23 for mutant lookup. `lookup_stack_total` composes
+native success, stack/spatial/frame certificates, final ownership, typed
+first-hit readback and existing costs/allocation growth. This establishes
+logical normal-path local storage discipline. Shared-borrow/region lifetimes,
+physical stack addressing and official source adequacy remain open.
+
+The preceding increment proves
 [intermediate framed lookup ownership](lean-complexity-campaign/evidence/lookup-spatial-ownership.md).
 Six `Rust/LookupSpatial*.lean` modules track duplicate-free complete Box
 occurrence lists across every live local, temporary bundle and suspended caller
@@ -11,8 +25,8 @@ native-input execution, recursive spatial/frame safety, final exclusive owned
 output, independent typed first-hit readback and existing event/allocation
 bounds. Shared aliases remain supported. The theorem concerns active owner
 roots; it does not infer ownership of borrowed storage from representation.
-Stack allocation/liveness, borrow lifetimes and official source adequacy remain
-open.
+The subsequent storage increment proves normal local allocation/liveness.
+Borrow lifetimes and official source adequacy remain open.
 
 The preceding increment proves
 [operational lookup type preservation](lean-complexity-campaign/evidence/lookup-type-preservation.md).
@@ -25,7 +39,8 @@ are discharged by fuel induction, including generic fresh Box allocation.
 Both actual programs preserve output types and old memory for every successful
 run at every fuel. Source composition retains complete costs and allocation
 growth. The subsequent spatial increment handles intermediate owner separation.
-Initialization/progress, stack/borrow and official source adequacy remain open.
+Normal local initialization/storage checks now have their own soundness proof.
+Progress, borrow lifetimes and official source adequacy remain open.
 
 The preceding increment supplies
 [kernel-checked lifetime-erased source types](lean-complexity-campaign/evidence/lookup-source-typing.md).
@@ -37,9 +52,9 @@ constraints. Both original and actual cost-mutant source inputs pass
 `decide +kernel`. All four ordinary helpers are covered; the checker rejects
 false annotations and constructor errors accepted by control/frame checks.
 This closes supported lifetime-erased declaration/annotation checking.
-The subsequent increments establish operational preservation and intermediate
-spatial ownership. Stack/borrow/source adequacy remain open. Reference regions are
-deliberately erased.
+The subsequent increments establish operational preservation, intermediate
+spatial ownership and local storage discipline. Borrow/source adequacy remain
+open. Reference regions are deliberately erased.
 
 The preceding increment proves
 [checked intermediate lookup frame safety](lean-complexity-campaign/evidence/lookup-frame-safety.md).
@@ -62,7 +77,8 @@ excludes old input Boxes. Shared input aliases, duplicate keys and unsound
 cached witnesses remain supported. The new frame analysis separately supplies
 local guard/cleanup evidence; final reachability alone does not prove it.
 Intermediate spatial ownership and lifetime-erased operational typing are now
-proved; stack/borrow and official source/lifetime adequacy remain open.
+proved; normal local storage discipline is checked as well. Borrow and official
+source/lifetime adequacy remain open.
 
 The preceding increment proves an
 [addressed lookup memory realization](lean-complexity-campaign/evidence/lookup-heap-realization.md).
@@ -76,7 +92,8 @@ table/query. Both original and mutant connect through their source certificates.
 This is immutable logical memory. Returned exclusive ownership, normal local
 frame safety and lifetime-erased JSON field/static typing are now checked.
 Operational type preservation and intermediate spatial ownership are now
-proved. Stack lifetimes and official LLBC/Rust adequacy remain open.
+proved, with normal local storage now checked. Shared-borrow lifetimes and
+official LLBC/Rust adequacy remain open.
 
 The earlier source-control increment supplies
 [kernel-checked lookup source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md).
@@ -89,7 +106,7 @@ The mutant cannot pass the original normal-form certificate and still violates
 the old comparison allowance. The Python control reifier is no longer trusted
 for those snapshots. Charon/data import and declared snapshot primitives remain
 boundaries. Subsequent addressed, ownership, frame and static typing results
-and operational/spatial preservation advance those obligations; stack/borrow,
+and operational/spatial/storage preservation advance those obligations; borrow,
 lifetime and official source-adequacy gaps stay explicit.
 
 The earlier generic increment proves
@@ -121,8 +138,8 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,800-job build, all thirteen Lean suites, native WP example, seven Python
-reifier tests and 304-endpoint axiom audit pass. New modules have no warnings;
+The main 3,807-job build, all fourteen Lean suites, native WP example, seven Python
+reifier tests and 338-endpoint axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records).
@@ -146,6 +163,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupSourceTypes.lean)
 (cd proofs && lake env lean Tests/LookupTypePreservation.lean)
 (cd proofs && lake env lean Tests/LookupSpatial.lean)
+(cd proofs && lake env lean Tests/LookupStack.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
@@ -165,18 +183,18 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **stack storage/liveness, borrow/lifetime and source adequacy (W06-C3),
+Next is **shared-borrow lifetime and source adequacy (W06-C3),
 then remaining local/source costs (MEM-03/W05)**. Generic declared-currency work,
 lookup control normalization, addressed execution, exclusive returned ownership,
 normal local guard/cleanup safety, lifetime-erased declaration/static-type
-checking, operational preservation and intermediate spatial separation are
-implemented; do not duplicate them. Use checked `CodeConstraints`, operational
-typing, local guard and spatial trace witnesses in the source/borrow simulation.
-The heap model does not free cells; bare
-representation permits duplicate Box aliases. `Owns`/`Footprint` exclude these
+checking, operational preservation, intermediate spatial separation and normal
+local storage/initialization discipline are implemented; do not duplicate them.
+Use checked `CodeConstraints`, operational typing, local guard, spatial and
+storage trace witnesses in the source/borrow simulation. The heap model does
+not free cells; bare representation permits duplicate Box aliases. `Owns`/`Footprint` exclude these
 in returned values. The local frame checker tracks ownership classes; the new
 spatial proof separately tracks disjoint complete footprints across active
-owners, including suspended callers. Establish stack/borrow adequacy and connect
+owners, including suspended callers. Establish shared-borrow adequacy and connect
 the typed source semantics. Extend stack
 borrows/mutation as needed for insertion, concatenation and the memo evaluator/
 public core. Preserve

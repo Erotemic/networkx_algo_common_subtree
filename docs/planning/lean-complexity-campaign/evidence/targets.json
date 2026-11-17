@@ -746,7 +746,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 stack storage/liveness, borrow/lifetimes and official adequacy, then memo core/wrappers; lookup control, addressed realization, exclusive returned ownership, normal local frame/callee/return safety, lifetime-erased source declarations/annotations/static constraints, successful-run operational type preservation and intermediate framed owner separation checked"
+      "W06-C3 shared-borrow lifetimes and official source adequacy, then memo core/wrappers; lookup control, addressed realization, exclusive returned ownership, normal local frame/callee/return safety, lifetime-erased source declarations/annotations/static constraints, successful-run operational type preservation, intermediate framed owner separation and normal local storage/initialization discipline checked; physical stack addresses and borrow regions remain unmodeled"
     ],
     "still_open": [
       "G0 remaining reconnaissance",

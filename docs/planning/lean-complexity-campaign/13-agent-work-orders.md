@@ -86,6 +86,15 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Storage follow-up:** [normal local-storage lifetimes](evidence/lookup-stack-storage.md)
+now distinguish allocation/deallocation, require initialized reads and allocated
+writes, and produce recursive exact-cost traces on completed normal paths.
+Both retained bodies and exact local counts pass kernel certificates. Next
+address shared-borrow lifetime/source adequacy, then insertion, concatenation,
+memo evaluation/core and wrappers. Physical stack addresses and borrow regions
+are not modeled; W06-C3 remains open. Do not duplicate completed normal local
+storage/initialization checking.
+
 **Spatial follow-up:** [framed intermediate ownership](evidence/lookup-spatial-ownership.md)
 now proves duplicate-free complete owned occurrences across live locals,
 temporaries and all suspended caller frames for completed normal executions.

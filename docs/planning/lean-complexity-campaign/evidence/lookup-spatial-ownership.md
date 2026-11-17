@@ -1,5 +1,11 @@
 # Intermediate framed lookup ownership: 2026-11-16
 
+Follow-up: [normal local-storage lifetimes](lookup-stack-storage.md) now retain
+distinct source allocation/deallocation and prove initialized reads/allocated
+writes through recursive execution. Shared-borrow lifetimes and official
+source adequacy remain open. The spatial milestone and its historical next
+steps are recorded below.
+
 Baseline: `c3106fc`. This advances W06-C3 from
 [operational typing](lookup-type-preservation.md) and
 [normal local cleanup](lookup-frame-safety.md) to spatial separation of
