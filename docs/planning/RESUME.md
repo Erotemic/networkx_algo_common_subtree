@@ -1,6 +1,19 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment supplies
+Branch: `Droschinsky-algos`. The latest increment proves
+[addressed memo primitive ownership](lean-complexity-campaign/evidence/memo-heap-ownership.md).
+Six `MemoHeap*.lean` modules reuse generic heap instruction simulation, produce
+actual native-input addressed runs with exact source costs/allocation growth,
+and prove independent typed readback. Concatenation's entire output is fresh.
+Insertion copies keys/witness into a fresh entry, then puts the original table
+cell under a fresh tail Box. Its complete occurrence ledger transfers all old
+owners and each new Box exactly once, with multiplicity retained and arbitrary
+external owner frames preserved. Shared arguments may alias into the owned
+table being moved. Input layouts exist for every native value, including a
+separated owned-table frame. Next intermediate source/type/storage/spatial/
+loan/region invariants for these helpers, then actual evaluator/core and wrappers.
+
+The preceding increment supplies
 [actual concatenation/insertion source composition](lean-complexity-campaign/evidence/memo-source-primitives.md).
 `MemoSource{,Frontend,Certificate,Refinement}` and two generated modules retain
 actual pinned Charon JSON and kernel-check its normalization. Shared instruction/
@@ -176,16 +189,19 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,829-job build, all seventeen Lean suites, native WP example, nine Python
-reifier tests, thirteen ordered Rust tests, full regeneration and 430-endpoint
-axiom audit pass. New modules have no warnings;
+The main 3,835-job build, all eighteen Lean suites, native WP example, nine Python
+reifier tests and 461-endpoint axiom audit pass. The preceding `63f929f` full
+regeneration and thirteen ordered Rust tests remain the unchanged provenance/
+behavior baseline. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records).
 `lookup_spatial_total`'s statement closure also has a shared-tool inspection
 (202 records). The new `lookup_source_total` statement closure was inspected
 (623 records), retaining represented native inputs, actual source/run witnesses
-and prior safety/readback/cost conclusions. Main pins and
+and prior safety/readback/cost conclusions. The new memo heap totality and
+ledger endpoints have a 597-record statement-closure inspection, retaining
+actual source/heap runs and conditional owner-frame/occurrence guarantees. Main pins and
 production Rust/existing Aeneas semantics are unchanged. New generated JSON
 snapshots reproduce exactly. CLRS compatibility and source-only
 AFP inspection remain recorded in the earlier reuse audit.
@@ -208,6 +224,7 @@ python3 proofs/checks/test_lookup_source_reifier.py
 (cd proofs && lake env lean Tests/LookupBorrow.lean)
 (cd proofs && lake env lean Tests/LookupRegions.lean)
 (cd proofs && lake env lean Tests/MemoSource.lean)
+(cd proofs && lake env lean Tests/MemoHeap.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/LookupEvents.lean)
@@ -227,8 +244,9 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **addressed insertion/concatenation and actual memo evaluator/core
-composition (W06-C3), then remaining local/source costs (MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
+Next is **intermediate insertion/concatenation invariants and actual memo
+evaluator/core composition (W06-C3), then remaining local/source costs
+(MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
 lookup pilot are implemented. Reuse the checked source/type constraints,
 addressed execution, ownership, storage, loan and region traces. The explicit
 region valuation uses immutable retained-world extension; it is not a full Rust
@@ -238,9 +256,13 @@ actual memo pilot.
 
 The actual insertion/concatenation source control and native functional/event
 bridge now exists; do not repeat that extraction or write a duplicate control
-interpreter. Extend addressed memory, independent static typing, ownership,
-storage and regional loans to those bodies. Insertion moves its owned table
-into the tail; concatenation reuses shared input borrows. Next inspect and model
+interpreter. Addressed simulation, exact output layouts, returned ownership,
+old-table transfer and native input inhabitation now exist too. Next generalize
+the checked static signatures/constraints and source region reader to the memo
+function set, then operational typing and local guard/storage/spatial/loan
+traces. Insertion's initial profile includes an owned table. Preserve its old
+occurrence ledger instead of using lookup's fresh-only output interval.
+Concatenation reuses shared input borrows. Next inspect and model
 actual evaluator arithmetic, owned-local borrows, losing-candidate destruction
 and overflow/table returns. Legitimate borrows of caller-owned locals cannot
 all satisfy lookup's old-heap-only borrow profile. Preserve scope and ownership

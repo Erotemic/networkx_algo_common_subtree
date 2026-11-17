@@ -32,7 +32,7 @@ example : read pairMemory ⟨2, [3]⟩ = none := rfl
 
 example : operands pairMemory [.move 1, .move 1] env = none := rfl
 example : operand pairMemory (initialLocals [.owned 0]) (.copy (.local 1)) = none := rfl
-example : action (fun _ _ _ => none) pairMemory (initialLocals [.owned 0]) (.dropMoved 1) = none := rfl
+example : action (fun (_ : Function) _ _ => none) pairMemory (initialLocals [.owned 0]) (.dropMoved 1) = none := rfl
 
 private def viewBool (result : Option (Cell × Memory × Cost)) : Option (Bool × Nat × Nat × Nat) :=
   match result with

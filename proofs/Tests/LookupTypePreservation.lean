@@ -45,7 +45,7 @@ example {cell : Cell} {after : Memory} {cost : Cost}
 
 -- Static types alone do not imply initialization or successful variant reads.
 example : checkCode [.adt .word] (.adt .word) .ret = true := by decide +kernel
-example : Heap.exec (fun _ _ _ => none) .ret [] (initialLocals []) = none := rfl
+example : Heap.exec (fun (_ : Function) _ _ => none) .ret [] (initialLocals []) = none := rfl
 
 private def guardedField : Place := .field (.local 0) (some 1) 0
 example : inferPlace [.adt .word] guardedField = some (.owned (.adt .word)) := rfl

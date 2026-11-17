@@ -1,5 +1,35 @@
 # Common-subtree proof status
 
+## Addressed memo primitive ownership: 2026-11-17
+
+Six `Rust/MemoHeap*.lean` modules reuse generalized heap instruction/control
+simulation for the certified memo function set. Native source successes have
+addressed executions with the same complete cost, independent typed output,
+old-memory extension and exact allocation growth. Copy/concatenation layouts
+are actual postorder fresh layouts, not ownership inferred from readback.
+
+Insertion copies keys/result into a fresh entry, then its fresh tail Box
+contains exactly the original table cell. `insert_return_ledger` transfers the
+old occurrence list plus the complete fresh allocation range, preserves
+multiplicity, counts exactly old owners plus actual allocations, and retains
+uniqueness when the input owned list was duplicate-free. Arbitrary separated
+external frames survive; shared query/witness aliases into the moved table are
+supported. `concatenate_total`/`insert_total` compose actual source/heap success,
+independent readback/typing, native agreement, exact events and returned owner
+frames. Input layouts exist for every native value with owned-table frames.
+
+The 3,835-job build, eighteen Lean suites, native WP, nine Python tests and
+461-endpoint audit pass; 31 new closures stay within accepted baseline axioms.
+New modules have no warnings. Rust, generated files, readers and pins are
+unchanged; preceding full regeneration/Rust behavior checks remain the baseline.
+
+Returned owner/readback typing does not establish intermediate static type,
+local guard/storage/spatial traces, loans or source regions for the new helper
+set. Those remain next, followed by actual evaluator/core arithmetic, local
+borrows/destruction/overflow behavior and wrappers. Full W06-C3 remains open.
+
+[Exact layouts, owner ledger, boundaries and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-heap-ownership.md).
+
 ## Actual insertion/concatenation source bridge: 2026-11-17
 
 `Rust/MemoSource{,Frontend,Certificate,Refinement}.lean` and two generated input/

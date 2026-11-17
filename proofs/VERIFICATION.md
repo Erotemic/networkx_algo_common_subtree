@@ -25,6 +25,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/LookupBorrow.lean)
 (cd proofs && lake env lean Tests/LookupRegions.lean)
 (cd proofs && lake env lean Tests/MemoSource.lean)
+(cd proofs && lake env lean Tests/MemoHeap.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -79,6 +80,17 @@ translated Rust. The main 3,829-job build, seventeen suites, nine Python tests,
 thirteen ordered Rust tests, full regeneration and 430-endpoint audit pass.
 See the [memo primitive report](../docs/planning/lean-complexity-campaign/evidence/memo-source-primitives.md)
 for exact event counts and remaining addressed safety/evaluator obligations.
+
+The addressed memo increment adds `Rust/MemoHeap*.lean` and
+`Tests/MemoHeap.lean`. Generic addressed instruction simulation preserves the
+certified source's complete costs; exact output layouts establish fresh
+concatenation ownership and transfer of insertion's original table. Native
+success, independent typed readback, allocation growth and complete owner
+ledgers/frame preservation compile. The 3,835-job build, eighteen suites, native
+WP, nine Python tests and 461-endpoint audit pass. No source regeneration is
+needed: Rust, generated artifacts and pins are unchanged. See the
+[addressed memo report](../docs/planning/lean-complexity-campaign/evidence/memo-heap-ownership.md)
+for exact assumptions and remaining intermediate invariants/evaluator work.
 
 ## VM caches
 

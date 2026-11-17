@@ -148,6 +148,14 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [addressed memo primitive follow-up](memo-heap-ownership.md) now composes
+source and heap runs, independent typed readback, exact allocation growth and
+returned ownership. Insertion's actual tail retains the original table, with
+complete old-plus-fresh occurrence accounting and external frames preserved.
+Intermediate source/type/guard/storage/spatial/loan/region invariants for these
+new functions remain required, followed by actual evaluator/core, wrappers and
+G3 adversaries. This advances items 2--3 without closing full C3.
+
 The [actual memo primitive bridge](memo-source-primitives.md) now retains and
 kernel-normalizes insertion/concatenation, composes source/native independent
 outputs and explicit copy/Box events, and reuses polymorphic control semantics.

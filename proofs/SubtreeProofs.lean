@@ -247,3 +247,5 @@ public import SubtreeProofs.Complexity.EditDistance.Work
 public import SubtreeProofs.Complexity.Paper2004.MemoWork
 
 public import SubtreeProofs.Rust.MemoSourceRefinement
+
+public import SubtreeProofs.Rust.MemoHeapRefinement

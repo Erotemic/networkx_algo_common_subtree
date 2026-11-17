@@ -11,9 +11,11 @@ unique ownership or destruction/physical residency. -/
 
 namespace SubtreeProofs.Rust.LookupSource.Heap
 
-abbrev Calls := Function → List Cell → Memory → Option (Cell × Memory × Cost)
+abbrev CallsFor (F : Type) := F → List Cell → Memory → Option (Cell × Memory × Cost)
 
-def action (call : Calls) (memory : Memory) (env : Locals) (instruction : Action) :
+abbrev Calls := CallsFor Function
+
+def action {F : Type} (call : CallsFor F) (memory : Memory) (env : Locals) (instruction : Action F) :
     Option (Locals × Memory × Cost) := do
   match instruction with
   | .scope slot => some (env.set slot none, memory, ⟨instruction.weight, {}⟩)
@@ -29,11 +31,11 @@ def action (call : Calls) (memory : Memory) (env : Locals) (instruction : Action
     | none => some (env, memory, ⟨instruction.weight, {}⟩)
     | some _ => none
 
-def actionBorrows : Action → Bool
+def actionBorrows {F : Type} : Action F → Bool
   | .assign _ rhs => heapBorrows rhs
   | _ => true
 
-def codeBorrows : Code → Bool
+def codeBorrows {F : Type} : Code F → Bool
   | .done | .ret => true
   | .step instruction rest => actionBorrows instruction && codeBorrows rest
   | .branch _ _ _ yes no rest => codeBorrows yes && codeBorrows no && codeBorrows rest
@@ -42,7 +44,7 @@ inductive Result where
   | next : Locals → Result
   | returned : Cell → Result
 
-def exec (call : Calls) : Code → Memory → Locals → Option (Result × Memory × Cost)
+def exec {F : Type} (call : CallsFor F) : Code F → Memory → Locals → Option (Result × Memory × Cost)
   | .done, memory, env => some (.next env, memory, {})
   | .ret, memory, env => do some (.returned (← env 0), memory, ⟨1, {}⟩)
   | .step instruction rest, memory, env => do
@@ -84,16 +86,16 @@ def OutcomeRep (memory : Memory) : Result → Outcome → Prop
 
 /-- Local callee simulation, discharged by fuel induction for the actual
 interpreter. No whole-run budget or representation theorem is assumed. -/
-def CallsRefine (concrete : Calls) (abstract : Callees) : Prop :=
+def CallsRefine {F : Type} (concrete : CallsFor F) (abstract : CalleesFor F) : Prop :=
   ∀ function memory cells values value cost,
     RepresentsFields memory cells values → abstract function values = some (value, cost) →
     ∃ cell after, concrete function cells memory = some (cell, after, cost) ∧
       Represents after cell value ∧ Extends memory after ∧
       after.length = memory.length + cost.events.allocations
 
-theorem action_spec {call : Calls} {abstractCall : Callees}
+theorem action_spec {F : Type} {call : CallsFor F} {abstractCall : CalleesFor F}
     (hc : CallsRefine call abstractCall) {memory : Memory} {concrete : Locals} {abstract : Env}
-    (he : EnvRep memory concrete abstract) (instruction : Action)
+    (he : EnvRep memory concrete abstract) (instruction : Action F)
     (hb : actionBorrows instruction = true) {next : Env} {cost : Cost}
     (hr : evalAction abstractCall abstract instruction = some (next, cost)) :
     ∃ state after, action call memory concrete instruction = some (state, after, cost) ∧
@@ -146,8 +148,8 @@ theorem action_spec {call : Calls} {abstractCall : Callees}
           (he'.mono hext).set slot (.some hv), hext,
           by simpa [Cost.plus, LookupEvents.Events.plus] using hlen⟩
 
-theorem exec_spec {call : Calls} {abstractCall : Callees}
-    (hc : CallsRefine call abstractCall) (code : Code) (hb : codeBorrows code = true)
+theorem exec_spec {F : Type} {call : CallsFor F} {abstractCall : CalleesFor F}
+    (hc : CallsRefine call abstractCall) (code : Code F) (hb : codeBorrows code = true)
     {memory : Memory} {concrete : Locals} {abstract : Env} (he : EnvRep memory concrete abstract)
     {outcome : Outcome} {cost : Cost} (hr : LookupSource.exec abstractCall code abstract = some (outcome, cost)) :
     ∃ result after, exec call code memory concrete = some (result, after, cost) ∧

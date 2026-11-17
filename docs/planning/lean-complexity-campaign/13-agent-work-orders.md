@@ -86,6 +86,16 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Addressed memo follow-up:** [actual heap layouts and owner transfer](evidence/memo-heap-ownership.md)
+now realize the certified memo primitives with full source costs and exact
+allocation growth. Concatenation owns its fresh output; insertion preserves
+the old table cell under its new tail Box. Its complete occurrence ledger adds
+all new cells to the old list, preserving multiplicity and external owner
+frames. Native typed readback and input inhabitation compile. Next independent
+source/static/region checking and intermediate type/guard/storage/spatial/loan
+traces for the new helper set, then actual evaluator/core and wrappers. Returned
+ownership is not an intermediate trace proof; W06-C3 remains open.
+
 **Memo primitive follow-up:** [actual insertion/concatenation](evidence/memo-source-primitives.md)
 now have retained source, kernel normalization, successful native runs,
 independent append/prepend and translated-Rust agreement, with explicit copy/

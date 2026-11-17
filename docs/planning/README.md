@@ -25,6 +25,15 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [addressed memo primitive proof](lean-complexity-campaign/evidence/memo-heap-ownership.md)
+now composes actual source runs with heap execution, independently typed append/
+prepend readback and exact allocation growth. Concatenation owns its fresh
+output; insertion transfers the original table under a new tail Box and preserves
+external owner frames. A complete ledger retains old occurrences and adds each
+fresh cell once. The 3,835-job build, eighteen suites and 461-endpoint audit pass.
+Next establish intermediate type/storage/owner/loan/region traces for these
+functions, then actual evaluator/core and wrapper composition.
+
 The [actual memo primitive bridge](lean-complexity-campaign/evidence/memo-source-primitives.md)
 now retains and kernel-normalizes concatenation/insertion source, constructs
 successful native-input runs, and proves agreement with independent append/
