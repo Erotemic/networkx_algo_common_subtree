@@ -1,6 +1,16 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment proves an
+Branch: `Droschinsky-algos`. The latest increment proves
+[exclusive returned lookup ownership](lean-complexity-campaign/evidence/lookup-return-ownership.md).
+`Rust/LookupHeap{Ownership,Layout,ReturnOwnership}.lean` defines ownership
+intervals and occurrence lists, proves exact generated copy/result-copy/lookup
+output cell/heap layouts, and shows that each new Box is owned exactly once by
+the returned result. The occurrence count equals actual Box allocations and
+excludes old input Boxes. Shared input aliases, duplicate keys and unsound
+cached witnesses remain supported. Intermediate frame/reset/move/destruction
+safety is still required; final reachability alone does not prove it.
+
+The preceding increment proves an
 [addressed lookup memory realization](lean-complexity-campaign/evidence/lookup-heap-realization.md).
 Six `Rust/LookupHeap*.lean` modules implement addressed shared reads, invalidating
 local moves, guarded field paths, independently typed represented values and
@@ -9,10 +19,11 @@ proves heap growth equals Box allocations. Actual lookup succeeds with independe
 first-hit readback at the established sufficient fuel; comparison preserves the
 entire heap and permits aliased inputs. Input layouts exist for every native
 table/query. Both original and mutant connect through their source certificates.
-This is immutable logical memory: unique ownership/destruction, stack lifetimes,
-checked JSON field typing and official LLBC/Rust adequacy remain open.
+This is immutable logical memory. Returned exclusive ownership is now proved;
+intermediate ownership/destruction, stack lifetimes, checked JSON field typing
+and official LLBC/Rust adequacy remain open.
 
-The preceding increment supplies
+The earlier source-control increment supplies
 [kernel-checked lookup source-control certificates](lean-complexity-campaign/evidence/lookup-source-certificates.md).
 Both original and actual Rust extra-comparison mutant retain complete pinned
 Charon JSON (only output-destination options normalized). A Lean reader checks
@@ -54,8 +65,8 @@ primitive interpretation. The
 arlib/Lax pilots are unchanged. Production refinement, paper time/space,
 release and application-study work remain open in the full planning program.
 
-The main 3,776-job build, all nine Lean suites, native WP example, seven Python
-reifier tests and 175-endpoint axiom audit pass. New modules have no warnings;
+The main 3,779-job build, all nine Lean suites, native WP example, seven Python
+reifier tests and 190-endpoint axiom audit pass. New modules have no warnings;
 new axioms stay within
 `propext`, `Classical.choice`, `Quot.sound`. Shared `leanq` inspected the native
 weighted WP's elaborated statement closure (108 records). Main pins and
@@ -94,11 +105,13 @@ pins and generated files when moving machines. Caches can be regenerated.
 
 Next is **ownership/frame and typed source adequacy (W06-C3), then remaining
 local/source costs (MEM-03/W05)**. Generic declared-currency work, lookup control
-normalization and immutable addressed execution are implemented; do not duplicate
-them. Prove unique owned footprints, safe local resets/moves/return escape and
-conditional destruction for the actual generated bodies. The current heap model
-does not free cells, and its representation relation does not assert unique Box
-ownership. Check retained JSON field declarations against the independent
+normalization, immutable addressed execution and exclusive returned ownership
+are implemented; do not duplicate them. Prove safe intermediate local resets/
+overwrites, moves, callee argument ownership and conditional destruction for the
+actual generated bodies. The current heap model does not free cells; its bare
+representation relation permits duplicate Box aliases. New `Owns`/`Footprint`
+proofs rule these out in returned values and account for all new allocations,
+but do not supply the intermediate frame invariant. Check retained JSON field declarations against the independent
 signatures, then connect the official typed source semantics. Extend stack
 borrows/mutation as needed for insertion, concatenation and the memo evaluator/
 public core. Preserve

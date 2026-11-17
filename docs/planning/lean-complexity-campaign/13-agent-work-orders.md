@@ -86,6 +86,13 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Returned-ownership follow-up:** [exclusive returned regions](evidence/lookup-return-ownership.md)
+now follow from exact generated copy/result-copy/lookup layout proofs. The
+complete ownership-occurrence list is duplicate-free, covers every new Box,
+has length equal to the allocation counter, and excludes old input cells.
+Next prove intermediate frame/reset/move/destruction safety and checked source
+typing/adequacy; returned reachability alone does not discharge these.
+
 **Heap follow-up:** [addressed memory realization](evidence/lookup-heap-realization.md)
 proves primitive and complete-call simulation, typed first-hit readback, exact
 costs and fresh Box-cell growth for the immutable fragment. It constructs input

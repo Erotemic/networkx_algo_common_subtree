@@ -1,5 +1,9 @@
 # Addressed lookup memory realization: 2026-11-16
 
+Follow-up: [exclusive returned ownership](lookup-return-ownership.md) now proves
+duplicate-free complete fresh Box ownership for generated lookup/copy outputs.
+Intermediate frame/destruction and source/lifetime adequacy below remain open.
+
 Baseline: `158a33a`. This is the next partial W06-C3 delivery after the
 [source-control certificates](lookup-source-certificates.md). It implements
 and proves a memory realization for the read-only fragment. It does not close

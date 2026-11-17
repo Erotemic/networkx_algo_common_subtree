@@ -1,5 +1,35 @@
 # Common-subtree proof status
 
+## Exclusive returned lookup ownership: 2026-11-16
+
+`Rust/LookupHeapOwnership.lean` defines independent ownership intervals and
+complete ownership-occurrence lists. `Owns.exclusive` proves every footprint
+equals the interval range, is duplicate-free and has exactly that membership.
+Shared references own no cells; duplicate owned aliases cannot disappear into
+a set. Allocation and existing word/result layouts satisfy these judgments.
+
+`Rust/LookupHeapLayout.lean` proves exact returned cell/final heap layouts of
+the actual generated word-copy, result-copy and lookup bodies in the addressed
+interpreter. `Rust/LookupHeapReturnOwnership.lean` transfers these to every
+completed sufficient-fuel run. `lookup_return_footprint` accounts for every new
+Box exactly once in the result, with occurrence-list length equal to the actual
+allocation counter; `lookup_no_old_owned_alias` excludes input Boxes from owned
+output. These strengthen existing typed first-hit and complete-cost contracts.
+
+The 3,779-job build, all nine Lean suites, native WP example, seven Python
+reifier tests and 190-endpoint axiom audit pass. Fifteen new closures remain
+within the established three-axiom baseline; new modules have no warnings.
+Tests exhibit well-typed/snapshot-correct duplicated Box aliases that fail
+exclusive ownership, plus old-cell reuse and omitted-allocation countermodels.
+Main pins, Rust, generated code/JSON and extraction tooling are unchanged.
+
+This closes returned exclusive Box ownership and final fresh-cell accounting
+for this fragment. Intermediate frame/reset/move/destruction safety, stack
+lifetimes, checked JSON field signatures and official typed LLBC/Rust adequacy
+remain open. Final reachability does not prove those trace properties or
+physical peak space. W06-C3, the memo core/wrappers and the full program remain
+active. [Exact scope and reproduction](../docs/planning/lean-complexity-campaign/evidence/lookup-return-ownership.md).
+
 ## Addressed lookup memory realization: 2026-11-16
 
 `Rust/LookupHeap{Memory,Typing,Primitives,Execution,Inputs,Refinement}.lean`

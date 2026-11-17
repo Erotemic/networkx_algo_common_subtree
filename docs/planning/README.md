@@ -25,6 +25,13 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+The [returned ownership proof](lean-complexity-campaign/evidence/lookup-return-ownership.md)
+connects actual generated lookup/copy execution to exclusive fresh output
+regions. Every new Box occurs once in the returned footprint; input Boxes are
+not reused as owned output. The 3,779-job build, nine suites and 190-endpoint
+audit pass. Intermediate ownership/frame/destruction and typed source adequacy
+remain the next W06-C3 obligations.
+
 The [addressed lookup realization](lean-complexity-campaign/evidence/lookup-heap-realization.md)
 now preserves typed readback, complete costs and fresh Box-cell growth in an
 immutable heap with shared aliases. Lookup succeeds for all represented native

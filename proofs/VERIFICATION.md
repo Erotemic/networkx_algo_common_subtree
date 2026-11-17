@@ -148,6 +148,16 @@ typing and official LLBC/Rust adequacy remain open. These are logical source
 currencies, not constant-time list-store or physical memory/runtime guarantees.
 See the [heap realization report](../docs/planning/lean-complexity-campaign/evidence/lookup-heap-realization.md).
 
+`Rust/LookupHeap{Ownership,Layout,ReturnOwnership}.lean` now proves exclusive
+returned ownership for the generated copy/result-copy/lookup bodies. Exact
+cell/heap layout proofs connect actual addressed execution to fresh postorder
+regions. The output ownership-occurrence list covers every new Box exactly
+once and has length equal to the allocation counter; no input Box is reused as
+owned output. Intermediate resets/destruction, stack lifetimes and official
+source adequacy remain separate. The existing `Tests/LookupHeap.lean` command
+also checks ownership countermodels. See the
+[returned ownership report](../docs/planning/lean-complexity-campaign/evidence/lookup-return-ownership.md).
+
 `Rust.contractionBudget_refines_tree` proves that a genuine tree edge
 contraction agrees with the generated `remaining_edges_after_contraction`
 operation whenever a `u32` represents the input edge count. The positive

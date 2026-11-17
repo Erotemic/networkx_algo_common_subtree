@@ -746,7 +746,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 unique ownership/destruction, stack lifetimes, checked field typing and official source adequacy, then memo core/wrappers; lookup control and immutable addressed-memory realization checked"
+      "W06-C3 intermediate ownership/frame/reset/destruction, stack lifetimes, checked field typing and official source adequacy, then memo core/wrappers; lookup control, addressed realization and exclusive returned Box ownership checked"
     ],
     "still_open": [
       "G0 remaining reconnaissance",

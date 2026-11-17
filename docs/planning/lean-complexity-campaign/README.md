@@ -45,6 +45,12 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [exclusive returned ownership proof](evidence/lookup-return-ownership.md)
+strengthens addressed lookup with exact cell/heap layouts and duplicate-free
+ownership-occurrence accounting. Every fresh Box is returned exactly once;
+input Boxes cannot be owned by the output. Intermediate frame/reset/destruction,
+stack lifetime and official source-adequacy obligations remain W06-C3 work.
+
 The [addressed lookup memory realization](evidence/lookup-heap-realization.md)
 now constructs sufficient-fuel heap executions with typed first-hit readback,
 shared aliases, complete source costs, old-memory preservation and fresh

@@ -215,3 +215,19 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.compare_spec
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_spec
 #print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_all_runs
+
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Footprint.unique
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Owns.footprint
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Owns.exclusive
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.alloc_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.packWord_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.packResult_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Layout.copy_layout
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Layout.copyResult_layout
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Layout.lookup_layout
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Layout.outputLayout_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.copy_return_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.copyResult_return_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_return_owns
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_return_footprint
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.lookup_no_old_owned_alias

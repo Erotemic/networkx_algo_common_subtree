@@ -1,5 +1,6 @@
 import SubtreeProofs.Rust.LookupHeapRefinement
 import SubtreeProofs.Rust.LookupHeapInputs
+import SubtreeProofs.Rust.LookupHeapReturnOwnership
 
 set_option maxRecDepth 8192
 set_option maxHeartbeats 4000000
@@ -91,5 +92,41 @@ example (table : MemoTable) (left right : BalancedWord) (memory : Memory) :
     ∃ args after, RepresentsFields after args
       [.reference (encodeTable table), .reference (encodeWord left), .reference (encodeWord right)] ∧
       Extends memory after := inputs_exist table left right memory
+
+private def aliasWord : Cell := .node .word 1 [.owned 0, .owned 0]
+private def aliasMemory : Memory := [.node .word 0 []]
+
+-- Typing and snapshot readback deliberately allow this duplicated Box alias.
+example : Represents aliasMemory aliasWord (encodeWord (.Pair .Empty .Empty)) :=
+  .node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))
+
+example : Typed aliasMemory aliasWord (.adt .word) :=
+  .node .pairWord (.cons (.owned rfl (.node .emptyWord .nil))
+    (.cons (.owned rfl (.node .emptyWord .nil)) .nil))
+
+private theorem alias_footprint : Footprint aliasMemory aliasWord [0, 0] :=
+  .node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))
+
+-- An ownership-occurrence list retains both occurrences; a set would hide one.
+example (start stop : Nat) : ¬Owns aliasMemory aliasWord start stop := by
+  intro ho
+  have hn := (ho.exclusive alias_footprint).2.1
+  have hbad : ¬([0, 0] : List Nat).Nodup := by decide +kernel
+  exact hbad hn
+
+-- Reusing an old input Box cannot pass a fresh-output ownership interval.
+example (stop : Nat) : ¬Owns aliasMemory (.owned 0) 1 stop := by
+  intro ho
+  have hf : Footprint aliasMemory (.owned 0) [0] := .owned rfl (.node .nil)
+  have hi := ((ho.exclusive hf).2.2 0).mp (by simp)
+  omega
+
+-- An unused newly allocated cell cannot disappear from the returned ledger.
+example : ¬Owns [.node .word 0 [], .node .word 0 []] (.owned 0) 0 2 := by
+  intro ho
+  have hf : Footprint [.node .word 0 [], .node .word 0 []] (.owned 0) [0] := .owned rfl (.node .nil)
+  have he := (ho.exclusive hf).1
+  have hbad : ([0] : List Nat) ≠ List.range' 0 (2 - 0) := by decide +kernel
+  exact hbad he
 
 end LookupHeapTests
