@@ -144,11 +144,11 @@ def rvalueRoutes (locals : List Ty) : RValue → Bool
   | .address place => fromShared locals place
   | _ => true
 
-def actionRoutes (locals : List Ty) : Action → Bool
+def actionRoutes {F : Type} (locals : List Ty) : Action F → Bool
   | .assign _ rhs => rvalueRoutes locals rhs
   | _ => true
 
-def codeRoutes (locals : List Ty) : LookupSource.Code → Bool
+def codeRoutes {F : Type} (locals : List Ty) : LookupSource.Code F → Bool
   | .done | .ret => true
   | .step instruction rest => actionRoutes locals instruction && codeRoutes locals rest
   | .branch _ _ _ yes no rest => codeRoutes locals yes && codeRoutes locals no && codeRoutes locals rest

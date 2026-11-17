@@ -1,5 +1,37 @@
 # Common-subtree proof status
 
+## Memo typed shared loans and source-region interpretation: 2026-11-17
+
+Five `MemoBorrow{Certificate,Calls,Refinement}` and `MemoRegion{Calls,Refinement}`
+modules reuse the existing typed loan model and region semantics for actual
+memo helper runs. Shared route/trace/execution lemmas accept memo callees and
+an explicit type map; original lookup APIs remain specializations. Kernel
+checks consume actual parsed declarations, code, local types, shared-root
+routes and source region scope. Fuel induction discharges recursive contracts.
+
+`RunSafe` retains actual typed loans in locals, temporaries and recursive
+callees. Ordinary outputs contain no shared reference even inside owned
+payloads; generic Box preserves payload loans. `RunScoped` consumes actual
+checked local annotations in the explicit immutable retained-world lifetime
+valuation. Its erasure preserves the same run and complete cost.
+
+`concatenate_source_total` and `insert_source_total` retain independent/native
+results, source/heap success, typing, storage, local guards, intermediate/caller
+separation, exact events/allocation growth, returned ownership and insertion's
+original table under the new tail. All typed caller loans survive; key/witness
+borrows into the consumed table are permitted. Spatial frame preservation
+remains conditional on its separated input/frame premise.
+
+The 3,855-job build, 23 suites, native WP, nine Python tests and
+552-endpoint axiom audit pass; all 21 new closures use only accepted baseline
+axioms. This keeps the lookup pilot's named source-operation
+scope. Physical clocks, mutable/freeing behavior, unwind and compiler/runtime
+provenance remain separate. The next actual evaluator must also support its
+legitimate owned-local borrows and candidate destruction. Actual evaluator/core,
+wrappers, input/error policy, G3 and full W06-C3 remain open.
+
+[Contracts and reproduction](../docs/planning/lean-complexity-campaign/evidence/memo-loan-regions.md).
+
 ## Memo normal storage and initialization: 2026-11-17
 
 Three `MemoStack{Calls,Certificate,Refinement}` modules generalize the existing

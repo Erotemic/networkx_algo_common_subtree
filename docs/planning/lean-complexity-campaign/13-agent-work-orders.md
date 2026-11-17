@@ -86,6 +86,17 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+**Memo loan/region follow-up:** [typed shared loans and source-region interpretation](evidence/memo-loan-regions.md)
+now compose actual helper runs, parsed scoped declarations and retained-world
+lifetime witnesses. Kernel route/type/body/scope checks and fuel induction cover
+recursive contracts. Ordinary outputs are reference-free; Box preserves payload
+loans. Insertion retains owned-table transfer and aliased key/witness loans.
+Native endpoints retain storage/guard/spatial/returned-owner/full-cost results
+and all typed caller loans. Next actual evaluator arithmetic, owned-local borrows,
+destruction/errors, public core and wrappers. Full W06-C3 remains open; the
+scoped model is explicit. The 3,855-job build, 23 suites, native WP, nine Python tests and
+552-endpoint axiom audit pass.
+
 **Memo storage follow-up:** [normal allocation/initialization traces](evidence/memo-stack-initialization.md)
 now retain distinct live/dead markers and exact actual local declaration counts.
 Generic checker soundness and fuel induction cover initialized reads, allocated

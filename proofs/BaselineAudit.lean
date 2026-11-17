@@ -584,3 +584,25 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.MemoSource.Stack.source_run_stack
 #print axioms SubtreeProofs.Rust.MemoSource.Stack.concatenate_stack_total
 #print axioms SubtreeProofs.Rust.MemoSource.Stack.insert_stack_total
+
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Borrow.action_safeWith
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.Borrow.exec_safeWith
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.check_sound
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.original_checked
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.original_bodies
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.RunSafe.erases
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.run_safe
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.original_safe
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.result_unborrowed
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.source_run_loans
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.ordinary_loans
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.concatenate_loan_total
+#print axioms SubtreeProofs.Rust.MemoSource.Borrow.insert_loan_total
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.Certificate.original_program_routes
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.RunScoped.erases
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.run_scoped
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.original_program_valid
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.source_run_scoped
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.ordinary_regions
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.concatenate_source_total
+#print axioms SubtreeProofs.Rust.MemoSource.Regions.insert_source_total

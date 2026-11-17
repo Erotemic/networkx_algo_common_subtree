@@ -29,6 +29,8 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/MemoTypes.lean)
 (cd proofs && lake env lean Tests/MemoSpatial.lean)
 (cd proofs && lake env lean Tests/MemoStack.lean)
+(cd proofs && lake env lean Tests/MemoBorrow.lean)
+(cd proofs && lake env lean Tests/MemoRegions.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -125,6 +127,18 @@ The 3,850-job build, 21 suites, native WP, nine Python tests and
 531-endpoint axiom audit pass. Rust/generated artifacts, parser, tools and pins are
 unchanged. See the [memo storage report](../docs/planning/lean-complexity-campaign/evidence/memo-stack-initialization.md)
 for exact scope and remaining dynamic loans/lifetimes/evaluator work.
+
+The memo loan/region increment adds `MemoBorrow*.lean`, `MemoRegionCalls.lean`,
+`MemoRegionRefinement.lean`, `Tests/MemoBorrow.lean` and `Tests/MemoRegions.lean`.
+Generic loan soundness retains original lookup APIs. Actual source checks now
+compose routes with scoped declarations; recursive memo traces preserve typed
+caller loans and interpret actual checked annotations in retained heap worlds.
+Native endpoints retain all previous safety/readback/cost conclusions and
+ordinary output closure. The 3,855-job build, 23 suites, native WP, nine Python tests and
+552-endpoint axiom audit pass. Rust/generated artifacts,
+source parser, tools and pins are unchanged. See the
+[memo loan/region report](../docs/planning/lean-complexity-campaign/evidence/memo-loan-regions.md)
+for exact lifetime scope and remaining actual evaluator/core work.
 
 ## VM caches
 

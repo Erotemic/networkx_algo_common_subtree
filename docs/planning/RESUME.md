@@ -1,6 +1,21 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment proves
+[memo typed loans and source-region interpretation](lean-complexity-campaign/evidence/memo-loan-regions.md).
+Five `MemoBorrow{Certificate,Calls,Refinement}` and `MemoRegion{Calls,Refinement}`
+modules reuse generic loan soundness and actual parsed source declarations.
+Kernel route/type/body/scope checks and fuel induction discharge recursive
+contracts. Ordinary results are reference-free; Box preserves payload loans.
+Insertion consumes its table while aliased keys/witness may borrow into it.
+`RunScoped` consumes actual checked region annotations in the retained-world
+lifetime interpretation. Native source totality retains all prior full-cost
+readback, typing, storage, guard/spatial, returned-owner and table-identity
+conclusions plus stable typed caller loans. The 3,855-job build, 23 suites, native
+WP, nine Python tests and 552-endpoint axiom audit pass. Next actual evaluator
+arithmetic, owned-local borrows, destruction and error/table returns, then
+public core and wrappers. D12's explicit scope remains unchanged.
+
+The preceding increment proves
 [memo normal storage/initialization](lean-complexity-campaign/evidence/memo-stack-initialization.md).
 Three `MemoStack{Calls,Certificate,Refinement}` modules reuse callee-polymorphic
 storage code, checking and soundness. Distinct source live/dead markers remain
@@ -290,8 +305,7 @@ Extraction auto-bootstrap supports Linux x86_64; other platforms require the
 exact compatible tools through `AENEAS_BIN_DIR`. Preserve toolchain/dependency
 pins and generated files when moving machines. Caches can be regenerated.
 
-Next is **dynamic loan/lifetime traces for memo
-helpers, then actual evaluator/core composition (W06-C3) and remaining
+Next is **actual evaluator/core composition (W06-C3) and remaining
 local/source costs (MEM-03/W05)**. Generic declared-currency work and the scoped interpreted
 lookup pilot are implemented. Reuse the checked source/type constraints,
 addressed execution, ownership, storage, loan and region traces. The explicit
@@ -307,14 +321,14 @@ old-table transfer and native input inhabitation now exist too. The actual stati
 operational typing, ordinary output closure and source binder scope are now
 checked too. Do not repeat them. Guarded local and intermediate spatial traces now exist as well, including
 the owned argument occurrence and all suspended caller frames. Normal source
-storage/initialization traces and actual declaration counts now exist too. Next
-generalize dynamic shared-loan preservation to the memo function set, then
-consume its scoped annotations in the retained-world lifetime interpretation. Owner guards on `.scope` do not
-supply storage liveness. Scope checking alone is not dynamic lifetime validity. Insertion's initial profile includes an owned table. Preserve its old
-occurrence ledger instead of using lookup's fresh-only output interval.
-Concatenation reuses shared input borrows. Next inspect and model
-actual evaluator arithmetic, owned-local borrows, losing-candidate destruction
-and overflow/table returns. Legitimate borrows of caller-owned locals cannot
+storage/initialization traces and actual declaration counts now exist too. Typed
+shared-loan preservation and actual source-region interpretation now exist for
+these helpers as well, including ordinary output closure and stable caller
+loans. Do not repeat them. Next inspect `memoized_common_embedding` and its
+public `maximum_common_embedding` wrapper. Preserve insertion's owned-table
+occurrence ledger and concatenation's shared inputs when composing them.
+Model actual evaluator checked arithmetic, owned-local borrows,
+losing-candidate destruction and overflow/table returns. Legitimate borrows of caller-owned locals cannot
 all satisfy lookup's old-heap-only borrow profile. Preserve scope and ownership
 facts when extending it. Then compose one public core entry point.
 Then handle indexed/token/reconstruction wrappers, normal work, input/error

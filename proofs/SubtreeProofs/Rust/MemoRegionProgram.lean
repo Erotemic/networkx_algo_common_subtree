@@ -2,6 +2,7 @@ module
 
 public import SubtreeProofs.Rust.MemoTypeCertificate
 public import SubtreeProofs.Rust.LookupRegionScope
+public import SubtreeProofs.Rust.LookupBorrowLoans
 
 /-! Actual memo source region binding and annotation erasure. Insertion has
 four value arguments but only three signature lifetimes: its table is owned.
@@ -92,12 +93,15 @@ def read (json : Json) : Read Program := do
 def check (json : Json) (body : Function → MemoSource.Code) : Bool :=
   match read json with
   | .error _ => false
-  | .ok program => program.definitions.all fun decl => decide (decl.source.code = body decl.function)
+  | .ok program => program.definitions.all fun decl =>
+      decide (decl.source.code = body decl.function) &&
+        LookupSource.Heap.Borrow.codeRoutes decl.source.locals decl.source.code
 
 theorem check_sound {json : Json} {body : Function → MemoSource.Code} (h : check json body = true) :
     ∃ program, read json = .ok program ∧
       ∀ function, function ≠ .boxNew → ∃ decl ∈ program.definitions,
-        decl.function = function ∧ decl.source.code = body function := by
+        decl.function = function ∧ decl.source.code = body function ∧
+          LookupSource.Heap.Borrow.codeRoutes decl.source.locals (body function) = true := by
   cases hr : read json with
   | error message => simp [check, hr] at h
   | ok program =>
@@ -107,9 +111,8 @@ theorem check_sound {json : Json} {body : Function → MemoSource.Code} (h : che
       rw [program.covers]
       cases function <;> simp_all
     obtain ⟨decl, hd, he⟩ := List.mem_map.mp hm
-    have hc : decl.source.code = body decl.function :=
-      of_decide_eq_true (List.all_eq_true.mp (by simpa only [check, hr] using h) decl hd)
-    have hcode : decl.source.code = body function := by simpa only [he] using hc
-    exact ⟨decl, hd, he, hcode⟩
+    have hc := Bool.and_eq_true_iff.mp (List.all_eq_true.mp (by simpa only [check, hr] using h) decl hd)
+    have hcode : decl.source.code = body function := by simpa only [he] using of_decide_eq_true hc.1
+    exact ⟨decl, hd, he, hcode, by simpa only [hcode] using hc.2⟩
 
 end SubtreeProofs.Rust.MemoSource.Regions

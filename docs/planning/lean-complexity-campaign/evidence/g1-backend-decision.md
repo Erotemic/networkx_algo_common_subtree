@@ -148,6 +148,15 @@ experimental arlib/Lax implementations into production merely to reuse a wrapper
 
 **W06-C3 remains active and unproved.** Its next source-specific obligations are:
 
+The [memo loan/region increment](memo-loan-regions.md) now composes actual
+helper runs with typed shared-loan traces, ordinary reference-free outputs and
+actual parsed region annotations in retained-world lifetimes. Native endpoints
+retain all preceding source/heap, storage, guard/spatial, returned-owner and
+complete-cost conclusions plus stable caller loans. Next actual evaluator/core
+with owned-local borrows, arithmetic, destruction/errors, then wrappers and G3.
+The same D12 source-operation boundary remains explicit. The 3,855-job build, 23 suites, native WP, nine Python tests and
+552-endpoint axiom audit pass.
+
 The [memo storage increment](memo-stack-initialization.md) retains actual source
 live/dead markers and declaration counts, kernel-checks storage/initialization,
 and discharges recursive storage contracts with unchanged costs. Native totality

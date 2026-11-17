@@ -17,9 +17,9 @@ def Valid (program : Reader.Program) (body : Function → LookupSource.Code) : P
   ∀ function, function ≠ .boxNew → ∃ decl ∈ program.definitions,
     decl.function = function ∧ decl.source.code = body function ∧ Borrow.codeRoutes decl.source.locals (body function) = true
 
-theorem trace_regional {base : Memory} {call : Calls} {good : Frame.CallSafety} {locals : List Heap.Ty} {output : Heap.Ty}
+theorem trace_regional {F : Type} {base : Memory} {call : CallsFor F} {good : Frame.CallSafetyFor F} {locals : List Heap.Ty} {output : Heap.Ty}
     {scope : Scope} (annotations : CheckedFields scope locals)
-    {code : LookupSource.Code} {memory after : Memory} {env : Locals} {result : Result} {cost : Cost}
+    {code : LookupSource.Code F} {memory after : Memory} {env : Locals} {result : Result} {cost : Cost}
     (h : Borrow.Trace base call good locals output code memory env result after cost) :
     EnvValue base memory scope (callLifetime base) annotations.types env := by
   cases h with

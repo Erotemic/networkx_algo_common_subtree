@@ -11,14 +11,14 @@ erase to the existing interpreter; callee contracts are discharged separately. -
 
 namespace SubtreeProofs.Rust.LookupSource.Heap.Borrow
 
-def CallsSafe (base : Memory) (call : Calls) (good : Frame.CallSafety) : Prop :=
+def CallsSafeWith {F : Type} (calleeOutput : F → List Ty → Option Ty) (base : Memory) (call : CallsFor F) (good : Frame.CallSafetyFor F) : Prop :=
   ∀ function cells types memory cell after cost ty,
-    Extends base memory → FieldsSafe base memory cells types → SourceTypes.callOutput function types = some ty →
+    Extends base memory → FieldsSafe base memory cells types → calleeOutput function types = some ty →
     call function cells memory = some (cell, after, cost) →
     Safe base after cell ty ∧ Extends memory after ∧ good function cells memory cell after cost
 
-def ActionWitness (base : Memory) (call : Calls) (good : Frame.CallSafety) (locals : List Ty)
-    (memory : Memory) (env : Locals) : Action → Prop
+def ActionWitness {F : Type} (base : Memory) (call : CallsFor F) (good : Frame.CallSafetyFor F) (locals : List Ty)
+    (memory : Memory) (env : Locals) : Action F → Prop
   | .scope _ | .dropMoved _ => True
   | .assign _ rhs => ∀ cell middle, rvalue memory env rhs = some (cell, middle) →
       ∃ ty, SourceTypes.inferRValue locals rhs = some ty ∧ Safe base memory cell ty ∧ EnvSafe base memory locals middle
@@ -28,10 +28,11 @@ def ActionWitness (base : Memory) (call : Calls) (good : Frame.CallSafety) (loca
         ∀ cell after cost, call function cells memory = some (cell, after, cost) →
           good function cells memory cell after cost
 
-theorem action_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hcall : CallsSafe base call good)
+theorem action_safeWith {F : Type} {calleeOutput : F → List Ty → Option Ty} {base : Memory} {call : CallsFor F} {good : Frame.CallSafetyFor F}
+    (hcall : CallsSafeWith calleeOutput base call good)
     {memory after : Memory} {locals : List Ty} {env env' : Locals} {cost : Cost}
-    (hext : Extends base memory) (he : EnvSafe base memory locals env) (instruction : Action)
-    (ht : SourceTypes.ActionConstraints locals instruction) (hroutes : actionRoutes locals instruction = true)
+    (hext : Extends base memory) (he : EnvSafe base memory locals env) (instruction : Action F)
+    (ht : SourceTypes.ActionConstraintsWith calleeOutput locals instruction) (hroutes : actionRoutes locals instruction = true)
     (hr : action call memory env instruction = some (env', after, cost)) :
     EnvSafe base after locals env' ∧ Extends memory after ∧ ActionWitness base call good locals memory env instruction := by
   cases instruction with
@@ -81,21 +82,21 @@ theorem action_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hc
         obtain ⟨hv, hex, _⟩ := hcall _ _ _ _ _ _ _ _ hext hvs hc hy
         exact ⟨(he'.mono hex).store hd hv, hex, hw⟩
 
-inductive Trace (base : Memory) (call : Calls) (good : Frame.CallSafety) (locals : List Ty) (output : Ty) :
-    LookupSource.Code → Memory → Locals → Result → Memory → Cost → Prop where
+inductive Trace {F : Type} (base : Memory) (call : CallsFor F) (good : Frame.CallSafetyFor F) (locals : List Ty) (output : Ty) :
+    LookupSource.Code F → Memory → Locals → Result → Memory → Cost → Prop where
   | done {memory : Memory} {env : Locals} : Extends base memory → EnvSafe base memory locals env →
       Trace base call good locals output .done memory env (.next env) memory {}
   | ret {memory : Memory} {env : Locals} {cell : Cell} :
       Extends base memory → EnvSafe base memory locals env → env 0 = some cell → Safe base memory cell output →
       Trace base call good locals output .ret memory env (.returned cell) memory ⟨1, {}⟩
-  | step {instruction : Action} {rest : LookupSource.Code} {memory middle after : Memory}
+  | step {instruction : Action F} {rest : LookupSource.Code F} {memory middle after : Memory}
       {env next : Locals} {result : Result} {first last : Cost} :
       Extends base memory → EnvSafe base memory locals env →
       action call memory env instruction = some (next, middle, first) →
       ActionWitness base call good locals memory env instruction →
       Trace base call good locals output rest middle next result after last →
       Trace base call good locals output (.step instruction rest) memory env result after (first.plus last)
-  | branchReturned {scrut : Scrutinee} {key : Key} {other : Option Key} {yes no rest arm : LookupSource.Code}
+  | branchReturned {scrut : Scrutinee} {key : Key} {other : Option Key} {yes no rest arm : LookupSource.Code F}
       {memory after : Memory} {env next : Locals} {actual : Key} {cell : Cell} {first : Cost} :
       Extends base memory → EnvSafe base memory locals env →
       scrutinee memory env scrut = some (actual, next) → EnvSafe base memory locals next →
@@ -103,7 +104,7 @@ inductive Trace (base : Memory) (call : Calls) (good : Frame.CallSafety) (locals
       Trace base call good locals output arm memory next (.returned cell) after first →
       Trace base call good locals output (.branch scrut key other yes no rest) memory env (.returned cell) after
         ((⟨1 + scrut.weight, {}⟩ : Cost).plus first)
-  | branchNext {scrut : Scrutinee} {key : Key} {other : Option Key} {yes no rest arm : LookupSource.Code}
+  | branchNext {scrut : Scrutinee} {key : Key} {other : Option Key} {yes no rest arm : LookupSource.Code F}
       {memory middle after : Memory} {env next resume : Locals} {actual : Key} {result : Result} {first last : Cost} :
       Extends base memory → EnvSafe base memory locals env →
       scrutinee memory env scrut = some (actual, next) → EnvSafe base memory locals next →
@@ -113,8 +114,8 @@ inductive Trace (base : Memory) (call : Calls) (good : Frame.CallSafety) (locals
       Trace base call good locals output (.branch scrut key other yes no rest) memory env result after
         (((⟨1 + scrut.weight, {}⟩ : Cost).plus first).plus last)
 
-theorem Trace.erases {base : Memory} {call : Calls} {good : Frame.CallSafety} {locals : List Ty} {output : Ty}
-    {code : LookupSource.Code} {memory after : Memory} {env : Locals} {result : Result} {cost : Cost}
+theorem Trace.erases {F : Type} {base : Memory} {call : CallsFor F} {good : Frame.CallSafetyFor F} {locals : List Ty} {output : Ty}
+    {code : LookupSource.Code F} {memory after : Memory} {env : Locals} {result : Result} {cost : Cost}
     (h : Trace base call good locals output code memory env result after cost) :
     Heap.exec call code memory env = some (result, after, cost) := by
   induction h with
@@ -128,10 +129,11 @@ def Post (base current : Memory) (locals : List Ty) (output : Ty) : Result → P
   | .next env => EnvSafe base current locals env
   | .returned cell => Safe base current cell output
 
-theorem exec_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hcall : CallsSafe base call good)
-    (code : LookupSource.Code) {memory after : Memory} {locals : List Ty} {output : Ty} {env : Locals}
+theorem exec_safeWith {F : Type} {calleeOutput : F → List Ty → Option Ty} {base : Memory} {call : CallsFor F} {good : Frame.CallSafetyFor F}
+    (hcall : CallsSafeWith calleeOutput base call good)
+    (code : LookupSource.Code F) {memory after : Memory} {locals : List Ty} {output : Ty} {env : Locals}
     {result : Result} {cost : Cost} (hext : Extends base memory) (he : EnvSafe base memory locals env)
-    (ht : SourceTypes.CodeConstraints locals output code) (hroutes : codeRoutes locals code = true)
+    (ht : SourceTypes.CodeConstraintsWith calleeOutput locals output code) (hroutes : codeRoutes locals code = true)
     (hr : Heap.exec call code memory env = some (result, after, cost)) :
     Trace base call good locals output code memory env result after cost ∧
       Post base after locals output result ∧ Extends memory after := by
@@ -159,7 +161,7 @@ theorem exec_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hcal
         rcases pair with ⟨lastResult, lastMemory, last⟩
         simp only [hx, hy, bind, Option.bind, Option.some.injEq, Prod.mk.injEq] at hr
         obtain ⟨rfl, rfl, rfl⟩ := hr
-        obtain ⟨he', hex, hw⟩ := action_safe hcall hext he instruction ha hroute.1 hx
+        obtain ⟨he', hex, hw⟩ := action_safeWith hcall hext he instruction ha hroute.1 hx
         obtain ⟨trace, hp, hex'⟩ := ih (hext.trans hex) he' hroute.2 hy
         exact ⟨.step hext he hx hw trace, hp, hex.trans hex'⟩
   | @branch scrut key other yes no rest kind hs hk ho hy hn ht ihYes ihNo ihRest =>
@@ -204,5 +206,24 @@ theorem exec_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hcal
             obtain ⟨rfl, rfl, rfl⟩ := hr
             obtain ⟨trace', hp', hex'⟩ := ihRest (hext.trans hex) hp hroute.2 hz
             exact ⟨.branchNext hext he hx he' hsel trace trace', hp', hex.trans hex'⟩
+
+abbrev CallsSafe := CallsSafeWith SourceTypes.callOutput
+
+theorem action_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hcall : CallsSafe base call good)
+    {memory after : Memory} {locals : List Ty} {env env' : Locals} {cost : Cost}
+    (hext : Extends base memory) (he : EnvSafe base memory locals env) (instruction : Action)
+    (ht : SourceTypes.ActionConstraints locals instruction) (hroutes : actionRoutes locals instruction = true)
+    (hr : action call memory env instruction = some (env', after, cost)) :
+    EnvSafe base after locals env' ∧ Extends memory after ∧ ActionWitness base call good locals memory env instruction :=
+  action_safeWith hcall hext he instruction ht hroutes hr
+
+theorem exec_safe {base : Memory} {call : Calls} {good : Frame.CallSafety} (hcall : CallsSafe base call good)
+    (code : LookupSource.Code) {memory after : Memory} {locals : List Ty} {output : Ty} {env : Locals}
+    {result : Result} {cost : Cost} (hext : Extends base memory) (he : EnvSafe base memory locals env)
+    (ht : SourceTypes.CodeConstraints locals output code) (hroutes : codeRoutes locals code = true)
+    (hr : Heap.exec call code memory env = some (result, after, cost)) :
+    Trace base call good locals output code memory env result after cost ∧
+      Post base after locals output result ∧ Extends memory after :=
+  exec_safeWith hcall code hext he ht hroutes hr
 
 end SubtreeProofs.Rust.LookupSource.Heap.Borrow

@@ -45,6 +45,16 @@ Machine-readable companions: [sources.json](evidence/sources.json), [targets.jso
 
 ## Executed follow-up
 
+The [memo loan/region proof](evidence/memo-loan-regions.md)
+now composes actual helper runs with recursive typed shared loans, reference-free
+ordinary outputs and parsed region-bearing local annotations. The existing
+retained-world valuation and erasure lemmas are reused; insertion retains its
+owned table while keys/witness may borrow into it. Native endpoints preserve
+all prior source/heap, storage, guarded/spatial, owner-transfer and exact-cost
+conclusions plus typed caller loans. Next actual evaluator/core, wrappers,
+input/error policy and G3 adversaries. The 3,855-job build, 23 suites, native WP, nine Python tests and
+552-endpoint axiom audit pass.
+
 The [memo storage/initialization proof](evidence/memo-stack-initialization.md)
 retains distinct source allocation/deallocation markers and exact declared local
 counts for all four helpers. Generic storage checker soundness and fuel induction
