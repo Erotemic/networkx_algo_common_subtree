@@ -1,17 +1,49 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[guarded in-place writes and storage lifecycle](lean-complexity-campaign/evidence/memo-evaluator-frame-writes.md).
-Four modules preserve transitive read graphs and complete owner ledgers across
-unrelated mutations, initialize existing stack roots, and compose source scalar
-assignment/store continuations and storage markers. Actual still-initialized
-nonowning references may end storage; retained Box shells may not lose owners.
-Full addressed RHS/move/frame/control/callee traces and dynamic region/destructor
-composition remain next. W06-C3 and the full planning goal stay open.
+[executable addressed operands/RHSs and assignment](lean-complexity-campaign/evidence/memo-evaluator-addressed-rhs.md).
+Seven modules execute all current RHS forms with actual cells/pointers and
+incremental initialization metadata, preserve remaining move frames, and prove
+forward/reverse source correspondence under physical move permissions. One-pass
+guarded assignment traces the RHS graph and initializes the existing stack root
+at the original source cost. Full actual frame/guard/owner/control/callee and
+region/destructor traces remain next. W06-C3 and the full planning goal stay open.
 
 ## Checked endpoints and scope
 
-New endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
+Latest public endpoints:
+
+- `LookupSource.Partial.Addressed.PartialGraphFields.focus`, `PartialGraph.take`:
+  exact moved/remaining read-graph partition, including aliases and Box shells.
+- `Storage.Frame.{locate,move}`: actual initialized concrete reads and remaining
+  source frames; protected-loan coverage and exclusive ownership remain separate.
+- `SourceEval.Addressed.{read_spec,operand_move_iff,operand_spec,operands_spec,
+  operand_move_complete}`: executable cells/metadata, sequential mask updates and
+  checked physical move roots with source/graph/frame correspondence.
+- `Addressed.{expression_spec,expression_readable}`: every use/address/aggregate/
+  less-than form has actual source agreement and liveness-backed readback.
+- `Addressed.{operand_complete,operands_complete,expression_complete}` under
+  `Allowed` / `AllowedExpr`: reverse simulation using independent physical route
+  permissions, not an addressed parent-result assumption.
+- `Partial.Addressed.Graph.{trace,guards_unique}`, `GraphFields.trace`:
+  finite concrete RHS ghost resource tracing; its work is not production Rust
+  work or a machine-time claim.
+- `Addressed.{assign_run,assign_spec,assign_complete}`: actual one-pass addressed
+  RHS/store execution, source action/cost agreement, unchanged storage identity,
+  resulting frame/graph and retained mutable world.
+
+Operand/RHS definitions never call a complete source operand/expression to
+obtain a parent answer. Actual cells come from memory and syntax; metadata is
+assembled by the same steps using existing initialization primitives. Move
+protection and retained store contexts are separate resources. Assignment checks
+an empty destination, its live/classified existing binding and disjointness from
+retained plus freshly traced RHS graph roots. It still needs the actual context
+for other locals/callers at the intermediate mask. An incomplete supplied guard
+is not a safety certificate; derive coverage from actual active/suspended loans.
+
+The preceding write and storage-lifecycle foundation remains reusable:
+
+Earlier endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
 
 - `Retains.{refl,of_extends,weaken,trans,read}`, `Graph.transport`,
   `PartialGraph.{transport,owner_transport}` and field variants: preserve selected
@@ -30,9 +62,10 @@ New endpoints, in `LookupSource.Partial.Addressed` / `.Storage`:
   action_assign_number}`: actual source markers, zero-owner teardown, store
   continuation and complete constant-number assignment at unchanged costs.
 
-Assignments currently require an empty destination mask and actual represented
-RHS/intermediate state. Full addressed evaluation of arbitrary RHS expressions
-is not assumed complete by that continuation. Storage-dead can also end an
+The older assignment continuation remains reusable; the new executor now
+constructs the RHS result and represented intermediate frame for every RHS form.
+Actual remaining contexts, exclusive ownership and loan coverage still need
+program-level construction. Storage-dead can also end an
 initialized zero-Box mask, as required by actual reference temporaries (for
 example local 23 in `Evaluator.emptyLeft`); a Box shell fails this test. Active
 contexts may include suspended callers' guard resources; complete traces must
@@ -123,31 +156,30 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, existing memory/control/type/region models
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,918-job build, all 35 Lean suites, native WP, nine Python tests and
-867-endpoint axiom audit pass. Shared statement inspection covers 245 unique
+The 3,925-job build, all 36 Lean suites, native WP, nine Python tests and
+888-endpoint axiom audit pass. Shared statement inspection covers 283 unique
 declarations with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Complete addressed evaluator execution.** Construct actual initial frames
-   and all intermediate contexts using the partial owner/move/drop, classified
-   storage, read graphs, local borrows and guarded write/marker contracts.
-   Complete moves/copies, aggregate/less/address RHS, calls, control, switches and
-   returns with exact costs and pointer identities. The assignment continuation
-   consumes the represented post-RHS world; it does not replace addressed RHS
-   simulation. Reuse all completed source/type/region/native/helper chains.
-   Preserve insertion's transferred table and aliases into it.
-2. **Actual conflicts, lifetimes and destruction.** Prove mask/owner/guard updates
-   and initialization along the 113-local evaluator and all callees; preserve
-   every suspended caller frame. Initialized zero-owner references/scalars can
-   end storage, but owned values/Box shells must be moved or dropped first.
-   Empty-destination stores already preserve address/class/liveness/length;
-   compose them with actual transfers and full spatial accounting. Derive every
-   guard/conflict premise from actual live graphs. A `Loan` alone cannot justify
-   a source mask change or illegal move. Compose dynamic parsed-region and
-   destructor-instance typing/semantics along branches/calls. No physical
-   allocator/whole-compiler proof is introduced as an initial D12 prerequisite.
+1. **Complete addressed control and callees.** Use the executable operand/RHS/
+   assignment layer and its forward/reverse simulation. Construct actual initial
+   active frames and suspended caller frames, derive physical move permissions
+   and precise remaining store contexts, and compose storage/drop/call/switch/
+   return/control steps. Add Box/checked-add intrinsics and reuse completed
+   ordinary helper heap/owner/borrow/type/source/cost chains. Preserve insertion's
+   transferred table and aliases. Do not repeat extraction, snapshot/native
+   evaluator totality, typing/binding, RHS simulation or graph/store primitives.
+2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
+   spatial resources alongside the read graphs through the 113-local evaluator.
+   Derive all active/suspended protected-root coverage, including temporaries
+   during operand lists and newly created references. `Frame.move` retains data
+   resources but cannot authorize invalidating a loan; a supplied incomplete
+   guard cannot do so either. Initialized zero-owner locals can end storage;
+   owners/Box shells must move or drop first. Complete dynamic parsed-region
+   and destructor-instance typing/semantics along actual branches/calls. Keep
+   physical allocator/compiler/runtime boundaries explicit under D12.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
    table teardown and the remaining safety/cost traces. Then indexed/token/
@@ -225,6 +257,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourcePartialHeap.lean)
 (cd proofs && lake env lean Tests/SourceLocalBorrow.lean)
 (cd proofs && lake env lean Tests/SourceFrameUpdates.lean)
+(cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

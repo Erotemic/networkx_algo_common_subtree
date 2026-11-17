@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+## Executable addressed operands/RHSs and assignment: 2026-11-17
+
+[Executable addressed RHSs and assignment](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-rhs.md)
+now implement every operand/RHS constructor with actual cells/pointers and
+incremental initialization metadata. Forward and reverse simulation preserve
+source results/masks and concrete graphs; moves retain partial frames and check
+physical root permissions. One-pass guarded assignment computes its RHS graph
+and initializes the existing destination at unchanged source cost. Full actual
+frame/loan/owner/control/callee and region/destructor traces remain required,
+then public core/wrappers/resources/G3. W06-C3 and the full goal stay open.
+The 3,925-job build, all 36 Lean suites, native WP, nine Python tests and
+888-endpoint axiom audit pass. Shared statement inspection covers 283 unique
+declarations with no unknown references.
+
 ## Guarded in-place writes and storage lifecycle: 2026-11-17
 
 [Guarded in-place writes and storage lifecycle](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-frame-writes.md)

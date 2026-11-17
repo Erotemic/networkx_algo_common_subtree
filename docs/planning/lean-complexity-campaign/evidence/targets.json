@@ -652,6 +652,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_addressed_rhs_followup": {
+        "baseline_commit": "bf8ff6a",
+        "evidence": "memo-evaluator-addressed-rhs.md",
+        "status": "Executable addressed operands/all RHS forms, initialized metadata, graph/mask moves, forward/reverse correspondence under physical move permissions and one-pass guarded assignment/source-cost/frame retention checked. Actual initial/intermediate active/suspended frames, guard/owner/spatial/control/callee traces and dynamic region/destructor interpretation remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3925,
+          "lean_suites": 36,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 888,
+          "unique_statement_records": 283,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -840,7 +859,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 construct actual initial/intermediate active/suspended frames and full addressed RHS/move/copy/aggregate/control/callee execution with exact owners/read guards, storage and costs. Guarded in-place write/owner transport, source scalar assignment/store continuations and storage-live/dead (including initialized zero-Box references) now compose with preceding partial move/Box/drop/local-borrow contracts. Derive actual conflict premises and dynamic region/destructor interpretation; reuse completed snapshot/type/binding/native/helper chains. Then public maximum, separate wrappers/input policy/resources/G3. D12 permits explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 complete addressed control/callees using executable operand/RHS/assignment forward/reverse simulation. Construct actual initial/intermediate active/suspended frames, complete owner/spatial/loan coverage, physical move permissions and precise remaining contexts through storage/drop/call/switch/return steps. Compose Box/checked-add intrinsics, completed ordinary helper source/heap/owner/type/borrow/cost chains and dynamic region/destructor interpretation. Reuse universal native/typed evaluator results. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

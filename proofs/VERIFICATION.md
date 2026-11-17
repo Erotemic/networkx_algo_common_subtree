@@ -43,6 +43,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourcePartialHeap.lean)
 (cd proofs && lake env lean Tests/SourceLocalBorrow.lean)
 (cd proofs && lake env lean Tests/SourceFrameUpdates.lean)
+(cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -274,6 +275,18 @@ composition remain open. See the
 [frame write report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-frame-writes.md).
 The 3,918-job build, all 35 Lean suites, native WP, nine Python tests and
 867-endpoint axiom audit pass. Shared statement inspection covers 245 unique
+declarations with no unknown references.
+
+Seven modules add partial graph/frame moves, executable addressed operands/RHSs,
+finite ghost graph tracing, guarded assignment and reverse simulation under
+independent physical move-route permissions. `Tests/SourceAddressedExpressions.lean`
+checks sequential moves/aggregates, concrete comparisons/reborrows, shape and
+conflict rejection, complete assignment/cost correspondence and caller retention.
+Actual frame/guard/ownership/control/callee and dynamic region/destructor traces
+remain open. See the
+[addressed RHS report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-rhs.md).
+The 3,925-job build, all 36 Lean suites, native WP, nine Python tests and
+888-endpoint axiom audit pass. Shared statement inspection covers 283 unique
 declarations with no unknown references.
 
 ## VM caches

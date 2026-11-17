@@ -328,3 +328,10 @@ source scalar assignments and storage markers retain existing storage identities
 and caller resources; initialized nonowning references can end storage without
 losing Boxes. This advances item 2. Full RHS/move/frame/control/callee traces and
 dynamic region/destructor composition remain required before C3 closure.
+
+The [addressed RHS/assignment increment](memo-evaluator-addressed-rhs.md) now
+executes all operand/RHS forms and destination initialization, with incremental
+metadata, actual pointer graphs and independent source/cost correspondence.
+Reverse simulation consumes physical move permissions rather than an addressed
+parent result. This advances item 2; actual frame/loan/owner/control/callee and
+region/destructor traces remain required before C3 closure and public/wrapper G3.

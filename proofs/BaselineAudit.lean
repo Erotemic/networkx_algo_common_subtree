@@ -933,3 +933,25 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.SourceEval.AddressedPrimitives.action_storageDead_nonowning
 #print axioms SubtreeProofs.Rust.SourceEval.AddressedPrimitives.storageDead_no_owners
+
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.PartialGraphFields.focus
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.PartialGraph.take
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Frame.locate
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Frame.move
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Graph.trace
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.GraphFields.trace
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Graph.guards_unique
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.read_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operand_move_iff
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operand_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operand_move_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operands_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.expression_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.expression_readable
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.emptySlot_iff
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.assign_run
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.assign_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.assign_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operand_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operands_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.expression_complete
