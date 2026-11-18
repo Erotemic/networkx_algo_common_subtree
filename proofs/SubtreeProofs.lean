@@ -285,3 +285,5 @@ public import SubtreeProofs.Rust.SourceActivationInitial
 public import SubtreeProofs.Rust.SourceEvalDerivedActions
 
 public import SubtreeProofs.Rust.SourceEvalAddressedChoice
+
+public import SubtreeProofs.Rust.SourceEvalHelperCalls

@@ -728,6 +728,25 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_helper_calls_followup": {
+        "baseline_commit": "0e9803a",
+        "evidence": "memo-evaluator-helper-calls.md",
+        "status": "Six existing ordinary helper executors and both intrinsics operate over mixed prefixes with actual live output readback, Box-suffix/owner-ledger lifting and unchanged callee costs. One-pass caller argument/callee/result-store composition preserves source action/cost and exact suspended resources; native input/fuel readiness discharges the local callee contract. Control/recursive integration, choice/evaluator/maximum service, universal readiness/check success and global ownership/storage/region/destructor closure remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3946,
+          "lean_suites": 40,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 1007,
+          "unique_statement_records": 914,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -916,7 +935,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 execute ordinary/intrinsic callees over the complete actual caller stack, source argument moves, temporary owners and guarded destination initialization. Reuse parsed-layout initial frames, computed inventories/contexts and the completed addressed switch/return control engine. Prove universal physical route/check success on every actual evaluator branch; exec_spec retains a concrete-success premise. Compose global exclusive owner/spatial/temporary transfer, callee storage closure and returned-loan escape safety, Box/checked-add semantics and completed ordinary helper source/heap/owner/type/borrow/cost chains. Complete dynamic region/destructor interpretation; reuse universal native/typed evaluator results. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 wire the checked one-pass call step and completed eight-function helper/intrinsic dispatcher into shared addressed control and recursive program entry. Serve actual choice/evaluator/maximum with parsed-layout initial frames and callee storage closure. Derive native input/fuel readiness, ghost readback budgets and universal physical check success along every actual branch, threading the complete caller stack and temporary owners. Reuse existing concrete helper executors, transferred insertion ledger/aliases, intrinsic semantics and completed source/native/type/binder/control proofs. Complete exclusive owner/spatial/temporary/output transfer, returned-loan escape safety and dynamic region/destructor interpretation. Then public maximum, separate wrappers/input policy/resources/G3. D12 keeps explicit source-operation boundaries; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

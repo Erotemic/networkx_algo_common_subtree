@@ -356,3 +356,11 @@ control engine, and extracts live concrete output packets at unchanged costs.
 The actual choice bridge reuses the checked source body and native tie rule.
 Item 2 still requires ordinary/intrinsic calls, universal physical check success,
 exclusive transfer and callee storage/returned-loan/region/destructor closure.
+
+The [mixed-world helper-call increment](memo-evaluator-helper-calls.md) reuses
+six concrete ordinary executors and both intrinsics, with actual output readback,
+Box-suffix/owner-ledger lifting and one-pass argument/callee/store composition.
+Native input shapes and fuel bounds discharge the local call contract. Item 2
+still requires control/recursive integration, choice/evaluator/maximum service,
+all-path readiness/check success and full ownership/storage/region/destructor
+composition; this is not C3 closure.

@@ -86,6 +86,19 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Concrete helper calls in the mixed world](evidence/memo-evaluator-helper-calls.md)
+now execute six existing ordinary helpers and both intrinsics over actual stack/
+Box prefixes. Output metadata comes from concrete readback; one-pass caller
+argument moves, retained contexts and result storage preserve source costs and
+caller resources. Native argument/fuel readiness discharges the local callee
+contracts. Wiring this step into control/recursive entry, choice/evaluator/
+maximum service, all-path readiness/check success and global ownership/storage/
+region/destructor closure remain required, then public core/wrappers/resources/
+G3. W06-C3 and the full planning goal stay open.
+The 3,946-job build, all 40 Lean suites, native WP, nine Python tests and
+1,007-endpoint axiom audit pass. Shared statement inspection covers 914 unique
+declarations with no unknown references.
+
 [Addressed switches, return packets and actual choice](evidence/memo-evaluator-addressed-control.md)
 now read concrete retained tags after partial moves, execute boolean routing and
 early returns through the shared source-control engine, and preserve exact

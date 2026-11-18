@@ -47,6 +47,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
+(cd proofs && lake env lean Tests/SourceHelperCalls.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -328,6 +329,20 @@ region/destructor composition remain open. See the
 [addressed control report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-control.md).
 The 3,937-job build, all 39 Lean suites, native WP, nine Python tests and
 962-endpoint axiom audit pass. Shared statement inspection covers 920 unique
+declarations with no unknown references.
+
+Nine modules add `SourceHeapReadback`, `SourceHeapHelperWorld`,
+`SourceHeapOutputReadback`, `SourceEvalHeapHelpers`, `SourceEvalHeapMemo`,
+`SourceEvalHeapLookup`, `SourceEvalHeapIntrinsics`, `SourceEvalDerivedCalls` and
+`SourceEvalHelperCalls`, with `Tests/SourceHelperCalls.lean`. They reuse existing
+concrete helper execution over mixed prefixes, reconstruct actual live output
+metadata, preserve ownership transfers/costs and compose one-pass argument/callee/
+result-store execution. Native shapes/fuel discharge local callee contracts.
+Control/recursive integration, choice/evaluator/maximum service and all actual
+readiness/check/global ownership/storage/region obligations remain open. See the
+[helper-call report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-calls.md).
+The 3,946-job build, all 40 Lean suites, native WP, nine Python tests and
+1,007-endpoint axiom audit pass. Shared statement inspection covers 914 unique
 declarations with no unknown references.
 
 ## VM caches

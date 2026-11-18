@@ -1,17 +1,54 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[addressed switches, return packets and actual choice](lean-complexity-campaign/evidence/memo-evaluator-addressed-control.md).
-Four modules inspect actual retained tags after partial moves, execute boolean
-scrutinees/early returns through the shared source-control engine, and prove
-source result/cost and active/caller/packet validity. The actual choice bridge
-reuses the checked source body and independent native tie rule. Calls, universal
-physical check success, complete exclusive transfer and callee storage/region/
-destructor closure remain next. W06-C3 and the full planning goal stay open.
+[concrete helper calls in the mixed world](lean-complexity-campaign/evidence/memo-evaluator-helper-calls.md).
+Nine modules execute the existing six ordinary helpers and both intrinsics,
+read output metadata from actual cells, and compose one-pass caller argument
+moves/callee/result storage with exact source costs and retained callers.
+Native input shapes/fuel discharge local callee contracts. Control/recursive
+integration, choice/evaluator/maximum service, universal readiness/check success
+and global ownership/storage/region/destructor closure remain next. W06-C3 and
+the full planning goal stay open.
 
 ## Checked endpoints and scope
 
-Latest public endpoints, in `SourceEval.Addressed` / `.Derived` unless qualified:
+Latest public endpoints:
+
+- `Partial.Addressed.{snapshot_spec,snapshotFields_spec,Graph.snapshot,
+  GraphFields.snapshot,represents_unique}`: actual finite concrete metadata/
+  read-graph reconstruction, completeness at an explicit ghost depth budget and
+  unique represented readback. No parent source execution supplies the answer.
+- `Storage.World.{boxSuffix_keeps,boxSuffix_old,boxSuffix_fresh}`,
+  `World.WellFormed.boxSuffix`, `Storage.readPacket_{spec,complete,represents}`:
+  lift actual Box suffixes over mixed stack/Box worlds and validate full live
+  output graphs while retaining old data/classes/live flags.
+- `Graph.footprint`, `readable_{owners,fresh,transfer}`: full unborrowed read
+  graphs agree with complete owner occurrences, deriving output liveness from
+  existing fresh/transfer ownership contracts.
+- `SourceEval.Addressed.Helpers.{copy_total,compare_total,copyResult_total,
+  lookup_total,concatenate_total,insert_total}`: complete existing concrete helper
+  execution and source/native readback on readable native inputs, preserving old
+  resources and exact original costs. Insertion retains old owners and its exact
+  transferred table tail; allowed query aliases remain.
+- `Helpers.{boxNew_total,checkedAdd_total,callee_respects}`: real intrinsic
+  cells/entry costs and the concrete eight-function dispatcher's local source/
+  retained-world contract, discharged from native argument shapes and sufficient
+  call-nesting fuel. Successful calls retain an explicit success premise;
+  ordinary totality also needs sufficient ghost output-readback budget.
+- `Derived.{packets_readable,store_spec,call_spec}`: actual arguments execute
+  once, remaining/caller contexts and destination protection are computed, and
+  guarded result storage derives source call action/total cost, unchanged frame/
+  count/roots, final activation/world validity and exact suspended resources.
+  Independent input/fuel readiness is the remaining local domain condition.
+
+`Derived.call` is not yet wired into the earlier `Derived.exec`, which still
+rejects selected calls. Serve choice/evaluator/maximum through the resulting
+recursive dispatcher and prove readiness/budget/check success on all actual
+paths. Readable packets and local owner contracts do not establish complete
+exclusive transfer, callee storage closure or returned-loan escape safety.
+
+The preceding control/return endpoints remain reusable, in
+`SourceEval.Addressed` / `.Derived` unless qualified:
 
 - `Storage.Frame.locate_node`, `Addressed.{discriminant_complete,discriminant_spec}`:
   actual initialized partial node/tag inspection without materializing moved
@@ -211,24 +248,22 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, existing memory/control/type/region models
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,937-job build, all 39 Lean suites, native WP, nine Python tests and
-962-endpoint axiom audit pass. Shared statement inspection covers 920 unique
+The 3,946-job build, all 40 Lean suites, native WP, nine Python tests and
+1,007-endpoint axiom audit pass. Shared statement inspection covers 914 unique
 declarations with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Complete addressed control and callees.** Use the executable operand/RHS/
-   assignment layer and its forward/reverse simulation. Reuse the completed
-   parsed-layout initial constructor and completed addressed control/return
-   extraction. Execute ordinary/intrinsic callees while threading the complete
-   actual caller stack, argument moves, temporary owners and guarded destination
-   initialization. Prove every physical route/check succeeds along every actual
-   branch; `exec_spec` still has an explicit concrete-success premise. Add
-   Box/checked-add intrinsics and reuse completed ordinary helper heap/owner/
-   borrow/type/source/cost chains. Preserve insertion's
-   transferred table and aliases. Do not repeat extraction, snapshot/native
-   evaluator totality, typing/binding, RHS simulation or graph/store primitives.
+1. **Integrate checked calls and recursive entry.** Wire `Derived.call` and the
+   eight-function helper/intrinsic dispatcher into the completed shared control
+   engine. Serve actual choice, evaluator and maximum calls with the existing
+   initial constructor and real callee storage closure. Derive native readiness,
+   sufficient call/ghost budgets and all physical check success along every
+   actual branch. Thread the complete actual caller stack and temporary owners.
+   Reuse the completed six helper executors/contracts, metadata reader, intrinsic
+   semantics, snapshot/native evaluator totality, typing/binding and control
+   proofs. Preserve insertion's transferred table and allowed shared aliases.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
    spatial resources alongside the read graphs through the 113-local evaluator.
    Compose computed active/suspended loan coverage with temporary ownership
@@ -322,6 +357,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
+(cd proofs && lake env lean Tests/SourceHelperCalls.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.
