@@ -1,5 +1,26 @@
 # Lean complexity campaign: proto-roadmap
 
+[Complete head failure and constructed tail recursion](evidence/memo-evaluator-head-failure-tail-call.md) now
+constructs the entire selected head-failure invocation, including routing,
+output/temporary cleanup, return, checked closure, complete ownership and stable
+exact world/packet/full cost. The successful-head path also reaches the actual
+tail recursive call through fourteen instructions, retaining the owned head
+embedding, native queries/views and tail output. Both paths use explicit
+universal contracts for strictly smaller requests; full pair/pair induction is
+open. `Evaluator.head_failure_total` and
+`Evaluator.entry_pair_tail_prefix_complete` record these endpoints. A repeated
+table-owned alias consumer discharges both smaller contracts with proved empty
+base cases and exercises a head miss followed by a tail hit.
+The 4,127-job build and six affected Lean suites pass, including all eight
+runtime cases. All 1,710 audited endpoints retain only the accepted axiom
+baseline; ten statement seeds cover 1,321 unique declarations with no unknown
+references. Thirteen ordered Rust tests and nine Python checks pass.
+Tail result/argument cleanup, owned-witness destructor loan provenance, score
+and contraction/choice/insertion paths, other parent returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and all other planning targets stay open.
+The full goal remains active.
+
 [Constructed pair/pair head recursion and result scope](evidence/memo-evaluator-head-scope.md) now
 constructs parsed entry, common lookup, miss setup and all twenty-six actual
 head-prefix instructions, including the recursive call, result/table extraction,

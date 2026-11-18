@@ -1784,3 +1784,29 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_head_unpack_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_head_views_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.recurseHeads_actions
+
+-- Complete head-failure invocation and constructed tail recursive call.
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_constant_view_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cleanupInputs_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_head_failure_body_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_tail_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_body_close_total
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.failure_pack_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.headPayloadHole_typed
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_cleanup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_continuation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_total
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.head_payload_take
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.headsFailure_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_call_arguments
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_evaluator_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_return_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_cases_next
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.queryTuple_materialize
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.recurseTails_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_head_payload_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_request_smaller

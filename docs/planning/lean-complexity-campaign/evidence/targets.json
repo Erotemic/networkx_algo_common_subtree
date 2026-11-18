@@ -1364,6 +1364,43 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
         },
         "next": "Use PairHeadScope to construct selected head-failure cleanup/output and successful-head/tail recursion, then overflow, both contraction requests, choice, final insertion and cleanup/return. Discharge every smaller-request NativeTotal premise by complete pair/pair induction, composing actual routing, whole bodies and checked closure. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_head_failure_tail_call_followup": {
+        "baseline_commit": "4611592",
+        "evidence": "memo-evaluator-head-failure-tail-call.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_total",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_tail_prefix_complete"
+        ],
+        "status": "Constructed the entire actual selected head-failure invocation, including parsed entry, common/miss/head setup, output packing, input/parameter cleanup, native word/lookup joins, guarded return and checked closure. Its explicit premises are smaller-head NativeTotal and independent native head failure; no successful physical parent run, post-callee frame, cache soundness or global alias ban is assumed. Native None/updated table, readable output, full Evaluation, complete ownership/coverage and exact stable world/packet/full cost follow. Also constructed fourteen successful-head/tail instructions through the actual tail recursive call under smaller-tail NativeTotal, retaining owned head embedding, native queries/views, tail output, original loan origins and stable prefixes. Tail cleanup/later paths and universal pair/pair induction remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4127,
+          "new_proof_modules": 15,
+          "new_theorems": 24,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1710,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 1321,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumer": "Repeated parent queries borrow the same nonempty word in a table-owned entry. The actual head Empty/Empty miss inserts a native result and the tail Empty/Empty call then hits that updated table. Both recursive contracts are proved base instances, with no supplied physical run or pair/pair-totality premise; all four prefix boundaries, native tail output, owned head payload and original-loan ownership follow. The existing full heads-failure runtime case checks 1189 source steps, four solver calls, source/native value/table/full cost, caller roots, complete owner coverage and cleanup.",
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
+        },
+        "next": "Construct the last ten tail-prefix instructions: argument retirement, optional/table extraction, moved-out output cleanup and fresh payload storage. Then select tail failure or score arithmetic; derive owned-witness destructor loan permissions/provenance without banning query/table/caller aliases. Complete overflow, both contraction requests, choice, final insertion and parent return/closure, discharging all smaller NativeTotal contracts by full pair/pair induction. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1552,7 +1589,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit and empty-query miss totality remain checked. Parsed pair/pair head recursion/result scope now constructs all twenty-six head-prefix instructions under the strictly smaller head-pair NativeTotal induction premise, with complete ownership, native queries/views/result/table, fresh payload/return storage and stable prefix machines. A repeated table-owned alias consumer discharges the premise using proved empty-input totality. Use PairHeadScope to construct selected head-failure cleanup/output and successful-head/tail recursion, then overflow, both contraction requests, choice, final insertion and cleanup/return. Discharge every smaller-request NativeTotal premise by complete pair/pair induction, composing actual routing, whole bodies and checked closure. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query totality remain checked. The actual selected head-failure invocation now closes with native Evaluation, complete ownership and stable exact world/packet/full cost under its smaller-head NativeTotal induction premise. Successful-head execution reaches the actual tail recursive call under smaller-tail NativeTotal, preserving head ownership and original query loans. An alias consumer discharges both smaller contracts using proved empty-input instances. Construct the last ten tail-prefix instructions: argument retirement, optional/table extraction, moved-out output cleanup and fresh payload storage. Then select tail failure or score arithmetic; derive owned-witness destructor loan permissions/provenance without banning query/table/caller aliases. Complete overflow, both contraction requests, choice, final insertion and parent return/closure, discharging all smaller NativeTotal contracts by full pair/pair induction. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
