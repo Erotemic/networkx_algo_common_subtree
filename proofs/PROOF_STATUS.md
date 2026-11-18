@@ -2,6 +2,20 @@
 
 ## Derived typed call domains and recursive source refinement: 2026-11-17
 
+[Exact owner transfer through packets, assignment, drops and return cleanup](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-packets.md)
+now preserves complete actual owner occurrences through nested moves, operand/
+RHS packets, one-pass guarded assignment, exact Box retirement, the actual callee
+input boundary, return extraction and successful stack closure. Initial uniqueness, Box class,
+liveness and full live-Box coverage remain explicit; shared reference reads may
+alias. No supplied post-RHS frame/guard list is needed for assignment. Concrete
+callee output/fresh/retired transfer, whole recursive ownership, budgets/every
+physical check and dynamic regions/destructors remain, then public core/wrappers/
+resources/G3 and the other planning targets. W06-C3 and the full goal stay open.
+The 3,974-job build, all 46 Lean suites, native WP and nine Python tests pass.
+The 1,166-endpoint audit includes 51 new theorems and retains only `propext`,
+`Classical.choice` and `Quot.sound`. Shared statement inspection covers 333
+unique declarations from eight seeds with no unknown references.
+
 [Derived typed call domains and recursive source refinement](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-typed-calls.md)
 now derive selected call input conditions from the independently checked actual
 source types. Successful concrete helper execution reflects to the old source

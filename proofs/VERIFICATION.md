@@ -401,6 +401,18 @@ The 1,115-endpoint axiom audit retains only `propext`, `Classical.choice` and
 `Quot.sound`. Shared statement inspection covers 1,139 unique declarations from
 eight selected seeds with no unknown references.
 
+The owner-packet increment adds eight proof modules and the maintained
+`Tests/SourceOwnerFrames.lean` suite. Actual moves/RHS packets, guarded assignment,
+exact Box retirement, callee input packets, returns and checked closure retain complete owner identities
+and explicit uniqueness/class/liveness/coverage resources. Shared reads may alias.
+See the [owner-packet report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-packets.md)
+for exact endpoints, limits and reproduction. The 3,974-job build, all 46 Lean
+suites, native WP and nine Python tests pass. The 1,166-endpoint axiom audit
+includes all 51 new theorems and retains only `propext`, `Classical.choice` and
+`Quot.sound`. Eight selected statement seeds export 333 unique declarations with
+no unknown references. Callee output/whole recursive ownership, budgets/physical
+success and full region/destructor interpretation remain open.
+
 ## VM caches
 
 On virtiofs VMs, put build outputs on VM-local disk before running Lean,

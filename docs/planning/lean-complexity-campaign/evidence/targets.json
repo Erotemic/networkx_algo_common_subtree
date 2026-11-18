@@ -886,6 +886,48 @@
           "rust_validation": "Unchanged thirteen-test ordered Rust evidence remains at baseline 823df34."
         },
         "next": "Prove sufficient call/readback budgets and all physical move/write/drop/storage/return checks from legal native inputs, global exclusive owner/temporary-packet transfer and actual shared-loan/region/destructor invariants; preserve allowed query/insertion aliases."
+      },
+      "evaluator_owner_packets_followup": {
+        "baseline_commit": "b1335bc",
+        "evidence": "memo-evaluator-owner-packets.md",
+        "status": "Complete actual owner identities partition across nested moves, operand/RHS packets and remaining locals. One-pass guarded assignment preserves exact owners, actual suspended callers and live-Box coverage without supplied post-RHS frames or guards. Exact successful drops retire the complete destroyed Box list at the original source destructor count and preserve remaining actual caller/external owner resources and full live-Box coverage. Actual call input, returned packet and successful stack closure preserve explicit unique/live Box ownership and coverage. Shared reads may alias. Callee output/fresh/retired transfer, whole recursive ownership, budgets/every physical check and dynamic regions/destructors remain open; no C3/full-goal closure.",
+        "endpoints": [
+          "SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.move_owners",
+          "SubtreeProofs.Rust.SourceEval.Addressed.operands_owner_frame",
+          "SubtreeProofs.Rust.SourceEval.Addressed.expression_owner_frame",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_caller_owner_frame",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_box_coverage",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.drop_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_argument_owner_frame",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.returnValue_owner_frame",
+          "SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.close_owner_transfer"
+        ],
+        "adversaries": [
+          "Nested Box payload move retains enclosing shell and sibling ownership despite stale stored pointer bits.",
+          "Repeated shared-pointer copies and caller alias are allowed while owner occurrences stay unique.",
+          "Actual guarded assignment retains caller owner and complete live-Box coverage.",
+          "Successful real boxNew call consumes the input boundary theorem without claiming general output transfer.",
+          "Duplicate stored owner occurrences scan successfully but fail OwnerFrame uniqueness.",
+          "Actual return plus close retires stack root, retains caller bytes/liveness and complete live-Box coverage.",
+          "Drop the moved inner Box at address 0, retaining the outer shell, sibling, shared aliases and caller owner with exact remaining liveness and complete live-Box coverage."
+        ],
+        "validation": {
+          "library_jobs": 3974,
+          "lean_suites": 46,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 1166,
+          "new_audited_theorems": 51,
+          "unique_statement_records": 333,
+          "statement_seeds": 8,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        "next": "Compose callee output/fresh/retired ownership transfer and actual result store, entry/storage/control/recursive owner invariants, then source/readback budgets, every physical check and dynamic parsed regions/destructors. Preserve allowed shared aliases and exact costs."
       }
     },
     {
@@ -1074,7 +1116,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 interpret actual active loan endings, starting with the real nonempty cache-hit failure: local 6 still stores the old table reference after its last use, blocking assign 12 from moving local 3. Source evaluation scores 1 at 2615 steps/five solver calls (fuel 16), and public maximum at 2704 steps (fuel 17); addressed runs fail at that borrow guard. Keep active-loan protection and derive certified inactive-reference/storage/source correspondence, aliases, caller transfer and destructor accounting. Then close universal native Recursive.Ready, source/ghost budgets, physical success, exclusive temporary/argument/output transfer and dynamic parsed regions/destructors. Reuse completed recursive dispatcher/CallsRespect, protected guard coverage, whole-run caller-byte retention and source/native/type/binder/helper/control/entry/cleanup proofs. Finish public maximum/cold-table teardown, wrappers/input policy/resources/G3 and remaining full program goals. D12 retains explicit source-operation boundaries; no full SRC-01/C3 or application runtime closure."
+      "W06-C3 compose complete callee output/fresh/retired ownership transfer with the checked actual argument boundary and guarded result store. Extend exact owner ledgers through entry/storage/control and recursive execution. Certified unused-reference views and typed derived call domains are already checked; nonempty evaluator/maximum regressions now pass. Derive sufficient source/readback budgets and every physical check on legal native inputs, plus full dynamic parsed region/destructor interpretation. Finish public maximum/cold-table teardown, wrappers/input policy/resources/G3 and other planning targets. D12 source-operation boundaries remain explicit; no SRC-01/C3/full-goal closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

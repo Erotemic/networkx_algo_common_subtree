@@ -1,20 +1,44 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[derived typed call domains and recursive source refinement](lean-complexity-campaign/evidence/memo-evaluator-typed-calls.md).
-Successful concrete helper execution reflects into the independent old source
-at identical fuel/value/cost. Actual source types supply scalar width and derive
-each selected call's input condition. The stronger evaluator theorem removes
-the supplied `Recursive.Ready` premise for arbitrary native query/warm-table
-inputs, preserving the exact native result/table, full costs and caller bytes.
-Concrete success remains explicit. Adequate budgets and physical checks, global
-exclusive ownership/dynamic regions/destructors and the full planning goal remain.
-The preceding certified unused-reference views and complete nonempty evaluator/
+[exact owner transfer through packets, assignment, drops and return cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-packets.md).
+Complete actual owner occurrences partition across nested moves and temporary
+operand/RHS packets. Guarded assignment conserves them without a supplied
+post-RHS frame or guard list; actual suspended caller owners remain. The real
+callee input boundary, returned packet and checked stack closure retain explicit
+uniqueness/Box class/liveness and live-Box coverage. Shared reads may alias.
+Exact drops retain the remaining complete ledger and caller owners.
+Callee output/fresh/retired transfer, whole recursive ownership, budgets/every
+physical check and dynamic regions/destructors remain, followed by public
+core/wrappers/resources/G3 and all other planning targets. The full goal remains.
+The preceding derived typed recursive/native refinement and nonempty evaluator/
 maximum executable regressions remain checked and unchanged.
 
 ## Checked endpoints and scope
 
 Latest public endpoints:
+
+- `LocalRep.ownerList`, `EnvRep.ownerState`, `Frame.ownerState`, `Inventory.owners`,
+  `Activation.scan_owners`: canonical complete lists equal represented resources.
+- `Activation.move_owners`, `Addressed.{operand_owners,operands_owners,
+  expression_owners}`: exact physical owner partition across actual extraction.
+- `Addressed.{operand_owner_frame,operands_owner_frame,expression_owner_frame}`:
+  temporary packets and remaining locals retain explicit global owner resources.
+- `Activation.forgetRefs_owners`, `Frame.ownerState_preserve`: exact owner
+  identity survives certified shared-view changes and guarded retained reads.
+- `Derived.{store_owners,assign_owners,assign_owner_frame,
+  assign_caller_owner_frame,assign_box_coverage}`: actual one-pass guarded
+  assignment retains owner identities, actual callers and full live-Box coverage.
+- `Derived.{drop_owner_partition,drop_owner_resources}`: exact discarded owner
+  identities and source Box count, preserving remaining actual caller/external
+  owner resources and full live-Box coverage through actual checked retirement.
+- `Derived.call_argument_owner_frame`: successful actual call yields the precise
+  packet footprint and actual post-argument suspended owner frame at callee entry.
+- `Derived.returnValue_owner_frame`, `Storage.close_owner_transfer`: output
+  packet/actual final caller/external owner resources and complete live-Box
+  coverage survive successful return extraction and checked stack closure.
+
+Preceding typed/reflection endpoints:
 
 - `Heap.{option_source,EnvRep.source,locate_reflect,borrow_reflect,
   operand_reflect,operands_reflect,rvalue_reflect,scrutinee_reflect}` and
@@ -358,9 +382,9 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, independent source/native specifications
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,966-job build, all 45 Lean suites, native WP and nine Python tests pass.
-The 1,115-endpoint axiom audit retains only `propext`, `Classical.choice` and
-`Quot.sound`. Shared statement inspection covers 1,139 unique declarations from
+The 3,974-job build, all 46 Lean suites, native WP and nine Python tests pass.
+The 1,166-endpoint axiom audit retains only `propext`, `Classical.choice` and
+`Quot.sound`. Shared statement inspection covers 333 unique declarations from
 eight selected seeds with no unknown references.
 See the latest evidence report for reproduction and scope.
 
@@ -379,9 +403,11 @@ See the latest evidence report for reproduction and scope.
    remain binders rather than statement times.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
    spatial resources alongside the read graphs through the 113-local evaluator.
-   Compose computed active/suspended loan coverage with temporary ownership
-   during operand lists and newly created references. `Frame.move` retains data
-   resources but cannot authorize invalidating a loan; a supplied incomplete
+   The complete packet/RHS partitions and guarded assignment/caller owner-frame
+   preservation are now checked. Compose the actual callee input boundary with
+   output/fresh/retired transfer, entry/storage, selected control and recursive
+   execution. Retain computed active/suspended loan coverage for new references.
+   `Frame.move` retains data resources but cannot authorize invalidating a loan; a supplied incomplete
    guard cannot do so either. Initialized zero-owner locals can end storage;
    owners/Box shells must move or drop first. The new drop/storage operations
    check affected stack roots and Box owners, including scalar/zero-owner

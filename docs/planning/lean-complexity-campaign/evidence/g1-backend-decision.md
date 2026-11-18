@@ -403,3 +403,12 @@ success beyond the old sufficient height bound and the necessary u32 boundary
 are checked. Item 2 still requires adequate budgets and every physical check,
 global exclusive transfer and actual region/destructor composition. C3 and the
 full planning/resource goal stay open; the source-operation boundary is unchanged.
+
+The [exact owner-packet follow-up](memo-evaluator-owner-packets.md) derives complete
+physical owner partitions through extraction/RHS packets and guarded assignment,
+exact checked Box retirement, then actual callee input, return and successful
+stack closure resources. Shared
+reads may alias; initial unique/live Box ownership and coverage remain explicit.
+Item 2 still requires callee output/fresh/retired transfer, whole recursive owner
+invariants, adequate budgets/every physical check and dynamic regions/destructors.
+No C3/resource/full-goal closure or changed source-operation boundary follows.
