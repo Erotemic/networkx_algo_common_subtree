@@ -1653,6 +1653,52 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
         },
         "next": "Construct right argument 79 and moved table argument 80, then execute the strictly smaller left contraction request using its universal recursive contract. Preserve original and fresh anchored loan families through the actual call, extract its result/table, retire argument roots and end reference 78 at the actual source point; narrow back to original loan origins after fresh views end. Complete both contraction failure/success joins. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations remain separate from fresh word-anchor permissions. Complete overflow exits, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_left_recursion_followup": {
+        "baseline_commit": "5424003",
+        "evidence": "memo-evaluator-left-recursion.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_call_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_prefix_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_arguments_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.advance_call",
+          "SubtreeProofs.Rust.SourceEval.Addressed.anchored_original_borrow_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.anchored_move_view_complete"
+        ],
+        "status": "Constructed actual instructions 44-48: open/reborrow original right-query argument 79, open/move native table 42 into 80, and execute the real left contraction evaluator call from arguments 77/79/80 into output 76. Parsed entry retains all eleven actual prefix boundaries and the argument checkpoint with one exact actual call/world/state/full call cost at every larger shared fuel/readback bound pair. Complete ownership/coverage, original native queries, owned word 71, matched candidate, scalar holes and total survive. Original reference origins retain their pre-entry bound; fresh word-supported references retain their precise anchor or are cleared by actual continuation preparation. The explicit third recursive premise is universal NativeTotal for the strictly smaller concatenated-left request. No successful physical parent run, expected post-callee frame, expected left result, cache soundness, recursive witness freshness or global alias ban is assumed. The table moves out of 42 and returns in native output 76; moved argument masks are empty. Argument/result cleanup, left/right joins, provenance, remaining parent paths and full pair/pair induction stay open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4185,
+          "new_proof_modules": 8,
+          "new_theorems": 13,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1833,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1304,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumers": [
+            "Repeated table-owned parent-query aliases discharge all three smaller contracts with proved empty-input totality, derive all eleven stable actual prefix boundaries and expose the exact-cost actual left contraction call and its native optional/table output.",
+            "Arbitrary typed warm-cache nonempty witnesses of score seven produce a six-Box matched candidate with total fifteen. It and exact original query snapshots survive the actual left contraction call under complete ownership/coverage, without cache soundness.",
+            "A cold parent repeats one externally owned nonempty query. Head miss/tail hit is followed by an actual recursive contraction miss that inserts a second native table key while original external aliases and fresh word-supported references coexist."
+          ],
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
+        },
+        "next": "Execute instructions 49-59: retire moved argument roots 80/79/77; extract optional result 74 and table 75 from output 76; drop the moved-out tuple, end root 78, retire root 76 and open payload 81. Narrow back to the original loan family when fresh views end and construct the actual optional-result inspection. Complete left failure/success joins and the right contraction path. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations remain separate from fresh word-anchor permissions. Complete overflow exits, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1841,7 +1887,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail/root-score/matched/concatenation execution now reaches actual fresh references 78/77 to owned word 71 through nine stable prefix boundaries, preserving exact original queries and separate bounded/original versus precisely anchored fresh loans. Aliased and nonempty four-Box consumers derive selected root/owner permissions while views are live. Construct right argument 79 and moved table argument 80, then execute the strictly smaller left contraction request using its universal recursive contract. Preserve original and fresh anchored loan families through the actual call, extract its result/table, retire argument roots and end reference 78 at the actual source point; narrow back to original loan origins after fresh views end. Complete both contraction failure/success joins. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations remain separate from fresh word-anchor permissions. Complete overflow exits, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail/root-score/matched/concatenation/fresh-view execution now reaches the actual left contraction return through eleven stable prefix boundaries. The strictly smaller left NativeTotal contract supplies recursion; selected moves/storage and anchored call preservation are constructed, retaining exact original queries, candidate and owned word. Three consumers discharge all smaller contracts using proved empty cases, including a six-Box candidate and cold contraction miss/insertion. Execute instructions 49-59: retire moved argument roots 80/79/77; extract optional result 74 and table 75 from output 76; drop the moved-out tuple, end root 78, retire root 76 and open payload 81. Narrow back to the original loan family when fresh views end and construct the actual optional-result inspection. Complete left failure/success joins and the right contraction path. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations remain separate from fresh word-anchor permissions. Complete overflow exits, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

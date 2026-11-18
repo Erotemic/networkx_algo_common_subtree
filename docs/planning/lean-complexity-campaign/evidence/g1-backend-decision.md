@@ -490,6 +490,34 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
+[Constructed actual left contraction call](memo-evaluator-left-recursion.md) now reaches its native
+recursive return through eleven stable actual prefix boundaries from parsed
+entry. Four argument instructions reborrow the original right query into 79
+and move the owned table from 42 into 80; the actual evaluator call consumes
+77/79/80 and stores its native optional/table output in 76. The retained argument
+checkpoint exposes one fixed actual call and complete call cost at every larger
+shared helper bound pair. Complete ownership/coverage, exact original queries,
+owned word 71, matched candidate, scalar holes and original/fresh loan provenance
+persist. The explicit third recursive premise is universal `NativeTotal` for
+the strictly smaller concatenated-left request. No successful physical parent
+run, expected post-callee frame, expected left result, cache soundness, recursive
+witness freshness or global alias ban is supplied.
+The 4,185-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,833 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,304 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Three new consumers
+discharge all smaller contracts with proved empty cases: table-owned repeated
+aliases derive all eleven prefixes and exact-cost call; a six-Box matched
+candidate survives real recursion; and a cold external-alias parent executes
+a contraction miss that inserts a second native table key.
+Instructions 49–59 still require moved-argument retirement, result/table
+extraction, fresh-view ending, moved-tuple cleanup and payload opening before
+the actual left-result switch. Left/right contraction branches, recursive
+witness provenance/owned cleanup, overflow exits, choice, insertion, remaining
+parent returns and full pair/pair induction remain. Dynamic regions/destructors,
+public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every
+other planning target stay open. The full goal remains active.
+
 [Constructed fresh owned-word views](memo-evaluator-owned-word-loans.md) now reaches actual references
 78/77 to concatenated word 71 through nine stable prefix boundaries from parsed
 entry. All five setup instructions construct result/reference storage, borrow

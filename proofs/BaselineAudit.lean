@@ -1928,3 +1928,18 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.write_other
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_word_views_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_word_views_complete
+
+-- Constructed left contraction arguments, call and anchored return.
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.advance_call
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_empty
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_original_view
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.anchored_move_view_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.anchored_open_local_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.anchored_original_borrow_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.MatchedCandidateScope.through_prefix
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.MatchedScope.candidate_scope
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_contraction_call_arguments
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_prefix_complete

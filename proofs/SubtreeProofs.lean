@@ -335,3 +335,4 @@ public import SubtreeProofs.Rust.SourcePairLeftConcatEntry
 public import SubtreeProofs.Rust.SourceContractionRequests
 public import SubtreeProofs.Rust.SourcePairLeftWordViewsEntry
 public import SubtreeProofs.Rust.SourceAnchorOwnerPermissions
+public import SubtreeProofs.Rust.SourcePairLeftCallEntry
