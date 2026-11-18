@@ -339,3 +339,5 @@ public import SubtreeProofs.Rust.SourcePairLeftCallEntry
 public import SubtreeProofs.Rust.SourcePairLeftScopeEntry
 
 public import SubtreeProofs.Rust.SourcePairRightPrefixEntry
+
+public import SubtreeProofs.Rust.SourcePairRightScopeEntry

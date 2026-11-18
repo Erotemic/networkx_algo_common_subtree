@@ -490,6 +490,31 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
+[Actual right recursion and complete right-result scope](memo-evaluator-right-scope.md) now
+constructs all remaining twenty-one right-region instructions and the full
+36-instruction prefix through seventeen stable checkpoints from parsed entry.
+Original left-query view 91 and fresh right-word views 93/92 remain separate;
+actual preparation ends 93, the call consumes 91/92/94, and original loan
+origins are restored before physical retirement. Native option/table 88/89,
+empty bound payload 95, both owned queries, held left witness, matched candidate,
+exact original aliases and complete ownership/coverage persist. Every future
+parent root at index 96 or above is unbound. Both actual contraction calls and
+their complete costs are exposed. The fourth smaller `NativeTotal` premise is
+explicit; the right result/table are derived. No physical parent success,
+expected right post-frame/result, cache soundness or witness freshness is assumed.
+The 4,214-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,871 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,312 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Three new consumers discharge
+all four smaller calls with proved empty contracts: all seventeen checkpoints
+with table-owned aliases; a two-Box left witness/six-Box candidate through right
+cleanup; and cold head/left/right insertions reaching the actual right switch.
+Both optional joins, successful right payload transfer, recursive witness
+provenance/general owned cleanup, overflow exits, choice, insertion, remaining
+parent returns and full pair/pair induction remain. Dynamic regions/destructors,
+public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the
+remaining planning targets stay open. The full goal remains active.
+
 [Successful-left payload and actual right-query concatenation](memo-evaluator-right-concatenation.md) now
 constructs all fifteen initial right-region instructions through thirteen stable
 prefix checkpoints from parsed entry. The owned left witness moves through

@@ -1793,6 +1793,53 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
         },
         "next": "Construct right argument/view storage 90-94, original left-query reborrow 91 and fresh views 93/92 into owned word 85. Move the table from 75 into 94, execute the strictly smaller right recursive request, and construct its real cleanup/result scope and optional switch. Twenty-one right-region instructions remain after the checked fifteen-instruction prefix. Complete both left/right failure/success joins, retaining legal original query/table/caller aliases. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; stack-root freshness and original/fresh loan support do not establish witness Box provenance. Complete overflow exits, choice, insertion, remaining parent returns and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_right_scope_followup": {
+        "baseline_commit": "9109a0c",
+        "evidence": "memo-evaluator-right-scope.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_from_concat_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_original_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_arguments_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_word_views_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_unpack_complete"
+        ],
+        "status": "Constructed all remaining twenty-one actual right-region instructions and the full thirty-six-instruction right prefix. Original left-query reborrow 91 is constructed before fresh views 93/92 into owned right word 85. Move native table 75 into argument 94, execute actual right evaluator call into 90, retire moved arguments 94/92/91, extract native option 88/table 89, drop the moved tuple, retire ended view 93 and output 90, and open empty payload 95. Actual continuation preparation during table setup ends intermediate view 93; moved/ended masks restore the strictly original loan family before physical stack retirement. Parsed entry reaches seventeen stable actual prefix checkpoints, retaining the full preceding sixty-instruction matched/left prefix, both fixed actual contraction calls and their complete costs. PairRightScope retains both owned queries, left witness, matched candidate, scalar holes/total, exact original query snapshots, native right option/table and fresh payload storage with complete ownership/coverage. Every future parent root at index 96 or above is unbound. The fourth smaller right-contraction NativeTotal premise is explicit, alongside the preceding smaller contracts and independent native head/tail/left successes and checked additions. The right optional result and table are derived, with neither a desired physical post-frame/result nor parent success, cache soundness, recursive witness freshness or global alias ban supplied. Both optional joins, witness provenance, remaining parent paths and full pair/pair induction stay open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4214,
+          "new_proof_modules": 10,
+          "new_theorems": 12,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1871,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1312,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumers": [
+            "Repeated table-owned original query aliases with four proved empty-input contracts derive all seventeen stable checkpoints, both exact-cost contraction calls, the full sixty-instruction matched/left prefix, full thirty-six-instruction right prefix, native right optional/table and every future root at index 96 or above unbound. The right contraction performs native insertion.",
+            "A fourteen-Box arbitrary typed warm table returns a nonempty left witness of score seven. Its two Box owners in 81 and the six-Box matched candidate survive actual right recursion and cleanup, with table-owned original aliases, native right insertion and all moved/ended right temporary roots retired; no cache soundness is assumed.",
+            "A cold parent repeats one externally owned nonempty query. Head miss/tail hit/left miss/right miss produces three inserted native table keys. Actual right cleanup reaches the optional switch with the native option/table in 88/89 and empty bound payload 95. All four smaller contracts are proved empty cases; no physical parent success is assumed."
+          ],
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
+        },
+        "next": "Complete both left/right optional failure/success joins, including successful right payload transfer into 95, then actual choice, insertion and remaining parent returns. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations persist independently of fresh word-loan support and parent stack-root freshness. Complete overflow exits and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1981,7 +2028,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Parsed successful head/tail/root-score/matched/left-recursion and the first fifteen successful-left/right-region instructions now reach the owned left witness in 81 and owned right concatenation in 85 through thirteen stable checkpoints. Complete ownership, exact original aliases, matched candidate and native table persist, with every future parent root at index 88 or above unbound. Three consumers discharge all smaller calls with proved empty contracts, including actual two-Box left-witness transfer and a four-Box right query. Construct right argument/view storage 90-94, original left-query reborrow 91 and fresh views 93/92 into owned word 85. Move the table from 75 into 94, execute the strictly smaller right recursive request, and construct its real cleanup/result scope and optional switch. Twenty-one right-region instructions remain after the checked fifteen-instruction prefix. Complete both left/right failure/success joins, retaining legal original query/table/caller aliases. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; stack-root freshness and original/fresh loan support do not establish witness Box provenance. Complete overflow exits, choice, insertion, remaining parent returns and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Parsed successful head/tail/root-score/matched/left and full right recursion/cleanup now reach the actual right-result optional switch through seventeen stable checkpoints, the full sixty-instruction left region and thirty-six-instruction right region. Both fixed actual contraction calls and their complete costs are exposed. Native right option/table 88/89, empty bound payload 95, both owned queries, left witness, matched candidate, original aliases and complete ownership persist, with every future parent root at index 96 or above unbound. The fourth smaller NativeTotal premise is explicit and the native right result/table are derived. Three consumers discharge all four smaller calls with proved empty contracts, including held two-Box left witness/six-Box candidate and three cold native insertions. Complete both left/right optional failure/success joins, including successful right payload transfer into 95, then actual choice, insertion and remaining parent returns. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations persist independently of fresh word-loan support and parent stack-root freshness. Complete overflow exits and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

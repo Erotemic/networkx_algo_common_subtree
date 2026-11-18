@@ -1971,3 +1971,15 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_concat_scope_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_payload_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_arguments_retire_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_original_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_call_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_from_concat_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_unpack_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_word_views_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_contraction_call_arguments
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_result_scrutinee_source
