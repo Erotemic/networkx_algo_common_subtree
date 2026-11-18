@@ -1243,3 +1243,24 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.clear_owners
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.drop_owner_partition
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.drop_owner_resources
+
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.OwnerState.collect_get
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.packetOwners_footprint
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.packetOwners_unique
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.initialActivation_ownerState
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.initialActivation_owners
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.OwnerFrame.keep
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.BoxCoverage.stackCells
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.enter_owner_resources
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.bind_empty_owners
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.withoutLocal_zero_owners
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.OwnerFrame.retire_stack
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.BoxCoverage.retire_same
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.BoxCoverage.allocate_stack
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.storageLive_owner_resources
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.storageDead_owner_resources
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_owner_resources
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_owner_resources
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_box_class
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_box_class
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_owner_destruction

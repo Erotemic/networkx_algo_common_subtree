@@ -413,6 +413,18 @@ includes all 51 new theorems and retains only `propext`, `Classical.choice` and
 no unknown references. Callee output/whole recursive ownership, budgets/physical
 success and full region/destructor interpretation remain open.
 
+The owner-lifecycle increment adds three modules and the maintained
+`Tests/SourceOwnerLifecycle.lean` suite. Actual entry/storage and finite non-call
+sequences retain complete owner resources, unique removed occurrences, exact
+source Box destructor counts and initially live/finally dead Box identities.
+The [owner-lifecycle report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-lifecycle.md)
+gives exact statements and reproduction. The 3,977-job root build and four
+affected consumer suites pass. The 1,186-endpoint audit includes twenty new
+theorems and only the accepted axiom baseline. Eight selected statement seeds
+cover 335 unique declarations with no unknown references. CI lists 47 suites;
+the preceding full 46-suite/native-WP/nine-Python run remains evidence at
+`40bcb57`; no new whole-suite/Rust run is claimed by this increment.
+
 ## VM caches
 
 On virtiofs VMs, put build outputs on VM-local disk before running Lean,

@@ -57,6 +57,7 @@ jobs:
           lake env lean Tests/SourceRecursiveCalls.lean
           lake env lean Tests/SourceTypedCalls.lean
           lake env lean Tests/SourceOwnerFrames.lean
+          lake env lean Tests/SourceOwnerLifecycle.lean
           lake env lean Tests/SourceRecursiveExecution.lean
           lake env lean Tests/SourceEval.lean
           lake env lean Tests/SourceEvalHelpers.lean

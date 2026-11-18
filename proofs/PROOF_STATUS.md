@@ -2,6 +2,23 @@
 
 ## Derived typed call domains and recursive source refinement: 2026-11-17
 
+[Owner ledgers through entry, storage and non-call destruction](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-lifecycle.md)
+now transfer the complete argument packet into actual parameter locals, retain
+exact owners across real storage-live/dead operations, and compose through every
+successful finite sequence of existing non-call actions. The complete removed
+list is duplicate-free, its length equals the source Box destructor count, and it
+consists of
+initially live Boxes that are dead in the final symbolic world. Actual caller/
+external owners retain complete uniqueness/class/liveness and live-Box coverage;
+shared reads may alias. Callee output transfer, selected calling control/full
+recursive ownership, budgets/every physical check and dynamic regions/destructors
+remain, followed by the other planning targets. The full goal stays open.
+The 3,977-job build and four affected consumers pass. The 1,186-endpoint audit
+includes twenty new theorems and only the accepted axiom baseline. Eight selected
+statement seeds cover 335 unique declarations with no unknown references. CI now
+lists 47 suites; the full preceding 46-suite/native-WP/nine-Python regression
+remains baseline evidence from `40bcb57`.
+
 [Exact owner transfer through packets, assignment, drops and return cleanup](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-packets.md)
 now preserves complete actual owner occurrences through nested moves, operand/
 RHS packets, one-pass guarded assignment, exact Box retirement, the actual callee

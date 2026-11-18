@@ -412,3 +412,11 @@ reads may alias; initial unique/live Box ownership and coverage remain explicit.
 Item 2 still requires callee output/fresh/retired transfer, whole recursive owner
 invariants, adequate budgets/every physical check and dynamic regions/destructors.
 No C3/resource/full-goal closure or changed source-operation boundary follows.
+
+The [owner-lifecycle follow-up](memo-evaluator-owner-lifecycle.md) composes actual
+parameter entry/storage with complete non-call action-sequence ownership and
+source Box destruction counts. Removed Box identities are unique, initially live
+and finally dead; actual final active/caller/external owners retain full live-Box
+coverage. Item 2 still requires concrete callee output transfer, selected calling
+control/full-recursive owner invariants, budgets/every physical check and dynamic
+region/destructor interpretation. No C3/resource/full-goal closure follows.

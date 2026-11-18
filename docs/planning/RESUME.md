@@ -1,22 +1,35 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[exact owner transfer through packets, assignment, drops and return cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-packets.md).
-Complete actual owner occurrences partition across nested moves and temporary
-operand/RHS packets. Guarded assignment conserves them without a supplied
-post-RHS frame or guard list; actual suspended caller owners remain. The real
-callee input boundary, returned packet and checked stack closure retain explicit
-uniqueness/Box class/liveness and live-Box coverage. Shared reads may alias.
-Exact drops retain the remaining complete ledger and caller owners.
-Callee output/fresh/retired transfer, whole recursive ownership, budgets/every
-physical check and dynamic regions/destructors remain, followed by public
+[owner ledgers through entry, storage and non-call destruction](lean-complexity-campaign/evidence/memo-evaluator-owner-lifecycle.md).
+Actual parameter entry transfers the complete argument owner list. Actual
+storage markers retain the exact Box/caller ledger. Successful finite non-call
+sequences derive a duplicate-free removed list, its exact source Box destruction
+count, initially live/finally dead Box identities, and full final owner-frame/
+live-Box coverage resources. Shared read aliases remain allowed. Callee output
+transfer and selected calling-control/full-recursive ownership remain, then
+budgets/every physical check and dynamic regions/destructors, followed by public
 core/wrappers/resources/G3 and all other planning targets. The full goal remains.
-The preceding derived typed recursive/native refinement and nonempty evaluator/
-maximum executable regressions remain checked and unchanged.
+The preceding packet/assignment/drop/return/close proofs and typed recursive/
+native refinement and executable nonempty regressions remain unchanged.
 
 ## Checked endpoints and scope
 
 Latest public endpoints:
+
+- `Storage.{packetOwners_footprint,packetOwners_unique,
+  initialActivation_ownerState,initialActivation_owners,enter_owner_resources}`:
+  actual packet footprints become the exact parameter-local owner ledger and
+  retain complete initial owner-frame/coverage resources with actual callers.
+- `Derived.{storageLive_owner_resources,storageDead_owner_resources}`: exact
+  unchanged active/caller Box owners through actual checked storage operations,
+  including initialized nonowning locals and fresh symbolic stack generations.
+- `Derived.{action_owner_resources,actions_owner_resources,
+  action_box_class,actions_box_class,actions_owner_destruction}`: complete actual
+  non-call sequence partitions, unique removed occurrences, exact source Box
+  destruction count, old Box classes and initially live/finally dead identities.
+
+Preceding packet/assignment/drop/return endpoints:
 
 - `LocalRep.ownerList`, `EnvRep.ownerState`, `Frame.ownerState`, `Inventory.owners`,
   `Activation.scan_owners`: canonical complete lists equal represented resources.
@@ -382,10 +395,11 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, independent source/native specifications
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,974-job build, all 46 Lean suites, native WP and nine Python tests pass.
-The 1,166-endpoint axiom audit retains only `propext`, `Classical.choice` and
-`Quot.sound`. Shared statement inspection covers 333 unique declarations from
-eight selected seeds with no unknown references.
+The 3,977-job build and four affected consumer suites pass. The 1,186-endpoint
+axiom audit retains only `propext`, `Classical.choice` and `Quot.sound`. Eight
+selected statement seeds cover 335 unique declarations with no unknown references.
+CI lists 47 suites; the full preceding 46-suite/native-WP/nine-Python run remains
+evidence at baseline `40bcb57`, with no new whole-suite/Rust run claimed here.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
@@ -405,10 +419,12 @@ See the latest evidence report for reproduction and scope.
    spatial resources alongside the read graphs through the 113-local evaluator.
    The complete packet/RHS partitions and guarded assignment/caller owner-frame
    preservation are now checked. Compose the actual callee input boundary with
-   output/fresh/retired transfer, entry/storage, selected control and recursive
-   execution. Retain computed active/suspended loan coverage for new references.
-   `Frame.move` retains data resources but cannot authorize invalidating a loan; a supplied incomplete
-   guard cannot do so either. Initialized zero-owner locals can end storage;
+   output/fresh/retired transfer, selected control and recursive
+   execution. Entry/storage and finite non-call destruction now preserve exact
+   owner ledgers; compose them with callee/calling-control ownership. Retain
+   computed active/suspended loan coverage for new references.
+   `Frame.move` retains data resources but cannot authorize invalidating a loan;
+   a supplied incomplete guard cannot do so either. Initialized zero-owner locals can end storage;
    owners/Box shells must move or drop first. The new drop/storage operations
    check affected stack roots and Box owners, including scalar/zero-owner
    teardown. Use the completed stack cleanup and output/caller escape checks;

@@ -928,6 +928,52 @@
           ]
         },
         "next": "Compose callee output/fresh/retired ownership transfer and actual result store, entry/storage/control/recursive owner invariants, then source/readback budgets, every physical check and dynamic parsed regions/destructors. Preserve allowed shared aliases and exact costs."
+      },
+      "evaluator_owner_lifecycle_followup": {
+        "baseline_commit": "40bcb57",
+        "evidence": "memo-evaluator-owner-lifecycle.md",
+        "status": "Actual parameter entry transfers the complete argument owner list, retaining actual callers and complete owner-frame/live-Box coverage. Successful storage-live/dead operations preserve exact active/caller Box owners, including initialized nonowning masks. Every successful finite non-call sequence derives a duplicate-free removed list with length equal to the source Box destructor count; every removed Box is initially live and finally dead. Concrete callee output transfer, selected calling control/full recursive ownership, adequate budgets/every physical check and dynamic regions/destructors remain open; no C3/full-goal closure.",
+        "endpoints": [
+          "SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.packetOwners_unique",
+          "SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.initialActivation_owners",
+          "SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.enter_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.storageLive_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.storageDead_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.actions_owner_destruction"
+        ],
+        "consumers": [
+          "Actual owned/shared/scalar arguments enter parameter locals while a suspended caller owns another Box. Shared read aliases are allowed.",
+          "Actual active reference blocks dropping its Box, and initialized owner blocks storage-dead.",
+          "Eleven-action sequence ends the reference, drops/retires parameter resources, then assigns/drops/retires/reopens local four at fresh root/generation seven. Exact result: eight cells, live addresses [1,2,7], no active owners, caller owner [1], seventeen source steps, four destructor visits, one Box destruction.",
+          "The general sequence destruction endpoint is consumed on the actual successful run, with unique removed identities and initially live/finally dead Box flags.",
+          "Duplicate owning arguments pass read-only entry checks but fail the explicit OwnerFrame uniqueness premise.",
+          "Generic parsed-declaration consumer uses the real arity/local-count boundary without expected output or supplied post-state."
+        ],
+        "validation": {
+          "library_jobs": 3977,
+          "ci_lean_suites": 47,
+          "focused_lean_suites": [
+            "SourceOwnerLifecycle",
+            "SourceOwnerFrames",
+            "SourceStorageLifecycle",
+            "SourceFrameInventory"
+          ],
+          "baseline_regression": "Full 46 maintained Lean suites, native WP and nine Python reifier tests passed at 40bcb57; no fresh whole-suite run claimed for this proof-only increment.",
+          "rust_validation": "Rust/generated files unchanged; thirteen ordered Rust tests remain evidence from 823df34.",
+          "audited_endpoints": 1186,
+          "new_audited_theorems": 20,
+          "unique_statement_records": 335,
+          "statement_seeds": 8,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        "next": "Compose concrete callee output/fresh/retired transfer with actual arguments/entry/result store/return closure, selected calling control and full recursive owner resources. Then adequate source/readback budgets, every physical check and dynamic parsed regions/destructor-instance interpretation; preserve allowed shared aliases and exact costs."
       }
     },
     {
@@ -1116,7 +1162,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 compose complete callee output/fresh/retired ownership transfer with the checked actual argument boundary and guarded result store. Extend exact owner ledgers through entry/storage/control and recursive execution. Certified unused-reference views and typed derived call domains are already checked; nonempty evaluator/maximum regressions now pass. Derive sufficient source/readback budgets and every physical check on legal native inputs, plus full dynamic parsed region/destructor interpretation. Finish public maximum/cold-table teardown, wrappers/input policy/resources/G3 and other planning targets. D12 source-operation boundaries remain explicit; no SRC-01/C3/full-goal closure."
+      "W06-C3 compose complete callee output/fresh/retired ownership transfer with the checked actual argument boundary and guarded result store. Actual entry/storage and complete non-call destruction are now checked. Extend exact owner ledgers through selected calling control and recursive execution. Certified unused-reference views and typed derived call domains are already checked; nonempty evaluator/maximum regressions now pass. Derive sufficient source/readback budgets and every physical check on legal native inputs, plus full dynamic parsed region/destructor interpretation. Finish public maximum/cold-table teardown, wrappers/input policy/resources/G3 and other planning targets. D12 source-operation boundaries remain explicit; no SRC-01/C3/full-goal closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
