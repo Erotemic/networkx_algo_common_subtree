@@ -3,6 +3,8 @@ import SubtreeProofs.Rust.SourcePairTailScopeEntry
 import SubtreeProofs.Rust.SourcePairScoreEntry
 import SubtreeProofs.Rust.SourcePairRootScoreEntry
 import SubtreeProofs.Rust.SourcePairMatchedEntry
+import SubtreeProofs.Rust.SourcePairLeftConcatEntry
+import SubtreeProofs.Rust.SourceContractionRequests
 
 namespace SourceCacheMissSetupTests
 
@@ -536,5 +538,106 @@ example : ∃ final after,
   rw [scope.candidate]
   simp [SourceEval.Evaluator.matchedWitness, wideWitness, encodeResult, encodeWord, Slot.ofValue, ofFields,
     Slot.dropWork, dropFields, DropWork.plus]
+
+
+-- Both query pointers alias table-owned data. The complete eight-prefix path
+-- retains their exact snapshots and the owned concatenation result.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive headWorld headActive tailWorld tailActive scoreWorld scoreActive rootWorld rootActive matchedWorld matchedActive final after,
+    OriginalLoanMachine world [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.PairQueryScope .Empty .Empty .Empty .Empty after ∧
+    after.state 71 = Slot.ofValue (encodeWord .Empty) ∧
+    after.roots 72 = none ∧ after.roots 73 = none ∧
+      ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix entered active lookupWorld lookupActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions lookupWorld lookupActive missWorld missActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions missWorld missActive headWorld headActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.tailCases SourceEval.Evaluator.tailActions headWorld headActive tailWorld tailActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.scoreCases SourceEval.Evaluator.scoreActions tailWorld tailActive scoreWorld scoreActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.rootScoreCases SourceEval.Evaluator.rootScoreActions scoreWorld scoreActive rootWorld rootActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 30) (SourceEval.Evaluator.matchedActions.take 30) rootWorld rootActive matchedWorld matchedActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 39) ((SourceEval.Evaluator.matchedActions.drop 30).take 9) matchedWorld matchedActive final after := by
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native headMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, wc, ac, final, after,
+    cost, nativeCost, _, machine, candidate, queries, value, _, _, retired, _, _, _, _, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_left_concat_scope_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table headMemo headMemo SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness
+      0#u32 1#u32 pairCell pairCell tableCell pair_readable pair_readable table_readable footprint resources.2.1 resources.2.2
+      (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative tailNative (by decide +kernel) (by decide +kernel)
+  exact ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, wc, ac, final, after,
+    machine, queries, value, retired 72 (by simp), retired 73 (by simp), stable⟩
+
+private def concatWorld : World := ⟨world.memory ++ [.node .word 0 [], .node .word 0 [], .node .word 1 [.owned 4, .owned 5],
+  .node .word 0 [], .node .word 0 [], .node .word 1 [.owned 7, .owned 8], .node .word 1 [.owned 6, .owned 9]],
+  fun address => if address < 11 then some .box else none, fun address => decide (address < 11)⟩
+private def concatPairCell : Cell := .shared ⟨10, []⟩
+private def concatMemo : MemoTable := .Entry ⟨.Pair .Empty .Empty, .Empty, SourceEval.Evaluator.emptyWitness⟩ table
+private theorem concat_extends : Heap.Extends world.memory concatWorld.memory := Heap.Extends.append _ _
+private theorem concat_table_readable : Readable concatWorld.memory concatWorld.live tableCell (encodeTable table) := by
+  obtain ⟨reads, graph, alive⟩ := table_readable
+  refine ⟨reads, graph.mono concat_extends, ?_⟩
+  intro address member
+  have bound : address < 4 := by simpa [world] using alive address member
+  simp [concatWorld]; omega
+private theorem concat_pair_readable : Readable concatWorld.memory concatWorld.live pairCell
+    (.reference (encodeWord (.Pair .Empty .Empty))) :=
+  ⟨[2, 3, 0], .shared rfl (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))),
+    by simp [AliveOn, concatWorld]⟩
+private theorem concat_large_readable : Readable concatWorld.memory concatWorld.live concatPairCell
+    (.reference (encodeWord (.Pair (.Pair .Empty .Empty) (.Pair .Empty .Empty)))) :=
+  ⟨[4, 5, 6, 7, 8, 9, 10], .shared rfl (.node (.cons (.owned rfl
+    (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil)))) (.cons (.owned rfl
+    (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil)))) .nil))),
+    by simp [AliveOn, concatWorld]⟩
+private theorem concat_resources : OwnerFrame concatWorld ([2, 3, 0, 1] ++ (callerOwners concatWorld [] ++ [4, 5, 6, 7, 8, 9, 10])) ∧
+    BoxCoverage concatWorld ([2, 3, 0, 1] ++ (callerOwners concatWorld [] ++ [4, 5, 6, 7, 8, 9, 10])) := by
+  refine ⟨⟨by decide +kernel, ?_, ?_⟩, ?_⟩
+  · intro address member
+    have bound : address < 11 := by simp only [callerOwners, List.flatMap_nil, List.nil_append, List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [concatWorld, bound]
+  · intro address member
+    have bound : address < 11 := by simp only [callerOwners, List.flatMap_nil, List.nil_append, List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [concatWorld, bound]
+  · intro address classified _
+    have bound : address < 11 := by simpa [concatWorld] using classified
+    simp only [callerOwners, List.flatMap_nil, List.nil_append, List.mem_append, List.mem_cons, List.not_mem_nil, or_false]; omega
+
+-- Both concatenation operands are nonempty. Real recursive concatenation
+-- constructs a four-Box word from an external query and a table-owned query.
+example : ∃ final after, ∃ nativeCost : LookupSource.Cost,
+    OriginalLoanMachine concatWorld [] {} [4, 5, 6, 7, 8, 9, 10] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.PairQueryScope (.Pair .Empty .Empty) (.Pair .Empty .Empty) .Empty .Empty after ∧
+    SourceEval.Evaluator.MatchedScope SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness concatMemo 1#u32 after ∧
+    after.state 71 = Slot.ofValue (encodeWord (.Pair .Empty (.Pair .Empty .Empty))) ∧
+    (after.state 71).dropWork.boxes = 4 ∧
+    nativeCost.events = MemoSource.concatenateEvents (.Pair .Empty .Empty) (.Pair .Empty .Empty) := by
+  have footprint : FieldsFootprint concatWorld.memory [concatPairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons (Heap.Spatial.footprint_mono concat_extends
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil)))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table (.Pair .Empty .Empty) .Empty (Or.inr rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native concatMemo (.Pair .Empty .Empty) .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [concatMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, final, after,
+    cost, nativeCost, _, machine, candidate, queries, value, _, _, _, _, events, _, _, _⟩ :=
+    SourceEval.Evaluator.entry_pair_left_concat_scope_complete (external := [4, 5, 6, 7, 8, 9, 10])
+      (by simp [World.WellFormed, concatWorld, world]) (by simp) Callers.nil
+      (.Pair .Empty .Empty) (.Pair .Empty .Empty) .Empty .Empty table concatMemo concatMemo
+      SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness 0#u32 1#u32
+      concatPairCell pairCell tableCell concat_large_readable concat_pair_readable concat_table_readable footprint
+      concat_resources.1 concat_resources.2 (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+      (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+      headNative tailNative (by decide +kernel) (by decide +kernel)
+  refine ⟨final, after, nativeCost, machine, queries, candidate, value, ?_, events⟩
+  rw [value]
+  simp [OrderedSolver.appendWord, encodeWord, Slot.ofValue, ofFields, Slot.dropWork, dropFields, DropWork.plus]
 
 end SourceCacheMissSetupTests

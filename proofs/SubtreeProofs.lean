@@ -331,3 +331,5 @@ public import SubtreeProofs.Rust.SourcePairScoreEntry
 public import SubtreeProofs.Rust.SourcePairRootScoreEntry
 
 public import SubtreeProofs.Rust.SourcePairMatchedEntry
+public import SubtreeProofs.Rust.SourcePairLeftConcatEntry
+public import SubtreeProofs.Rust.SourceContractionRequests

@@ -1861,3 +1861,36 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.resultWordHole_boxes_zero
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.resultWordHole_typed
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.result_word_take
+
+-- Native query preservation and constructed left concatenation.
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.closed_local_same_calls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.deterministic
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.observed_local_same_calls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.retained_local_same_calls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.unshared_local_same_calls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.instruction_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.store_state
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.expression_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operand_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operands_local_same
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.PairHeadScope.query_scope
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.PairQueryScope.through_matched
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.PairQueryScope.through_root_score
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.PairQueryScope.through_score
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.PairQueryScope.through_tail
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.PairTailScope.query_scope
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.concatenate_arguments_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_concat_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_matched_queries_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_contraction_request_smaller
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_concatenate_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_concat_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_concat_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_concat_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.prefix_pair_queries_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_contraction_request_smaller
+#print axioms SubtreeProofs.Rust.SourceEval.LoanEnding.unwritten_prefix_observed
+#print axioms SubtreeProofs.Rust.SourceEval.LocalPreservation.action_no_write

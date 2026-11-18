@@ -489,6 +489,30 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
+[Constructed left-query concatenation](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-left-concatenation.md) now reaches owned appended word
+71 through eight stable actual prefix boundaries from parsed evaluator entry.
+All nine concatenation instructions construct original child reborrows, execute
+the unchanged helper, retire moved argument roots and retain the matched
+candidate, table, total and all seven exact original query/view snapshots.
+Generic mask preservation supports actual calls and suffix preparation; exact
+native append, structural helper events and complete concatenation call cost
+are identified. Both native contraction requests strictly decrease the independent
+Dyck-word induction measure. Smaller head/tail `NativeTotal` and independent
+native success equations remain explicit; no successful physical parent run,
+cache soundness, recursive witness freshness or global alias ban is supplied.
+The 4,168-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,788 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,309 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Two additional kernel
+consumers discharge smaller contracts with proved empty cases: table-owned
+repeated aliases derive all eight prefixes, and two nonempty concatenation
+operands produce a four-Box owned word with complete external/table ownership.
+Fresh references to word 71 and their selected loan permissions, both contraction
+calls, recursive witness provenance/owned cleanup, overflow exits, choice,
+insertion, remaining returns and full pair/pair induction remain. Dynamic
+regions/destructors, public maximum/cold-table teardown, wrappers/input policy/
+resources/G3 and every other planning target stay open. The full goal is active.
+
 [Constructed owned matched witness](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-matched-scope.md) now
 constructs the first thirty actual successful-root-score instructions through
 matched candidate 64: total extraction, two real Box allocations, owned pair-word
