@@ -854,6 +854,38 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_typed_calls_followup": {
+        "baseline_commit": "823df34",
+        "evidence": "memo-evaluator-typed-calls.md",
+        "status": "Actual successful concrete helper runs reflect into source at identical fuel/value/cost. Independent input types supply the required scalar-width domain and derive selected call input conditions through actual control and parsed entry. The stronger recursive/native evaluator endpoint removes the supplied Recursive.Ready premise and retains complete source/native/table/full-cost, output typing/readability and protected caller bytes. Concrete success remains explicit. Adequate budgets and every physical check, global exclusive transfer/dynamic regions/destructors, public core/wrappers/resources/G3 and the full goal remain open; no C3 closure.",
+        "stronger_endpoint": "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_evaluate_typed_refines",
+        "adversaries": [
+          "Depth-three left word versus empty right word: actual helper comparison succeeds at call fuel one although the old sufficient whole-left height bound fails; full source/cost/typed output/protected bytes are checked.",
+          "Zero call fuel and zero ghost output-readback budget still fail.",
+          "Older concrete result-copy helper accepts a stored score 2^32; the expanded source score-copy operand fails and independent u32 snapshot typing rejects that number.",
+          "Typed checked-add/control produces 42 at thirteen steps and skips unreachable undefined-behavior arms/join without a supplied readiness proof.",
+          "Existing arbitrary-query/warm-table native consumer drops its Recursive.Ready premise and retains the exact Evaluation cost relation."
+        ],
+        "validation": {
+          "library_jobs": 3966,
+          "lean_suites": 45,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 1115,
+          "new_audited_theorems": 33,
+          "unique_statement_records": 1139,
+          "statement_seeds": 8,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "rust_sources_changed": false,
+          "rust_validation": "Unchanged thirteen-test ordered Rust evidence remains at baseline 823df34."
+        },
+        "next": "Prove sufficient call/readback budgets and all physical move/write/drop/storage/return checks from legal native inputs, global exclusive owner/temporary-packet transfer and actual shared-loan/region/destructor invariants; preserve allowed query/insertion aliases."
       }
     },
     {

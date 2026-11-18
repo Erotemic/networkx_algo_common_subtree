@@ -393,3 +393,13 @@ source value/cost and caller/live-output checks. Item 2 still requires universal
 native readiness, budgets/physical success, global exclusive transfer and dynamic
 region/destructor composition. C3, production resource adequacy and the full
 planning goal remain open.
+
+The [derived typed-call follow-up](memo-evaluator-typed-calls.md) reflects actual
+successful concrete helper runs to source at the same fuel and full cost.
+Independent actual source types discharge scalar width and selected call input
+conditions. The stronger recursive/native evaluator theorem no longer takes
+`Recursive.Ready`; successful physical execution remains explicit. Short-circuit
+success beyond the old sufficient height bound and the necessary u32 boundary
+are checked. Item 2 still requires adequate budgets and every physical check,
+global exclusive transfer and actual region/destructor composition. C3 and the
+full planning/resource goal stay open; the source-operation boundary is unchanged.

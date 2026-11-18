@@ -51,6 +51,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceCallingProgram.lean)
 (cd proofs && lake env lean Tests/SourceLoanEndings.lean)
 (cd proofs && lake env lean Tests/SourceRecursiveCalls.lean)
+(cd proofs && lake env lean Tests/SourceTypedCalls.lean)
 (cd proofs && lake env lean Tests/SourceRecursiveExecution.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
@@ -386,6 +387,19 @@ The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
 13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
 `propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
 1,243 unique declarations from eight seeds with no unknown references.
+
+The typed-call increment adds seven proof modules for successful old-helper
+reflection, independent numeric/type bridges, derived selected call domains and
+recursive typed source/native refinement. The stronger evaluator endpoint removes
+the supplied `Recursive.Ready` premise; concrete success remains explicit.
+Short-circuit helper success, scalar-width rejection, actual typed control and
+the upgraded arbitrary-query/warm-table native consumer are maintained. See the
+[typed-call report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-typed-calls.md)
+for exact statements, checks and remaining physical/global ownership obligations.
+The 3,966-job build, all 45 Lean suites, native WP and nine Python tests pass.
+The 1,115-endpoint axiom audit retains only `propext`, `Classical.choice` and
+`Quot.sound`. Shared statement inspection covers 1,139 unique declarations from
+eight selected seeds with no unknown references.
 
 ## VM caches
 

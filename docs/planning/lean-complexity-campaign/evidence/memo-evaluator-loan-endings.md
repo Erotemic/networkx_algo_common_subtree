@@ -4,6 +4,12 @@ Baseline: `57deada` on `Droschinsky-algos`. W06-C3/SRC-01 and the full planning
 objective remain open. Production Rust, generated artifacts, independent source
 and native semantics, hypotheses and toolchain pins are unchanged.
 
+Subsequent follow-up: [derived typed call domains](memo-evaluator-typed-calls.md)
+removes the separately supplied native path-readiness premise from the stronger
+conditional recursive evaluator theorem. Physical success, budgets and global
+ownership/region/destructor obligations remain. The baseline validation and
+remaining-work discussion below record this earlier loan-view increment.
+
 ## Resource view and exact source equivalence
 
 The preceding [recursive-calls report](memo-evaluator-recursive-calls.md)

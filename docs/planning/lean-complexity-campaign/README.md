@@ -1,19 +1,19 @@
 # Lean complexity campaign: proto-roadmap
 
-[Certified ending of unused shared-reference views](evidence/memo-evaluator-loan-endings.md)
-now ends unused shared-reference views from the actual remaining code while
-preserving the independent complete source outcome/cost. Stored pointer bits,
-root bindings, classes and liveness stay unchanged until real storage actions;
-observed references, indirect aliases and Box ownership retain their guards.
-The previously failing one-pair cold evaluator and maximum now execute with
-complete source value/table/cost equality, caller-byte retention and exact live
-output coverage. Universal native readiness, budgets/physical success and global
-exclusive ownership/dynamic region/destructor composition remain, then public
-core/wrappers/resources/G3. W06-C3 and the full planning goal stay open.
-The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
-13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
-`propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
-1,243 unique declarations from eight seeds with no unknown references.
+[Derived typed call domains and recursive source refinement](evidence/memo-evaluator-typed-calls.md)
+now derive selected call input conditions from the independently checked actual
+source types. Successful concrete helper execution reflects to the old source
+at the same fuel/value/cost, and typed inputs supply the scalar-width boundary.
+The stronger recursive evaluator endpoint no longer assumes `Recursive.Ready`;
+arbitrary native queries/warm tables retain the complete native result/table,
+`Evaluation` cost relation, readable output and protected caller bytes.
+Concrete success remains explicit. Adequate budgets, every physical check,
+global exclusive transfer/dynamic regions/destructors and the remaining public
+core/wrappers/resources/G3 stay open. W06-C3 and the full planning goal remain.
+The 3,966-job build, all 45 Lean suites, native WP and nine Python tests pass.
+The 1,115-endpoint axiom audit retains only `propext`, `Classical.choice` and
+`Quot.sound`. Shared statement inspection covers 1,139 unique declarations from
+eight selected seeds with no unknown references.
 
 
 [Calling control, parsed entry and checked return cleanup](evidence/memo-evaluator-calling-entry.md)

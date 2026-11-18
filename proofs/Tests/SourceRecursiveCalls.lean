@@ -1,6 +1,6 @@
 module
 
-import SubtreeProofs.Rust.SourceEvalRecursiveRefinement
+import SubtreeProofs.Rust.SourceEvalTypedRecursive
 import all SubtreeProofs.Rust.SourceHeapResources
 import all SubtreeProofs.Rust.SourceHeapGraphTrace
 import all SubtreeProofs.Rust.SourcePartialValue
@@ -112,26 +112,25 @@ example : (Recursive.original 0 1 (world.retire [2]) guards [caller] .chooseLong
   rw [choice_step]
   decide +kernel
 
--- Source and native evaluator composition keeps its actual remaining domain
--- obligations visible: no complete evaluator result is supplied as a premise.
+-- Native input types discharge every selected call's input condition. Concrete
+-- success remains explicit; no complete source/native answer is a premise.
 example (budget fuel : Nat) (w final : World) (stack : List Activation) (guarded : List Nat)
     (args : List ValueCell) (packet : ValueCell) (cost : SourceEval.Cost)
     (hw : w.WellFormed) (hc : ∀ a ∈ stack, a.Valid w)
     (hp : ∀ p ∈ args, Readable w.memory w.live p.1 p.2) (hl : AliveOn w.live guarded)
     (left right : BalancedWord) (table : MemoTable)
     (hi : args.map Prod.snd = [.reference (encodeWord left), .reference (encodeWord right), encodeTable table])
-    (hd : Recursive.Ready SourceEval.CallingCertificate.originalProgram.definitions budget fuel w .evaluate args)
     (hr : Recursive.original budget fuel w guarded stack .evaluate args = some (final, packet, cost)) :
     ∃ result output, packet.2 = SourceEval.Evaluator.encodeOutput result output ∧
-      memoized_common_embedding left right table = .ok (result, output) ∧ Preserves w final guarded := by
-  obtain ⟨result, output, hv, hn, _, _, _, kept⟩ :=
-    Recursive.original_evaluate_refines budget fuel hw hc hp hl left right table hi hd hr
-  exact ⟨result, output, hv, hn, kept⟩
+      memoized_common_embedding left right table = .ok (result, output) ∧
+      SourceEval.Evaluator.Evaluation fuel left right table result output cost ∧ Preserves w final guarded := by
+  obtain ⟨result, output, hv, hn, he, _, _, kept⟩ :=
+    Recursive.original_evaluate_typed_refines budget fuel hw hc hp hl left right table hi hr
+  exact ⟨result, output, hv, hn, he, kept⟩
 
--- A retained stored reference and an active loan currently have the same guard.
--- This minimal owner-move witness isolates the lifetime gap exposed by the
--- actual evaluator cache-hit path (its old table is borrowed by local six).
--- Future certified loan ending must preserve the guard for active loans.
+-- Direct instructions retain their strict loan guard. Calling control can end
+-- certified unused shared-reference views; that certificate does not remove
+-- the primitive guard witnessed here. See SourceLoanEndings for the full block.
 private def loanWorld : World := ⟨[.owned 3, .shared ⟨0, []⟩, .node .tuple 0 [], .number 7], fun a =>
   if a = 0 then some (.stack 10 3 0) else if a = 1 then some (.stack 10 6 1)
   else if a = 2 then some (.stack 10 12 2) else if a = 3 then some .box else none,

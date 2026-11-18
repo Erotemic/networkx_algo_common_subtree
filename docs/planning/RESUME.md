@@ -1,19 +1,50 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[certified unused shared-reference views](lean-complexity-campaign/evidence/memo-evaluator-loan-endings.md).
-The actual remaining code certifies when an unused reference view may end while
-preserving complete independent source outcomes/costs. Pointer cells, stack
-roots/classes/liveness remain; indirect aliases and owners retain their guards.
-The previously failing one-pair cold evaluator and public maximum now complete
-with exact source value/table/cost equality, unchanged caller bytes and only
-output owners remaining live beyond the original caller cells. Universal native
-readiness, sufficient budgets and physical success remain open, alongside
-exclusive ownership/dynamic regions/destructors and the full planning goal.
+[derived typed call domains and recursive source refinement](lean-complexity-campaign/evidence/memo-evaluator-typed-calls.md).
+Successful concrete helper execution reflects into the independent old source
+at identical fuel/value/cost. Actual source types supply scalar width and derive
+each selected call's input condition. The stronger evaluator theorem removes
+the supplied `Recursive.Ready` premise for arbitrary native query/warm-table
+inputs, preserving the exact native result/table, full costs and caller bytes.
+Concrete success remains explicit. Adequate budgets and physical checks, global
+exclusive ownership/dynamic regions/destructors and the full planning goal remain.
+The preceding certified unused-reference views and complete nonempty evaluator/
+maximum executable regressions remain checked and unchanged.
 
 ## Checked endpoints and scope
 
 Latest public endpoints:
+
+- `Heap.{option_source,EnvRep.source,locate_reflect,borrow_reflect,
+  operand_reflect,operands_reflect,rvalue_reflect,scrutinee_reflect}` and
+  `Heap.{CallsReflect,action_reflect,exec_reflect}`: actual successful concrete
+  helper primitives/control construct source outcomes and exact full costs.
+- `Heap.{ReflectingDriver.reflect,run_reflect}`, `MemoSource.Heap.run_reflect`:
+  actual old lookup/memo drivers reflect at identical call fuel. No interpreter
+  or native success/depth premise is added.
+- `Helpers.{lookup_reflect,memo_reflect,readable_number_source,boxNew_ready,
+  checkedAdd_ready,callee_bounded_respects,callee_typed_respects}`: actual
+  concrete helpers/intrinsics retain source costs and readable/protected worlds
+  from bounded/typed readable inputs plus concrete success.
+- `Heap.{SnapshotTyped.bounded,SnapshotFieldsTyped.bounded}`,
+  `Partial.LocalsTyped.forget`, `Storage.Activation.forgetRefs_typed`: independent
+  typing supplies numeric width and survives certified view changes.
+- `Derived.TypedReady`, `Calling.{readyAt_typed,readyFor_typed,exec_typed_spec,
+  fields_typed_length,invoke_typed_ready}`: derive each actual selected call's
+  input domain from operand execution and checked source/local types, including
+  the parsed declaration's own boundary/count/constraints.
+- `Recursive.{run_typed_respects,original_typed_respects,original_typed_spec}`:
+  fuel induction composes all actual parsed/helper/intrinsic calls without a
+  supplied native path-readiness premise. The typed output, complete source
+  result/cost, readable output/world and protected caller bytes remain.
+- `Recursive.original_evaluate_typed_refines`: native queries/arbitrary warm
+  tables retain exact existing native result/table and `Evaluation` full costs
+  from readable inputs/valid callers and actual concrete success. The old
+  `Recursive.Ready` premise is absent. Original sound-cache hypotheses remain
+  necessary for separate optimality claims.
+
+The preceding certified shared-reference endpoints remain reusable:
 
 - `SourceEval.LoanEnding.{exec_congr,forget_source}`: actual continuation
   avoidance/reset certifies equal complete source outcomes and costs, including
@@ -117,12 +148,14 @@ The preceding helper-call endpoints remain reusable:
   count/roots, final activation/world validity and exact suspended resources.
   Independent input/fuel readiness is the remaining local domain condition.
 
-The recursive dispatcher and whole-run protected caller preservation are
-checked under independent readiness and successful concrete execution. Certified
-unused-reference views now repair the concrete nonempty cache-hit failure.
-Derive readiness, sufficient budgets and physical success on every actual path.
-Complete global exclusive transfer and dynamic region/destructor interpretation
-remain open; existing cleanup rejects escaping output/caller reads.
+The stronger recursive dispatcher contract derives call input conditions from
+independent actual source types and retains whole-run caller preservation under
+successful concrete execution. Certified unused-reference views repair the
+concrete nonempty cache-hit failure. Derive sufficient budgets and physical
+success on every legal native path. Global exclusive transfer and full dynamic
+region/destructor interpretation remain; cleanup rejects escaping caller/output
+reads. The earlier native height-based readiness API remains sufficient and is
+not claimed to be a necessary condition of a successful run.
 
 The preceding control/return endpoints remain reusable, in
 `SourceEval.Addressed` / `.Derived` unless qualified:
@@ -325,24 +358,25 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, independent source/native specifications
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
-13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
-`propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
-1,243 unique declarations from eight seeds with no unknown references.
+The 3,966-job build, all 45 Lean suites, native WP and nine Python tests pass.
+The 1,115-endpoint axiom audit retains only `propext`, `Classical.choice` and
+`Quot.sound`. Shared statement inspection covers 1,139 unique declarations from
+eight selected seeds with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Derive all-path readiness and physical success.** The certified
-   continuation-based unused shared-reference rule repairs the known second-child
-   cache-hit failure. Both one-pair cold evaluator and maximum now succeed with
-   exact complete source outputs/costs. Derive universal native `Recursive.Ready`,
-   source/ghost budgets and physical success for arbitrary native inputs/warm
-   tables; concrete examples do not discharge those obligations. Reuse the
-   completed source-equivalence/view-validity, recursive `CallsRespect`, guard
-   coverage, caller-byte preservation, source/native/type/binder/helper/control/
-   entry and zero-owner cleanup proofs. Parsed region IDs remain binders, not
-   statement times; preserve aliases and exact destructor costs.
+1. **Prove adequate budgets and physical success.** Actual source types now
+   derive selected call input conditions, and the stronger recursive/native
+   theorem no longer assumes `Recursive.Ready`. This is conditional refinement,
+   not a proof that every physical check passes. Derive sufficient call/readback
+   budgets and successful concrete execution for arbitrary legal native inputs/
+   warm tables. Reuse helper reflection, actual typing, certified view endings,
+   recursive `CallsRespect`, guard coverage, caller-byte preservation and checked
+   entry/cleanup. Combine global exclusive owner/temporary-packet and actual loan
+   invariants to prove each move/write/drop/storage/return check. Preserve allowed
+   shared query/insertion aliases and exact destructor costs. Parsed region IDs
+   remain binders rather than statement times.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
    spatial resources alongside the read graphs through the 113-local evaluator.
    Compose computed active/suspended loan coverage with temporary ownership
