@@ -1651,3 +1651,45 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.RetirementPlan.complete
 
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.InputLocals.references
+
+-- Native miss scope, exact query copies and retained tuple loan origins.
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_aggregate_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_copies_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_right_scrutinee_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_switch_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_miss_setup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cacheMiss_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.emptyRight_eq_emptyLeft
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_observes_queries
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.queryTuple_words
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.queryTuple_typed
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_scrutinee_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.InputLocals.prepare_miss
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_retire_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.miss_setup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSafeMachine.assign_packet_empty
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.copy_shared_packet
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.move_local_packet
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.aggregate_two_packets
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.ClosedOutside.enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.ClosedOutside.set_exception
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.copy_reference_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanOrigin.shared_graph
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanOrigin.tuple_shared
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.WordOpaque.fields
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Graph.word_not_opaque
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Graph.word_reads_not_opaque
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Graph.shared_word_reads
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.WordLoans.of_closed
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.WordLoanFields.of_closed
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.BorrowFootprint.word_cells
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.BorrowFields.word_cells
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.LocalResources.word_cells
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Inventory.word_cells
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.WordLoans.safe
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.WordLoanFields.safe
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.WordLoanState.set
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.WordLoanState.clear
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.WordLoanState.prepare
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.RootLoansAllowed.of_word_preserved
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.allowed_inline_word_opaque

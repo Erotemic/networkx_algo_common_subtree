@@ -1263,6 +1263,39 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Five affected Lean suites, all eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
         },
         "next": "Construct empty-query miss insertion/return from the checked common native scope, then all pair/pair recursion/overflow/failure paths with finite stable sufficient budgets. Derive remaining source-point scope, masks and selected physical/owner-transfer permissions while preserving allowed query/table/caller aliases. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_miss_setup_followup": {
+        "baseline_commit": "480d2cd",
+        "evidence": "memo-evaluator-miss-setup.md",
+        "endpoint": "SubtreeProofs.Rust.SourceEval.Evaluator.entry_miss_setup_complete",
+        "status": "Constructed parsed native entry, common lookup prefix, all eleven actual miss-setup actions and both addressed word inspections/routing from independently readable native packets and complete ownership. Exact shared-pointer copies assemble query tuple 13; its original loan bound below pre-entry memory length is derived. MissScope retains native inputs/tuple, complete ownership, fresh empty return storage, original non-temporary roots, and stable prefix worlds/activations at all larger helper fuel/readback pairs. No successful parent execution, expected physical result, cache-soundness or all-owner/all-loan separation premise. Empty/recursive branch bodies and all remaining planning obligations stay open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4072,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "new_theorems": 40,
+          "audited_endpoints": 1599,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 1109,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumer": "Both empty queries borrow the same inline word in a Box owned by the input table; the native table has an empty left key and nonempty right key, so independent lookup misses. Parsed entry/common/miss prefixes, original tuple-loan origin, complete native machine and actual left/right empty-word inspections are derived. The new suite is included in the verification workflow.",
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight recursive runtime cases, thirteen ordered Rust tests and nine Python frontend regressions freshly pass."
+        },
+        "next": "Construct actual empty-witness locals, table transfer, insertion reference views, helper insertion call, post-call retirement and native output/return from MissScope. Preserve original tuple-loan origins while temporary embedding views are live and derive selected physical/owner-transfer permissions without banning query/table/caller aliases. Finish all pair/pair recursion/overflow/failure paths and stable budget composition, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1451,7 +1484,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 actual parsed evaluator cache-hit totality is constructed through native entry, lookup, all twenty branch actions, return and checked closure, with fixed stable sufficient budgets, exact full cost and complete ownership. Construct empty-query miss insertion/return from the checked common native scope, then all pair/pair recursion/overflow/failure paths with finite stable sufficient budgets. Derive remaining source-point scope, masks and selected physical/owner-transfer permissions while preserving allowed query/table/caller aliases. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit totality remains checked. Parsed native miss entry/common prefix and all eleven miss-setup instructions now reach MissScope with actual word routing, original tuple-loan origins, complete ownership and stable sufficient prefix budgets. Construct actual empty-witness locals, table transfer, insertion reference views, helper insertion call, post-call retirement and native output/return from MissScope. Preserve original tuple-loan origins while temporary embedding views are live and derive selected physical/owner-transfer permissions without banning query/table/caller aliases. Finish all pair/pair recursion/overflow/failure paths and stable budget composition, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

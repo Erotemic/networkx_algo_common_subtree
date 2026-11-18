@@ -47,6 +47,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceFrameInventory.lean)
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
+(cd proofs && lake env lean Tests/SourceCacheMissSetup.lean)
 (cd proofs && lake env lean Tests/SourceHelperCalls.lean)
 (cd proofs && lake env lean Tests/SourceCallingProgram.lean)
 (cd proofs && lake env lean Tests/SourceLoanEndings.lean)
@@ -487,6 +488,22 @@ The 4,035-job build and five affected suites pass, including all eight recursive
 runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
+
+[Constructed evaluator miss setup and native word routing](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-miss-setup.md) now
+constructs all eleven miss-setup instructions after parsed native entry and the
+common lookup prefix. Exact shared-pointer copies assemble tuple 13, whose loans
+are proved to originate below the pre-entry memory bound; all temporary roots
+retire. `Rust.SourceEval.Evaluator.entry_miss_setup_complete` retains complete
+ownership, native inputs/tuple, fresh empty return storage and stable prefix
+worlds at every larger helper fuel/readback pair. Both actual word inspections
+and native routing check. A table-owned repeated-query-alias consumer passes.
+The 4,072-job build and six affected Lean suites pass, including eight recursive
+runtime cases. All 1,599 audited endpoints use only the accepted axiom baseline;
+ten statement seeds cover 1,109 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python frontend regressions pass. Empty-
+branch insertion/return, pair/pair recursion/overflow/failure, public maximum,
+dynamic regions/destructors and the remaining planning targets stay open.
+The full goal remains active.
 
 [Complete actual evaluator cache-hit execution](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-cache-hit-totality.md) now
 constructs parsed entry, lookup, all twenty hit actions, return and checked closure
