@@ -1,3 +1,4 @@
+import SubtreeProofs.Rust.SourceRecursiveHelperCallTotality
 import SubtreeProofs.Rust.SourceAssignmentTotality
 import SubtreeProofs.Rust.SourceEvalAddressedCompleteness
 
@@ -262,7 +263,7 @@ example : ∃ cell, SourceEval.Addressed.Derived.assign world activation [suspen
 
 -- The selected owned payload root is unborrowed even though an inline sibling
 -- and the caller's scalar have live shared aliases.
-example : SourceEval.Addressed.Allowed world roots ([2] ++ [1, 5]) (.move payload) := by
+private theorem payload_allowed : SourceEval.Addressed.Allowed world roots ([2] ++ [1, 5]) (.move payload) := by
   apply SourceEval.Addressed.move_allowed_from_loans (current := ⟨[], [], [2]⟩)
     activation_valid roots_separate global_frame caller_resources source_move
   intro cell target located
@@ -281,5 +282,48 @@ example : ¬ SourceEval.Addressed.Derived.PacketLoansAvoid world
     simpa only [Slot.ofValue] using
       (BorrowFootprint.shared (.shared rfl (.node .nil)) : BorrowFootprint world.memory (.shared ⟨4, []⟩) (.shared (.node .tuple 0 [])) [4])
   exact allowed [4] represented (by simp)
+
+-- A complete recursive Box call is constructed from the source payload move.
+-- The old Box shell, inline sibling loan and suspended scalar alias coexist
+-- with the fresh returned Box; no successful helper call or store is supplied.
+example : ∃ minimumFuel minimumBudget final after cost,
+    after.Valid final ∧ final.WellFormed ∧
+    OwnerFrame final (after.owners final ++ (callerOwners final [suspendedCaller] ++ [])) ∧
+    BoxCoverage final (after.owners final ++ (callerOwners final [suspendedCaller] ++ [])) ∧
+    ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+      SourceEval.Addressed.Derived.call (SourceEval.Addressed.Recursive.original budget fuel)
+        world activation [suspendedCaller] .boxNew [.move payload] 3 = some (final, after, cost) ∧
+      SourceEval.action (SourceEval.run SourceEval.Certificate.original.body fuel) state (.call .boxNew [.move payload] 3) =
+        some (after.state, cost) := by
+  have permission : SourceEval.Addressed.Derived.RootLoansAllowed world {activation with state := moved}
+      [suspendedCaller] 3 ⟨4, 0⟩ := by
+    intro remainder suspended inventory callers forbidden
+    have actual : ({activation with state := moved} : Activation).scanExcept world 3 =
+        some (⟨[1, 0, 2, 2, 3], [0], [2]⟩ : Resources) := by decide +kernel
+    have first := Option.some.inj (inventory.inspect.symm.trans actual)
+    have second := callers.unique caller_resources
+    cases first
+    cases second
+    simp at forbidden
+  have moves : ∀ current suspended, Scanned world activation current → Callers world [suspendedCaller] suspended →
+      ∀ op ∈ ([.move payload] : List SourceEval.Operand),
+        SourceEval.Addressed.Allowed world roots (current.loans ++ suspended.reads) op := by
+    intro current suspended scan callers op member
+    have actual : activation.scan world = some (⟨[1, 0, 2, 2, 3, 4], [0], [2]⟩ : Resources) := by decide +kernel
+    have same := Option.some.inj (scan.scan.symm.trans actual)
+    have old := callers.unique caller_resources
+    cases same
+    cases old
+    have eq : op = .move payload := by simpa only [List.mem_singleton] using member
+    subst op
+    exact payload_allowed
+  obtain ⟨minimumFuel, minimumBudget, final, after, cost, valid, wf, _, frame, coverage, stable⟩ :=
+    SourceEval.Addressed.Recursive.original_helper_call_stable (slot := 3) (binding := ⟨4, 0⟩)
+      (values := [.number 7]) (masks := moved) (types := [.u32]) (ty := .owned .u32)
+      activation_valid (by simpa using suspended_valid) well_formed roots_separate global_frame global_coverage
+      .boxNew rfl [.move payload] rfl
+      (by simp only [activation, SourceEval.operands, SourceEval.operand, source_move, bind, Option.bind])
+      (by rfl) (.cons (.number (by decide +kernel)) .nil) rfl (.owned .u32) moves permission
+  exact ⟨minimumFuel, minimumBudget, final, after, cost, valid, wf, frame, coverage, stable⟩
 
 end SourceAddressedExpressionTests

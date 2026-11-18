@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceChoiceTotality
+import SubtreeProofs.Rust.SourceChoiceCallTotality
 import SubtreeProofs.Rust.SourceEvalAddressedChoice
 
 namespace SourceAddressedControlTests
@@ -186,23 +186,10 @@ example : ∃ cell owners final, Derived.returnValue [] freshReturnWorld freshRe
     (by intro slot binding root current represented; cases represented; simp)
   exact ⟨cell, owners, final, run, closed, retired 0 ⟨0, 0⟩ (by rfl), output, foot, frame, coverage⟩
 
--- Arbitrary score pairs and arbitrary helper budgets now have a constructed
--- parsed entry/body/closure run. The owned nonempty first word exercises both
--- losing Box retirement and tie retention; no run-success fact is supplied.
-example (left right : Aeneas.Std.U32) (fuel budget : Nat) :
-    ∃ final packet,
-      Calling.guardedInvoke (Helpers.callee fuel budget) [] [] SourceEval.CallingCertificate.originalChoice
-        choiceBase (choicePackets left right) = some (final, packet, SourceEval.Choice.cost (first left) (second right)) ∧
-      packet.2 = encodeResult (OrderedSolver.selectResult (first left) (second right)) ∧
-      Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧
-      ∃ owners, Footprint final.memory packet.1 owners ∧
-        OwnerFrame final owners ∧ BoxCoverage final owners := by
-  have firstReadable := choice_readable left right
-    (.node .embedding 0 [.node .word 1 [.owned 0, .owned 1], .number left.val], encodeResult (first left))
-    (by simp [choicePackets])
-  have secondReadable := choice_readable left right
-    (.node .embedding 0 [.node .word 0 [], .number right.val], encodeResult (second right))
-    (by simp [choicePackets])
+private theorem choice_resources (left right : Aeneas.Std.U32) :
+    FieldsFootprint choiceBase.memory ((choicePackets left right).map Prod.fst) [0, 1] ∧
+    OwnerFrame choiceBase ([0, 1] ++ (callerOwners choiceBase [] ++ [])) ∧
+    BoxCoverage choiceBase ([0, 1] ++ (callerOwners choiceBase [] ++ [])) := by
   have input : FieldsFootprint choiceBase.memory ((choicePackets left right).map Prod.fst) [0, 1] :=
     .cons (.node (.cons (.node (.cons (.owned rfl (.node .nil))
       (.cons (.owned rfl (.node .nil)) .nil))) (.cons (.number left.val) .nil)))
@@ -222,6 +209,26 @@ example (left right : Aeneas.Std.U32) (fuel budget : Nat) :
       simpa [callerOwners] using cases
     · have bound : address < 2 := by simpa [choiceBase] using classified
       exact False.elim (small bound)
+  exact ⟨input, frame, covered⟩
+
+-- Arbitrary score pairs and arbitrary helper budgets now have a constructed
+-- parsed entry/body/closure run. The owned nonempty first word exercises both
+-- losing Box retirement and tie retention; no run-success fact is supplied.
+example (left right : Aeneas.Std.U32) (fuel budget : Nat) :
+    ∃ final packet,
+      Calling.guardedInvoke (Helpers.callee fuel budget) [] [] SourceEval.CallingCertificate.originalChoice
+        choiceBase (choicePackets left right) = some (final, packet, SourceEval.Choice.cost (first left) (second right)) ∧
+      packet.2 = encodeResult (OrderedSolver.selectResult (first left) (second right)) ∧
+      Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧
+      ∃ owners, Footprint final.memory packet.1 owners ∧
+        OwnerFrame final owners ∧ BoxCoverage final owners := by
+  have firstReadable := choice_readable left right
+    (.node .embedding 0 [.node .word 1 [.owned 0, .owned 1], .number left.val], encodeResult (first left))
+    (by simp [choicePackets])
+  have secondReadable := choice_readable left right
+    (.node .embedding 0 [.node .word 0 [], .number right.val], encodeResult (second right))
+    (by simp [choicePackets])
+  obtain ⟨input, frame, covered⟩ := choice_resources left right
   obtain ⟨final, packet, run, result, readable, wf, _, owners, foot, frame, coverage⟩ :=
     SourceEval.Choice.invoke_total fuel budget (guards := []) (inputOwners := [0, 1]) (external := []) choice_well_formed (by simp) (first left) (second right)
       (.node .embedding 0 [.node .word 1 [.owned 0, .owned 1], .number left.val])
@@ -230,5 +237,91 @@ example (left right : Aeneas.Std.U32) (fuel budget : Nat) :
   exact ⟨final, packet, run, result, readable, wf, owners, foot,
     by simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using frame,
     by simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using coverage⟩
+
+-- A parent activation moves both owned arguments into actual recursive choice,
+-- then receives its native result in a freshly allocated destination. Fuel one
+-- suffices for the callee, and all score pairs retain the exact full call cost.
+example (left right : Aeneas.Std.U32) (budget fuel : Nat) :
+    let before := choiceWorld left right
+    let parent := choiceActive left right
+    let openedWorld := before.allocate (.stack parent.frame 3 before.memory.length) (.node .tuple 0 [])
+    let opened : Activation := {parent with roots := parent.roots.set 3 (some ⟨before.memory.length, before.memory.length⟩), state := parent.state.set 3 .empty}
+    ∃ final after,
+      Derived.call (Recursive.original budget (fuel + 1)) openedWorld opened [] .chooseLonger
+        [.move (.local 1), .move (.local 2)] 3 = some (final, after,
+          (SourceEval.Cost.local 3).plus (SourceEval.Choice.cost (first left) (second right))) ∧
+      after.state 3 = Slot.ofValue (encodeResult (OrderedSolver.selectResult (first left) (second right))) ∧
+      after.Valid final ∧ final.WellFormed ∧
+      OwnerFrame final (after.owners final) ∧ BoxCoverage final (after.owners final) := by
+  dsimp only
+  let before := choiceWorld left right
+  let parent := choiceActive left right
+  let openedWorld := before.allocate (.stack parent.frame 3 before.memory.length) (.node .tuple 0 [])
+  let opened : Activation := {parent with roots := parent.roots.set 3 (some ⟨before.memory.length, before.memory.length⟩), state := parent.state.set 3 .empty}
+  have valid : parent.Valid before := initialActivation_valid choice_well_formed 30 6 (choice_readable left right) (by simp [choicePackets])
+  have wf : before.WellFormed := choice_well_formed.stackCells _ _
+  obtain ⟨input, inputFrame, inputCoverage⟩ := choice_resources left right
+  have entry := (enter_complete choice_well_formed 30 6 (choice_readable left right) (by simp [choicePackets])).1
+  have initialResources := enter_owner_resources choice_well_formed 30 6 (callers := []) (by simp)
+    (choice_readable left right) input inputFrame inputCoverage entry
+  have liveRun := Derived.storageLive_complete valid (callers := []) (by simp) (slot := 3) (by change 3 < 6; decide +kernel) (by rfl)
+  have liveSpec := Derived.storageLive_spec valid (by simp) wf liveRun
+  have liveResources := Derived.storageLive_owner_resources valid (by simp) wf initialResources.1 initialResources.2 liveRun
+  have openedValid : opened.Valid openedWorld := liveSpec.valid
+  have openedWf : openedWorld.WellFormed := liveSpec.wellFormed
+  let masks := (opened.state.set 1 .empty).set 2 .empty
+  have allEmpty : ∀ slot, masks slot = .empty := by
+    intro slot
+    by_cases one : slot = 1
+    · subst slot; simp [masks, Partial.Locals.set]
+    · by_cases two : slot = 2
+      · subst slot; simp [masks, Partial.Locals.set]
+      · by_cases three : slot = 3
+        · subst slot; simp [masks, opened, Partial.Locals.set]
+        · simp only [masks, opened, parent, choiceActive, initialActivation, choicePackets, List.map_cons,
+            List.map_nil, Partial.Locals.set, one, two, three, ite_false]
+          exact SourceEval.Choice.initial_empty (first left) (second right) one two
+  have maskTyped : ∀ slot, ∃ ty, SlotTyped (masks slot) ty ∧ Borrow.Closed ty := by
+    intro slot
+    exact ⟨.u32, by rw [allEmpty slot]; exact .empty _, .u32⟩
+  have source : SourceEval.operands opened.state [.move (.local 1), .move (.local 2)] =
+      some ([encodeResult (first left), encodeResult (second right)], masks) := by
+    simp [opened, parent, choiceActive, initialActivation, choicePackets, SourceEval.initialState, Partial.Locals.lift, initialEnv,
+      SourceEval.operands, SourceEval.operand, Partial.Locals.move, splitPlace, Slot.take,
+      Slot.materialize_ofValue, Partial.Locals.set, masks]
+  have closed : ClosedState opened.state := by
+    exact (SourceEval.Choice.initial_closed (first left) (second right)).clear 3
+  have moves : ∀ current suspended, Scanned openedWorld opened current → Callers openedWorld [] suspended →
+      ∀ op ∈ ([.move (.local 1), .move (.local 2)] : List SourceEval.Operand),
+        Allowed openedWorld opened.roots (current.loans ++ suspended.reads) op := by
+    intro current suspended scan callers op member
+    cases callers
+    have noLoans := scan.inventory.closed_loans (fun slot _ => closed slot)
+    rw [noLoans]
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl <;> intro cell pointer located forbidden <;> cases forbidden
+  have loans : Derived.RootLoansAllowed openedWorld {opened with state := masks} [] 3 ⟨before.memory.length, before.memory.length⟩ := by
+    intro remainder suspended remaining callers forbidden
+    cases callers
+    have noLoans := remaining.closed_loans (fun slot _ => maskTyped slot)
+    simp only [noLoans, List.nil_append, List.not_mem_nil] at forbidden
+  have transfer : Derived.ArgumentsLoansAllowed openedWorld opened [] [.move (.local 1), .move (.local 2)] masks := by
+    intro guarded packets owners suspended arguments footprint callers
+    have noLoans := callers.closed_loans (by
+      intro current member slot _
+      have same : current = {opened with state := masks} := by simpa only [List.mem_singleton] using member
+      subst current
+      exact maskTyped slot)
+    rw [noLoans]
+    exact List.disjoint_nil_right _
+  obtain ⟨final, after, run, state, _, valid, wf, _, frame, coverage⟩ := Derived.choice_call_total budget fuel
+    (slot := 3) (binding := ⟨before.memory.length, before.memory.length⟩) (masks := masks)
+    openedValid (by simp) openedWf (by intro _ _ _ current member; cases member)
+    liveResources.2.2.1 liveResources.2.2.2 [.move (.local 1), .move (.local 2)]
+    (by simp [opened, Roots.set]) (first left) (second right) source (allEmpty 3) moves loans transfer
+  refine ⟨final, after, run, ?_, valid, wf, ?_, ?_⟩
+  · rw [state]; simp only [Partial.Locals.set, ite_true]
+  · simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using frame
+  · simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using coverage
 
 end SourceAddressedControlTests

@@ -86,18 +86,18 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
-[Whole pinned choice totality](evidence/memo-evaluator-choice-totality.md) now constructs actual parsed entry,
-its complete body, both winner branches, losing-value destruction, return and
-checked closure for arbitrary native embeddings. The native tie rule, exact
-full cost, readable output, protected caller bytes and complete output/caller/
-external ownership with live-Box coverage compose. Initial readable inputs,
-complete ownership and input-owner/suspended-loan separation remain explicit;
-arbitrary helper fuel/readback budgets suffice for this call-free body. Actual
-recursive dispatch and evaluator/maximum scope/loan/budget composition, dynamic
-regions/destructors and every other planning target remain open. The 4,016-job
-build and three affected suites pass. The 1,383-endpoint audit includes 27 new
+[Constructed recursive helper and choice calls](evidence/memo-evaluator-call-totality.md) now compose actual
+argument extraction, callee execution and checked result storage from independent
+local source steps, types, ownership and selected loan permissions. Choice runs
+through recursive dispatch with one fuel; whole helper calls have fixed joint
+sufficient fuel/readback bounds and stable final state/full cost. Shared helper
+aliases remain permitted; choice constrains only transferred owners versus actual
+post-argument suspended loans. Evaluator/maximum all-path scope/loan discharge,
+recursive budget composition, dynamic regions/destructors and the other planning
+targets remain open. The 4,022-job build and five affected suites pass, including
+all eight recursive runtime cases. The 1,401-endpoint audit includes 18 new
 theorems with only the accepted axiom baseline. Eight selected statement seeds
-cover 1,124 unique declarations with no unknown references. The full goal is active.
+cover 1,125 unique declarations with no unknown references. The full goal is active.
 
 [Stable recursive fuel and readback budgets](evidence/memo-evaluator-stable-budgets.md) now preserve every
 completed actual run's exact world/packet/full cost at all larger bounds.

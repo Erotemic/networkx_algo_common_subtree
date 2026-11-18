@@ -1142,6 +1142,34 @@
           "broader_regression": "Full 47-suite/native-WP/nine-Python at d49f638; runtime at a56e701; thirteen ordered Rust tests at 823df34; not rerun."
         },
         "next": "Compose choice with actual recursive dispatch, derive fresh choice input transfer permissions at evaluator call sites, and construct actual argument/callee/result stores and all evaluator/maximum paths with sufficient stable budgets. Preserve permitted shared aliases; interpret dynamic regions/destructors and finish public teardown/wrappers/input policy/resources/G3 and the full planning goal."
+      },
+      "evaluator_call_totality_followup": {
+        "baseline_commit": "17180e7",
+        "evidence": "memo-evaluator-call-totality.md",
+        "status": "Constructed whole helper and choice calls from local source argument steps, independent types, complete owners and selected move/root/transfer loan permissions. Actual argument packets, post-argument owners, recursive callee execution and guarded result stores are derived; no successful parent/callee run or post-callee frame is supplied. Choice runs with one recursive fuel; helper calls have fixed joint stable fuel/readback thresholds. Actual evaluator/maximum all-path conditions and all other planning obligations remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4022,
+          "affected_lean_suites": [
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "new_theorems": 18,
+          "audited_endpoints": 1401,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1125,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "broader_regression": "Eight recursive runtime cases freshly rerun. Full 47-suite/native-WP/nine-Python at d49f638 and thirteen ordered Rust tests at 823df34; not rerun."
+        },
+        "next": "Construct common lookup prelude and cache-hit/empty-query actual evaluator paths, then pair/pair recursion and all overflows/failures. Derive per-source-point scope, initialization, destination/move/selected-owner loans from native inputs, copy/result freshness and reference last use; compose stable helper/recursive budgets. Preserve shared aliases and complete ownership. Finish dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target."
       }
     },
     {
@@ -1330,7 +1358,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 compose constructed whole pinned choice and sufficient typed helper budgets with actual recursive dispatch, argument/callee/result stores and all-path evaluator/maximum scope/loan checks. Derive choice input-owner separation from suspended loans at its actual call sites; retain query/table/insertion aliases. Complete dynamic parsed regions/destructor instances, native public maximum/cold-table teardown, wrappers/input policy/global resources/G3 and every other planning target. No full SRC-01/C3 or production resource closure."
+      "W06-C3 construct all actual evaluator/maximum paths using now-constructed whole recursive helper/choice calls. Derive source-point scope, initialization, selected moves, destination loans and argument-owner transfer permissions; compose sufficient stable helper/recursive bounds while retaining allowed shared aliases and complete ownership. Complete dynamic parsed regions/destructor instances, public cold-table teardown, wrappers/input policy/global resources/G3 and every other planning target. No full SRC-01/C3 or production resource closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

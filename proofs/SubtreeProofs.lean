@@ -305,3 +305,5 @@ public import SubtreeProofs.Rust.SourceChoicePermissions
 public import SubtreeProofs.Rust.SourceScrutineeTotality
 
 public import SubtreeProofs.Rust.SourceChoiceTotality
+
+public import SubtreeProofs.Rust.SourceChoiceCallTotality

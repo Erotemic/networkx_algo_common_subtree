@@ -1468,3 +1468,22 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.body_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.initial_closed
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.invoke_total
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_noCalls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_noCalls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.guardedInvoke_noCalls
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.invoke_total_with
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.run_choice_total
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_choice_total
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Inventory.unique
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Frame.restore_empty
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.preserve_call_context
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.RootLoansAllowed.transport
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_run
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_ready_from_values
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.helper_call_stable
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_callee_congr
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.run_helper
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_helper_call_stable
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.packets_two_values
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.choice_call_total
