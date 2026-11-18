@@ -1,5 +1,30 @@
 # Common-subtree proof status
 
+[Constructed owned matched witness](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-matched-scope.md) now
+constructs the first thirty actual successful-root-score instructions through
+matched candidate 64: total extraction, two real Box allocations, owned pair-word
+assembly, score attachment and all moved-out temporary cleanup. The parsed
+`Evaluator.entry_pair_matched_scope_complete` retains seven actual prefix
+boundaries at shared sufficient bounds, complete original-loan machinery,
+native candidate, scalar-only head/tail masks and fresh concatenation storage.
+Smaller head/tail `NativeTotal` and independent native score successes stay
+explicit; no physical parent success, cache soundness, witness freshness or
+global alias ban is supplied. Generic Box/aggregate constructions transfer
+complete owners through the unchanged actual helpers and checked stores.
+The 4,158-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,757 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,301 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Table-owned alias
+consumers discharge both smaller contracts with proved empty cases: one derives
+all seven prefixes; another uses nonempty cached witnesses and constructs a
+candidate with six owned Boxes, preserving complete ownership and coverage.
+Retaining exact query/view snapshots through the matched prefix, concatenation,
+fresh query-loan tracking, both contraction calls, recursive witness provenance/
+owned cleanup, overflow exits, choice, insertion, remaining returns and full
+pair/pair induction remain. Dynamic regions/destructors, public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and every other planning target
+remain open. The full goal stays active.
+
 [Constructed root-score arithmetic and native switch](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-root-score-scope.md) now
 constructs all twelve actual root-score instructions after successful subtotal:
 scalar payload copying, subtotal/temporary retirement, fresh total/result storage,

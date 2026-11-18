@@ -1847,3 +1847,17 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_scope_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_subtotal_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_score_arguments_source
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_aggregate_two_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.contractLeft_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_matched_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_box_new_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_boxed_word_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_boxes_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_embedding_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_total_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_word_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.resultWordHole_boxes_zero
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.resultWordHole_typed
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.result_word_take

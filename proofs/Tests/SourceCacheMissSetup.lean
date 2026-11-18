@@ -2,6 +2,7 @@ import SubtreeProofs.Rust.SourcePairTailEntry
 import SubtreeProofs.Rust.SourcePairTailScopeEntry
 import SubtreeProofs.Rust.SourcePairScoreEntry
 import SubtreeProofs.Rust.SourcePairRootScoreEntry
+import SubtreeProofs.Rust.SourcePairMatchedEntry
 
 namespace SourceCacheMissSetupTests
 
@@ -434,5 +435,106 @@ example : ∃ final after,
   refine ⟨final, after, machine, scope, ?_, ?_⟩
   · simpa [SourceEval.checkedAdd32] using scope.result
   · simpa [SourceEval.checkedAdd32, SourceEval.Evaluator.numberKey] using inspection
+
+
+-- The matched candidate is constructed through all seven actual prefixes.
+-- Both queries alias table-owned data, and both smaller contracts are proved.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive headWorld headActive tailWorld tailActive scoreWorld scoreActive rootWorld rootActive final after,
+    OriginalLoanMachine world [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.MatchedScope SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness headMemo 1#u32 after ∧
+    after.state 64 = Slot.ofValue (encodeResult ⟨.Pair .Empty .Empty, 1#u32⟩) ∧
+    (after.state 37).dropWork.boxes = 0 ∧ (after.state 47).dropWork.boxes = 0 ∧
+    (∀ slot ∈ [59, 61, 65, 66, 67, 68, 69, 70], after.roots slot = none) ∧
+    (∀ slot ∈ [71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81], after.roots slot = none) ∧
+    ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix entered active lookupWorld lookupActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions lookupWorld lookupActive missWorld missActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions missWorld missActive headWorld headActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.tailCases SourceEval.Evaluator.tailActions headWorld headActive tailWorld tailActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.scoreCases SourceEval.Evaluator.scoreActions tailWorld tailActive scoreWorld scoreActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.rootScoreCases SourceEval.Evaluator.rootScoreActions scoreWorld scoreActive rootWorld rootActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 30) (SourceEval.Evaluator.matchedActions.take 30) rootWorld rootActive final after := by
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native headMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, final, after,
+    _, machine, scope, _, retired, unbound, _, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_matched_scope_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table headMemo headMemo SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness
+      0#u32 1#u32 pairCell pairCell tableCell pair_readable pair_readable table_readable footprint resources.2.1 resources.2.2
+      (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative tailNative (by decide +kernel) (by decide +kernel)
+  refine ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, final, after,
+    machine, scope, ?_, ?_, ?_, retired, unbound, stable⟩
+  · simpa [SourceEval.Evaluator.matchedWitness, SourceEval.Evaluator.emptyWitness] using scope.candidate
+  · rw [scope.headHole]; exact SourceEval.Evaluator.resultWordHole_boxes_zero _
+  · rw [scope.tailHole]; exact SourceEval.Evaluator.resultWordHole_boxes_zero _
+
+private def wideWitness : CommonEmbedding := ⟨.Pair .Empty .Empty, 7#u32⟩
+private def wideEntry : Cell := .node .entry 0 [.node .word 0 [], .node .word 0 [],
+  .node .embedding 0 [.node .word 1 [.owned 6, .owned 7], .number wideWitness.edges.val]]
+private def wideTable : MemoTable := .Entry ⟨.Empty, .Empty, wideWitness⟩ table
+private def wideCell : Cell := .node .table 1 [.owned 4, .owned 5]
+private def wideWorld : World := ⟨world.memory ++ [wideEntry, tableCell, .node .word 0 [], .node .word 0 []],
+  fun address => if address < 8 then some .box else none, fun address => decide (address < 8)⟩
+private theorem wide_extends : Heap.Extends world.memory wideWorld.memory := Heap.Extends.append _ _
+private theorem wide_entry_graph : Graph wideWorld.memory wideEntry
+    (.node .entry 0 [encodeWord .Empty, encodeWord .Empty, encodeResult wideWitness]) [6, 7] :=
+  .node (.cons (.node .nil) (.cons (.node .nil) (.cons (.node (.cons
+    (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))) (.cons (.number _) .nil))) .nil)))
+private theorem wide_entry_footprint : Footprint wideWorld.memory wideEntry [6, 7] :=
+  .node (.cons (.node .nil) (.cons (.node .nil) (.cons (.node (.cons
+    (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))) (.cons (.number _) .nil))) .nil)))
+private theorem wide_footprint : Footprint wideWorld.memory wideCell [6, 7, 4, 2, 3, 0, 1, 5] :=
+  .node (.cons (.owned rfl wide_entry_footprint) (.cons (.owned rfl
+    (.node (.cons (.owned rfl (Heap.Spatial.footprint_mono wide_extends entry_footprint)) (.cons (.owned rfl (.node .nil)) .nil)))) .nil))
+private theorem wide_readable : Readable wideWorld.memory wideWorld.live wideCell (encodeTable wideTable) := by
+  refine ⟨[6, 7, 4, 2, 3, 0, 1, 5], .node (.cons (.owned rfl wide_entry_graph) (.cons (.owned rfl
+    (.node (.cons (.owned rfl (entry_graph.mono wide_extends)) (.cons (.owned rfl (.node .nil)) .nil)))) .nil)), ?_⟩
+  simp [AliveOn, wideWorld]
+private theorem wide_pair_readable : Readable wideWorld.memory wideWorld.live pairCell (.reference (encodeWord (.Pair .Empty .Empty))) :=
+  ⟨[2, 3, 0], .shared rfl (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))),
+    by simp [AliveOn, wideWorld]⟩
+private theorem wide_resources : OwnerFrame wideWorld [6, 7, 4, 2, 3, 0, 1, 5] ∧ BoxCoverage wideWorld [6, 7, 4, 2, 3, 0, 1, 5] := by
+  refine ⟨⟨by decide +kernel, ?_, ?_⟩, ?_⟩
+  · intro address member
+    have bound : address < 8 := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [wideWorld, bound]
+  · intro address member
+    have bound : address < 8 := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [wideWorld, bound]
+  · intro address classified _
+    have bound : address < 8 := by simpa [wideWorld] using classified
+    simp only [List.mem_cons, List.not_mem_nil, or_false]; omega
+
+-- Both cached results own nonempty words. The matched candidate must transfer
+-- their four descendant owners and the two new outer Boxes without duplicating
+-- table owners or requiring cache soundness or successful physical execution.
+example : ∃ final after,
+    OriginalLoanMachine wideWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.MatchedScope wideWitness wideWitness wideTable 15#u32 after ∧
+    (after.state 64).dropWork.boxes = 6 ∧ after.roots 66 = none ∧ after.roots 68 = none := by
+  have footprint : FieldsFootprint wideWorld.memory [pairCell, pairCell, wideCell] [6, 7, 4, 2, 3, 0, 1, 5] :=
+    .cons (.shared _) (.cons (.shared _) (.cons wide_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native wideTable .Empty .Empty wideWitness
+    (by simp [wideTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, final, after,
+    _, machine, scope, _, retired, _, _, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_matched_scope_complete (by simp [World.WellFormed, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty wideTable wideTable wideTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell wideCell wide_pair_readable wide_pair_readable wide_readable footprint
+      (by simpa [callerOwners] using wide_resources.1) (by simpa [callerOwners] using wide_resources.2)
+      (by simp [wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+  refine ⟨final, after, machine, scope, ?_, retired 66 (by simp), retired 68 (by simp)⟩
+  rw [scope.candidate]
+  simp [SourceEval.Evaluator.matchedWitness, wideWitness, encodeResult, encodeWord, Slot.ofValue, ofFields,
+    Slot.dropWork, dropFields, DropWork.plus]
 
 end SourceCacheMissSetupTests
