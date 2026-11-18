@@ -1,5 +1,31 @@
 # Lean complexity campaign: proto-roadmap
 
+[Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
+now derives descendant-owner freshness from the actual helper allocation ledger.
+Copy/lookup/concatenation helpers receive no owned input cells; every result Box
+lies beyond the incoming heap. Guarded storage retains the exact packet owner
+list. The native concatenation endpoint derives provenance relative to the
+original heap and constructs its guarded owned-word drop while retaining legal
+original query/table/caller aliases. Canonical inventories, closed reference
+preparation and checked anchored-machine advances preserve established provenance.
+Insertion/`boxNew` remain outside this fresh-output class because they transfer
+owned descendants. The existing `NativeTotal` contract is unchanged.
+The 4,218-job build and seven affected Lean suites pass, including eight runtime
+cases. All 1,882 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,002 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Nonempty table-owned cache
+aliases exercise fresh copy/lookup results and full derived storage; a parsed
+nonempty concatenation derives and drops all four result Boxes; actual insertion
+retains an old input owner, checking the freshness boundary.
+The parent frontier remains the checked seventeen-checkpoint right-result scope.
+Recursive witness provenance through complete evaluator execution, payload/
+field transfers and choice still needs proof; helper provenance alone does not
+supply it. Both optional joins, successful right payload transfer, general owned
+cleanup, overflow exits, insertion, remaining parent returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and the remaining planning targets stay open.
+The full goal remains active.
+
 [Actual right recursion and complete right-result scope](evidence/memo-evaluator-right-scope.md) now
 constructs all remaining twenty-one right-region instructions and the full
 36-instruction prefix through seventeen stable checkpoints from parsed entry.

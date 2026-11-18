@@ -1983,3 +1983,14 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_word_views_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_contraction_call_arguments
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_result_scrutinee_source
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.store_local_owners
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.helper_call_fresh_output
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.original_helper_call_fresh_output
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.callee_fresh_output
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.typed_plain_packets
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LocalOwnersAbove.of_resource
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LocalOwnersAbove.of_zero
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LocalOwnersAbove.prepare
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LocalOwnersAbove.weaken
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_concatenate_fresh_complete

@@ -11,6 +11,7 @@ import SubtreeProofs.Rust.SourcePairLeftCallEntry
 import SubtreeProofs.Rust.SourcePairLeftScopeEntry
 import SubtreeProofs.Rust.SourcePairRightPrefixEntry
 import SubtreeProofs.Rust.SourcePairRightScopeEntry
+import SubtreeProofs.Rust.SourceOriginalConcatenateFresh
 
 namespace SourceCacheMissSetupTests
 
@@ -1254,5 +1255,62 @@ example : ∃ final after,
       (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
   obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans rightNative))
   exact ⟨final, after, machine, scope.resultValue, scope.tableValue, scope.payloadRoot, inspection⟩
+
+
+-- Actual nonempty concatenation derives fresh descendant owners and a guarded
+-- drop of all four result Boxes, retaining original query/table aliases.
+example : ∃ final after cost nativeCost discarded,
+    OriginalLoanMachine concatWorld [] {} [4, 5, 6, 7, 8, 9, 10] [73, 72, 45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    LocalOwnersAbove concatWorld.memory.length final after 71 ∧
+    after.state 71 = Slot.ofValue (encodeWord (.Pair .Empty (.Pair .Empty .Empty))) ∧
+    Derived.drop final after [] 71 = some (final.retire discarded, {after with state := after.state.set 71 .empty}) ∧
+    discarded.length = 4 ∧
+    OriginalLoanMachine concatWorld [] {} [4, 5, 6, 7, 8, 9, 10] [73, 72, 45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13]
+      (final.retire discarded) {after with state := after.state.set 71 .empty} ∧
+    nativeCost.events = MemoSource.concatenateEvents (.Pair .Empty .Empty) (.Pair .Empty .Empty) ∧
+    cost = (SourceEval.Cost.local (SourceEval.Action.call .concatenate (SourceEval.Evaluator.concatenateArgs 72 73) 71).weight).plus (SourceEval.Legacy.costMap nativeCost) := by
+  have footprint : FieldsFootprint concatWorld.memory [concatPairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons (Heap.Spatial.footprint_mono concat_extends
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil)))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table (.Pair .Empty .Empty) .Empty (Or.inr rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native concatMemo (.Pair .Empty .Empty) .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [concatMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wm, am, _, machine, candidate, queries, count, _, unbound, _, _⟩ :=
+    SourceEval.Evaluator.entry_pair_matched_queries_complete (external := [4, 5, 6, 7, 8, 9, 10])
+      (by simp [World.WellFormed, concatWorld, world]) (by simp) Callers.nil
+      (.Pair .Empty .Empty) (.Pair .Empty .Empty) .Empty .Empty table concatMemo concatMemo
+      SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness 0#u32 1#u32
+      concatPairCell pairCell tableCell concat_large_readable concat_pair_readable concat_table_readable footprint
+      concat_resources.1 concat_resources.2 (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+      (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+      headNative tailNative (by decide +kernel) (by decide +kernel)
+  obtain ⟨wa, aa, arguments, ma, scopeA, _, _, countA, _, _, _⟩ :=
+    SourceEval.Evaluator.pair_left_concat_arguments_complete machine (Helpers.callee 0 0) queries candidate
+      (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1]; decide)
+      (by intro slot member
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+          rcases member with rfl | rfl | rfl <;> exact unbound _ (by simp))
+  let observed := aa.forgetRefs (SourceEval.Evaluator.matchedCode 35)
+  have mp := ma.prepare (SourceEval.Evaluator.matchedCode 35)
+  have first : observed.state 72 = .shared (encodeWord (.Pair .Empty .Empty)) :=
+    (Activation.forgetRefs_observed aa (SourceEval.Evaluator.matchedCode 35) 72 (by decide +kernel)).trans scopeA.leftValue
+  have second : observed.state 73 = .shared (encodeWord (.Pair .Empty .Empty)) :=
+    (Activation.forgetRefs_observed aa (SourceEval.Evaluator.matchedCode 35) 73 (by decide +kernel)).trans scopeA.rightValue
+  obtain ⟨binding, root, raw⟩ := scopeA.resultRoot
+  obtain ⟨fuel, budget, final, after, cost, nativeCost, finalMachine, _, _, _, state, events, costEq, fresh,
+    ⟨discarded, dropRun, dropLength, dropMachine⟩, _, _⟩ :=
+    SourceEval.Evaluator.original_concatenate_fresh_complete mp 72 73 71 (by decide) (by decide) (by decide) (by decide)
+      (by intro slot member
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+          rcases member with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;>
+            change _ < aa.count <;> rw [countA, count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1] <;> decide)
+      (.Pair .Empty .Empty) (.Pair .Empty .Empty) first second root raw (SourceEval.LoanEnding.forget_empty _ _ scopeA.resultEmpty)
+  have value : after.state 71 = Slot.ofValue (encodeWord (.Pair .Empty (.Pair .Empty .Empty))) := by
+    simp [state, Partial.Locals.set, OrderedSolver.appendWord]
+  refine ⟨final, after, cost, nativeCost, discarded, finalMachine, fresh, value, dropRun, ?_, dropMachine, events, costEq⟩
+  rw [dropLength, value]
+  simp [encodeWord, Slot.ofValue, ofFields, Slot.dropWork, dropFields, DropWork.plus]
 
 end SourceCacheMissSetupTests
