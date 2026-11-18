@@ -2,6 +2,28 @@
 
 Branch: `Droschinsky-algos`.
 
+[Complete tail scope and owned-drop support](lean-complexity-campaign/evidence/memo-evaluator-tail-scope.md) now
+constructs all twenty-four tail-prefix instructions through the actual tail-result
+switch: argument retirement, native optional/table extraction, moved-output
+cleanup and fresh payload storage. `Evaluator.entry_pair_tail_scope_complete`
+connects parsed entry and all four actual prefix boundaries at shared sufficient
+bounds. The successful-tail path additionally moves its owned witness into 47
+through the first six score instructions, retaining the owned head witness.
+`OriginalLoanMachine.drop_fresh` constructs nonzero owned drops from explicit
+selected-owner freshness, preserving original loan origins; deriving that
+freshness for recursive witnesses remains open. No caller alias ban or successful
+physical parent premise is added. Full pair/pair induction remains open.
+The 4,133-job build, six affected Lean suites (including eight runtime cases),
+1,719-endpoint axiom audit, eight elaborated statement seeds (1,302 unique
+records, no unknown references), thirteen ordered Rust tests and nine Python
+checks pass. A repeated table-owned alias consumer discharges both smaller
+contracts using proved empty-input totality and reaches the actual tail switch.
+Score arithmetic, recursive witness freshness and owned cleanup, overflow,
+contractions, choice, insertion and remaining parent returns are still open,
+as are dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and every other planning target.
+The full goal remains active.
+
 [Complete head failure and constructed tail recursion](lean-complexity-campaign/evidence/memo-evaluator-head-failure-tail-call.md) now
 constructs the entire selected head-failure invocation, including routing,
 output/temporary cleanup, return, checked closure, complete ownership and stable

@@ -1,4 +1,5 @@
 import SubtreeProofs.Rust.SourcePairTailEntry
+import SubtreeProofs.Rust.SourcePairTailScopeEntry
 
 namespace SourceCacheMissSetupTests
 
@@ -189,5 +190,43 @@ example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorl
   obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans expected))
   exact ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
     final, after, machine, value, payload, hole, emptyTable, stable⟩
+
+-- The complete tail prefix retires its argument/output roots and reaches the
+-- actual result discriminant. Both original queries alias table-owned data;
+-- both recursive contracts are discharged by proved native empty instances.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive headWorld headActive final after,
+    OriginalLoanMachine world [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.PairTailScope headActive .Empty .Empty .Empty .Empty SourceEval.Evaluator.emptyWitness
+      (some SourceEval.Evaluator.emptyWitness) headMemo final after ∧
+    after.roots 43 = none ∧ after.roots 44 = none ∧ after.roots 45 = none ∧ after.roots 46 = none ∧
+    Derived.scrutinee final after [] (.discriminant (.local 41)) = some (.variant .optional 1, after) ∧
+    ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix
+        entered active lookupWorld lookupActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions
+        lookupWorld lookupActive missWorld missActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions
+        missWorld missActive headWorld headActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.tailCases SourceEval.Evaluator.tailActions
+        headWorld headActive final after := by
+  have owned := resources
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
+    final, after, result, output, _, _, machine, scope, inspection, native, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_tail_scope_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table headMemo SourceEval.Evaluator.emptyWitness pairCell pairCell tableCell
+      pair_readable pair_readable table_readable footprint owned.2.1 owned.2.2 (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative
+  have expected := SourceEval.Evaluator.cache_hit_native headMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans expected))
+  exact ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
+    final, after, machine, scope, scope.retired 43 (by simp), scope.retired 44 (by simp),
+    scope.retired 45 (by simp), scope.retired 46 (by simp), inspection, stable⟩
 
 end SourceCacheMissSetupTests

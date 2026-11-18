@@ -1401,6 +1401,44 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
         },
         "next": "Construct the last ten tail-prefix instructions: argument retirement, optional/table extraction, moved-out output cleanup and fresh payload storage. Then select tail failure or score arithmetic; derive owned-witness destructor loan permissions/provenance without banning query/table/caller aliases. Complete overflow, both contraction requests, choice, final insertion and parent return/closure, discharging all smaller NativeTotal contracts by full pair/pair induction. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_tail_scope_followup": {
+        "baseline_commit": "242db13",
+        "evidence": "memo-evaluator-tail-scope.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_tail_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.score_tail_payload_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.drop_fresh"
+        ],
+        "status": "Constructed all twenty-four actual tail-prefix instructions under explicit smaller-tail NativeTotal: recursive call, argument retirement, native optional/table extraction, moved-output cleanup and fresh payload storage. Parsed entry/common/miss/head/tail prefixes reach the actual tail-result scrutinee with complete ownership, original query/Box-field loan origins, held head embedding and exact native tail result/table, at all larger bounds. The first six successful-tail score instructions extract the tail witness into 47 and retain the head witness. A generic checked owned-drop lemma preserves original origins under explicit selected-owner freshness; recursive witness freshness is not yet derived. No successful physical parent run, global owner/loan disjointness, cache soundness or full pair/pair totality premise is assumed. Remaining score/parent paths and full pair/pair induction are open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4133,
+          "new_proof_modules": 6,
+          "new_theorems": 9,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1719,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1302,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumer": "Both parent queries select the same nonempty word in a table-owned entry. Proved empty-input NativeTotal instances discharge both smaller calls; head miss then tail hit reaches all twenty-four tail instructions and the actual discriminant, preserving complete ownership and retiring roots 43 through 46. No successful physical run premise is supplied.",
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
+        },
+        "next": "Construct scalar score copies and checked-add calls, then root-score overflow and both contraction requests, choice, final insertion and remaining cleanup/return. Derive selected recursive witness owner freshness (or equivalent loan-disjointness) from actual source execution; complete ownership alone does not establish it. Use the checked drop_fresh bridge once that provenance is available. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Discharge all smaller NativeTotal premises by complete pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1589,7 +1627,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit/empty-query totality remain checked. The actual selected head-failure invocation now closes with native Evaluation, complete ownership and stable exact world/packet/full cost under its smaller-head NativeTotal induction premise. Successful-head execution reaches the actual tail recursive call under smaller-tail NativeTotal, preserving head ownership and original query loans. An alias consumer discharges both smaller contracts using proved empty-input instances. Construct the last ten tail-prefix instructions: argument retirement, optional/table extraction, moved-out output cleanup and fresh payload storage. Then select tail failure or score arithmetic; derive owned-witness destructor loan permissions/provenance without banning query/table/caller aliases. Complete overflow, both contraction requests, choice, final insertion and parent return/closure, discharging all smaller NativeTotal contracts by full pair/pair induction. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. All twenty-four successful-head/tail instructions now reach the actual tail-result switch; the first six successful-tail score instructions retain both owned witnesses. An alias consumer discharges smaller calls using proved empty cases. Construct scalar score copies and checked-add calls, then root-score overflow and both contraction requests, choice, final insertion and remaining cleanup/return. Derive selected recursive witness owner freshness (or equivalent loan-disjointness) from actual source execution; complete ownership alone does not establish it. Use the checked drop_fresh bridge once that provenance is available. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Discharge all smaller NativeTotal premises by complete pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

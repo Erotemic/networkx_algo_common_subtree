@@ -322,3 +322,6 @@ public import SubtreeProofs.Rust.SourcePairHeadScopeEntry
 
 public import SubtreeProofs.Rust.SourceHeadFailureTotality
 public import SubtreeProofs.Rust.SourcePairTailEntry
+
+public import SubtreeProofs.Rust.SourcePairScoreProgram
+public import SubtreeProofs.Rust.SourceOriginalOwnedDrop

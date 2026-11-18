@@ -1810,3 +1810,13 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.recurseTails_actions
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_head_payload_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_request_smaller
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.drop_preserves_other_local
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.drop_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.addScores_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_tail_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_retire_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_unpack_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.score_tail_payload_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_result_scrutinee_source
