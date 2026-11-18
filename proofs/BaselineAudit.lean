@@ -1894,3 +1894,37 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_contraction_request_smaller
 #print axioms SubtreeProofs.Rust.SourceEval.LoanEnding.unwritten_prefix_observed
 #print axioms SubtreeProofs.Rust.SourceEval.LocalPreservation.action_no_write
+
+-- Fresh left-query views anchored in owned word storage.
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.LocalResources.borrow_source
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.LocalResources.closed_reads_avoid_other_root
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.LocalResources.closed_reads_avoid_owners
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.LocalResources.owners_subset_activation
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.anchor_avoids_root
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_owned_view
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_scoped_borrow
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_supported_view
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.current_root_unborrowed
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.move_local
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.of_original
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.other_owners_avoid_anchor
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.prepare
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.rootLoans
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.storageLive
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Inventory.loans_below_or_supported
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanOrigin.support
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.allocate
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.allows
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.borrow_shared
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.clear
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.congr
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.of_closed
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.of_shared_graph
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.prepare
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.reads_avoid_other_root
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.retire_other
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.transport
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.weaken
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSupport.write_other
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_word_views_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_word_views_complete

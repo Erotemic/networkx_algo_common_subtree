@@ -1608,6 +1608,51 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
         },
         "next": "Construct fresh references 78/77 to the owned concatenated word 71 and execute the smaller left contraction request. Track bounded original loans separately from loans into current owned word/embedding locals; do not rebase all stack roots to a newer common bound or ban legal query/table/caller aliases. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup. Complete overflow exits, both contraction paths, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_owned_word_loans_followup": {
+        "baseline_commit": "8c1219d",
+        "evidence": "memo-evaluator-owned-word-loans.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_word_views_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_word_views_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_owned_view",
+          "SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.assign_supported_view",
+          "SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.rootLoans",
+          "SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.move_local",
+          "SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.other_owners_avoid_anchor"
+        ],
+        "status": "Constructed all five actual fresh-view setup instructions 39-43: open result 76 and references 77/78, borrow owned concatenated word 71 into 78, and reborrow through 78 into 77. Parsed entry reaches both views through nine stable actual prefix boundaries. AnchoredLoanMachine retains strict pre-entry loan origins for the original query family and separate fresh support inside the closed owning word local's actual read footprint. Complete native ownership, exact original queries, matched candidate, table, total, owned word, fresh view values, activation shape, old root bytes and future fresh storage persist. Precise read partition, Box classes and distinct roots derive selected moves/store/retirement permissions for other roots; complete owner uniqueness excludes other local owners from the anchor. Actual borrow/reborrow assignments derive success and preserve both provenance families. Smaller head/tail NativeTotal and independent native successes stay explicit; no successful physical parent run, cache soundness, recursive witness freshness or global alias ban is assumed. Original-query destructor obligations, remaining left-call setup/call and full pair/pair induction remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4177,
+          "new_proof_modules": 9,
+          "new_theorems": 32,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1820,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1293,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumers": [
+            "Repeated table-owned query aliases with proved empty-input recursive contracts derive all nine stable actual prefix boundaries, both exact fresh native word views and actual result-root loan permission while those views remain live.",
+            "A larger external left query and table-owned right query construct a four-Box concatenated word and both fresh views, retain exact original query snapshots and derive separation of matched candidate owners from the precise fresh-loan anchor under complete owner uniqueness."
+          ],
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
+        },
+        "next": "Construct right argument 79 and moved table argument 80, then execute the strictly smaller left contraction request using its universal recursive contract. Preserve original and fresh anchored loan families through the actual call, extract its result/table, retire argument roots and end reference 78 at the actual source point; narrow back to original loan origins after fresh views end. Complete both contraction failure/success joins. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations remain separate from fresh word-anchor permissions. Complete overflow exits, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1796,7 +1841,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail/root-score/matched execution now reaches actual owned left-query concatenation through eight stable prefix boundaries, retaining all seven exact original query snapshots. Both native contraction requests strictly decrease. Aliased consumers discharge smaller contracts using proved empty cases and exercise recursive nonempty concatenation with four owned Boxes. Construct fresh references 78/77 to the owned concatenated word 71 and execute the smaller left contraction request. Track bounded original loans separately from loans into current owned word/embedding locals; do not rebase all stack roots to a newer common bound or ban legal query/table/caller aliases. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup. Complete overflow exits, both contraction paths, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail/root-score/matched/concatenation execution now reaches actual fresh references 78/77 to owned word 71 through nine stable prefix boundaries, preserving exact original queries and separate bounded/original versus precisely anchored fresh loans. Aliased and nonempty four-Box consumers derive selected root/owner permissions while views are live. Construct right argument 79 and moved table argument 80, then execute the strictly smaller left contraction request using its universal recursive contract. Preserve original and fresh anchored loan families through the actual call, extract its result/table, retire argument roots and end reference 78 at the actual source point; narrow back to original loan origins after fresh views end. Complete both contraction failure/success joins. Derive recursive witness owner provenance or equivalent selected destructor loan-disjointness from actual execution for general owned cleanup; original query-loan destructor obligations remain separate from fresh word-anchor permissions. Complete overflow exits, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

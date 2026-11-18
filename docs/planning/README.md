@@ -25,6 +25,33 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Constructed fresh owned-word views](lean-complexity-campaign/evidence/memo-evaluator-owned-word-loans.md) now reaches actual references
+78/77 to concatenated word 71 through nine stable prefix boundaries from parsed
+entry. All five setup instructions construct result/reference storage, borrow
+the owned word and reborrow through the first reference. `AnchoredLoanMachine`
+retains strict pre-entry bounds for original query loans and separate precise
+support for fresh word loans. The word's actual read footprint contains its
+Box owners and own stack root; other selected stack roots remain available
+for moves/stores/retirement. Complete owner uniqueness also separates this
+anchor from other locals' owners, leaving original-query destructor obligations
+explicit. Exact native queries, matched candidate, updated table and original
+origins persist. Smaller head/tail `NativeTotal` and independent native successes
+remain explicit; no successful physical parent run, cache soundness, recursive
+witness freshness or global alias ban is supplied.
+The 4,177-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,820 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,293 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. New table-owned alias
+and nonempty four-Box consumers discharge smaller contracts with proved empty
+cases, derive all nine prefixes/result-root permission and separate matched
+candidate owners from the fresh-loan anchor.
+Right argument 79, table argument 80, the left contraction call and anchored
+call preservation/cleanup remain. Recursive witness provenance/owned cleanup,
+overflow exits, both contraction joins, choice, insertion, remaining returns
+and full pair/pair induction remain. Dynamic regions/destructors, public maximum/
+cold-table teardown, wrappers/input policy/resources/G3 and every other planning
+target stay open. The full goal remains active.
+
 [Constructed left-query concatenation](lean-complexity-campaign/evidence/memo-evaluator-left-concatenation.md) now reaches owned appended word
 71 through eight stable actual prefix boundaries from parsed evaluator entry.
 All nine concatenation instructions construct original child reborrows, execute

@@ -5,6 +5,8 @@ import SubtreeProofs.Rust.SourcePairRootScoreEntry
 import SubtreeProofs.Rust.SourcePairMatchedEntry
 import SubtreeProofs.Rust.SourcePairLeftConcatEntry
 import SubtreeProofs.Rust.SourceContractionRequests
+import SubtreeProofs.Rust.SourcePairLeftWordViewsEntry
+import SubtreeProofs.Rust.SourceAnchorOwnerPermissions
 
 namespace SourceCacheMissSetupTests
 
@@ -639,5 +641,76 @@ example : ∃ final after, ∃ nativeCost : LookupSource.Cost,
   refine ⟨final, after, nativeCost, machine, queries, candidate, value, ?_, events⟩
   rw [value]
   simp [OrderedSolver.appendWord, encodeWord, Slot.ofValue, ofFields, Slot.dropWork, dropFields, DropWork.plus]
+
+
+-- Fresh views are constructed from parsed entry while both original queries
+-- alias table-owned data. The actual result root remains available for storage.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive headWorld headActive tailWorld tailActive scoreWorld scoreActive rootWorld rootActive matchedWorld matchedActive concatWorld concatActive final after anchor,
+    AnchoredLoanMachine world [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] [77, 78] 71 .Empty anchor final after ∧
+    after.state 77 = .shared (encodeWord .Empty) ∧ after.state 78 = .shared (encodeWord .Empty) ∧
+    (∃ binding, after.roots 76 = some binding ∧ Derived.RootLoansAllowed final after [] 76 binding) ∧
+      ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix entered active lookupWorld lookupActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions lookupWorld lookupActive missWorld missActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions missWorld missActive headWorld headActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.tailCases SourceEval.Evaluator.tailActions headWorld headActive tailWorld tailActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.scoreCases SourceEval.Evaluator.scoreActions tailWorld tailActive scoreWorld scoreActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.rootScoreCases SourceEval.Evaluator.rootScoreActions scoreWorld scoreActive rootWorld rootActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 30) (SourceEval.Evaluator.matchedActions.take 30) rootWorld rootActive matchedWorld matchedActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 39) ((SourceEval.Evaluator.matchedActions.drop 30).take 9) matchedWorld matchedActive concatWorld concatActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 44) ((SourceEval.Evaluator.matchedActions.drop 39).take 5) concatWorld concatActive final after := by
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native headMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, wc, ac, wv, av, final, after, anchor,
+    _, _, _, machine, _, _, _, value77, value78, _, root76, _, _, _, _, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_left_word_views_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table headMemo headMemo SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness
+      0#u32 1#u32 pairCell pairCell tableCell pair_readable pair_readable table_readable footprint resources.2.1 resources.2.2
+      (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative tailNative (by decide +kernel) (by decide +kernel)
+  obtain ⟨binding76, bound76, _⟩ := root76
+  exact ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, wc, ac, wv, av, final, after, anchor,
+    machine, value77, value78, ⟨binding76, bound76, machine.rootLoans bound76 (by decide)⟩, stable⟩
+
+-- Fresh loans into a four-Box owned word retain the original query snapshots.
+-- Their precise anchor excludes the owners of the separate matched candidate.
+example : ∃ final after anchor,
+    AnchoredLoanMachine concatWorld [] {} [4, 5, 6, 7, 8, 9, 10] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13]
+      [77, 78] 71 (.Pair .Empty (.Pair .Empty .Empty)) anchor final after ∧
+    SourceEval.Evaluator.PairQueryScope (.Pair .Empty .Empty) (.Pair .Empty .Empty) .Empty .Empty after ∧
+    (after.state 71).dropWork.boxes = 4 ∧
+    after.state 77 = .shared (encodeWord (.Pair .Empty (.Pair .Empty .Empty))) ∧
+    after.state 78 = .shared (encodeWord (.Pair .Empty (.Pair .Empty .Empty))) ∧
+    (∀ binding item, after.roots 64 = some binding → LocalResources final after.frame after.roots after.state 64 item →
+      List.Disjoint item.owners anchor.reads) := by
+  have footprint : FieldsFootprint concatWorld.memory [concatPairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons (Heap.Spatial.footprint_mono concat_extends
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil)))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table (.Pair .Empty .Empty) .Empty (Or.inr rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native concatMemo (.Pair .Empty .Empty) .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [concatMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, final, after, anchor,
+    _, _, _, machine, _, queries, wordValue, value77, value78, _, _, _, _, _, _, _⟩ :=
+    SourceEval.Evaluator.entry_pair_left_word_views_complete (external := [4, 5, 6, 7, 8, 9, 10])
+      (by simp [World.WellFormed, concatWorld, world]) (by simp) Callers.nil
+      (.Pair .Empty .Empty) (.Pair .Empty .Empty) .Empty .Empty table concatMemo concatMemo
+      SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness 0#u32 1#u32
+      concatPairCell pairCell tableCell concat_large_readable concat_pair_readable concat_table_readable footprint
+      concat_resources.1 concat_resources.2 (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+      (SourceEval.Evaluator.native_empty_total (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+      headNative tailNative (by decide +kernel) (by decide +kernel)
+  refine ⟨final, after, anchor, machine, queries, ?_, value77, value78, ?_⟩
+  · rw [wordValue]
+    simp [OrderedSolver.appendWord, encodeWord, Slot.ofValue, ofFields, Slot.dropWork, dropFields, DropWork.plus]
+  · intro binding item root represented
+    exact machine.other_owners_avoid_anchor root (by decide) represented
 
 end SourceCacheMissSetupTests
