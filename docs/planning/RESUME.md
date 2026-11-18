@@ -1,21 +1,47 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[owner ledgers through entry, storage and non-call destruction](lean-complexity-campaign/evidence/memo-evaluator-owner-lifecycle.md).
-Actual parameter entry transfers the complete argument owner list. Actual
-storage markers retain the exact Box/caller ledger. Successful finite non-call
-sequences derive a duplicate-free removed list, its exact source Box destruction
-count, initially live/finally dead Box identities, and full final owner-frame/
-live-Box coverage resources. Shared read aliases remain allowed. Callee output
-transfer and selected calling-control/full-recursive ownership remain, then
-budgets/every physical check and dynamic regions/destructors, followed by public
-core/wrappers/resources/G3 and all other planning targets. The full goal remains.
-The preceding packet/assignment/drop/return/close proofs and typed recursive/
-native refinement and executable nonempty regressions remain unchanged.
+[global ownership for recursive source execution](lean-complexity-campaign/evidence/memo-evaluator-global-owners.md).
+Exact existing helper-driver owner ledgers, typed callee profiles, complete
+caller argument/result transfer, selected control, actual parsed entry/return
+cleanup and recursive dispatch now compose. The stronger native evaluator
+endpoint retains its completed native result/table and exact full-cost relation
+plus complete unique/live Box ownership for output/actual callers/external owners
+and coverage of every live Box. Shared read aliases remain allowed. Initial owner
+resources and concrete success remain explicit. Adequate budgets/every physical
+check, dynamic regions/destructor interpretation, native public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and all other planning targets remain.
+The full goal is active; no W06-C3/SRC-01 or production resource closure follows.
 
 ## Checked endpoints and scope
 
 Latest public endpoints:
+
+- `Heap.Owners.{Conserves,Grows,action_grows,guarded_grows}`: exact complete old
+  occurrence conservation and fresh-Box growth through existing guarded helpers.
+- `Heap.Owners.{ConservingDriver.grows,lookup_grows}` and
+  `MemoSource.Heap.run_grows`: actual checked lookup/memo drivers at every
+  successful fuel, with no native height or expected answer premise.
+- `Storage.boxSuffix_owner_transfer`, `Helpers.{lookup_owner_ledger,
+  memo_owner_ledger,typed_lookup_profile,typed_memo_profile,
+  callee_owner_ledger,callee_owns}`: mixed-world classified/live fresh suffixes,
+  independent typed profiles and complete output ownership for all eight actual
+  helper/intrinsic cases, preserving actual callers and allowed shared aliases.
+- `Derived.{store_owner_resources,call_owner_resources}`: actual one-pass
+  arguments/callee/result store, deriving intermediate owner ledgers and returned
+  context without a supplied post-callee frame.
+- `Derived.{Flow.OwnerResources,scrutinee_owner_resources,
+  returnValue_owner_resources}`, `Calling.{instruction_owner_resources,
+  exec_owner_resources,invoke_owner_resources,guardedInvoke_owner_resources}`:
+  complete selected control/joins/early returns, certified reference views,
+  actual parsed parameter entry and checked return closure.
+- `Recursive.{run_owns,original_owns,original_evaluate_owned_refines}`: all actual
+  helpers and parsed choice/evaluator/maximum compose by fuel induction. Native
+  arbitrary query/warm-table result/full-cost and caller-byte conclusions retain
+  full output/caller/external owner resources. Concrete success and initial
+  complete ownership remain premises; no supplied `Recursive.Ready` is needed.
+
+Preceding entry/storage/non-call destruction endpoints:
 
 - `Storage.{packetOwners_footprint,packetOwners_unique,
   initialActivation_ownerState,initialActivation_owners,enter_owner_resources}`:
@@ -395,43 +421,34 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, independent source/native specifications
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,977-job build and four affected consumer suites pass. The 1,186-endpoint
-axiom audit retains only `propext`, `Classical.choice` and `Quot.sound`. Eight
-selected statement seeds cover 335 unique declarations with no unknown references.
-CI lists 47 suites; the full preceding 46-suite/native-WP/nine-Python run remains
-evidence at baseline `40bcb57`, with no new whole-suite/Rust run claimed here.
+The 3,988-job build, all 47 maintained Lean suites, native WP and nine Python
+tests pass. The 1,243-endpoint audit retains only `propext`, `Classical.choice`
+and `Quot.sound`. Ten selected statement seeds export 1,388 unique declarations
+with zero unknown references. Actual nonempty evaluator/maximum runs also check
+complete owner uniqueness, live Box classification and full live-Box coverage.
+Rust/generated artifacts are unchanged; no fresh Rust run is claimed here.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Prove adequate budgets and physical success.** Actual source types now
-   derive selected call input conditions, and the stronger recursive/native
-   theorem no longer assumes `Recursive.Ready`. This is conditional refinement,
-   not a proof that every physical check passes. Derive sufficient call/readback
-   budgets and successful concrete execution for arbitrary legal native inputs/
-   warm tables. Reuse helper reflection, actual typing, certified view endings,
-   recursive `CallsRespect`, guard coverage, caller-byte preservation and checked
-   entry/cleanup. Combine global exclusive owner/temporary-packet and actual loan
-   invariants to prove each move/write/drop/storage/return check. Preserve allowed
-   shared query/insertion aliases and exact destructor costs. Parsed region IDs
-   remain binders rather than statement times.
-2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
-   spatial resources alongside the read graphs through the 113-local evaluator.
-   The complete packet/RHS partitions and guarded assignment/caller owner-frame
-   preservation are now checked. Compose the actual callee input boundary with
-   output/fresh/retired transfer, selected control and recursive
-   execution. Entry/storage and finite non-call destruction now preserve exact
-   owner ledgers; compose them with callee/calling-control ownership. Retain
-   computed active/suspended loan coverage for new references.
-   `Frame.move` retains data resources but cannot authorize invalidating a loan;
-   a supplied incomplete guard cannot do so either. Initialized zero-owner locals can end storage;
-   owners/Box shells must move or drop first. The new drop/storage operations
-   check affected stack roots and Box owners, including scalar/zero-owner
-   teardown. Use the completed stack cleanup and output/caller escape checks;
-   derive their physical success from actual program invariants. Compose global
-   exclusive transfer and dynamic parsed-region/destructor-instance semantics
-   along actual branches/calls. Keep physical allocator/compiler/runtime
-   boundaries explicit under D12.
+1. **Prove adequate budgets and physical success.** Actual source types derive
+   selected call input conditions, and successful recursive/native execution now
+   retains complete output/caller/external ownership and live-Box coverage. This
+   remains conditional on concrete success. Derive sufficient call/readback
+   budgets and success of each move/write/drop/storage/return/cleanup check for
+   legal native inputs/warm tables. Reuse exact helper growth, global recursive
+   owner resources, computed loan coverage, certified reference views, independent
+   typing, protected caller bytes and actual entry/closure. Do not assume the
+   desired parent source/native execution to establish permissions. Preserve
+   allowed query/insertion/shared aliases and exact source destructor costs.
+2. **Dynamic loans, lifetimes and destructor interpretation.** Conditional complete
+   owner transfer through the 113-local evaluator is now checked. Compose those
+   resources with the actual dynamic parsed-region and destructor-instance
+   interpretation and derive all legal source-path loan permissions. Parsed
+   region IDs remain binders, not statement times. Keep returned/caller escape
+   checks, scalar/nonowning stack-root protection, old owner multiplicities and
+   physical allocator/compiler/runtime boundaries explicit under D12. Logical
+   owner retirement is not a physical free-cost or peak-space theorem.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
    table teardown and the remaining safety/cost traces. Then indexed/token/
@@ -445,8 +462,8 @@ See the latest evidence report for reproduction and scope.
 D12 permits the explicit scoped source-operation interpretation. Do not invent a
 whole LLVM/compiler/physical-machine proof as a prerequisite for the initial
 source pilot. Charon/Aeneas import, primitive/runtime/provenance, mutable/unwind
-and physical-allocation boundaries stay explicit. Full W06-C3 still requires the
-remaining typed addressed/ownership/storage/loan/region composition above.
+and physical-allocation boundaries stay explicit. Full W06-C3 still requires universal source-path physical success and the
+remaining dynamic loan/region/destructor interpretation above.
 IEEE-754 correctness remains excluded from the initial proof scope.
 
 ## Completed foundations to reuse

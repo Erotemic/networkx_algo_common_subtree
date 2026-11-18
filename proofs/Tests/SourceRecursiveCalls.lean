@@ -1,6 +1,7 @@
 module
 
 import SubtreeProofs.Rust.SourceEvalTypedRecursive
+import SubtreeProofs.Rust.SourceOwnerRecursive
 import all SubtreeProofs.Rust.SourceHeapResources
 import all SubtreeProofs.Rust.SourceHeapGraphTrace
 import all SubtreeProofs.Rust.SourcePartialValue
@@ -104,6 +105,39 @@ example : ∃ final packet cost, choice = some (final, packet, cost) ∧
   obtain ⟨_, current, _, _, _⟩ := finalCallers.get (a := caller) (by simp)
   exact ⟨final, packet, cost, hr, hv, hcost, kept, current.valid⟩
 
+-- The full recursive ownership theorem is consumed on the actual choice
+-- run. Its losing owned word is destroyed; aliased caller reads remain allowed.
+example : ∃ final packet cost outputOwners, choice = some (final, packet, cost) ∧
+    Footprint final.memory packet.1 outputOwners ∧
+    OwnerFrame final (outputOwners ++ (callerOwners final [caller] ++ [])) ∧
+    BoxCoverage final (outputOwners ++ (callerOwners final [caller] ++ [])) := by
+  obtain ⟨⟨final, packet, cost⟩, hr⟩ := Option.isSome_iff_exists.mp choice_exists
+  have input : FieldsFootprint world.memory (packets.map Prod.fst) (packetOwners world packets) := packetOwners_footprint readable
+  have frame : OwnerFrame world (packetOwners world packets ++ (callerOwners world [caller] ++ [])) := by
+    rw [show packetOwners world packets ++ (callerOwners world [caller] ++ []) = [0, 1] by decide +kernel]
+    refine ⟨by decide +kernel, ?_, ?_⟩
+    · intro a ha
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at ha
+      rcases ha with rfl | rfl <;> rfl
+    · intro a ha
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at ha
+      rcases ha with rfl | rfl <;> rfl
+  have coverage : BoxCoverage world (packetOwners world packets ++ (callerOwners world [caller] ++ [])) := by
+    rw [show packetOwners world packets ++ (callerOwners world [caller] ++ []) = [0, 1] by decide +kernel]
+    intro a hc _
+    change (if a < 2 then some Class.box else _) = some .box at hc
+    split_ifs at hc with h <;> simp_all
+    omega
+  have typed : SnapshotFieldsTyped (packets.map Prod.snd) (SourceEval.Types.inputs .chooseLonger) :=
+    .cons (result_typed first) (.cons (result_typed second) .nil)
+  have outputType : SourceEval.Types.callOutput .chooseLonger (SourceEval.Types.inputs .chooseLonger) =
+      some (SourceEval.Types.output .chooseLonger) := by
+    simp only [SourceEval.Types.callOutput, reduceCtorEq, ite_false, SourceTypes.sameList_refl, ite_true]
+  obtain ⟨owners, hp⟩ := Recursive.original_owns 0 1 world guards [caller] .chooseLonger packets final packet cost
+    (packetOwners world packets) [] world_wf (by simpa using caller_valid) readable guards_alive
+    ⟨_, _, typed, outputType⟩ input frame coverage hr
+  exact ⟨final, packet, cost, owners, hr, hp⟩
+
 example : Recursive.original 0 0 world guards [caller] .chooseLonger packets = none := rfl
 example : (Recursive.original 0 1 world [0] [caller] .chooseLonger packets).isNone = true := by
   rw [choice_step]
@@ -127,6 +161,27 @@ example (budget fuel : Nat) (w final : World) (stack : List Activation) (guarded
   obtain ⟨result, output, hv, hn, he, _, _, kept⟩ :=
     Recursive.original_evaluate_typed_refines budget fuel hw hc hp hl left right table hi hr
   exact ⟨result, output, hv, hn, he, kept⟩
+
+-- Arbitrary native queries/warm tables retain the completed native result,
+-- exact Evaluation costs, protected bytes and complete output/caller ownership.
+example (budget fuel : Nat) (w final : World) (stack : List Activation) (guarded : List Nat)
+    (args : List ValueCell) (packet : ValueCell) (cost : SourceEval.Cost) (owners external : List Nat)
+    (hw : w.WellFormed) (hc : ∀ a ∈ stack, a.Valid w)
+    (hp : ∀ p ∈ args, Readable w.memory w.live p.1 p.2) (hl : AliveOn w.live guarded)
+    (left right : BalancedWord) (table : MemoTable)
+    (hi : args.map Prod.snd = [.reference (encodeWord left), .reference (encodeWord right), encodeTable table])
+    (ho : FieldsFootprint w.memory (args.map Prod.fst) owners)
+    (hf : OwnerFrame w (owners ++ (callerOwners w stack ++ external)))
+    (covered : BoxCoverage w (owners ++ (callerOwners w stack ++ external)))
+    (hr : Recursive.original budget fuel w guarded stack .evaluate args = some (final, packet, cost)) :
+    ∃ result output outputOwners, packet.2 = SourceEval.Evaluator.encodeOutput result output ∧
+      memoized_common_embedding left right table = .ok (result, output) ∧
+      SourceEval.Evaluator.Evaluation fuel left right table result output cost ∧
+      Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧ Preserves w final guarded ∧
+      Footprint final.memory packet.1 outputOwners ∧
+      OwnerFrame final (outputOwners ++ (callerOwners final stack ++ external)) ∧
+      BoxCoverage final (outputOwners ++ (callerOwners final stack ++ external)) :=
+  Recursive.original_evaluate_owned_refines budget fuel hw hc hp hl left right table hi ho hf covered hr
 
 -- Direct instructions retain their strict loan guard. Calling control can end
 -- certified unused shared-reference views; that certificate does not remove

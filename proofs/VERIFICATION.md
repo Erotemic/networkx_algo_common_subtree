@@ -425,6 +425,20 @@ cover 335 unique declarations with no unknown references. CI lists 47 suites;
 the preceding full 46-suite/native-WP/nine-Python run remains evidence at
 `40bcb57`; no new whole-suite/Rust run is claimed by this increment.
 
+The global-owner increment adds eleven proof modules and strengthens existing
+helper/owner/typed/recursive consumers. Exact successful old-helper ledgers,
+independent typed profiles, full actual calls, selected control, real entry/close
+and recursive dispatch preserve complete global owner resources. The stronger
+native evaluator combines these with its existing result/table/full-cost and
+protected-byte refinement. See the [global-owner report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-global-owners.md)
+for exact premises, remaining physical/region obligations and reproduction.
+The 3,988-job build, all 47 maintained Lean suites, native WP and nine Python
+tests pass. The runtime suite's new nonempty evaluator/maximum owner uniqueness,
+live-Box class and coverage checks pass. The 1,243-endpoint audit includes all
+57 new theorems and only the accepted axiom baseline. Ten selected statement
+seeds export 1,388 unique declarations with no unknown references. Rust/generated
+files are unchanged; the earlier Rust evidence is not a fresh run.
+
 ## VM caches
 
 On virtiofs VMs, put build outputs on VM-local disk before running Lean,

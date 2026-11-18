@@ -1,6 +1,8 @@
 module
 
 import SubtreeProofs.Rust.SourceEvalHelperCalls
+import SubtreeProofs.Rust.SourceEvalTypedRecursive
+import SubtreeProofs.Rust.SourceOwnerCallTransfer
 import all SubtreeProofs.Rust.SourceHeapReadback
 import all SubtreeProofs.Rust.SourceHeapResources
 import all SubtreeProofs.Rust.SourceHeapGraphTrace
@@ -112,7 +114,50 @@ private theorem ready : ∀ scanned suspended values after, prepared.scan prepar
   cases he
   exact .insert table .Empty .Empty result oldTable pl pr pc (by decide +kernel)
 
+private theorem typed_ready : Calling.ReadyAt Derived.TypedReady preparedWorld prepared [] (.call .insert args 0) := by
+  intro scanned suspended values after hs hc he
+  rw [current_scan] at hs
+  cases hs
+  change some ({} : Resources) = some suspended at hc
+  cases hc
+  rw [args_run] at he
+  cases he
+  refine ⟨SourceEval.Types.inputs .insert, .adt .table, ?_, ?_⟩
+  · exact .cons (table_typed table) (.cons (.shared (word_typed .Empty))
+      (.cons (.shared (word_typed .Empty)) (.cons (.shared (result_typed result)) .nil)))
+  · with_unfolding_all rfl
+
+private theorem prepared_owner_frame : OwnerFrame preparedWorld
+    (prepared.owners preparedWorld ++ (callerOwners preparedWorld [] ++ [])) := by
+  rw [show prepared.owners preparedWorld ++ (callerOwners preparedWorld [] ++ []) = [2, 3] by decide +kernel]
+  refine ⟨by decide +kernel, ?_, ?_⟩
+  · intro a ha
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at ha
+    rcases ha with rfl | rfl <;> rfl
+  · intro a ha
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at ha
+    rcases ha with rfl | rfl <;> rfl
+private theorem prepared_coverage : BoxCoverage preparedWorld
+    (prepared.owners preparedWorld ++ (callerOwners preparedWorld [] ++ [])) := by
+  rw [show prepared.owners preparedWorld ++ (callerOwners preparedWorld [] ++ []) = [2, 3] by decide +kernel]
+  have h : BoxCoverage base [2, 3] := by
+    intro a hc _
+    change (if a = 2 ∨ a = 3 then some Class.box else _) = some .box at hc
+    split_ifs at hc with h <;> simp_all
+  exact (h.stackCells 10 (packets.map Prod.fst)).allocate_stack 10 0 9 (.node .tuple 0 [])
+
 private def callRun := Derived.call (Helpers.callee 8 32) preparedWorld prepared [] .insert args 0
+
+-- The entire actual insertion call retains complete output ownership,
+-- transferred old table identities and coverage of every fresh live Box.
+example : ∃ final after cost, callRun = some (final, after, cost) ∧
+    OwnerFrame final (after.owners final ++ (callerOwners final [] ++ [])) ∧
+    BoxCoverage final (after.owners final ++ (callerOwners final [] ++ [])) := by
+  have hs : callRun.isSome = true := by decide +kernel
+  obtain ⟨⟨final, after, cost⟩, hr⟩ := Option.isSome_iff_exists.mp hs
+  exact ⟨final, after, cost, hr, Derived.call_owner_resources (Helpers.callee_typed_respects 8 32)
+    (Helpers.callee_owns 8 32) prepared_valid (by simp) prepared_world_valid .insert args 0
+    prepared_owner_frame prepared_coverage typed_ready hr⟩
 
 -- Complete caller argument moves, actual helper execution and guarded result
 -- initialization preserve original source action/cost and the actual frame.

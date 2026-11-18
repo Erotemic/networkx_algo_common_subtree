@@ -974,6 +974,51 @@
           ]
         },
         "next": "Compose concrete callee output/fresh/retired transfer with actual arguments/entry/result store/return closure, selected calling control and full recursive owner resources. Then adequate source/readback budgets, every physical check and dynamic parsed regions/destructor-instance interpretation; preserve allowed shared aliases and exact costs."
+      },
+      "evaluator_global_owners_followup": {
+        "baseline_commit": "8d2f3d9",
+        "evidence": "memo-evaluator-global-owners.md",
+        "status": "Exact successful lookup/memo helper ledgers retain every input occurrence and fresh Box once without native height premises. Independent typed actual arguments derive all helper profiles. All eight real helper/intrinsic outputs, complete argument/callee/result-store transfer, selected calling control/certified reference views, actual parsed entry/return closure and recursive dispatch now preserve complete global owner resources. The stronger native evaluator retains its old independent result/table/full-cost and protected-byte refinement plus unique live Box ownership of output/actual callers/external owners and full live-Box coverage. Initial ownership and concrete success remain explicit. Adequate budgets/every physical check, dynamic parsed region/destructor interpretation and all other targets remain open; no C3/full-goal closure.",
+        "stronger_endpoint": "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_evaluate_owned_refines",
+        "endpoints": [
+          "SubtreeProofs.Rust.LookupSource.Heap.Owners.guarded_grows",
+          "SubtreeProofs.Rust.LookupSource.Heap.Owners.lookup_grows",
+          "SubtreeProofs.Rust.MemoSource.Heap.run_grows",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Helpers.callee_owner_ledger",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Helpers.callee_owns",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_owner_resources",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.run_owns",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_evaluate_owned_refines"
+        ],
+        "consumers": [
+          "Fuel-one comparison succeeds despite failing old whole-word height bounds; complete external owner ledger retained. Zero-fuel/readback and u32-width adversaries remain.",
+          "Actual warm-table insertion with shared keys/result aliasing the owned table consumes complete callee/result-store ownership and live-Box coverage.",
+          "Whole nested-payload boxNew call retains outer/sibling owners, shared aliases and actual caller owner; final active ledger [0,9,1,3], caller [7], fresh Box 9 live.",
+          "Actual recursive choice consumes complete global ownership while destroying the losing word Boxes and retaining an aliased scalar caller graph.",
+          "Arbitrary native query/warm-table consumer retains existing independent native result/table/Evaluation cost and protected bytes plus complete ownership resources.",
+          "Actual nonempty evaluator and maximum runtime checks now assert duplicate-free output/caller owners, live Box classification and coverage, alongside unchanged complete source value/cost, caller bytes and cleanup."
+        ],
+        "validation": {
+          "library_jobs": 3988,
+          "lean_suites": 47,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "regression_execution": "46 maintained suites plus separately tracked SourceRecursiveExecution; all terminal pass.",
+          "audited_endpoints": 1243,
+          "new_audited_theorems": 57,
+          "unique_statement_records": 1388,
+          "statement_seeds": 10,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "rust_validation": "Rust/generated artifacts unchanged; thirteen ordered Rust tests remain evidence at 823df34, not a fresh run."
+        },
+        "next": "Derive sufficient source-call/readback budgets and every move/write/drop/storage/return/cleanup permission and actual physical success on legal native inputs/warm tables, using the checked complete recursive owner invariant and actual loan coverage without assuming parent success. Interpret actual dynamic parsed region binders/destructor instances under explicit compiler/runtime/allocator boundaries. Finish native public maximum/cold-table teardown, wrappers/input policy/global resources/G3 and other planning targets."
       }
     },
     {
@@ -1162,7 +1207,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 compose complete callee output/fresh/retired ownership transfer with the checked actual argument boundary and guarded result store. Actual entry/storage and complete non-call destruction are now checked. Extend exact owner ledgers through selected calling control and recursive execution. Certified unused-reference views and typed derived call domains are already checked; nonempty evaluator/maximum regressions now pass. Derive sufficient source/readback budgets and every physical check on legal native inputs, plus full dynamic parsed region/destructor interpretation. Finish public maximum/cold-table teardown, wrappers/input policy/resources/G3 and other planning targets. D12 source-operation boundaries remain explicit; no SRC-01/C3/full-goal closure."
+      "W06-C3 derive sufficient source-call/readback budgets and physical success of all guards/storage/return/cleanup on legal native inputs/warm tables. Exact successful helper growth, complete actual calls, selected calling control, actual parsed entry/close and global recursive ownership are now checked, with native result/full-cost/caller-byte refinement and output/actual-caller/external live-Box coverage. Compose those owner resources with actual loan permissions and dynamic parsed region/destructor-instance interpretation; preserve shared query/insertion aliases and explicit compiler/runtime/allocator boundaries. Finish native public maximum/cold-table teardown, wrappers/input policy/global resources/G3 and the other planning goals. No full SRC-01/C3 or production resource closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceEvalRecursiveRefinement
+import SubtreeProofs.Rust.SourceOwnerRecursive
 
 /-! Executable regression of the pinned evaluator through parsed recursive
 entry, helper calls and checked cleanup. This runtime test complements the
@@ -79,6 +79,14 @@ private def pairAnswer : Value → Bool
       match traceResources final.memory packet.1 (Slot.ofValue packet.2) with
       | none => throw (IO.userError "output resource readback failed")
       | some output =>
+        let completeOwners := output.owners ++ pairParent.owners final
+        unless decide completeOwners.Nodup do
+          throw (IO.userError "duplicate recursive output/caller Box owners")
+        unless completeOwners.all (fun a => decide (final.classes a = some .box) && final.live a) do
+          throw (IO.userError "recursive owner is not a live Box")
+        unless (List.range final.memory.length).all (fun a =>
+            if decide (final.classes a = some .box) && final.live a then decide (a ∈ completeOwners) else true) do
+          throw (IO.userError "live recursive Box missing from complete output/caller ledger")
         unless (List.range final.memory.length).all (fun a =>
             final.live a == decide (a < 6 ∨ a ∈ output.owners)) do
           throw (IO.userError "callee roots or discarded table owners remain live")

@@ -1,6 +1,7 @@
 module
 
-import SubtreeProofs.Rust.SourceOwnerRetirement
+import SubtreeProofs.Rust.SourceOwnerCallTransfer
+import SubtreeProofs.Rust.SourceEvalTypedRecursive
 import SubtreeProofs.Rust.SourceEvalHelperCalls
 import all SubtreeProofs.Rust.SourceHeapResources
 import all SubtreeProofs.Rust.SourceHeapGraphTrace
@@ -166,6 +167,34 @@ example : ∃ final after cost current suspended packets masks remainder binding
   obtain ⟨current, suspended, packets, masks, remainder, binding, middle, returned, work, owners, ht⟩ :=
     Derived.call_argument_owner_frame active_valid owner_frame hr
   exact ⟨final, after, cost, current, suspended, packets, masks, remainder, binding, middle, returned, work, owners, hr, ht⟩
+
+private theorem box_ready : Calling.ReadyAt Derived.TypedReady world active [caller] (.call .boxNew [.move payload] 0) := by
+  intro current suspended packets masks _ _ hargs
+  obtain ⟨_, guards, frame⟩ := active_valid
+  obtain ⟨_, source, _, _, _⟩ := Addressed.operands_spec frame [.move payload] hargs
+  have known : SourceEval.operands active.state [.move payload] = some ([.boxed (.number 7)], afterMove.state) := by
+    with_unfolding_all rfl
+  rw [known] at source
+  have values := (Prod.mk.inj (Option.some.inj source)).1
+  refine ⟨[.owned .u32], .owned (.owned .u32), ?_, ?_⟩
+  · rw [← values]
+    exact .cons (.owned (.number (by decide +kernel))) .nil
+  · with_unfolding_all rfl
+
+-- The complete actual call transfers the nested payload into the new Box,
+-- stores it, and retains enclosing/sibling/caller owners and shared aliases.
+example : ∃ final after cost,
+    Derived.call (Helpers.callee 1 0) world active [caller] .boxNew [.move payload] 0 = some (final, after, cost) ∧
+    OwnerFrame final (after.owners final ++ (callerOwners final [caller] ++ [])) ∧
+    BoxCoverage final (after.owners final ++ (callerOwners final [caller] ++ [])) := by
+  have hs : (Derived.call (Helpers.callee 1 0) world active [caller] .boxNew [.move payload] 0).isSome = true := by decide +kernel
+  obtain ⟨⟨final, after, cost⟩, hr⟩ := Option.isSome_iff_exists.mp hs
+  exact ⟨final, after, cost, hr, Derived.call_owner_resources (Helpers.callee_typed_respects 1 0)
+    (Helpers.callee_owns 1 0) active_valid (by simpa using caller_valid) well_formed .boxNew [.move payload] 0
+    owner_frame coverage box_ready hr⟩
+example : (Derived.call (Helpers.callee 1 0) world active [caller] .boxNew [.move payload] 0).map
+    (fun (final, after, _) => (after.owners final, callerOwners final [caller], final.live 9)) =
+    some ([0, 9, 1, 3], [7], true) := by decide +kernel
 
 -- Successful graph scanning does not certify unique ownership occurrences.
 private def aliasedWorld := world.write 2 (.node .tuple 0 [.owned 1, .owned 1])

@@ -420,3 +420,13 @@ and finally dead; actual final active/caller/external owners retain full live-Bo
 coverage. Item 2 still requires concrete callee output transfer, selected calling
 control/full-recursive owner invariants, budgets/every physical check and dynamic
 region/destructor interpretation. No C3/resource/full-goal closure follows.
+
+The [global recursive ownership follow-up](memo-evaluator-global-owners.md)
+composes exact successful helper ledgers, independent typed profiles, complete
+actual calls, selected control, parsed entry/close and recursive dispatch. The
+native evaluator now retains its full result/table/cost and protected-byte
+refinement alongside complete output/actual-caller/external ownership and
+coverage of every live Box. Initial ownership and concrete success stay explicit.
+Item 2 still requires adequate budgets/every physical check and dynamic parsed
+region/destructor-instance interpretation. C3, production resource adequacy and
+the full planning goal remain open; D12/source-operation boundaries are unchanged.

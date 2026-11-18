@@ -1,6 +1,7 @@
 module
 
 import SubtreeProofs.Rust.SourceEvalTypedRecursive
+import SubtreeProofs.Rust.SourceOwnerCallTransfer
 import all SubtreeProofs.Rust.SourceHeapResources
 import all SubtreeProofs.Rust.SourceHeapGraphTrace
 import all SubtreeProofs.Rust.SourcePartialValue
@@ -59,6 +60,34 @@ example : ∃ final packet cost,
     world_wf readable (by simp) hl ⟨_, .boolean, inputs_typed, compare_output⟩ hr
   exact ⟨final, packet, cost, hr, h.1,
     SourceEval.Types.original_run_typed 1 .compare _ _ _ _ _ inputs_typed compare_output h.1, h.2.1, h.2.2.2⟩
+-- The exact ownership contract also covers this short-circuit success at
+-- fuel one. The complete external owner ledger covers all four old Boxes.
+example : ∃ final packet cost owners,
+    comparison = some (final, packet, cost) ∧ Footprint final.memory packet.1 owners ∧
+    OwnerFrame final (owners ++ [0, 1, 2, 3]) ∧ BoxCoverage final (owners ++ [0, 1, 2, 3]) := by
+  have hs : comparison.isSome = true := by decide +kernel
+  obtain ⟨⟨final, packet, cost⟩, hr⟩ := Option.isSome_iff_exists.mp hs
+  have frame : OwnerFrame world [0, 1, 2, 3] := by
+    refine ⟨by decide +kernel, ?_, ?_⟩
+    · intro a ha
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at ha
+      rcases ha with rfl | rfl | rfl | rfl <;> rfl
+    · intro a ha
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at ha
+      rcases ha with rfl | rfl | rfl | rfl <;> rfl
+  have coverage : BoxCoverage world [0, 1, 2, 3] := by
+    intro a hc _
+    change (if a = 4 then some (.stack 77 1 4) else if a = 5 then some (.stack 77 2 5)
+      else if a < 4 then some Class.box else none) = some .box at hc
+    split_ifs at hc <;> simp_all
+    omega
+  have footprint : FieldsFootprint world.memory (packets.map Prod.fst) [] :=
+    .cons (.shared _) (.cons (.shared _) .nil)
+  obtain ⟨owners, hp⟩ := Helpers.callee_owns 1 4 world (List.range 6) [] .compare packets final packet cost [] [0, 1, 2, 3]
+    world_wf (by simp) readable (by intro a ha; exact decide_eq_true (List.mem_range.mp ha))
+    ⟨_, .boolean, inputs_typed, compare_output⟩ footprint frame coverage hr
+  exact ⟨final, packet, cost, owners, hr, hp⟩
+
 example : (Helpers.callee 0 4 world [] [] .compare packets).isNone = true := by decide +kernel
 example : (Helpers.callee 1 0 world [] [] .compare packets).isNone = true := by decide +kernel
 

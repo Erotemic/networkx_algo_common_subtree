@@ -86,13 +86,27 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Global ownership for recursive source execution](evidence/memo-evaluator-global-owners.md)
+now composes exact helper input/fresh/output ledgers, complete actual calls,
+selected calling control, parsed entry/return cleanup and recursive dispatch.
+The native evaluator retains its existing result/table and full-cost refinement
+plus complete output/caller/external owner resources and live-Box coverage.
+Independent actual types derive call profiles; shared read aliases remain allowed.
+Concrete success and initial ownership resources remain explicit. Adequate
+budgets/every physical check, dynamic regions/destructor interpretation and the
+other public core/wrapper/resource/G3/planning targets remain; no full-goal closure.
+The 3,988-job build, all 47 Lean suites, native WP and nine Python tests pass.
+The 1,243-endpoint audit includes 57 new theorems and only the accepted axiom
+baseline. Ten selected statement seeds cover 1,388 unique declarations with
+zero unknown references. Nonempty evaluator/maximum runtime checks now include
+complete owner uniqueness, live Box classification and coverage.
+
 [Owner ledgers through entry, storage and non-call destruction](evidence/memo-evaluator-owner-lifecycle.md)
 now transfer the complete argument packet into actual parameter locals, retain
 exact owners across real storage-live/dead operations, and compose through every
 successful finite sequence of existing non-call actions. The complete removed
 list is duplicate-free, its length equals the source Box destructor count, and it
-consists of
-initially live Boxes that are dead in the final symbolic world. Actual caller/
+consists of initially live Boxes that are dead in the final symbolic world. Actual caller/
 external owners retain complete uniqueness/class/liveness and live-Box coverage;
 shared reads may alias. Callee output transfer, selected calling control/full
 recursive ownership, budgets/every physical check and dynamic regions/destructors
