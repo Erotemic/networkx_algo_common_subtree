@@ -2,6 +2,15 @@
 
 Branch: `Droschinsky-algos`.
 
+[Stable recursive fuel and readback budgets](lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
+completed actual run's exact world/packet/full cost at all larger bounds.
+Independently typed helper inputs give fixed joint sufficient thresholds, a stable
+output and complete owner resources. Interpreted physical success and all other
+planning obligations remain open. The 3,996-job build and two affected consumers
+pass; 19 new theorems bring the accepted-baseline audit to 1,289 endpoints.
+Eight selected statement seeds cover 1,070 unique declarations with no unknown
+references. Broader regression evidence is inherited from the preceding commits.
+
 [Typed helper totality and sufficient budgets](lean-complexity-campaign/evidence/memo-evaluator-helper-totality.md) now derives actual
 success for all eight helpers/intrinsics from independently typed readable input
 packets. Sufficient fuel and ghost readback thresholds require no supplied native
@@ -33,6 +42,13 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Helpers.{execute_fuel_enlarge,typed_stable_bounds,
+  typed_owned_stable_bounds}`: fixed joint sufficient helper thresholds with
+  exact stable world/packet/full cost and complete caller/global owner resources.
+- `Derived.call_extends`, `Calling.{exec_extends,guardedInvoke_extends}` and
+  `Recursive.{run_budget_enlarge,run_fuel_enlarge,original_enlarge}`: complete
+  actual calling/recursive success retains its exact result at larger fuel and
+  ghost readback bounds. Interpreted execution existence remains to be proved.
 - `Heap.SnapshotTyped.{native_word,native_result,native_entry,native_table}`
   and `Helpers.typed_ready_exists`: finite native helper shapes and sufficient
   call fuel follow from independent actual readable packet types.
@@ -462,9 +478,10 @@ See the latest evidence report for reproduction and scope.
    selected call input conditions, and successful recursive/native execution now
    retains complete output/caller/external ownership and live-Box coverage. This
    remains conditional on concrete success for interpreted functions. All eight
-   helpers now have forward existence and sufficient fuel/readback thresholds
-   derived from independent actual types. Compose these across selected recursive
-   execution and prove every move/write/drop/storage/return/cleanup check for
+   helpers now have forward existence and fixed joint fuel/readback thresholds
+   derived from independent actual types. Completed whole recursive runs retain
+   their exact world/packet/full cost at larger bounds. Use these laws to compose
+   selected finite bounds and prove every move/write/drop/storage/return/cleanup check for
    legal native inputs/warm tables. Reuse exact helper growth, global recursive
    owner resources, computed loan coverage, certified reference views, independent
    typing, protected caller bytes and actual entry/closure. Do not assume the

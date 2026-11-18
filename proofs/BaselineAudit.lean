@@ -1351,3 +1351,23 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.typed_total
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.typed_owned_total
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.typed_sufficient_fuel
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_extends
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.instruction_extends
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_extends
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_extends
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.guardedInvoke_extends
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.action_extends
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.selectBranch_extends
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.exec_extends
+#print axioms SubtreeProofs.Rust.LookupSource.Heap.run_fuel_enlarge
+#print axioms SubtreeProofs.Rust.MemoSource.Heap.run_fuel_enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.finish_extends
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.execute_fuel_enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.typed_stable_bounds
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Helpers.typed_owned_stable_bounds
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.run_budget_enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_budget_enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.run_fuel_enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_fuel_enlarge
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_enlarge

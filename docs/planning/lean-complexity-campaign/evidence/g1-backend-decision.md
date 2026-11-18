@@ -444,3 +444,12 @@ pass, including five new warm-cache/overflow/failure paths with complete owner
 and cleanup checks. The 1,270-endpoint audit includes 27 new theorems with only the accepted axiom baseline;
 eight selected statement seeds cover 828 unique declarations with no unknown
 references. Full-suite/native-WP/Python/Rust evidence is inherited, not rerun here.
+
+[Stable recursive fuel and readback budgets](memo-evaluator-stable-budgets.md) now preserve every
+completed actual run's exact world/packet/full cost at all larger bounds.
+Independently typed helper inputs give fixed joint sufficient thresholds, a stable
+output and complete owner resources. Interpreted physical success and all other
+planning obligations remain open. The 3,996-job build and two affected consumers
+pass; 19 new theorems bring the accepted-baseline audit to 1,289 endpoints.
+Eight selected statement seeds cover 1,070 unique declarations with no unknown
+references. Broader regression evidence is inherited from the preceding commits.

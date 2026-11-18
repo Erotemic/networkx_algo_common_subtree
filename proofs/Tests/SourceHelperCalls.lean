@@ -1,6 +1,6 @@
 module
 
-import SubtreeProofs.Rust.SourceHelperTotality
+import SubtreeProofs.Rust.SourceHelperFuel
 import SubtreeProofs.Rust.SourceEvalHelperCalls
 import SubtreeProofs.Rust.SourceEvalTypedRecursive
 import SubtreeProofs.Rust.SourceOwnerCallTransfer
@@ -203,10 +203,10 @@ private theorem packet_types : Derived.TypedReady base .insert packets := by
       (.cons (.shared (word_typed .Empty)) (.cons (.shared (result_typed result)) .nil)))
   · with_unfolding_all rfl
 
-example : ∃ minimumFuel, ∀ fuel, minimumFuel ≤ fuel →
-    ∃ minimumBudget final packet cost, ∀ budget, minimumBudget ≤ budget →
+example : ∃ minimumFuel minimumBudget final packet cost, ∀ fuel budget,
+    minimumFuel ≤ fuel → minimumBudget ≤ budget →
       Helpers.execute fuel budget base .insert packets = some (final, packet, cost) :=
-  Helpers.typed_sufficient_fuel rfl well_formed readable packet_types
+  Helpers.typed_stable_bounds rfl well_formed readable packet_types
 
 -- Enlarging ghost readback preserves the identical actual world, packet and
 -- complete cost; the existing zero-budget failure above is intentional.

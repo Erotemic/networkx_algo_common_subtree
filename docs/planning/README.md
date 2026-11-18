@@ -25,6 +25,15 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Stable recursive fuel and readback budgets](lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
+completed actual run's exact world/packet/full cost at all larger bounds.
+Independently typed helper inputs give fixed joint sufficient thresholds, a stable
+output and complete owner resources. Interpreted physical success and all other
+planning obligations remain open. The 3,996-job build and two affected consumers
+pass; 19 new theorems bring the accepted-baseline audit to 1,289 endpoints.
+Eight selected statement seeds cover 1,070 unique declarations with no unknown
+references. Broader regression evidence is inherited from the preceding commits.
+
 [Typed helper totality and sufficient budgets](lean-complexity-campaign/evidence/memo-evaluator-helper-totality.md) now derives actual
 success for all eight helpers/intrinsics from independently typed readable input
 packets. Sufficient fuel and ghost readback thresholds require no supplied native

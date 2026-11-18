@@ -1,5 +1,6 @@
 module
 
+import SubtreeProofs.Rust.SourceRecursiveBudget
 import SubtreeProofs.Rust.SourceEvalTypedRecursive
 import SubtreeProofs.Rust.SourceOwnerRecursive
 import all SubtreeProofs.Rust.SourceHeapResources
@@ -81,6 +82,13 @@ private theorem choice_exists : choice.isSome = true := by
   obtain ⟨hf, hn, hcode⟩ := SourceEval.CallingCertificate.originalChoice_spec
   simp only [Calling.guardedInvoke, Calling.invoke, hf, hn, hcode]
   decide +kernel
+
+-- Every larger pair of budgets retains the exact selected choice run, losing
+-- Box destruction, closed callee roots and transitive aliased caller graph.
+example (fuel budget : Nat) (bound : 1 ≤ fuel) :
+    Recursive.original budget fuel world guards [caller] .chooseLonger packets = choice := by
+  obtain ⟨⟨final, packet, cost⟩, run⟩ := Option.isSome_iff_exists.mp choice_exists
+  exact (Recursive.original_enlarge bound (Nat.zero_le budget) run).trans run.symm
 
 -- Budget zero is sufficient for call-free choice; fuel one executes its entry
 -- and full body. Both losing Boxes retire, every callee stack root closes, and

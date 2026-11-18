@@ -297,3 +297,5 @@ public import SubtreeProofs.Rust.SourceEvalTypedRecursive
 public import SubtreeProofs.Rust.SourceOwnerRecursive
 
 public import SubtreeProofs.Rust.SourceHelperTotality
+
+public import SubtreeProofs.Rust.SourceRecursiveBudget

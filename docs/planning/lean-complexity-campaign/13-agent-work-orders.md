@@ -86,6 +86,15 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Stable recursive fuel and readback budgets](evidence/memo-evaluator-stable-budgets.md) now preserve every
+completed actual run's exact world/packet/full cost at all larger bounds.
+Independently typed helper inputs give fixed joint sufficient thresholds, a stable
+output and complete owner resources. Interpreted physical success and all other
+planning obligations remain open. The 3,996-job build and two affected consumers
+pass; 19 new theorems bring the accepted-baseline audit to 1,289 endpoints.
+Eight selected statement seeds cover 1,070 unique declarations with no unknown
+references. Broader regression evidence is inherited from the preceding commits.
+
 [Typed helper totality and sufficient budgets](evidence/memo-evaluator-helper-totality.md) now derives actual
 success for all eight helpers/intrinsics from independently typed readable input
 packets. Sufficient fuel and ghost readback thresholds require no supplied native

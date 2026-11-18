@@ -1046,6 +1046,30 @@
           "broader_regression": "47-suite/native-WP/nine-Python evidence at d49f638; Rust at 823df34; not rerun."
         },
         "next": "Compose helper sufficient budgets into forward interpreted whole-program physical success and derive each actual storage/move/write/drop/return/cleanup permission. Interpret dynamic parsed regions/destructor instances; complete native public maximum/table teardown, wrappers/input policy/global resources/G3 and the other planning targets."
+      },
+      "evaluator_stable_budgets_followup": {
+        "baseline_commit": "a56e701",
+        "evidence": "memo-evaluator-stable-budgets.md",
+        "status": "All completed actual recursive runs preserve exact worlds/packets/full costs at larger call fuel and readback budgets. Independent typed readable helper inputs yield fixed joint sufficient thresholds with stable source/output/global owner resources. Interpreted physical execution existence, dynamic regions/destructors and all other planning targets remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3996,
+          "affected_lean_suites": [
+            "SourceHelperCalls",
+            "SourceRecursiveCalls"
+          ],
+          "new_theorems": 19,
+          "audited_endpoints": 1289,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1070,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "broader_regression": "Runtime/helper/typed/recursive evidence at a56e701; full 47-suite/native-WP/nine-Python at d49f638; Rust at 823df34; not rerun."
+        },
+        "next": "Use stable helper totality and exact whole-recursive budget extension in a forward physical-success proof; derive each actual move/write/drop/storage/return/close permission without assuming parent execution. Compose finite local sufficient bounds, interpret dynamic parsed regions/destructors, finish native public maximum/teardown, wrappers/input policy/global resources/G3 and remaining planning targets."
       }
     },
     {
