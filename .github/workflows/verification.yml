@@ -52,6 +52,7 @@ jobs:
           lake env lean Tests/SourceStorageLifecycle.lean
           lake env lean Tests/SourceAddressedControl.lean
           lake env lean Tests/SourceHelperCalls.lean
+          lake env lean Tests/SourceCallingProgram.lean
           lake env lean Tests/SourceEval.lean
           lake env lean Tests/SourceEvalHelpers.lean
           lake env lean Tests/SourceEvalChoice.lean

@@ -364,3 +364,12 @@ Native input shapes and fuel bounds discharge the local call contract. Item 2
 still requires control/recursive integration, choice/evaluator/maximum service,
 all-path readiness/check success and full ownership/storage/region/destructor
 composition; this is not C3 closure.
+
+The [calling-entry follow-up](memo-evaluator-calling-entry.md) now composes calls
+with shared source routing, passes the actual post-argument suspended stack,
+constructs frames from parsed declaration counts and checks zero-owner/output-
+escape cleanup before retiring all remaining callee roots. Actual parsed choice
+retains its native tie rule and full entry/body cost. Recursive dispatch and
+whole-run protected caller preservation, universal readiness/physical success,
+exclusive transfer and dynamic regions/destructors still require composition;
+the source-operation boundary and full remaining goal are unchanged.

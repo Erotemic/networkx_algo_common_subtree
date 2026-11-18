@@ -1,18 +1,46 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[concrete helper calls in the mixed world](lean-complexity-campaign/evidence/memo-evaluator-helper-calls.md).
-Nine modules execute the existing six ordinary helpers and both intrinsics,
-read output metadata from actual cells, and compose one-pass caller argument
-moves/callee/result storage with exact source costs and retained callers.
-Native input shapes/fuel discharge local callee contracts. Control/recursive
-integration, choice/evaluator/maximum service, universal readiness/check success
-and global ownership/storage/region/destructor closure remain next. W06-C3 and
-the full planning goal stay open.
+[calling control, parsed entry and checked return cleanup](lean-complexity-campaign/evidence/memo-evaluator-calling-entry.md).
+Five modules compose the existing eight-function call step with source routing,
+actual suspended activations, parsed argument-frame construction and guarded
+zero-owner return cleanup. The actual parsed choice declaration retains its
+native tie rule/full entry-body cost while closing remaining callee roots.
+Recursive program dispatch, whole-run protected caller preservation, universal
+readiness/physical success and global exclusive ownership/dynamic region/
+destructor composition remain next. W06-C3 and the full planning goal stay open.
 
 ## Checked endpoints and scope
 
 Latest public endpoints:
+
+- `SourceEval.Addressed.Calling.{instruction_spec,exec_spec}`: actual calls join
+  the shared switch/continuation/early-return engine. Successful execution and
+  independent selected-path `ReadyFor` derive exact source outcomes/full costs,
+  active/world/caller/output validity and unchanged frame/count.
+- `Calling.readyFor_noCalls`: call-free bodies discharge input readiness; skipped
+  branches/joins impose no readiness condition in the general executor.
+- `Storage.Activation.{mem_stackAddresses,binding_mem,stack_class}`,
+  `Scanned.zero_boxes`, `Storage.{close_spec,close_complete}`: cover every
+  remaining bounded stack binding, reject residual Box ownership or escaping
+  output/caller reads, retire all remaining roots and preserve live output,
+  caller/external reads, memory/classes and Box liveness.
+- `Calling.{invoke_spec,invoke_run}`: actual parsed arity/count, derived argument
+  frames, calling control and checked cleanup retain source body/run results and
+  complete entry-plus-body costs for successful ordinary invocations.
+- `Choice.invoking_refines`: the independent native selection/tie rule and exact
+  `Choice.cost` survive parsed entry and complete remaining stack cleanup.
+- `CallingCertificate.{originalProgram_read,choice_fields,originalChoice_spec}`:
+  access the existing checked typed source reader's actual six-local choice
+  declaration; no substitute declaration is supplied to the concrete consumer.
+
+`Derived.Callees` now receives actual suspended activations; `Derived.call`
+passes its actual post-argument activation followed by the original callers.
+The helper callee contract is adapted to accept that valid stack, retaining all
+native shape/fuel conditions. `Calling.exec` supports calls. The earlier
+non-call `Derived.exec` remains compatible and rejects selected calls.
+
+The preceding helper-call endpoints remain reusable:
 
 - `Partial.Addressed.{snapshot_spec,snapshotFields_spec,Graph.snapshot,
   GraphFields.snapshot,represents_unique}`: actual finite concrete metadata/
@@ -41,11 +69,13 @@ Latest public endpoints:
   count/roots, final activation/world validity and exact suspended resources.
   Independent input/fuel readiness is the remaining local domain condition.
 
-`Derived.call` is not yet wired into the earlier `Derived.exec`, which still
-rejects selected calls. Serve choice/evaluator/maximum through the resulting
-recursive dispatcher and prove readiness/budget/check success on all actual
-paths. Readable packets and local owner contracts do not establish complete
-exclusive transfer, callee storage closure or returned-loan escape safety.
+Serve choice/evaluator/maximum through the remaining recursive dispatcher and
+prove input readiness, budgets and physical success on all actual paths. The
+completed cleanup rejects loans into remaining callee roots, but complete
+exclusive transfer and dynamic region/destructor interpretation remain open.
+The recursive callee contract also needs whole-run `Preserves` for every
+protected caller address; per-step exact inventories and caller validity do not
+by themselves discharge that obligation.
 
 The preceding control/return endpoints remain reusable, in
 `SourceEval.Addressed` / `.Derived` unless qualified:
@@ -248,22 +278,25 @@ in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 Production Rust, generated artifacts, existing memory/control/type/region models
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,946-job build, all 40 Lean suites, native WP, nine Python tests and
-1,007-endpoint axiom audit pass. Shared statement inspection covers 914 unique
-declarations with no unknown references.
+The 3,951-job build, all 41 Lean suites, native WP, nine Python tests and
+1,030-endpoint axiom audit pass. Shared statement inspection covers 1,124 unique
+declarations from five seeds with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Integrate checked calls and recursive entry.** Wire `Derived.call` and the
-   eight-function helper/intrinsic dispatcher into the completed shared control
-   engine. Serve actual choice, evaluator and maximum calls with the existing
-   initial constructor and real callee storage closure. Derive native readiness,
-   sufficient call/ghost budgets and all physical check success along every
-   actual branch. Thread the complete actual caller stack and temporary owners.
-   Reuse the completed six helper executors/contracts, metadata reader, intrinsic
-   semantics, snapshot/native evaluator totality, typing/binding and control
-   proofs. Preserve insertion's transferred table and allowed shared aliases.
+1. **Complete recursive program dispatch.** Reuse `Calling.exec`, `invoke`, the
+   actual typed declaration accessor, existing eight-function helper backend and
+   completed zero-owner stack cleanup. Serve choice/evaluator/maximum recursively.
+   Compose whole-run protected caller read preservation to discharge recursive
+   `CallsRespect`, retaining the actual post-argument caller stack. Derive
+   per-action retained-byte transitions from the existing write/retire guards;
+   exact represented caller inventories alone do not prove byte retention.
+   Cover the parent's protected destination and context in the actual suspended
+   scan. Derive native input readiness, sufficient source/ghost budgets and all
+   physical check success along every actual branch. Preserve insertion's
+   transferred table and shared aliases. Do not repeat completed source/native/
+   type/binder/helper, initial/control/entry or remaining-stack cleanup proofs.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
    spatial resources alongside the read graphs through the 113-local evaluator.
    Compose computed active/suspended loan coverage with temporary ownership
@@ -272,10 +305,11 @@ See the latest evidence report for reproduction and scope.
    guard cannot do so either. Initialized zero-owner locals can end storage;
    owners/Box shells must move or drop first. The new drop/storage operations
    check affected stack roots and Box owners, including scalar/zero-owner
-   teardown. Return extraction retains readable packets but leaves stack roots;
-   close actual callee storage and reject escaping local loans. Compose global
+   teardown. Use the completed stack cleanup and output/caller escape checks;
+   derive their physical success from actual program invariants. Compose global
    exclusive transfer and dynamic parsed-region/destructor-instance semantics
-   along actual branches/calls. Keep physical allocator/compiler/runtime boundaries explicit under D12.
+   along actual branches/calls. Keep physical allocator/compiler/runtime
+   boundaries explicit under D12.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
    (the actual seven-local source body is already parsed) with evaluator totality,
    table teardown and the remaining safety/cost traces. Then indexed/token/
@@ -358,6 +392,7 @@ dev/setup-build-caches.sh --status
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
 (cd proofs && lake env lean Tests/SourceHelperCalls.lean)
+(cd proofs && lake env lean Tests/SourceCallingProgram.lean)
 (cd proofs && lake env lean BaselineAudit.lean)
 python3 proofs/checks/test_lookup_source_reifier.py
 # Full maintained suite list is in .github/workflows/verification.yml.

@@ -1,5 +1,23 @@
 # Common-subtree proof status
 
+## Calling control, parsed entry and checked cleanup: 2026-11-17
+
+[Evidence report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-calling-entry.md).
+Calling control, parsed entry and checked return cleanup now compose the
+existing helper call step with the shared switch/return engine. Callees receive
+the actual post-argument activation and suspended stack. Selected-path input
+readiness, source outcomes/full costs and caller validity are checked; cleanup
+rejects remaining owners or escaping output/caller references and retires all
+remaining bounded stack roots. Actual parsed choice retains its native tie rule
+and complete cost through entry and cleanup. Recursive program dispatch, whole-
+run protected caller preservation, universal readiness/physical success and
+global exclusive ownership/dynamic region/destructor composition remain open,
+then public maximum/wrappers/resources/G3. W06-C3 and the full goal stay open.
+The 3,951-job build, all 41 Lean suites, native WP, nine Python tests and
+1,030-endpoint axiom audit pass. Shared statement inspection covers 1,124 unique
+declarations from five seeds with no unknown references.
+
+
 ## Concrete helper calls in the mixed world: 2026-11-17
 
 [Concrete helper calls in the mixed world](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-calls.md)

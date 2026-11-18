@@ -1,5 +1,19 @@
 # Lean complexity campaign: proto-roadmap
 
+[Calling control, parsed entry and checked return cleanup](evidence/memo-evaluator-calling-entry.md)
+now compose the existing helper call step with the shared switch/return engine. Callees receive
+the actual post-argument activation and suspended stack. Selected-path input
+readiness, source outcomes/full costs and caller validity are checked; cleanup
+rejects remaining owners or escaping output/caller references and retires all
+remaining bounded stack roots. Actual parsed choice retains its native tie rule
+and complete cost through entry and cleanup. Recursive program dispatch, whole-
+run protected caller preservation, universal readiness/physical success and
+global exclusive ownership/dynamic region/destructor composition remain open,
+then public maximum/wrappers/resources/G3. W06-C3 and the full goal stay open.
+The 3,951-job build, all 41 Lean suites, native WP, nine Python tests and
+1,030-endpoint axiom audit pass. Shared statement inspection covers 1,124 unique
+declarations from five seeds with no unknown references.
+
 [Concrete helper calls in the mixed world](evidence/memo-evaluator-helper-calls.md)
 now execute six existing ordinary helpers and both intrinsics over actual stack/
 Box prefixes. Output metadata comes from concrete readback; one-pass caller

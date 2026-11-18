@@ -48,6 +48,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
 (cd proofs && lake env lean Tests/SourceHelperCalls.lean)
+(cd proofs && lake env lean Tests/SourceCallingProgram.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -344,6 +345,17 @@ readiness/check/global ownership/storage/region obligations remain open. See the
 The 3,946-job build, all 40 Lean suites, native WP, nine Python tests and
 1,007-endpoint axiom audit pass. Shared statement inspection covers 914 unique
 declarations with no unknown references.
+
+The latest calling-entry increment adds five maintained modules, actual
+post-argument suspended-stack passing, call/control composition, parsed entry
+and zero-owner return cleanup. The actual parsed choice consumer preserves its
+native result/tie rule and complete cost while retiring remaining stack roots.
+Recursive dispatch, whole-run protected caller preservation, all-path readiness/
+physical success and global ownership/region/destructor obligations remain.
+See the [calling-entry report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-calling-entry.md).
+The 3,951-job build, all 41 Lean suites, native WP, nine Python tests and
+1,030-endpoint axiom audit pass. Shared statement inspection covers 1,124 unique
+declarations from five seeds with no unknown references.
 
 ## VM caches
 

@@ -1078,3 +1078,27 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.World.boxSuffix_transfer_alive
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.readable_fresh
 #print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.readable_transfer
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.readyFor_noCalls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Step.callers
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.noncall_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.instruction_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_done
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_ret
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_step
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_switch
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.selected_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.selected_simulation
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_run
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.mem_stackAddresses
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.binding_mem
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.stack_class
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Scanned.zero_boxes
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.close_spec
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.close_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Choice.invoking_refines
+#print axioms SubtreeProofs.Rust.SourceEval.CallingCertificate.originalProgram_read
+#print axioms SubtreeProofs.Rust.SourceEval.CallingCertificate.choice_fields
+#print axioms SubtreeProofs.Rust.SourceEval.CallingCertificate.originalChoice_spec

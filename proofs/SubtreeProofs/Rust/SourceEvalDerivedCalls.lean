@@ -12,14 +12,14 @@ namespace SubtreeProofs.Rust.SourceEval.Addressed.Derived
 
 open LookupSource LookupSource.Partial LookupSource.Partial.Addressed Storage
 
-abbrev Callees := World → List Nat → Function → List ValueCell → Option (World × ValueCell × Cost)
+abbrev Callees := World → List Nat → List Activation → Function → List ValueCell → Option (World × ValueCell × Cost)
 abbrev Ready := World → Function → List ValueCell → Prop
 
 def CallsRespect (concrete : Callees) (source : Calls) (ready : Ready) : Prop :=
-  ∀ world guards function packets final packet cost,
+  ∀ world guards suspended function packets final packet cost,
     world.WellFormed → (∀ p ∈ packets, Readable world.memory world.live p.1 p.2) →
-    AliveOn world.live guards → ready world function packets →
-    concrete world guards function packets = some (final, packet, cost) →
+    (∀ a ∈ suspended, a.Valid world) → AliveOn world.live guards → ready world function packets →
+    concrete world guards suspended function packets = some (final, packet, cost) →
     source function (packets.map Prod.snd) = some (packet.2, cost) ∧
       Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧ Preserves world final guards
 
@@ -69,7 +69,7 @@ def call (callee : Callees) (world : World) (active : Activation) (callers : Lis
   let remainder ← ({ active with state := masks } : Activation).scanExcept world slot
   let binding ← active.roots slot
   let retained := remainder.reads ++ suspended.reads
-  let (returned, packet, cost) ← callee world (retained ++ [binding.address]) function packets
+  let (returned, packet, cost) ← callee world (retained ++ [binding.address]) ({ active with state := masks } :: callers) function packets
   let (final, after) ← store returned active.roots active.frame slot retained masks packet
   some (final, { active with state := after }, (Cost.local (Action.call function args slot).weight).plus cost)
 
@@ -105,7 +105,7 @@ theorem call_spec {callee : Callees} {source : Calls} {ready : Ready}
           | none => simp [hcurrent, hsuspended, hb] at h
           | some binding =>
             simp only [hcurrent, hsuspended, hargs, hrest, hb, Bind.bind, Option.bind] at h
-            cases hrun : callee world ((remainder.reads ++ suspended.reads) ++ [binding.address]) function packets with
+            cases hrun : callee world ((remainder.reads ++ suspended.reads) ++ [binding.address]) ({ active with state := masks } :: callers) function packets with
             | none => simp only [hrun] at h; cases h
             | some returned =>
               rcases returned with ⟨returned, packet, inner⟩
@@ -118,7 +118,7 @@ theorem call_spec {callee : Callees} {source : Calls} {ready : Ready}
                   Option.some.injEq, Prod.mk.injEq] at h
                 obtain ⟨rfl, rfl, rfl⟩ := h
                 have currentFrame := (Activation.scan_spec ha hcurrent).frame
-                have callers := scanCallers_spec hc hsuspended
+                have callerFrame := scanCallers_spec hc hsuspended
                 obtain ⟨used, hsource, hg, hsub, hmid⟩ := Addressed.operands_spec currentFrame args hargs
                 have hvalid : ({ active with state := masks } : Activation).Valid world := ⟨ha.1, _, hmid⟩
                 have context := Activation.context_spec hvalid slot hrest
@@ -127,11 +127,16 @@ theorem call_spec {callee : Callees} {source : Calls} {ready : Ready}
                   rcases List.mem_append.mp hm with hm | hm
                   · rcases List.mem_append.mp hm with hm | hm
                     · exact context.alive a hm
-                    · exact callers.alive a hm
+                    · exact callerFrame.alive a hm
                   · obtain ⟨_, _, _, _, _, covered⟩ := hmid.get hb
                     exact hmid.alive a (covered (List.mem_append_right _ hm))
-                obtain ⟨hcallSource, hpacket, hreturned, hkept⟩ := hcallee world _ function packets returned packet inner hw
-                  (packets_readable hg (fun a hm => currentFrame.alive a (hsub hm))) hlive
+                obtain ⟨hcallSource, hpacket, hreturned, hkept⟩ := hcallee world _ ({ active with state := masks } :: callers) function packets returned packet inner hw
+                  (packets_readable hg (fun a hm => currentFrame.alive a (hsub hm)))
+                  (by
+                    intro a hm
+                    rcases List.mem_cons.mp hm with he | hm
+                    · subst a; exact hvalid
+                    · exact hc a hm) hlive
                   (hready current suspended packets masks hcurrent hsuspended hargs) hrun
                 have hcontext := context.weaken (fun _ hm => List.mem_append_left _ hm) (by
                   intro a hm
@@ -140,7 +145,7 @@ theorem call_spec {callee : Callees} {source : Calls} {ready : Ready}
                 have hcontext' := hcontext.preserve retained
                 obtain ⟨hstate, ⟨guards, hframe⟩, hwrite, hfinal⟩ := store_spec hreturned hcontext' hpacket hstore
                 have keepCallers := (retained.trans hwrite).weaken (fun _ hm => List.mem_append_right _ hm)
-                have hcallers := callers.transport keepCallers
+                have hcallers := callerFrame.transport keepCallers
                 refine ⟨?_, rfl, rfl, rfl, ⟨ha.1, guards, hframe⟩, ?_, hfinal, suspended, rfl, hcallers⟩
                 · simp only [SourceEval.action, hsource, hcallSource, Bind.bind, Option.bind, hstate]
                 · intro a hm

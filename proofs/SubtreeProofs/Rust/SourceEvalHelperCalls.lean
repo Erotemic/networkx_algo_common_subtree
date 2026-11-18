@@ -30,7 +30,7 @@ inductive Ready (fuel : Nat) : SourceEval.Function → List ValueCell → Prop w
   | checkedAdd (left right : Nat) : 0 < fuel → left < 2^32 → right < 2^32 →
       Ready fuel .checkedAdd [(.number left, .number left), (.number right, .number right)]
 
-def callee (fuel budget : Nat) : Derived.Callees := fun world _ function packets => execute fuel budget world function packets
+def callee (fuel budget : Nat) : Derived.Callees := fun world _ _ function packets => execute fuel budget world function packets
 
 theorem packets_represented {memory : Memory} {live : Live} {packets : List ValueCell}
     (h : ∀ p ∈ packets, Readable memory live p.1 p.2) :
@@ -44,7 +44,7 @@ theorem packets_represented {memory : Memory} {live : Live} {packets : List Valu
 theorem callee_respects (fuel budget : Nat) :
     Derived.CallsRespect (callee fuel budget) (SourceEval.run SourceEval.Certificate.original.body fuel)
       (fun _ function packets => Ready fuel function packets) := by
-  intro world guards function packets final packet cost hw hp _ hready hrun
+  intro world guards suspended function packets final packet cost hw hp _ _ hready hrun
   have represented := packets_represented hp
   cases hready with
   | copyWord word pointer depth =>
