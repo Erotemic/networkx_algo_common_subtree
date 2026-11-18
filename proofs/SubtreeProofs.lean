@@ -347,3 +347,6 @@ public import SubtreeProofs.Rust.SourceAnchoredOwnerProvenance
 
 public import SubtreeProofs.Rust.SourceEmptyOwnerProvenance
 public import SubtreeProofs.Rust.SourceRetainedOwnerProvenance
+
+public import SubtreeProofs.Rust.SourceEvaluatorNativeFresh
+public import SubtreeProofs.Rust.SourceEvaluatorFreshCallTotality

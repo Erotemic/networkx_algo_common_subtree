@@ -1938,6 +1938,54 @@
           "broader_regression": "Six affected Lean suites, eight runtime cases, thirteen ordered Rust tests and nine Python checks freshly pass. SourceCacheMissSetup at c87634a and full 47-suite/native-WP evidence at d49f638 are inherited, not rerun."
         },
         "next": "Apply helper-derived owner provenance to the complete actual warm cache-hit path, including nonempty cached witnesses, optional payload movement/wrapping, mixed witness/table result construction and cleanup. Combine it with empty_miss_total_fresh for a proved stronger empty-query induction base that projects to unchanged NativeTotal. Establish general recursive witness provenance from actual execution; transport it through recursive result field extraction, parent payloads/candidate assembly, choice and later selected owned-word/witness cleanup. Complete both left/right optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_warm_hit_owner_provenance_followup": {
+        "baseline_commit": "de35ac6",
+        "evidence": "memo-evaluator-warm-hit-provenance.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.cache_hit_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_empty_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.NativeTotalFresh.total",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.evaluator_call_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.evaluator_call_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.common_prefix_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.hit_prefix_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.owner_transfer"
+        ],
+        "status": "Complete actual parsed warm cache-hit evaluator derives returned witness-field owner provenance, including arbitrary nonempty typed cached witnesses and legal original query/table/caller aliases. Generic actual-prefix transfer reuses source mutation certificates; helper allocation ledgers derive the initial bound, real payload/optional moves retain it, and the mixed result carries unrestricted old table owners through cleanup, return and checked closure. cache_hit_total_fresh retains all preceding native value/table, input premises, readability, well-formedness, protected reads, complete ownership/coverage, lookup events, exact full hitRunCost and stable larger-bound runs. The old cache_hit_total statement is unchanged and now projects from it. NativeTotalFresh is a separate stronger universal native contract; NativeTotalFresh.total projects to unchanged NativeTotal, and native_empty_total_fresh proves either-empty-query bases for arbitrary typed warm hits and requested-key misses. Derived.evaluator_call_total_fresh constructs actual argument extraction, smaller child invocation, ownership transfer and guarded caller storage with a selected result-field bound, all previous call endpoints and stable full costs/source reflection. The stable-call bridge evaluator_call_owner_provenance recovers this bound at existing constructed checkpoints by comparing exact executions at joint larger fuel/budget. Its stronger smaller-query contract remains explicit; no general pair/pair instance is assumed. Two new semantic consumers check a full nonempty warm hit with queries borrowing old witness Boxes, exactly two bounded returned owners, and a complete recursive caller store while retaining old query/cached-witness aliases. The parent seventeen-checkpoint right-result scope is unchanged; stronger provenance propagation and the full recursive induction remain open. No C3 or production resource closure.",
+        "validation": {
+          "library_jobs": 4227,
+          "new_proof_modules": 4,
+          "new_theorems": 23,
+          "affected_lean_suites": [
+            "SourceOwnerProvenance",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution",
+            "SourceCacheMissSetup"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1925,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1285,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "unchanged_api": "The old cache_hit_total statement is byte-for-byte unchanged. Existing NativeTotal source and the older generic call-totality API are unmodified.",
+          "adversarial_consumers": [
+            "Complete parsed warm hit with both empty queries borrowing the old cached witness leaf Boxes. The typed table returns a nonempty Pair witness of score seven. Actual return/checked closure yield exactly two bounded witness owners and stable full hit cost/packet without a cache-soundness premise.",
+            "Complete recursive caller checkpoint constructed through the older call-totality API using NativeTotalFresh.total. The stronger empty-query base and stable-call bridge recover the actual guarded stored tuple witness-field bound while old query/cached-witness aliases remain permitted. No desired physical post-frame or successful parent/child call is assumed."
+          ],
+          "broader_regression": "Seven affected Lean suites, including the full parent SourceCacheMissSetup suite, eight recursive runtime cases, thirteen ordered Rust tests and nine Python checks freshly pass. Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun."
+        },
+        "next": "Propagate the separate stronger NativeTotalFresh smaller-request contract and stored witness-field provenance through parent head/tail/left/right calls, actual payload extraction, candidate assembly, choice and later selected owned cleanup. The existing seventeen-checkpoint right-result scope still consumes explicit older NativeTotal contracts. Preserve those statements and independent specifications; prove the general stronger recursive contract by induction without assuming a universal instance. Complete both optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -2126,7 +2174,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 cache-hit/empty-query and selected head-failure totality remain checked; the parent source frontier is the seventeen-checkpoint native right-result scope. Helper-derived owner bounds now transfer through actual partial moves, aggregates, guarded assignments, mixed witness/table return construction, selected witness-field extraction, return movement and closure. Empty-query requested-key-miss totality additionally proves returned witness-field provenance at the full actual packet/cost endpoint; its witness owns no Boxes and the warm table can retain old owners. Nonempty return/close, partial Box shell, mixed old-table extraction and warm-table full miss consumers pass. Existing NativeTotal is unchanged and complete warm-hit/general recursive witness provenance remains open. Apply helper-derived owner provenance to the complete actual warm cache-hit path, including nonempty cached witnesses, optional payload movement/wrapping, mixed witness/table result construction and cleanup. Combine it with empty_miss_total_fresh for a proved stronger empty-query induction base that projects to unchanged NativeTotal. Establish general recursive witness provenance from actual execution; transport it through recursive result field extraction, parent payloads/candidate assembly, choice and later selected owned-word/witness cleanup. Complete both left/right optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete warm-hit witness provenance, stronger either-empty-query native bases and constructive recursive caller storage are now checked. Existing NativeTotal and cache_hit_total statements are preserved. Propagate the separate stronger NativeTotalFresh smaller-request contract and stored witness-field provenance through parent head/tail/left/right calls, actual payload extraction, candidate assembly, choice and later selected owned cleanup. The existing seventeen-checkpoint right-result scope still consumes explicit older NativeTotal contracts. Preserve those statements and independent specifications; prove the general stronger recursive contract by induction without assuming a universal instance. Complete both optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

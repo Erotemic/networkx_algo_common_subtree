@@ -1,6 +1,6 @@
 module
 
-public import SubtreeProofs.Rust.SourceCacheHitBody
+public import SubtreeProofs.Rust.SourceCacheHitOwnerProvenance
 public import SubtreeProofs.Rust.SourceCloseTotality
 public import SubtreeProofs.Rust.SourceOwnerRecursive
 public import SubtreeProofs.Rust.SourceRecursiveBudget
@@ -16,7 +16,7 @@ namespace SubtreeProofs.Rust.SourceEval.Evaluator
 
 open LookupSource Heap Partial Partial.Addressed Storage SourceEval.Addressed verified_ordered_core
 
-theorem cache_hit_total {world : World} {callers : List Activation} {previous : Resources} {guards : List Nat}
+theorem cache_hit_total_fresh {world : World} {callers : List Activation} {previous : Resources} {guards : List Nat}
     (hw : world.WellFormed) (hc : ∀ caller ∈ callers, caller.Valid world) (view : Callers world callers previous)
     (left right : BalancedWord) (table : MemoTable) (leftCell rightCell tableCell : Cell)
     (leftRead : Readable world.memory world.live leftCell (.reference (encodeWord left)))
@@ -36,12 +36,13 @@ theorem cache_hit_total {world : World} {callers : List Activation} {previous : 
       (∃ output, Footprint final.memory packet.1 output ∧
         OwnerFrame final (output ++ (callerOwners final callers ++ external)) ∧
         BoxCoverage final (output ++ (callerOwners final callers ++ external))) ∧
+      ResultOwnersAbove world.memory.length final.memory packet.1 ∧
       ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
         Recursive.original budget fuel world guards callers .evaluate packets = some (final, packet, hitRunCost lookupCost) := by
   dsimp only
   let packets := inputPackets leftCell rightCell tableCell left right table
-  obtain ⟨entered, active, fuel, budget, middle, after, cell, work, entryRun, machine, state, bodyRun, empty, separate, fresh, kept⟩ :=
-    entry_hit_body_complete hw hc view left right table leftCell rightCell tableCell leftRead rightRead tableRead input frame covered result
+  obtain ⟨entered, active, fuel, budget, middle, after, cell, work, entryRun, machine, state, bodyRun, empty, separate, fresh, kept, resultFresh⟩ :=
+    entry_hit_body_complete_fresh hw hc view left right table leftCell rightCell tableCell leftRead rightRead tableRead input frame covered result
       (by rw [LookupEvents.lookup_value]; exact hit)
   have readable : ∀ p ∈ packets, Readable world.memory world.live p.1 p.2 := by
     intro p member
@@ -79,6 +80,8 @@ theorem cache_hit_total {world : World} {callers : List Activation} {previous : 
           have new := fresh slot binding hb
           omega)
   change close middle after callers guards packet = some final at closeRun
+  have outputFresh := Derived.close_result_owner_provenance flow.active flow.callers flow.wellFormed
+    flow.packet resultFresh closeRun
   have invokeRun : Calling.invoke (Recursive.original budget fuel) callers guards CallingCertificate.originalEvaluator world packets =
       some (final, packet, (Cost.entry .evaluate).plus work) := by
     simp only [Calling.invoke, CallingCertificate.originalEvaluator_spec.1, CallingCertificate.originalEvaluator_spec.2.2,
@@ -112,8 +115,37 @@ theorem cache_hit_total {world : World} {callers : List Activation} {previous : 
   rw [sameCost] at actual
   refine ⟨fuel + 1, budget, final, packet, lookupCost, rfl, events, cache_hit_native table left right result hit,
     finalReadable, finalWellFormed, (kept.weaken protectedReads).trans closeKept,
-    ⟨output, finalFootprint, outputFrame, outputCovered⟩, ?_⟩
+    ⟨output, finalFootprint, outputFrame, outputCovered⟩, outputFresh, ?_⟩
   intro largerFuel largerBudget fuelBound budgetBound
   exact Recursive.original_enlarge fuelBound budgetBound actual
+
+/-- The preceding native totality API retains exactly its original statement. -/
+theorem cache_hit_total {world : World} {callers : List Activation} {previous : Resources} {guards : List Nat}
+    (hw : world.WellFormed) (hc : ∀ caller ∈ callers, caller.Valid world) (view : Callers world callers previous)
+    (left right : BalancedWord) (table : MemoTable) (leftCell rightCell tableCell : Cell)
+    (leftRead : Readable world.memory world.live leftCell (.reference (encodeWord left)))
+    (rightRead : Readable world.memory world.live rightCell (.reference (encodeWord right)))
+    (tableRead : Readable world.memory world.live tableCell (encodeTable table))
+    {owners external : List Nat}
+    (input : FieldsFootprint world.memory [leftCell, rightCell, tableCell] owners)
+    (frame : OwnerFrame world (owners ++ (callerOwners world callers ++ external)))
+    (covered : BoxCoverage world (owners ++ (callerOwners world callers ++ external)))
+    (protectedReads : guards ⊆ previous.reads)
+    (result : CommonEmbedding) (hit : MemoizedOrderedSolver.findResult table left right = some result) :
+    let packets := inputPackets leftCell rightCell tableCell left right table
+    ∃ (minimumFuel minimumBudget : Nat) (final : World) (packet : ValueCell) (lookupCost : LookupSource.Cost),
+      packet.2 = encodeOutput (some result) table ∧ lookupCost.events = (LookupEvents.lookup table left right).2 ∧
+      memoized_common_embedding left right table = .ok (some result, table) ∧
+      Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧ Preserves world final guards ∧
+      (∃ output, Footprint final.memory packet.1 output ∧
+        OwnerFrame final (output ++ (callerOwners final callers ++ external)) ∧
+        BoxCoverage final (output ++ (callerOwners final callers ++ external))) ∧
+      ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+        Recursive.original budget fuel world guards callers .evaluate packets = some (final, packet, hitRunCost lookupCost) := by
+  dsimp only
+  obtain ⟨fuel, budget, final, packet, lookupCost, value, events, native, readable, wf, kept, resources, _, stable⟩ :=
+    cache_hit_total_fresh hw hc view left right table leftCell rightCell tableCell leftRead rightRead tableRead
+      input frame covered protectedReads result hit
+  exact ⟨fuel, budget, final, packet, lookupCost, value, events, native, readable, wf, kept, resources, stable⟩
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

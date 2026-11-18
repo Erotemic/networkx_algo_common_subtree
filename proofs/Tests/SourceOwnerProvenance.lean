@@ -3,6 +3,7 @@ module
 import SubtreeProofs.Rust.SourceHelperOwnerProvenance
 import SubtreeProofs.Rust.SourceRetainedOwnerProvenance
 import SubtreeProofs.Rust.SourceEmptyOwnerProvenance
+import SubtreeProofs.Rust.SourceEvaluatorFreshCallTotality
 import all SubtreeProofs.Rust.SourcePartialValue
 import all SubtreeProofs.Rust.SourcePartialMoves
 
@@ -375,5 +376,122 @@ example : ∃ fuel budget final packet lookupCost insertCost,
       (by simpa [callerOwners] using base_resources.1) (by simpa [callerOwners] using base_resources.2)
       (by simp) (Or.inl rfl) (by simp [table, MemoizedOrderedSolver.findResult])
   exact ⟨fuel, budget, final, packet, lookupCost, insertCost, value, fresh, stable⟩
+
+private theorem warm_witness_owners {memory : Memory} {cell : Cell} {reads : List Nat}
+    (graph : Graph memory cell (SourceEval.Evaluator.encodeOutput (some witness) table) reads)
+    (fresh : ResultOwnersAbove base.memory.length memory cell) :
+    ∃ resultCell tableCell owners, cell = .node .tuple 0 [resultCell, tableCell] ∧
+      Footprint memory resultCell owners ∧ owners.length = 2 ∧ ∀ address ∈ owners, base.memory.length ≤ address := by
+  obtain ⟨resultCell, tableCell, rfl, above⟩ := fresh
+  cases graph with
+  | node fields => cases fields with
+    | cons first rest => cases rest with
+      | cons second tail =>
+        cases tail
+        have footprint := first.footprint
+          (Borrow.typed_unborrowed (first.represents.typed (option_typed (some witness))) (.adt .optional))
+        refine ⟨resultCell, tableCell, _, rfl, footprint, ?_, above _ footprint⟩
+        have boxes := (Rep.of_full first.represents footprint).boxes
+        exact boxes.trans (by with_unfolding_all rfl)
+
+-- Both empty queries borrow the old cached witness's owned leaf Boxes. The
+-- typed warm entry deliberately returns a nonempty word and score seven.
+-- Complete parsed execution, including checked closure, yields two fresh
+-- witness owners and a stable exact full cost without cache-soundness premises.
+example : ∃ fuel budget final packet lookupCost resultCell returnedTable owners,
+    packet.2 = SourceEval.Evaluator.encodeOutput (some witness) table ∧
+    packet.1 = .node .tuple 0 [resultCell, returnedTable] ∧ Footprint final.memory resultCell owners ∧
+    owners.length = 2 ∧ (∀ address ∈ owners, base.memory.length ≤ address) ∧
+    ∀ largerFuel largerBudget, fuel ≤ largerFuel → budget ≤ largerBudget →
+      Recursive.original largerBudget largerFuel base [] [] .evaluate
+        (SourceEval.Evaluator.inputPackets (.shared ⟨0, []⟩) (.shared ⟨1, []⟩) tableCell .Empty .Empty table) =
+        some (final, packet, SourceEval.Evaluator.hitRunCost lookupCost) := by
+  have leftRead : Readable base.memory base.live (.shared ⟨0, []⟩) (.reference (encodeWord .Empty)) :=
+    ⟨[0], .shared rfl (.node .nil), by simp [AliveOn, base]⟩
+  have rightRead : Readable base.memory base.live (.shared ⟨1, []⟩) (.reference (encodeWord .Empty)) :=
+    ⟨[1], .shared rfl (.node .nil), by simp [AliveOn, base]⟩
+  have tableFoot := table_graph.footprint (Borrow.typed_unborrowed (table_graph.represents.typed (table_typed table)) (.adt .table))
+  have input : FieldsFootprint base.memory [.shared ⟨0, []⟩, .shared ⟨1, []⟩, tableCell] [0, 1, 2, 3] :=
+    .cons (.shared _) (.cons (.shared _) (.cons tableFoot .nil))
+  obtain ⟨fuel, budget, final, packet, lookupCost, value, _, _, readable, _, _, _, fresh, stable⟩ :=
+    SourceEval.Evaluator.cache_hit_total_fresh (guards := []) (external := []) base_valid (by simp) Callers.nil
+      .Empty .Empty table (.shared ⟨0, []⟩) (.shared ⟨1, []⟩) tableCell leftRead rightRead
+      ⟨[0, 1, 2, 3], table_graph, by simp [AliveOn, base]⟩ input
+      (by simpa [callerOwners] using base_resources.1) (by simpa [callerOwners] using base_resources.2)
+      (by simp) witness (by simp [table, MemoizedOrderedSolver.findResult])
+  obtain ⟨reads, graph, _⟩ := readable
+  rw [value] at graph
+  obtain ⟨resultCell, returnedTable, owners, shape, footprint, length, above⟩ := warm_witness_owners graph fresh
+  exact ⟨fuel, budget, final, packet, lookupCost, resultCell, returnedTable, owners,
+    value, shape, footprint, length, above, stable⟩
+
+private def evaluateArgs : List SourceEval.Operand := [.copy (.local 2), .copy (.local 2), .move (.local 1)]
+private def evaluateMasks : Partial.Locals := prepared.state.set 1 .empty
+private theorem evaluate_source : SourceEval.operands prepared.state evaluateArgs =
+    some ([.reference (encodeWord .Empty), .reference (encodeWord .Empty), encodeTable table], evaluateMasks) := by
+  with_unfolding_all rfl
+
+-- The stronger empty-query contract is consumed by an actual recursive call
+-- and guarded caller store. Query 2 and witness view 3 keep their old aliases;
+-- only the optional witness field of the stored result is bounded. The older
+-- call constructor supplies the checkpoint; the stronger guarantee is recovered
+-- by the stable-call bridge, without supplying a desired post-frame.
+example : ∃ fuel budget final after cost,
+    after.state 0 = Slot.ofValue (SourceEval.Evaluator.encodeOutput (some witness) table) ∧
+    LocalResultOwnersAbove preparedWorld.memory.length final after 0 ∧
+    ∀ largerFuel largerBudget, fuel ≤ largerFuel → budget ≤ largerBudget →
+      Derived.call (Recursive.original largerBudget largerFuel) preparedWorld prepared [] .evaluate evaluateArgs 0 =
+        some (final, after, cost) := by
+  have owners : prepared.owners preparedWorld = [0, 1, 2, 3] := by with_unfolding_all rfl
+  have worldFrame := base_resources.1.keep (base.stackCells_keeps base_valid 4 (packets.map Prod.fst) [0, 1, 2, 3])
+  have frame := worldFrame.keep (world.allocate_keeps world_valid (.stack 4 0 world.memory.length) (.node .tuple 0 []) [0, 1, 2, 3])
+  have coverage := (base_resources.2.stackCells 4 (packets.map Prod.fst)).allocate_stack 4 0 world.memory.length (.node .tuple 0 [])
+  have preparedFrame : OwnerFrame preparedWorld [0, 1, 2, 3] := by simpa only [preparedWorld] using frame
+  have preparedCoverage : BoxCoverage preparedWorld [0, 1, 2, 3] := by simpa only [preparedWorld, world] using coverage
+  have moves : ∀ current suspended, Scanned preparedWorld prepared current → Callers preparedWorld [] suspended →
+      ∀ op ∈ evaluateArgs, Allowed preparedWorld prepared.roots (current.loans ++ suspended.reads) op := by
+    intro current suspended scan callers op member
+    cases callers
+    have actual : (prepared.scan preparedWorld).map Resources.loans = some [2, 0, 1, 2] := by with_unfolding_all rfl
+    rw [scan.scan] at actual
+    have loans : current.loans = [2, 0, 1, 2] := by simpa using actual
+    simp only [evaluateArgs, List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl | rfl
+    · trivial
+    · trivial
+    · intro cell pointer located forbidden
+      have known : Storage.locate preparedWorld prepared.roots (.local 1) = some (tableCell, ⟨4, []⟩) := by with_unfolding_all rfl
+      obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Option.some.inj (known.symm.trans located))
+      simp [loans] at forbidden
+  have loans : Derived.RootLoansAllowed preparedWorld {prepared with state := evaluateMasks} [] 0
+      ⟨world.memory.length, world.memory.length⟩ := by
+    intro remainder suspended remaining callers forbidden
+    cases callers
+    have actual : (({prepared with state := evaluateMasks} : Activation).scanExcept preparedWorld 0).map Resources.loans =
+        some [2, 0, 1, 2] := by with_unfolding_all rfl
+    unfold Activation.scanExcept at actual
+    rw [remaining.inspect] at actual
+    have equal : remainder.loans = [2, 0, 1, 2] := by simpa using actual
+    simp [equal, world, packets, World.stackCells, base] at forbidden
+  have child : SourceEval.Evaluator.NativeTotalFresh .Empty .Empty :=
+    SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)
+  obtain ⟨fuel, budget, final, after, result, output, cost, state, native, _, _, _, _, _, stable⟩ :=
+    Derived.evaluator_call_total (external := []) prepared_valid (by simp) prepared_world_valid
+      (by intro _ _ _ caller member; cases member)
+      (by simpa [owners, callerOwners] using preparedFrame) (by simpa [owners, callerOwners] using preparedCoverage)
+      .Empty .Empty table child.total evaluateArgs
+      (slot := 0) (binding := ⟨world.memory.length, world.memory.length⟩) (masks := evaluateMasks)
+      (by with_unfolding_all rfl) evaluate_source (by with_unfolding_all rfl) moves loans
+  have fresh := Derived.evaluator_call_owner_provenance (external := []) prepared_valid (by simp) prepared_world_valid
+    (by intro _ _ _ caller member; cases member)
+    (by simpa [owners, callerOwners] using preparedFrame) (by simpa [owners, callerOwners] using preparedCoverage)
+    .Empty .Empty table child evaluateArgs (slot := 0) (binding := ⟨world.memory.length, world.memory.length⟩) (masks := evaluateMasks)
+    (by with_unfolding_all rfl) evaluate_source (by with_unfolding_all rfl) moves loans
+    (stable fuel budget (by rfl) (by rfl)).1
+  have expected := SourceEval.Evaluator.cache_hit_native table .Empty .Empty witness
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans expected))
+  exact ⟨fuel, budget, final, after, cost, by rw [state]; simp [Partial.Locals.set], fresh,
+    fun largerFuel largerBudget hf hb => (stable largerFuel largerBudget hf hb).1⟩
 
 end SourceOwnerProvenanceTests

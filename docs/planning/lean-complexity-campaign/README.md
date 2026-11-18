@@ -1,32 +1,37 @@
 # Lean complexity campaign: proto-roadmap
 
-[Owner provenance through moves, mixed returns and closure](evidence/memo-evaluator-move-return-provenance.md) now
-transfers helper-derived bounds through actual owned projections, operand lists,
-aggregates and guarded assignments. Partial moves retain bounded Box shells and
-siblings in the source. A mixed return tuple bounds only its optional witness
-field; its old table owners remain unrestricted. Checked extraction of that
-field, return movement and stack closure preserve the selected bound.
-The complete empty-query cache-miss endpoint additionally derives returned
-witness-field provenance with all prior premises, native output/table, complete
-ownership/coverage, exact cost and stable larger-bound runs preserved. That
-empty witness has no Box owners; arbitrary typed warm tables and legal original
-aliases remain allowed on a requested-key miss. Existing `NativeTotal` is unchanged.
-The 4,223-job build and six affected Lean suites pass, including eight runtime
-cases. All 1,902 audited endpoints retain the accepted axiom baseline; eight
-statement seeds resolve 1,168 unique declarations with no unknown references.
-Thirteen Rust tests and nine Python checks pass. Four new consumers check a
-nonempty clone through mixed return/closure; selected-field extraction with two
-bounded result owners and four old table owners left in the partial source;
-retained Box shells after payload movement; and complete warm-table empty-miss
-execution with table-owned query aliases.
-The parent frontier remains the seventeen-checkpoint right-result scope. Full
-warm cache-hit provenance and the stronger general recursive witness contract
-still need proof. Both optional joins, successful right payload transfer, parent
-candidate/choice provenance, later general owned cleanup, overflow exits,
-insertion, remaining parent returns and full pair/pair induction remain.
-Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input
-policy/resources/G3 and the remaining planning targets stay open. The full goal
-remains active.
+[Complete warm-hit provenance and stronger empty-query bases](evidence/memo-evaluator-warm-hit-provenance.md) now
+proves returned witness-field owner bounds through the entire actual parsed
+warm cache-hit evaluator, including nonempty typed cached witnesses, actual
+return and checked closure. Old table owners and legal query/table/caller aliases
+remain allowed. Native output/table, complete ownership/coverage, protected reads,
+exact full costs and stable larger-bound runs are retained.
+Separate `NativeTotalFresh` has proved empty-query bases for arbitrary warm
+hits and requested-key misses; it projects to unchanged `NativeTotal`.
+`Derived.evaluator_call_total_fresh` constructs the actual child invocation and
+guarded caller store, retaining the witness-field bound at the destination.
+Stable-call comparison recovers that bound at existing constructed checkpoints.
+Generic primitive-prefix transfer and retirement lemmas follow existing actual
+execution and source mutation certificates. No stronger general instance,
+cache-soundness assumption or desired physical post-frame is introduced.
+The 4,227-job build and seven affected Lean suites pass, including the parent
+cache-miss setup suite and eight recursive runtime cases. All 1,925 audited
+endpoints, including 23 new theorems, retain the accepted axiom baseline. Eight
+statement seeds resolve 1,285 declarations with no unknown references.
+Thirteen Rust tests and nine Python frontend checks pass.
+Two new consumers check a complete warm hit with both queries borrowing old
+cached-witness Boxes and a nonempty score-seven result with exactly two bounded
+owners; and a complete recursive call/store consuming the stronger empty base
+while retaining old query and cached-witness aliases.
+The parent frontier remains the seventeen-checkpoint right-result scope.
+Propagate stronger child contracts/provenance through head/tail/left/right calls,
+payloads, candidate assembly, choice and later owned cleanup. Both optional joins,
+successful right payload transfer, overflow exits, insertion, remaining returns
+and full pair/pair induction remain. Dynamic regions/destructors, public
+maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining
+planning targets stay open. The full goal remains active.
+Earlier [move/return provenance and the empty-miss endpoint](evidence/memo-evaluator-move-return-provenance.md)
+remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.
