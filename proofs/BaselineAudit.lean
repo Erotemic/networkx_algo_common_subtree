@@ -1943,3 +1943,21 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_arguments_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_prefix_complete
+
+-- Complete left result scope, ended views and actual cleanup.
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.AnchoredLoanMachine.to_original
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.ended_shared_local_empty_calls
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.open_assign_memory
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.root_above
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_world
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_move_local_bound
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.store_world
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.narrow
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.operands_move_local_bound
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_result_scrutinee_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_arguments_retire_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_call_original_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_unpack_complete
+#print axioms SubtreeProofs.Rust.SourceEval.LoanEnding.forget_shared_ended

@@ -8,6 +8,7 @@ import SubtreeProofs.Rust.SourceContractionRequests
 import SubtreeProofs.Rust.SourcePairLeftWordViewsEntry
 import SubtreeProofs.Rust.SourceAnchorOwnerPermissions
 import SubtreeProofs.Rust.SourcePairLeftCallEntry
+import SubtreeProofs.Rust.SourcePairLeftScopeEntry
 
 namespace SourceCacheMissSetupTests
 
@@ -839,5 +840,112 @@ example : ∃ final after anchor,
       (SourceEval.Evaluator.native_empty_total .Empty (.Pair .Empty .Empty) (Or.inl rfl))
   obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans leftNative))
   exact ⟨final, after, anchor, machine, queries, value⟩
+
+
+-- All sixty actual matched/left-contraction instructions compose. Ended
+-- reference masks restore original loan origins before real root retirement.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive headWorld headActive tailWorld tailActive scoreWorld scoreActive rootWorld rootActive matchedWorld matchedActive concatWorld concatActive viewsWorld viewsActive argumentWorld argumentActive callWorld callActive final after cost,
+    OriginalLoanMachine world [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.PairLeftScope .Empty .Empty .Empty .Empty SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness
+      1#u32 (some SourceEval.Evaluator.emptyWitness) headMemo final after ∧
+    (∀ slot, 82 ≤ slot → after.roots slot = none) ∧
+    Derived.scrutinee final after [] (.discriminant (.local 74)) = some (.variant .optional 1, after) ∧
+      ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix entered active lookupWorld lookupActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions lookupWorld lookupActive missWorld missActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions missWorld missActive headWorld headActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.tailCases SourceEval.Evaluator.tailActions headWorld headActive tailWorld tailActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.scoreCases SourceEval.Evaluator.scoreActions tailWorld tailActive scoreWorld scoreActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.rootScoreCases SourceEval.Evaluator.rootScoreActions scoreWorld scoreActive rootWorld rootActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 30) (SourceEval.Evaluator.matchedActions.take 30) rootWorld rootActive matchedWorld matchedActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 39) ((SourceEval.Evaluator.matchedActions.drop 30).take 9) matchedWorld matchedActive concatWorld concatActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 44) ((SourceEval.Evaluator.matchedActions.drop 39).take 5) concatWorld concatActive viewsWorld viewsActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 48) ((SourceEval.Evaluator.matchedActions.drop 44).take 4) viewsWorld viewsActive argumentWorld argumentActive ∧
+        Derived.call (Recursive.original budget fuel) argumentWorld (argumentActive.forgetRefs (SourceEval.Evaluator.matchedCode 48)) []
+          .evaluate SourceEval.Evaluator.leftContractionArgs 76 = some (callWorld, callActive, cost) ∧
+        Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.matchedCode 49) [.call .evaluate SourceEval.Evaluator.leftContractionArgs 76] argumentWorld argumentActive callWorld callActive ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.matchedCases ((SourceEval.Evaluator.matchedActions.drop 49).take 11) callWorld callActive final after ∧
+        Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.matchedCases SourceEval.Evaluator.matchedActions rootWorld rootActive final after := by
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native headMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native headMemo .Empty (.Pair .Empty .Empty) SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, table, SourceEval.Evaluator.emptyWitness, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, wc, ac, wv, av, wa, aa, wb, ab, wd, ad,
+    final, after, result, output, cost, _, machine, scope, native, inspection, _, future, prefixes⟩ :=
+    SourceEval.Evaluator.entry_pair_left_scope_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table headMemo headMemo SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness
+      0#u32 1#u32 pairCell pairCell tableCell pair_readable pair_readable table_readable footprint resources.2.1 resources.2.2
+      (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative tailNative (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total .Empty (.Pair .Empty .Empty) (Or.inl rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans leftNative))
+  exact ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, ws, aScore, wr, ar, wc, ac, wv, av, wa, aa, wb, ab, wd, ad,
+    final, after, cost, machine, scope, future, inspection, prefixes⟩
+
+-- Real argument/root retirement preserves the six-Box matched candidate,
+-- native output fields and the table-owned original query aliases.
+example : ∃ final after,
+    OriginalLoanMachine wideWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.PairLeftScope .Empty .Empty .Empty .Empty wideWitness wideWitness 15#u32
+      (some SourceEval.Evaluator.emptyWitness) wideTable final after ∧
+    (after.state 64).dropWork.boxes = 6 ∧ (∀ slot ∈ [76, 77, 78, 79, 80], after.roots slot = none) := by
+  have footprint : FieldsFootprint wideWorld.memory [pairCell, pairCell, wideCell] [6, 7, 4, 2, 3, 0, 1, 5] :=
+    .cons (.shared _) (.cons (.shared _) (.cons wide_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native wideTable .Empty .Empty wideWitness
+    (by simp [wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native wideTable .Empty (.Pair .Empty .Empty) SourceEval.Evaluator.emptyWitness
+    (by simp [wideTable, table, SourceEval.Evaluator.emptyWitness, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, final, after,
+    result, output, cost, _, machine, scope, native, _, _, _, _⟩ :=
+    SourceEval.Evaluator.entry_pair_left_scope_complete (by simp [World.WellFormed, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty wideTable wideTable wideTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell wideCell wide_pair_readable wide_pair_readable wide_readable footprint
+      (by simpa [callerOwners] using wide_resources.1) (by simpa [callerOwners] using wide_resources.2)
+      (by simp [wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total .Empty (.Pair .Empty .Empty) (Or.inl rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans leftNative))
+  refine ⟨final, after, machine, scope, ?_, scope.retired⟩
+  rw [scope.matched.candidate]
+  simp [SourceEval.Evaluator.matchedWitness, wideWitness, encodeResult, encodeWord, Slot.ofValue, ofFields,
+    Slot.dropWork, dropFields, DropWork.plus]
+
+-- Cold recursive insertion now reaches the parent optional switch with both
+-- inserted native entries in 75 and fresh empty bound payload storage 81.
+example : ∃ final after,
+    OriginalLoanMachine coldPairWorld [] {} [0, 1, 2] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    after.state 74 = Slot.ofValue (encodeOption (some SourceEval.Evaluator.emptyWitness)) ∧
+    after.state 75 = Slot.ofValue (encodeTable coldLeftMemo) ∧
+    (∃ binding, after.roots 81 = some binding ∧ final.memory[binding.address]? = some (.node .tuple 0 [])) ∧
+    Derived.scrutinee final after [] (.discriminant (.local 74)) = some (.variant .optional 1, after) := by
+  have footprint : FieldsFootprint coldPairWorld.memory [coldPairCell, coldPairCell, coldTableCell] [] :=
+    .cons (.shared _) (.cons (.shared _) (.cons (.node .nil) .nil))
+  have tableRead : Readable coldPairWorld.memory coldPairWorld.live coldTableCell (encodeTable .Empty) :=
+    ⟨[], .node .nil, by simp [AliveOn]⟩
+  have headNative := SourceEval.Evaluator.empty_native .Empty .Empty .Empty (Or.inl rfl) rfl
+  have tailNative := SourceEval.Evaluator.cache_hit_native coldHeadMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [coldHeadMemo, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.empty_native coldHeadMemo .Empty (.Pair .Empty .Empty) (Or.inl rfl)
+    (by simp [coldHeadMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, final, after,
+    result, output, cost, _, machine, scope, native, inspection, _, _, _⟩ :=
+    SourceEval.Evaluator.entry_pair_left_scope_complete (external := [0, 1, 2])
+      (by simp [World.WellFormed, coldPairWorld]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty .Empty coldHeadMemo coldHeadMemo
+      SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness 0#u32 1#u32
+      coldPairCell coldPairCell coldTableCell cold_pair_readable cold_pair_readable tableRead footprint
+      (by simpa [callerOwners] using cold_pair_resources.1) (by simpa [callerOwners] using cold_pair_resources.2)
+      rfl (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative tailNative (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total .Empty (.Pair .Empty .Empty) (Or.inl rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans leftNative))
+  exact ⟨final, after, machine, scope.resultValue, scope.tableValue, scope.payloadRoot, inspection⟩
 
 end SourceCacheMissSetupTests

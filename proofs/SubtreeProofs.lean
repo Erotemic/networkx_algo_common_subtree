@@ -336,3 +336,4 @@ public import SubtreeProofs.Rust.SourceContractionRequests
 public import SubtreeProofs.Rust.SourcePairLeftWordViewsEntry
 public import SubtreeProofs.Rust.SourceAnchorOwnerPermissions
 public import SubtreeProofs.Rust.SourcePairLeftCallEntry
+public import SubtreeProofs.Rust.SourcePairLeftScopeEntry

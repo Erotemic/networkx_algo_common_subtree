@@ -2,6 +2,34 @@
 
 Branch: `Droschinsky-algos`.
 
+[Complete actual left contraction result scope](lean-complexity-campaign/evidence/memo-evaluator-left-scope.md) now reaches the
+real optional-result switch through twelve stable prefix boundaries and exposes
+the composed sixty-instruction matched/left-contraction prefix. All eleven
+instructions 49–59 retire moved arguments, extract option/table into 74/75,
+clean the moved tuple, retire ended view/output roots and open payload 81.
+Actual continuation preparation ends view 78; moved/ended masks restore the
+strictly original loan family before physical stack retirement. Complete
+ownership/coverage, exact queries, matched candidate, owned word 71 and native
+left output survive. Every future parent local at index 82 or above is unbound.
+Generic fresh-write memory preservation includes already retired cells; parent
+root-change certificates cross actual calls. Smaller head/tail/left `NativeTotal`
+and independent native head/tail/score successes remain explicit; no successful
+physical parent run, expected post-frame, expected left result, cache soundness,
+recursive witness freshness or global alias ban is supplied.
+The 4,195-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,849 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,311 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Three added kernel
+consumers discharge all smaller contracts with proved empty cases: repeated
+table-owned aliases derive all twelve checkpoints/full sixty-instruction prefix;
+a six-Box matched candidate survives real cleanup; and cold recursive insertion
+reaches native fields 74/75 and empty bound payload 81 at the actual switch.
+Successful-left payload extraction, right concatenation/views/call, both left/
+right joins, recursive witness provenance/owned cleanup, overflow exits, choice,
+insertion, remaining parent returns and full pair/pair induction remain. Dynamic
+regions/destructors, public maximum/cold-table teardown, wrappers/input policy/
+resources/G3 and every other planning target stay open. The full goal is active.
+
 [Constructed actual left contraction call](lean-complexity-campaign/evidence/memo-evaluator-left-recursion.md) now reaches its native
 recursive return through eleven stable actual prefix boundaries from parsed
 entry. Four argument instructions reborrow the original right query into 79
