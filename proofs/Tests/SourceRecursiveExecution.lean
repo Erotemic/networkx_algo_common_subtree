@@ -168,5 +168,11 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
   checkWarm "left-failure-owned-candidate-query" (.Pair .Empty pairWord) pairWord true 3130 6
     (.Entry ⟨.Empty, .Empty, ⟨pairWord, 2147483648#u32⟩⟩
       (.Entry ⟨pairWord, .Empty, ⟨pairWord, 0#u32⟩⟩ .Empty))
+  -- Left contraction succeeds with a nonempty witness; the right contraction
+  -- overflows. Its join drops that witness and the right query before candidate cleanup.
+  checkWarm "right-failure-owned-left-witness-query-candidate" pairWord (.Pair .Empty pairWord) true 4252 7
+    (.Entry ⟨.Empty, .Empty, ⟨pairWord, 2147483648#u32⟩⟩
+      (.Entry ⟨.Empty, pairWord, ⟨pairWord, 0#u32⟩⟩
+        (.Entry ⟨.Empty, .Pair .Empty pairWord, ⟨pairWord, 0#u32⟩⟩ .Empty)))
 
 end SourceRecursiveExecutionTests

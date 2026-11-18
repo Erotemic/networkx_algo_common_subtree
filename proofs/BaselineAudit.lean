@@ -2237,3 +2237,10 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_failure_total_fresh
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_request_some
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_minimal_pair_total_fresh
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.rightFailure_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_cleanup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_continuation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_right_failure_body_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_total_fresh

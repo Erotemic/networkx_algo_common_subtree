@@ -2,38 +2,37 @@
 
 Branch: `Droschinsky-algos`.
 
-[Complete left-contraction failure dispatch](lean-complexity-campaign/evidence/memo-evaluator-left-failure.md)
+[Complete right-contraction failure dispatch](lean-complexity-campaign/evidence/memo-evaluator-right-failure.md)
 now constructs the whole original parent body, guarded return and checked
-dispatch/closure when the left contraction returns None. Three smaller
-`NativeTotalFresh` contracts and independent native head/tail/subtotal/root
-success and left-failure equations remain explicit. Actual prefixes derive
-twenty-two roots, older masks, empty return storage and all four earlier optional
-tags. Updated table75 moves into None output; held concatenated query71 and
-matched candidate64 are dropped through their owner bounds before all five
-cleanup joins and parameter return. Complete ownership/coverage, allowed old
-query/table aliases, protected reads, source/native agreement, None-result
-provenance and exact world/packet/full cost at larger sufficient bounds survive.
-Root overflow reuses the factored shared outer return with its statement unchanged.
-A new universal fresh contract for the one-edge pair over arbitrary typed warm
-tables lets the concrete larger consumer discharge all three smaller contracts.
-Its six-owner matched candidate and two-owner concatenated query retire; ten
-output owners and five external query owners retain complete coverage. This
-specific universal instance leaves general pair/pair induction open.
-The 4,335-job library build and all ten affected Lean suites pass. All twelve
-runtime cases pass; the new owned candidate/query case checks 3,130 source steps
-and six solver calls, complete source/addressed value/table/cost equality,
+dispatch/closure when left contraction succeeds and right contraction returns
+None. Four smaller `NativeTotalFresh` contracts and independent native head/
+tail/subtotal/root/left success and right-failure equations remain explicit.
+Actual failure packing retains its right-cleanup suffix; the real join drops
+the owned right query85 and held left witness81. Exact mask counts derive zero
+owners in still-bound81 before outer left cleanup retires it and drops the held
+left query71 and candidate64. All six cleanup joins and parameter return execute.
+Complete ownership/coverage, allowed old query/table aliases, protected reads,
+source/native agreement, None-result provenance and exact world/packet/full cost
+at larger sufficient bounds survive. Every pair/pair success/failure constructor
+is now available from its explicit smaller contracts; universal induction remains.
+The 4,340-job library build and all eleven affected Lean suites pass. All
+thirteen runtime cases pass; the new owned right-failure case checks 4,252 source
+steps/seven solver calls, complete source/addressed value/table/cost equality,
 caller guard bytes/liveness and full owner coverage.
-All 2,110 audited endpoints retain the accepted axioms; eleven new theorems
-in seven new proof modules are included; the root continuation reuses the shared
-suffix. Eight statement seeds export 1,313 unique records with no unknown references. Thirteen Rust tests
-and nine Python checks pass. The new consumer is included in CI's fifty-four
-suites; this checkpoint freshly ran the ten affected suites, not the full fifty-four.
-Next construct right-contraction failure, then universal pair/pair
-`NativeTotalFresh` induction. Dynamic regions/destructors, public maximum/
-cold-table teardown, wrappers/input policy/resources/G3 and every other planning
-requirement remain open. No full SRC-01/C3 or production resource closure is
-claimed; the full goal stays active. Earlier [root overflow](lean-complexity-campaign/evidence/memo-evaluator-root-overflow.md),
-[subtotal overflow](lean-complexity-campaign/evidence/memo-evaluator-subtotal-overflow.md), head/tail failure and successful-parent endpoints remain checked.
+The new kernel consumer discharges all four contracts with proved empty-input/
+minimal-pair instances. Both queries borrow inside the old table; cleanup retires
+a two-owner right query, two-owner left witness and six-owner candidate. Returned
+None/table owns eighteen cells with complete coverage and stable larger bounds.
+All 2,116 audited endpoints retain the accepted axioms; six new theorems in five
+new proof modules are included. Eight statement seeds export 1,347 unique records
+without unknown references. Thirteen Rust tests and nine Python checks pass.
+CI now includes fifty-five suites; this checkpoint freshly ran the eleven
+affected suites, not the full fifty-five. See the evidence report for exact commands.
+Next assemble universal pair/pair `NativeTotalFresh` induction. Dynamic regions/
+destructors, public maximum/cold-table teardown, wrappers/input policy/resources/
+G3 and every other planning requirement remain open. No full SRC-01/C3 or
+production resource closure is claimed; the full goal stays active. Earlier
+[left failure](lean-complexity-campaign/evidence/memo-evaluator-left-failure.md), root/subtotal overflow, head/tail failure and successful-parent endpoints remain checked.
 
 [Helper owner provenance and constructive concatenation cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.
@@ -1018,12 +1017,14 @@ See the latest evidence report for reproduction and scope.
    and returns are now constructed from independent local source facts and
    semantic permissions, with derived post-RHS resources. Pinned choice,
    cache-hit, empty-input and head-failure constructors are checked foundations.
-   The successful, tail-failure, subtotal/root-overflow and left-failure pair/pair
-   cases construct whole original parent bodies from parsed entry and checked
-   dispatch/closure, retaining witness provenance from explicit smaller contracts.
-   Head failure also has the stronger None-result provenance. Next construct
-   right-contraction failure, then universal pair/pair NativeTotalFresh induction. Compose remaining permissions
-   through the evaluator/public maximum on legal native inputs/warm tables.
+   The successful, tail-failure, subtotal/root-overflow and both contraction-
+   failure pair/pair cases construct whole original parent bodies from parsed
+   entry and checked dispatch/closure, retaining witness provenance from explicit
+   smaller contracts.
+   Head failure also has the stronger None-result provenance. Next assemble
+   universal pair/pair NativeTotalFresh induction from all checked branches.
+   Compose remaining permissions through the evaluator/public maximum on legal
+   native inputs/warm tables.
    Discharge reference-local loans rather than treating all locals as closed.
    Reuse exact helper growth, global recursive
    owner resources, computed loan coverage, certified reference views, independent

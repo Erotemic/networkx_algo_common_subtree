@@ -2659,6 +2659,62 @@
           "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited. This checkpoint freshly ran the ten affected suites, not all54 CI suites."
         },
         "next": "Construct right-contraction failure, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      },
+      "evaluator_right_failure_followup": {
+        "baseline_commit": "c0388b1",
+        "evidence": "memo-evaluator-right-failure.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_right_failure_body_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_continuation_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_cleanup_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.rightFailure_actions",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.left_failure_cleanup_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_failure_outer_return_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_storage_complete_provenance"
+        ],
+        "status": "Constructed whole right-contraction None original body and checked dispatch/closure from parsed readable inputs and complete resources, four explicit smaller NativeTotalFresh contracts, independent head/tail/subtotal/root/left success, right None and lookup miss equations. Actual right join consists of failure packing with its real eight-action suffix, right payload/result/table retirement, owned right query85 drop/retirement and held left-witness81 drop. Exact retirement counts derive zero owners in still-bound81 for outer left cleanup; held left query71 and candidate64 then drop through their bounds. All six cleanup joins and guarded parameter return execute. Complete output/caller/external ownership and coverage, allowed original aliases, protected reads, source/native agreement, witness-field provenance and exact world/packet/full-cost stability survive. No parent execution/native equation, desired post-frame or successful close is assumed. All pair/pair branch constructors now exist from explicit smaller contracts; universal fresh induction and remaining SRC-01/C3 interpretation stay open.",
+        "validation": {
+          "library_jobs": 4340,
+          "new_proof_files": 5,
+          "proof_modules_touched": 5,
+          "new_theorems": 6,
+          "affected_lean_suites": [
+            "SourceRightFailure",
+            "SourceLeftFailure",
+            "SourceRootOverflow",
+            "SourceSubtotalOverflow",
+            "SourceNoneResultProvenance",
+            "SourceCacheMissSetup",
+            "SourceParentOutput",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "fresh_lean_suites": "All eleven listed suites pass, including thirteen runtime cases and all prior whole-parent/output/choice/cleanup consumers.",
+          "right_consumer": "passed: all four smaller fresh contracts discharged by proved empty-input and minimal-pair instances; three warm keys return nonempty head/tail/left witnesses; parent additions fit but smaller right request doubles2^31 and overflows; two-owner right query, two-owner left witness and six-owner matched candidate retire. Both queries borrow inside the old table; readable None/table output owns eighteen cells with complete coverage, result provenance and stable larger bounds.",
+          "owned_left_witness_query_candidate_runtime": "passed: three warm keys supply nonempty head/tail/left witnesses; parent scores fit and left succeeds but smaller right request overflows; two-owner right query, two-owner held left witness and six-owner candidate retire; exact4252 source steps/seven solver calls, complete source/addressed value/table/cost equality, caller guard bytes/liveness, owner uniqueness/live-Box classification/full output/caller coverage and retirement of every other new storage",
+          "recursive_runtime_cases": 13,
+          "audited_endpoints": 2116,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1347,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "ci_lean_suites": 55,
+          "ci_added_suites": [
+            "SourceRightFailure"
+          ],
+          "ci_added_commands_passed": true,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited. This checkpoint freshly ran the eleven affected suites, not all55 CI suites."
+        },
+        "next": "Assemble universal pair/pair NativeTotalFresh induction from all checked branch constructors. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -2847,7 +2903,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now also constructs whole left-contraction None body and checked dispatch/closure, owned query/candidate cleanup and five return joins from three explicit smaller fresh contracts and independent native equations. A universal minimal-pair fresh instance discharges the larger concrete failure consumer. Construct right-contraction failure, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      "W06-C3 now also constructs whole right-contraction None body and checked dispatch/closure, real failure packing/right cleanup, zero-owner retained81 and all six cleanup joins from four explicit smaller fresh contracts and independent native equations. All pair/pair success/failure constructors are available. Assemble universal pair/pair NativeTotalFresh induction from all checked branch constructors. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
