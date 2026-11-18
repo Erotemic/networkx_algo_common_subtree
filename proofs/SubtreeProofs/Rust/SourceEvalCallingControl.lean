@@ -2,6 +2,7 @@ module
 
 public import SubtreeProofs.Rust.SourceEvalHelperCalls
 public import SubtreeProofs.Rust.SourceEvalAddressedControl
+public import SubtreeProofs.Rust.SourceActivationLoanViews
 
 /-! Calls join the shared addressed control engine. The callee receives the
 actual post-argument activation followed by the actual suspended callers.
@@ -21,10 +22,21 @@ def instruction (callee : Derived.Callees) (callers : List Activation) (machine 
     some ((world, active), cost)
   | act => Derived.instruction callers machine act
 
+def schedule : Code → Control.Tree (Action × Code)
+  | .done => .done
+  | .ret => .ret
+  | .step act rest => .step (act, .step act rest) (schedule rest)
+  | .switch scrut cases fallback left right rest =>
+      .switch scrut cases fallback (schedule left) (schedule right) (schedule rest)
+
+def loanInstruction (callee : Derived.Callees) (callers : List Activation) (machine : World × Activation)
+    (scheduled : Action × Code) : Option ((World × Activation) × Cost) :=
+  instruction callee callers (machine.1, machine.2.forgetRefs scheduled.2) scheduled.1
+
 def exec (callee : Derived.Callees) (callers : List Activation) (code : Code) (world : World) (active : Activation) : Option (Flow × Cost) :=
-  Control.execWith (instruction callee callers) (inspectScrutinee callers)
+  Control.execWith (loanInstruction callee callers) (inspectScrutinee callers)
     (fun machine => Derived.returnValue callers machine.1 machine.2) (fun machine => .next machine.1 machine.2)
-    Derived.nextState {} Cost.plus (fun scrut => Cost.local (1 + scrut.weight)) code (world, active)
+    Derived.nextState {} Cost.plus (fun scrut => Cost.local (1 + scrut.weight)) (schedule code) (world, active)
 
 def ReadyAt (ready : Ready) (world : World) (active : Activation) (callers : List Activation) : Action → Prop
   | .call function args _ => ∀ current suspended packets masks, active.scan world = some current →
@@ -40,8 +52,10 @@ def SelectedReady (key : Key) (branches : List (Key × Nat)) (fallback : Option 
 
 def ReadyFor (callee : Derived.Callees) (ready : Ready) (callers : List Activation) : Code → World → Activation → Prop
   | .done, _, _ | .ret, _, _ => True
-  | .step act rest, world, active => ReadyAt ready world active callers act ∧
-      ∀ middle current first, instruction callee callers (world, active) act = some ((middle, current), first) →
+  | .step act rest, world, active =>
+      let observed := active.forgetRefs (.step act rest)
+      ReadyAt ready world observed callers act ∧
+      ∀ middle current first, instruction callee callers (world, observed) act = some ((middle, current), first) →
         ReadyFor callee ready callers rest middle current
   | .switch scrut branches fallback left right rest, world, active =>
       ∀ key current, Derived.scrutinee world active callers scrut = some (key, current) →
@@ -134,7 +148,8 @@ theorem exec_ret (callee : Derived.Callees) (callers : List Activation) (world :
 
 theorem exec_step (callee : Derived.Callees) (callers : List Activation) (act : Action) (rest : Code) (world : World) (active : Activation) :
     exec callee callers (.step act rest) world active = (do
-      let ((middle, current), first) ← instruction callee callers (world, active) act
+      let observed := active.forgetRefs (.step act rest)
+      let ((middle, current), first) ← instruction callee callers (world, observed) act
       let (result, last) ← exec callee callers rest middle current
       some (result, first.plus last)) := rfl
 
@@ -150,7 +165,7 @@ theorem exec_switch (callee : Derived.Callees) (callers : List Activation) (scru
       | .next middle current =>
         let (result, last) ← exec callee callers rest middle current
         some (result, charged.plus last)) := by
-  simp only [exec, Control.execWith, inspectScrutinee]
+  simp only [exec, schedule, Control.execWith, inspectScrutinee]
   cases hs : Derived.scrutinee world active callers scrut with
   | none => rfl
   | some result =>
@@ -207,7 +222,7 @@ theorem exec_spec {callee : Derived.Callees} {call : Calls} {ready : Ready}
     exact ⟨hs, hf, hn, hv⟩
   | step act rest ih =>
     rw [exec_step] at h
-    cases hs : instruction callee callers (world, active) act with
+    cases hs : instruction callee callers (world, active.forgetRefs (.step act rest)) act with
     | none => simp [hs] at h
     | some pair =>
       rcases pair with ⟨⟨middle, current⟩, first⟩
@@ -217,10 +232,11 @@ theorem exec_spec {callee : Derived.Callees} {call : Calls} {ready : Ready}
         rcases pair with ⟨flow, last⟩
         simp only [hs, hr, Bind.bind, Option.bind, Option.some.injEq, Prod.mk.injEq] at h
         obtain ⟨rfl, rfl⟩ := h
-        have step := instruction_spec hcallee ha hc hw act hd.1 hs
+        have step := instruction_spec hcallee (Activation.forgetRefs_valid ha (.step act rest)) hc hw act hd.1 hs
         obtain ⟨hsource, hframe, hcount, hvalid⟩ := ih step.valid step.callers step.wellFormed (hd.2 middle current first hs) hr
-        exact ⟨by simp only [SourceEval.exec_step, step.source, hsource, Bind.bind, Option.bind],
-          hframe.trans step.frame, hcount.trans step.count, hvalid⟩
+        refine ⟨?_, hframe.trans step.frame, hcount.trans step.count, hvalid⟩
+        rw [← active.forgetRefs_source (.step act rest) call]
+        simp only [SourceEval.exec_step, step.source, hsource, Bind.bind, Option.bind]
   | switch scrut cases fallback left right rest ihLeft ihRight ihRest =>
     rw [exec_switch] at h
     cases hs : Derived.scrutinee world active callers scrut with

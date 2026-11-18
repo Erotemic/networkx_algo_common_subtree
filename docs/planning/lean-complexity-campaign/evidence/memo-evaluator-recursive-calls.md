@@ -4,6 +4,12 @@ Baseline: `2b4f628` on `Droschinsky-algos`. W06-C3/SRC-01 and the full planning
 objective remain open. Production Rust, generated artifacts, source semantics,
 independent native specifications and toolchain pins are unchanged.
 
+Subsequent follow-up: [certified unused shared-reference views](memo-evaluator-loan-endings.md)
+repairs the operational failure recorded below at this baseline. The maintained
+nonempty evaluator and maximum regressions now succeed with complete source
+value/cost equality. The historical failure and reproduction here refer to
+`57deada`; universal physical success and the broader C3 obligations stay open.
+
 ## Stored caller data, not only representation
 
 The existing non-call action and call proofs already construct guarded write/
@@ -157,7 +163,7 @@ def packets : List ValueCell := [(.shared ⟨2, []⟩, .reference (encodeWord wo
   (.shared ⟨5, []⟩, .reference (encodeWord word)), (.node .table 0 [], encodeTable .Empty)]
 #eval (Recursive.original 128 16 world (List.range 6) [caller] .evaluate packets).isSome
 #eval (SourceEval.run SourceEval.Certificate.original.body 16 .evaluate (packets.map Prod.snd)).isSome
--- Current output: false, then true.
+-- Output at baseline 57deada: false, then true.
 ```
 
 ## Validation and remaining full scope

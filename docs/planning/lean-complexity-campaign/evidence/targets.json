@@ -805,6 +805,55 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_loan_endings_followup": {
+        "baseline_commit": "57deada",
+        "evidence": "memo-evaluator-loan-endings.md",
+        "status": "Certified continuation avoidance/reset ends only unused shared-reference resource views, preserving complete independent source outcomes/costs, frame validity, roots and Box counts. Existing move/write/drop/retirement guards remain strict and other indirect aliases retain transitive reads. Calling control and recursive caller/native contracts compose with the prepared view. Both formerly failing nonempty evaluator and maximum now succeed with full source value/table/cost equality and exact live-output checks. Universal native readiness, budgets/physical success and global exclusive ownership/dynamic region/destructor composition remain; no C3 or full planning closure.",
+        "resolved_operational_gap": {
+          "prior_evidence": "memo-evaluator-recursive-calls.md",
+          "input": "Both query words Pair Empty Empty, cold table; complete caller owns the six input cells.",
+          "evidence_level": "Maintained executable regressions, distinct from universal conditional source/native and source-equivalence theorems.",
+          "ghost_readback_budget": 128,
+          "evaluator": {
+            "call_fuel": 16,
+            "score": 1,
+            "source_steps": 2615,
+            "solver_calls": 5,
+            "addressed_result": "some"
+          },
+          "maximum": {
+            "call_fuel": 17,
+            "score": 1,
+            "source_steps": 2704,
+            "solver_calls": 5,
+            "addressed_result": "some"
+          },
+          "checks": [
+            "complete returned value including evaluator table",
+            "every source cost field",
+            "all six original caller cells unchanged and live",
+            "every new live address covered by returned output owners"
+          ],
+          "next": "Derive universal native Recursive.Ready, sufficient call/readback budgets and physical success on arbitrary actual paths; compose global exclusive transfer and dynamic regions/destructors."
+        },
+        "validation": {
+          "library_jobs": 3959,
+          "lean_suites": 44,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "ordered_rust_tests": 13,
+          "audited_endpoints": 1082,
+          "new_audited_theorems": 27,
+          "unique_statement_records": 1243,
+          "statement_seeds": 8,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {

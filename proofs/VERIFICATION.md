@@ -49,6 +49,7 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
 (cd proofs && lake env lean Tests/SourceHelperCalls.lean)
 (cd proofs && lake env lean Tests/SourceCallingProgram.lean)
+(cd proofs && lake env lean Tests/SourceLoanEndings.lean)
 (cd proofs && lake env lean Tests/SourceRecursiveCalls.lean)
 (cd proofs && lake env lean Tests/SourceRecursiveExecution.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
@@ -371,6 +372,20 @@ contains its exact failing action and reproduction. See the
 The 3,956-job build, all 43 Lean suites, native WP, nine Python tests and
 1,055-endpoint axiom audit pass. Shared statement inspection covers 1,225 unique
 declarations from six seeds with no unknown references.
+
+The certified loan-ending increment adds `SourceEvalLoanObservations`,
+`SourceEvalLoanEndings` and `SourceActivationLoanViews`. Complete source/cost
+invariance justifies ending unused shared-reference resource views in the calling
+executor without changing pointer storage, owners or other live aliases. The
+known cold nonempty evaluator and maximum now succeed with complete source
+value/table/cost equality and checked live-output coverage. Universal readiness,
+budgets/physical success and global ownership/region/destructor obligations
+remain. See the [loan-ending report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-loan-endings.md)
+for exact endpoints, adversaries and reproduction.
+The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
+13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
+`propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
+1,243 unique declarations from eight seeds with no unknown references.
 
 ## VM caches
 

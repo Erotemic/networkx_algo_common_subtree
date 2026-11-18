@@ -383,3 +383,13 @@ loan-activity gap at `assign 12`: a stored reference outlives its last use under
 the current all-initialized-reference guard. Interpret loan endings, then derive
 universal readiness/physical success and global owner/region/destructor closure.
 C3, production resource adequacy and the full planning goal remain open.
+
+The [certified loan-ending follow-up](memo-evaluator-loan-endings.md) now ends
+unused shared-reference resource views based on actual continuation avoidance/
+reset, retaining exact original source outcomes/costs and stored pointer bits.
+Observed references, owners and other indirect aliases retain their guards.
+Both previously failing nonempty evaluator/maximum probes now pass complete
+source value/cost and caller/live-output checks. Item 2 still requires universal
+native readiness, budgets/physical success, global exclusive transfer and dynamic
+region/destructor composition. C3, production resource adequacy and the full
+planning goal remain open.

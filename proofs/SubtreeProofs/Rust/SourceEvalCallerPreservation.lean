@@ -65,7 +65,7 @@ theorem exec_preserves {callee : Derived.Callees} {source : Calls} {ready : Deri
     exact Preserves.refl _ _
   | step act rest ih =>
     rw [exec_step] at h
-    cases hi : instruction callee callers (world, active) act with
+    cases hi : instruction callee callers (world, active.forgetRefs (.step act rest)) act with
     | none => simp [hi] at h
     | some pair =>
       rcases pair with ⟨⟨middle, current⟩, first⟩
@@ -75,7 +75,7 @@ theorem exec_preserves {callee : Derived.Callees} {source : Calls} {ready : Deri
         rcases pair with ⟨flow, last⟩
         simp only [hi, hr, Bind.bind, Option.bind, Option.some.injEq, Prod.mk.injEq] at h
         obtain ⟨rfl, rfl⟩ := h
-        have step := instruction_spec hcallee ha hc hw act hd.1 hi
+        have step := instruction_spec hcallee (Activation.forgetRefs_valid ha (.step act rest)) hc hw act hd.1 hi
         have kept := step.preserves hs
         obtain ⟨actual, hm, he⟩ := ((scanCallers_spec hc hs).transport kept).scan_reads
         have restKept := ih step.valid step.callers step.wellFormed (hd.2 middle current first hi) hr hm

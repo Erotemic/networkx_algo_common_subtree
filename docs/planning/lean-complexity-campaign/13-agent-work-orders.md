@@ -86,20 +86,20 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
-[Caller preservation and recursive addressed dispatch](evidence/memo-evaluator-recursive-calls.md)
-now retain stored caller bytes through guarded actions, selected control,
-parsed entry and cleanup, and compose the actual recursive choice/evaluator/
-maximum dispatcher at unchanged source costs. Native choice readiness is
-discharged; evaluator refinement retains explicit input readiness and
-physical success. A cold empty evaluator runs completely. A real nonempty
-cache-hit path exposes the next lifetime gap: local 6 remains initialized
-after its last use and the current guard blocks moving its borrowed table.
-Interpret active loan endings, then finish universal readiness/success,
-exclusive transfer, dynamic regions/destructors and the remaining public
+[Certified ending of unused shared-reference views](evidence/memo-evaluator-loan-endings.md)
+now ends unused shared-reference views from the actual remaining code while
+preserving the independent complete source outcome/cost. Stored pointer bits,
+root bindings, classes and liveness stay unchanged until real storage actions;
+observed references, indirect aliases and Box ownership retain their guards.
+The previously failing one-pair cold evaluator and maximum now execute with
+complete source value/table/cost equality, caller-byte retention and exact live
+output coverage. Universal native readiness, budgets/physical success and global
+exclusive ownership/dynamic region/destructor composition remain, then public
 core/wrappers/resources/G3. W06-C3 and the full planning goal stay open.
-The 3,956-job build, all 43 Lean suites, native WP, nine Python tests and
-1,055-endpoint axiom audit pass. Shared statement inspection covers 1,225 unique
-declarations from six seeds with no unknown references.
+The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
+13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
+`propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
+1,243 unique declarations from eight seeds with no unknown references.
 
 
 [Calling control, parsed entry and checked return cleanup](evidence/memo-evaluator-calling-entry.md)

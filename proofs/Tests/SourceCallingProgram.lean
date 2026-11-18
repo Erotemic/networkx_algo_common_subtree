@@ -63,10 +63,13 @@ private theorem call_step : Calling.instruction backend [caller] (callWorld, cal
     some ((afterWorld, afterCall), (SourceEval.Cost.local 3).plus (SourceEval.Cost.entry .checkedAdd)) := by with_unfolding_all rfl
 
 private theorem ready_step {w next : World} {a after : Activation} {act : SourceEval.Action} {tail : SourceEval.Code} {cost : SourceEval.Cost}
+    (hview : a.forgetRefs (.step act tail) = a)
     (hd : Calling.ReadyAt domain w a [caller] act)
     (hs : Calling.instruction backend [caller] (w, a) act = some ((next, after), cost))
     (hr : Calling.ReadyFor backend domain [caller] tail next after) :
     Calling.ReadyFor backend domain [caller] (.step act tail) w a := by
+  change Calling.ReadyAt domain w (a.forgetRefs (.step act tail)) [caller] act ∧ _
+  rw [hview]
   refine ⟨hd, ?_⟩
   intro middle current first he
   rw [hs] at he
@@ -106,7 +109,9 @@ private theorem rest_ready : Calling.ReadyFor backend domain [caller] rest after
     cases returned
 
 private theorem program_ready : Calling.ReadyFor backend domain [caller] program world active :=
-  ready_step trivial first_step (ready_step trivial second_step (ready_step call_ready call_step rest_ready))
+  ready_step (by with_unfolding_all rfl) trivial first_step
+    (ready_step (by with_unfolding_all rfl) trivial second_step
+      (ready_step (by with_unfolding_all rfl) call_ready call_step rest_ready))
 
 -- A call precedes routing, a payload moves out of the retained optional tag,
 -- and early return skips an unsupported recursive call and a failing join.

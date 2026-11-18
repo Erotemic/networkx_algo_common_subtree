@@ -1,20 +1,34 @@
 # Resume on another machine
 
 Branch: `Droschinsky-algos`. The latest increment establishes
-[caller preservation and recursive addressed dispatch](lean-complexity-campaign/evidence/memo-evaluator-recursive-calls.md).
-Five modules retain actual caller bytes/classes/liveness through control, parsed
-entry and cleanup, then compose the actual recursive choice/evaluator/maximum
-dispatcher with existing helpers/intrinsics and unchanged source costs. Native
-choice readiness is discharged; evaluator refinement retains independent path
-readiness and concrete success. A cold empty evaluator executes fully. A real
-nonempty cache-hit run instead exposes the next loan-activity gap: a stored
-reference in local 6 still guards the table after its final use. Interpret loan
-endings before universal physical success and full C3 closure. Global exclusive
-ownership/dynamic regions/destructors and the full planning goal remain open.
+[certified unused shared-reference views](lean-complexity-campaign/evidence/memo-evaluator-loan-endings.md).
+The actual remaining code certifies when an unused reference view may end while
+preserving complete independent source outcomes/costs. Pointer cells, stack
+roots/classes/liveness remain; indirect aliases and owners retain their guards.
+The previously failing one-pair cold evaluator and public maximum now complete
+with exact source value/table/cost equality, unchanged caller bytes and only
+output owners remaining live beyond the original caller cells. Universal native
+readiness, sufficient budgets and physical success remain open, alongside
+exclusive ownership/dynamic regions/destructors and the full planning goal.
 
 ## Checked endpoints and scope
 
 Latest public endpoints:
+
+- `SourceEval.LoanEnding.{exec_congr,forget_source}`: actual continuation
+  avoidance/reset certifies equal complete source outcomes and costs, including
+  destructor work. `forget_{boxes,observed}` retains each Box count and every
+  observable local mask; `forget_{nil,cons}` are exact executable equations.
+- `Storage.Frame.{forget_shared,forget}` and
+  `Storage.Activation.forgetRefs_{valid,source,identity,boxes,observed}`: certified
+  active views retain validity in the same world, original source correspondence,
+  frame/count/roots and owner counts. Other aliases keep transitive loan graphs.
+- `Calling.{schedule,loanInstruction}`: annotate actual actions with their
+  remaining code and prepare the view before existing guards. The old
+  `Calling.{exec_spec,exec_preserves}` and recursive contracts retain their
+  complete source/caller/native conclusions and explicit domain conditions.
+
+The preceding recursive-dispatch endpoints remain reusable:
 
 - `PartialGraph.guards_unique`, `Storage.{LocalResources.reads_unique,
   Inventory.reads_unique,Callers.reads_unique}`: complete concrete read lists are
@@ -103,13 +117,12 @@ The preceding helper-call endpoints remain reusable:
   count/roots, final activation/world validity and exact suspended resources.
   Independent input/fuel readiness is the remaining local domain condition.
 
-The recursive dispatcher and whole-run protected caller preservation are now
-checked under independent readiness and successful concrete execution. Derive
-that readiness, budgets and physical success on every actual path. In particular,
-interpret actual loan endings rather than treating all initialized reference
-storage as an active borrow. The completed cleanup rejects escaping output/caller
-reads; complete exclusive transfer and dynamic region/destructor interpretation
-remain open.
+The recursive dispatcher and whole-run protected caller preservation are
+checked under independent readiness and successful concrete execution. Certified
+unused-reference views now repair the concrete nonempty cache-hit failure.
+Derive readiness, sufficient budgets and physical success on every actual path.
+Complete global exclusive transfer and dynamic region/destructor interpretation
+remain open; existing cleanup rejects escaping output/caller reads.
 
 The preceding control/return endpoints remain reusable, in
 `SourceEval.Addressed` / `.Derived` unless qualified:
@@ -309,31 +322,27 @@ retain exact output tables/full costs. Independent optimality/memo results keep
 the original sound-cache/input-width hypotheses. `destroyed` is already included
 in `work.steps`; do not bill it twice. Fuel bounds nesting, not execution work.
 
-Production Rust, generated artifacts, existing memory/control/type/region models
+Production Rust, generated artifacts, independent source/native specifications
 and pins are unchanged. The accepted axiom baseline remains `propext`,
 `Classical.choice`, `Quot.sound`.
-The 3,956-job build, all 43 Lean suites, native WP, nine Python tests and
-1,055-endpoint axiom audit pass. Shared statement inspection covers 1,225 unique
-declarations from six seeds with no unknown references.
+The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
+13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
+`propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
+1,243 unique declarations from eight seeds with no unknown references.
 See the latest evidence report for reproduction and scope.
 
 ## Next work toward the full goal
 
-1. **Interpret active loan endings and derive all-path success.** The actual
-   one-pair/one-pair cold query currently fails in the second child's cache-hit
-   branch at `assign 12 (use (move (local 3)))`: local 6 still stores a reference
-   to the table root 61 after its last use. The snapshot source succeeds with
-   score 1 / 2,615 steps / five solver calls at fuel 16; addressed execution
-   returns no result. Public maximum similarly has snapshot score 1 / 2,704 steps
-   at fuel 17 and the same addressed failure. The report includes a complete
-   reproduction. Keep the active-loan move guard; distinguish inactive stored
-   references with a certified actual-source lifetime/continuation interpretation.
-   Body-region IDs are binders, not statement times. Preserve storage masks,
-   aliases, callee/caller transfer and destructor costs while closing this gap.
-   Then derive universal native `Recursive.Ready`, source/ghost budgets and
-   physical success. Reuse the completed recursive `CallsRespect`, guard coverage,
-   caller-byte preservation, source/native/type/binder/helper/control/entry and
-   zero-owner cleanup proofs instead of repeating them.
+1. **Derive all-path readiness and physical success.** The certified
+   continuation-based unused shared-reference rule repairs the known second-child
+   cache-hit failure. Both one-pair cold evaluator and maximum now succeed with
+   exact complete source outputs/costs. Derive universal native `Recursive.Ready`,
+   source/ghost budgets and physical success for arbitrary native inputs/warm
+   tables; concrete examples do not discharge those obligations. Reuse the
+   completed source-equivalence/view-validity, recursive `CallsRespect`, guard
+   coverage, caller-byte preservation, source/native/type/binder/helper/control/
+   entry and zero-owner cleanup proofs. Parsed region IDs remain binders, not
+   statement times; preserve aliases and exact destructor costs.
 2. **Actual ownership, loans and lifetimes.** Carry complete exclusive Box owner/
    spatial resources alongside the read graphs through the 113-local evaluator.
    Compose computed active/suspended loan coverage with temporary ownership
