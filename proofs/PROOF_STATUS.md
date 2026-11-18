@@ -1,5 +1,29 @@
 # Common-subtree proof status
 
+[Successful-left payload and actual right-query concatenation](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-right-concatenation.md) now
+constructs all fifteen initial right-region instructions through thirteen stable
+prefix checkpoints from parsed entry. The owned left witness moves through
+scratch 82 into 81; original right child reborrows execute concatenation into
+85 and retire 86/87. The matched candidate, native table, exact original query
+aliases and complete ownership/coverage persist; all future parent roots at
+index 88 or above are unbound. Native append, helper events and the full actual
+concatenation call cost are identified. Smaller head/tail/left `NativeTotal`
+and independent native success/addition equations, including native left
+success, remain explicit. No physical parent success/post-frame, cache soundness
+or recursive witness freshness is assumed.
+The 4,204-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,859 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,306 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Three new consumers cover all
+thirteen checkpoints with table-owned repeated aliases, actual transfer of a
+two-Box left witness beside a six-Box candidate, and a four-Box right query.
+Right argument/fresh-view setup, right recursion and its remaining twenty-one
+instructions, both optional joins, recursive witness provenance/owned cleanup,
+overflow exits, choice, insertion, remaining parent returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and all other planning targets
+stay open. The full goal remains active.
+
 [Complete actual left contraction result scope](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-left-scope.md) now reaches the
 real optional-result switch through twelve stable prefix boundaries and exposes
 the composed sixty-instruction matched/left-contraction prefix. All eleven

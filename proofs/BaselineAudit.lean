@@ -1961,3 +1961,13 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_scope_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_unpack_complete
 #print axioms SubtreeProofs.Rust.SourceEval.LoanEnding.forget_shared_ended
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_move_into_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.RightHeldScope.through_prefix
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.contractRight_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_optional_payload_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_concat_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_concat_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_concat_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_payload_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_prefix_complete
