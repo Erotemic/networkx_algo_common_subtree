@@ -2122,3 +2122,9 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_setup_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_views_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insertion_complete
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_aggregate_one_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_packing_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_return_packing_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_return_retirement_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.aggregate_result_owner_provenance

@@ -2267,6 +2267,50 @@
           "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited, not a fresh full-suite run."
         },
         "next": "Construct optional result/table output assembly while retaining selected-witness field provenance beside transferred original table owners, then all remaining owned-query/zero-temporary cleanup and checked return/closure. Preserve the older hole/empty masks needed by the rest of the parent frame. Complete both optional joins, overflow/failure exits, remaining parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal is active."
+      },
+      "evaluator_parent_output_followup": {
+        "baseline_commit": "f1874ae",
+        "evidence": "memo-evaluator-parent-output.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_packing_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_return_packing_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_return_retirement_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.original_aggregate_one_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.aggregate_result_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_result_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.FinishPackedScope",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.NativeTotalFresh"
+        ],
+        "status": "Actual output assembly39-47 and initial cleanup48-55 are constructed. Selected99 moves through111 into Some110; table104 moves through112; tuple0 stores independent native output. All five source/assembly masks99/104/110/111/112 become empty and physically retired. An explicit transfer plan and existing field predicate bound only the output witness; table owners remain unrestricted. The complete successful-right finish constructor reaches finishCode56 given actual empty bound return storage at the input. Earlier head/tail scopes record it, but its preservation is not currently exported by parsed right entry; no parsed56 claim is made. Existing endpoint statements, smaller contracts, success/addition hypotheses and source semantics remain unchanged. No successful whole-parent run/post-frame is supplied.",
+        "validation": {
+          "library_jobs": 4285,
+          "new_proof_modules": 5,
+          "new_theorems": 5,
+          "affected_lean_suites": [
+            "SourceParentOutput",
+            "SourceCacheMissSetup",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "aliasing_output_consumer": "passed: independent complete fixture with old table owners0/1, fresh witness owners2-7, retained tuple13 loans[0,0], actual seventeen-instruction region, eight-owner output with witness-field bound2, and five empty/unbound assembly locals",
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 2008,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1231,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited, not a fresh full-suite run.",
+          "fresh_lean_suites": "all six listed suites passed, including eight recursive runtime cases"
+        },
+        "next": "Propagate the actual empty return-root storage invariant from parsed head/tail scopes through the intervening checked checkpoints; the current parsed-entry consumer remains at finishCode39 while the finish constructor reaches56 under that explicit pre-write invariant. Preserve older live-root/hole/empty-mask facts and execute all remaining cleanup from index56, including both owned queries, then checked return/call closure. Complete both optional joins, overflow/failure exits, remaining parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal stays active."
       }
     },
     {
@@ -2455,7 +2499,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now constructs all thirty-nine successful-right payload, choice and insertion instructions through finishCode39. Original loan origins and fresh witness views jointly discharge insertion table-root permission. Complete native resources, selected99 and owned71/85 bounds survive; all five insertion temporaries are empty and physically retired. Construct optional result/table output assembly while retaining selected-witness field provenance beside transferred original table owners, then all remaining owned-query/zero-temporary cleanup and checked return/closure. Preserve the older hole/empty masks needed by the rest of the parent frame. Complete both optional joins, overflow/failure exits, remaining parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal is active."
+      "W06-C3 now constructs actual output assembly and initial cleanup through finishCode56, given the input empty bound return-storage invariant. An independent complete old-table/fresh-witness/retained-alias fixture checks the full17 region and field-specific provenance. Propagate the actual empty return-root storage invariant from parsed head/tail scopes through the intervening checked checkpoints; the current parsed-entry consumer remains at finishCode39 while the finish constructor reaches56 under that explicit pre-write invariant. Preserve older live-root/hole/empty-mask facts and execute all remaining cleanup from index56, including both owned queries, then checked return/call closure. Complete both optional joins, overflow/failure exits, remaining parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
