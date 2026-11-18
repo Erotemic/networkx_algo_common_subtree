@@ -368,3 +368,5 @@ public import SubtreeProofs.Rust.SourcePairFinishChoices
 public import SubtreeProofs.Rust.SourcePairFinishInsertion
 
 public import SubtreeProofs.Rust.SourcePairFinishPacking
+
+public import SubtreeProofs.Rust.SourcePairRightStorageEntry

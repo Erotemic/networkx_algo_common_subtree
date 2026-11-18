@@ -2128,3 +2128,16 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_return_packing_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_return_retirement_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.aggregate_result_owner_provenance
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.EmptyRootStorage.through_prefix
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.opens_empty_storage
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_prefix_constraints
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_return_storage
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_storage_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Types.CodeConstraints.prefix
+#print axioms SubtreeProofs.Rust.SourceEval.Types.CodeConstraints.branches
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.instruction_other_root
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.typed_spec
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.typed_other_root
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.TypedRootStorage.through_prefix
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.opens_typed_storage

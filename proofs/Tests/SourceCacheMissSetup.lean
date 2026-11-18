@@ -19,6 +19,8 @@ import SubtreeProofs.Rust.SourcePairRightProvenanceEntry
 import SubtreeProofs.Rust.SourcePairFinishProvenance
 import SubtreeProofs.Rust.SourcePairFinishChoices
 import SubtreeProofs.Rust.SourcePairFinishInsertion
+import SubtreeProofs.Rust.SourcePairFinishPacking
+import SubtreeProofs.Rust.SourcePairRightStorageEntry
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1661,5 +1663,58 @@ example : ∃ beforeFinish beforeActive final after selectedResources tableResou
     simp only [List.mem_cons, List.not_mem_nil, or_false] at member
     rcases member with rfl | rfl | rfl | rfl | rfl <;>
       exact ⟨insertionScope.moved _ (by decide +kernel), insertionScope.retired _ (by decide +kernel)⟩
+
+-- Empty return storage is derived from parsed entry and every actual prior
+-- checkpoint. No empty-root premise is supplied to this complete consumer.
+example : ∃ beforeFinish beforeActive final after resources fuel budget,
+    OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.FinishPackedScope .Empty .Empty .Empty .Empty wideWitness wideWitness wideWitness wideWitness finishTable 15#u32 after ∧
+    LocalResultOwnersAbove finishWorld.memory.length final after 0 ∧
+    LocalResources final after.frame after.roots after.state 0 resources ∧ resources.owners.length = 38 ∧
+    (∀ slot ∈ [71, 85], LocalOwnersAbove finishWorld.memory.length final after slot) ∧
+    Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.finishCode 56) (SourceEval.Evaluator.finishActions.take 56)
+      beforeFinish beforeActive final after ∧
+    (∀ slot ∈ [99, 104, 110, 111, 112], after.state slot = .empty ∧ after.roots slot = none) := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native finishTable .Empty (.Pair .Empty .Empty) wideWitness
+    (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
+  have rightNative := SourceEval.Evaluator.cache_hit_native finishTable (.Pair .Empty .Empty) .Empty wideWitness
+    (by simp [finishTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wp, ap,
+    result, output, _, _, _, _, _, machine, scope, _, native, _, count, future, _, _, fresh, held, storage, _, _⟩ :=
+    SourceEval.Evaluator.entry_pair_right_scope_storage_complete_provenance (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty (.Pair .Empty .Empty) (Or.inl rfl)) wideWitness finishTable leftNative
+      (SourceEval.Evaluator.native_empty_total_fresh (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans rightNative))
+  obtain ⟨root0, bound0, raw0⟩ := storage.root
+  obtain ⟨minFuel, minBudget, _, _, _, _, _, _, final, after, finalMachine, packedScope, freshAfter, heldAfter,
+    _, _, _, _, stable⟩ :=
+    SourceEval.Evaluator.pair_finish_packing_complete machine scope fresh held bound0 raw0 storage.empty
+      (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1])
+      (by intro slot member
+          have bound : 96 ≤ slot := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+          exact future slot bound)
+  have whole := (stable minFuel minBudget (by rfl) (by rfl)).2.2.2.2
+  obtain ⟨_, frame⟩ := finalMachine.native.valid.2
+  obtain ⟨resources, _, represented⟩ := frame.inspectSlot 0
+  have boxes := represented.boxes
+  rw [packedScope.output] at boxes
+  have thirtyEight : resources.owners.length = 38 := boxes.trans (by with_unfolding_all rfl)
+  refine ⟨wp, ap, final, after, resources, minFuel, minBudget, finalMachine, packedScope, freshAfter,
+    represented, thirtyEight, heldAfter, whole, ?_⟩
+  intro slot member
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+  rcases member with rfl | rfl | rfl | rfl | rfl <;>
+    exact ⟨packedScope.moved _ (by decide +kernel), packedScope.retired _ (by decide +kernel)⟩
 
 end SourceCacheMissSetupTests

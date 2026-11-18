@@ -2311,6 +2311,50 @@
           "fresh_lean_suites": "all six listed suites passed, including eight recursive runtime cases"
         },
         "next": "Propagate the actual empty return-root storage invariant from parsed head/tail scopes through the intervening checked checkpoints; the current parsed-entry consumer remains at finishCode39 while the finish constructor reaches56 under that explicit pre-write invariant. Preserve older live-root/hole/empty-mask facts and execute all remaining cleanup from index56, including both owned queries, then checked return/call closure. Complete both optional joins, overflow/failure exits, remaining parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal stays active."
+      },
+      "evaluator_return_storage_followup": {
+        "baseline_commit": "9923c7d",
+        "evidence": "memo-evaluator-return-storage.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_storage_complete_provenance",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_return_storage",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_prefix_constraints",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.typed_other_root",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.typed_spec",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.opens_typed_storage",
+          "SubtreeProofs.Rust.SourceEval.Addressed.EmptyRootStorage.through_prefix",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.opens_empty_storage"
+        ],
+        "status": "The parsed common prefix actually opens return0. Existing pinned declaration constraints derive action typing across all nine actual families; generic typed-prefix progression supplies call readiness and preserves untouched root bytes independently of empty logical masks. The new parsed right-result endpoint derives EmptyRootStorage0 and LocalsTyped at the actual checkpoint while retaining every previous hypothesis, native equation, resource/provenance guarantee, checkpoint and stable bound. The unchanged finish constructor consumes derived storage to construct the actual first56 finish instructions; no later storage premise or desired whole-parent success/post-frame is supplied. Original endpoint statements, NativeTotalFresh, source semantics and pins are unchanged; no duplicate type layout, parser or source checker is introduced.",
+        "validation": {
+          "library_jobs": 4291,
+          "new_proof_modules": 6,
+          "new_theorems": 12,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceParentOutput",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "parsed_consumer": "passed: twenty old table owners/table-owned query aliases, all four proved smaller fresh contracts, derived empty return storage, full56 prefix, thirty-eight-owner output with bounded six-owner witness field, held-query bounds and five empty/unbound assembly/source locals",
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 2020,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1329,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited, not a fresh full-suite run.",
+          "fresh_lean_suites": "all six listed suites passed, including eight runtime cases and parsed entry through the actual first56 finish instructions without an input return-storage premise at the later boundary"
+        },
+        "next": "Retain exact older root-presence and moved/payload-hole masks from actual source prefixes, using the checked typed-prefix context and static root changes. Construct remaining cleanup from finish index56: old witness/table/option storage, both owned-query drops, scalar/earlier result holes, original query tuple/arguments, then checked return and call closure. Complete both optional joins, overflow/failure exits, remaining parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Empty return storage is now derived from parsed entry; full SRC-01/C3 and production resource closure remain open and the full goal stays active."
       }
     },
     {
@@ -2499,7 +2543,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now constructs actual output assembly and initial cleanup through finishCode56, given the input empty bound return-storage invariant. An independent complete old-table/fresh-witness/retained-alias fixture checks the full17 region and field-specific provenance. Propagate the actual empty return-root storage invariant from parsed head/tail scopes through the intervening checked checkpoints; the current parsed-entry consumer remains at finishCode39 while the finish constructor reaches56 under that explicit pre-write invariant. Preserve older live-root/hole/empty-mask facts and execute all remaining cleanup from index56, including both owned queries, then checked return/call closure. Complete both optional joins, overflow/failure exits, remaining parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal stays active."
+      "W06-C3 now derives empty return storage and local typing from actual parsed entry through all eight prior phases. The augmented right-result endpoint composes with output assembly through finishCode56 without a later empty-root premise. Retain exact older root-presence and moved/payload-hole masks from actual source prefixes, using the checked typed-prefix context and static root changes. Construct remaining cleanup from finish index56: old witness/table/option storage, both owned-query drops, scalar/earlier result holes, original query tuple/arguments, then checked return and call closure. Complete both optional joins, overflow/failure exits, remaining parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Empty return storage is now derived from parsed entry; full SRC-01/C3 and production resource closure remain open and the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

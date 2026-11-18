@@ -489,35 +489,35 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
-[Actual parent output assembly and initial cleanup](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-parent-output.md) now
-constructs nine assembly instructions and eight drop/dead instructions. Witness
-99 moves through 111 into `Some` at 110; table 104 moves through 112; the actual
-tuple assignment stores the native result/table in 0. All five assembly/source
-locals 99/104/110/111/112 are empty and physically retired. The stored witness
-field and owned queries 71/85 retain original heap bounds; old table owners are
-unrestricted. Complete resources, original query tuple, scalar/option holes,
-counts/frames, untouched roots/masks and appropriate root bytes survive.
-The complete successful-right finish constructor reaches `finishCode 56`, given
-empty bound return storage at its input. Earlier head/tail scopes record that
-storage, but the parsed right-entry endpoint does not export its preservation;
-the existing parsed consumer still reaches `finishCode 39`. Propagating this
-invariant is explicit remaining work. No whole-parent success/post-frame is
-assumed and earlier statements/contracts/hypotheses are unchanged.
-The 4,285-job build passes. All six affected Lean suites pass, including eight
-runtime cases, the parsed-entry insertion chain and the independent complete
-output fixture. That fixture retains aliases into two old table owners beside
-six fresh witness owners, constructs the seventeen actual instructions and
-checks the eight-owner tuple, witness-field bound and five retired locals.
-All 2,008 audited endpoints retain the accepted axioms; five new theorems across
-five modules are included. Eight statement seeds resolve 1,231 unique records
-without unknown references. Thirteen Rust tests and nine Python checks pass.
-Next propagate return storage and the older root/hole/empty-mask facts, execute
-remaining owned-query/zero-temporary cleanup, then checked return/closure.
+[Parsed return storage through complete output assembly](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-return-storage.md) now
+derives the empty return-root mask and actual empty bytes from parsed entry.
+The pinned type certificate supplies action constraints and call readiness;
+generic typed-prefix/root preservation carries the real `storageLive 0` result
+through all eight actual phases to the right-result checkpoint. The augmented
+entry endpoint exports that storage and local typing alongside every previous
+native/resource/provenance/checkpoint guarantee. Earlier statements, smaller
+contracts, independent hypotheses and source semantics are unchanged.
+The unchanged finish constructor now consumes derived storage to reach
+`finishCode 56` from parsed entry, without a later empty-root or desired parent
+post-frame premise. The actual return tuple has thirty-eight owners, comprising
+a bounded six-owner witness and thirty-two-owner inserted table; old table owners
+remain unrestricted. Both owned-query bounds and five retired assembly roots
+survive. Remaining finish cleanup and checked return/closure are still open.
+The 4,291-job library build passes. All six affected Lean suites pass,
+including eight runtime cases, the complete aliasing output fixture and the new
+parsed-entry consumer through instruction 56. No later return-storage premise
+is supplied to that consumer.
+All 2,020 audited endpoints retain the accepted axioms; twelve new theorems
+across six modules are included. Eight statement seeds resolve 1,329 unique
+records without unknown references. Thirteen Rust tests and nine Python checks
+pass. Next retain older root/hole/empty-mask facts and execute all remaining
+owned-query/zero-temporary cleanup, then checked return and call closure.
 Both optional joins, overflow/failure exits, remaining parent returns, full
 pair/pair induction, dynamic regions/destructors, public maximum/cold-table
 teardown, wrappers/input policy/resources/G3 and every other planning requirement
 remain open. No C3 or production resource closure is claimed; the full goal stays
-active. Earlier [actual insertion](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-parent-insertion.md),
+active. Earlier [output assembly](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-parent-output.md),
+[actual insertion](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-parent-insertion.md),
 [parent choices](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-parent-choices.md) and
 [generic choice constructor](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-choice-owner-constructor.md)
 remain checked prerequisites.
