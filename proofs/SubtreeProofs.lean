@@ -299,3 +299,5 @@ public import SubtreeProofs.Rust.SourceOwnerRecursive
 public import SubtreeProofs.Rust.SourceHelperTotality
 
 public import SubtreeProofs.Rust.SourceRecursiveBudget
+
+public import SubtreeProofs.Rust.SourceChoicePermissions

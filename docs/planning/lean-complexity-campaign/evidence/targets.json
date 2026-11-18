@@ -1070,6 +1070,29 @@
           "broader_regression": "Runtime/helper/typed/recursive evidence at a56e701; full 47-suite/native-WP/nine-Python at d49f638; Rust at 823df34; not rerun."
         },
         "next": "Use stable helper totality and exact whole-recursive budget extension in a forward physical-success proof; derive each actual move/write/drop/storage/return/close permission without assuming parent execution. Compose finite local sufficient bounds, interpret dynamic parsed regions/destructors, finish native public maximum/teardown, wrappers/input policy/global resources/G3 and remaining planning targets."
+      },
+      "evaluator_forward_permissions_followup": {
+        "baseline_commit": "fe8a64d",
+        "evidence": "memo-evaluator-forward-permissions.md",
+        "status": "Forward actual storage creation/retirement, Box drops and closed-output cleanup from complete ownership and semantic shared-loan/root permissions, without supplied successful actions or parent runs. Read partitions, canonical scans, fresh-root separation, preserved caller bounds and actual choice closed-local typing discharge component permissions. Stores/assignments, selected moves/control/returns, all-path interpreted physical success, dynamic regions/destructors and other planning targets remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4005,
+          "affected_lean_suites": [
+            "SourceOwnerLifecycle"
+          ],
+          "new_theorems": 44,
+          "audited_endpoints": 1333,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 958,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "broader_regression": "Full 47-suite/native-WP/nine-Python at d49f638; runtime cold/warm/overflow/failure at a56e701; thirteen ordered Rust tests at 823df34; not rerun."
+        },
+        "next": "Construct forward stores/assignments, selected move routes, scrutinees and returned packets, then whole choice/evaluator/maximum physical success and finite-budget composition. Discharge actual shared-loan permissions via native copy freshness/last-use certificates without banning allowed query/table/insertion aliases. Interpret dynamic regions/destructors; finish public teardown, wrappers/input policy/global resources/G3 and the remaining full planning goal."
       }
     },
     {

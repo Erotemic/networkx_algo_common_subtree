@@ -1,5 +1,15 @@
 # Common-subtree proof status
 
+[Forward storage, drop and cleanup permissions](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-forward-permissions.md) now construct actual
+runs from complete owner resources and independent live-loan/root permissions.
+Read inventories partition into owners/loans/stack roots, and scans are canonical.
+Fresh roots and preserved callers derive loan bounds; the pinned choice's closed
+local types eliminate its active loans. Forward assignments/moves/returns,
+complete interpreted execution and all other planning obligations remain open.
+The 4,005-job build and affected lifecycle consumer pass. The 1,333-endpoint audit
+includes 44 new theorems with only the accepted axiom baseline. Ten selected
+statement seeds cover 958 unique declarations with no unknown references.
+
 [Stable recursive fuel and readback budgets](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
 completed actual run's exact world/packet/full cost at all larger bounds.
 Independently typed helper inputs give fixed joint sufficient thresholds, a stable

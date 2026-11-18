@@ -2,6 +2,16 @@
 
 Branch: `Droschinsky-algos`.
 
+[Forward storage, drop and cleanup permissions](lean-complexity-campaign/evidence/memo-evaluator-forward-permissions.md) now construct actual
+runs from complete owner resources and independent live-loan/root permissions.
+Read inventories partition into owners/loans/stack roots, and scans are canonical.
+Fresh roots and preserved callers derive loan bounds; the pinned choice's closed
+local types eliminate its active loans. Forward assignments/moves/returns,
+complete interpreted execution and all other planning obligations remain open.
+The 4,005-job build and affected lifecycle consumer pass. The 1,333-endpoint audit
+includes 44 new theorems with only the accepted axiom baseline. Ten selected
+statement seeds cover 958 unique declarations with no unknown references.
+
 [Stable recursive fuel and readback budgets](lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
 completed actual run's exact world/packet/full cost at all larger bounds.
 Independently typed helper inputs give fixed joint sufficient thresholds, a stable
@@ -42,6 +52,16 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `ResourceRep.read_partition`, `ResourceRep.trace`, `Callers.{scan,unique}`:
+  complete read/owner/loan occurrences and canonical actual inventories.
+- `Storage.initialActivation_rootsSeparate`, `Activation.partition_owner_frame`,
+  `Derived.{drop_total,storageLive_total,storageDead_total}`, `Storage.close_total`:
+  forward storage/drop/closed-output cleanup under explicit semantic loans,
+  valid storage and complete ownership; no successful parent run is supplied.
+- `Callers.preserved_read_bound`, `Derived.{RootLoansAllowed,
+  DropLoansAllowed}.of_closed_preserved`, `Choice.typed_inventory_no_loans`:
+  preserved actual callers and independent closed partial types discharge
+  current-machine loan permissions; the actual pinned choice locals are closed.
 - `Helpers.{execute_fuel_enlarge,typed_stable_bounds,
   typed_owned_stable_bounds}`: fixed joint sufficient helper thresholds with
   exact stable world/packet/full cost and complete caller/global owner resources.
@@ -481,8 +501,15 @@ See the latest evidence report for reproduction and scope.
    helpers now have forward existence and fixed joint fuel/readback thresholds
    derived from independent actual types. Completed whole recursive runs retain
    their exact world/packet/full cost at larger bounds. Use these laws to compose
-   selected finite bounds and prove every move/write/drop/storage/return/cleanup check for
-   legal native inputs/warm tables. Reuse exact helper growth, global recursive
+   selected finite bounds. Forward storage creation/retirement, drops and
+   closed-output cleanup now derive actual checks from owner/class invariants,
+   separate roots and semantic loan permissions. Canonical scans, preserved old
+   caller read bounds and closed partial types discharge those loan facts in
+   supported cases; all six actual choice local types are closed. Next construct
+   forward stores/assignments, selected move routes/scrutinees/return packets,
+   scope/control and whole-function success for legal native inputs/warm tables.
+   Discharge the evaluator's actual reference-local loan permissions rather than
+   treating its locals as closed. Reuse exact helper growth, global recursive
    owner resources, computed loan coverage, certified reference views, independent
    typing, protected caller bytes and actual entry/closure. Do not assume the
    desired parent source/native execution to establish permissions. Preserve

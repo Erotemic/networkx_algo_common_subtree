@@ -1,5 +1,6 @@
 module
 
+import SubtreeProofs.Rust.SourceChoicePermissions
 import SubtreeProofs.Rust.SourceOwnerActions
 import all SubtreeProofs.Rust.SourceHeapGraphTrace
 import all SubtreeProofs.Rust.SourceHeapResources
@@ -134,5 +135,95 @@ example (decl : SourceEval.TypeReader.Definition) (world : World) (hw : world.We
       BoxCoverage final (entered.owners final ++ (callerOwners final callers ++ external)) := by
   have h := enter_definition hw frame decl hp arity
   exact ⟨_, _, h.1, enter_owner_resources hw frame decl.source.localCount hc hp ho hf covered h.1⟩
+
+-- Forward checks use semantic permissions, not a supplied successful action.
+-- Fresh argument roots stay separate even when the symbolic frame IDs coincide.
+example (frame count : Nat) : (initialActivation base frame count packets).RootsSeparate [caller] :=
+  initialActivation_rootsSeparate (by simpa using caller_valid) frame count packets
+
+private theorem initial_roots_separate : active.RootsSeparate [caller] :=
+  initialActivation_rootsSeparate (by simpa using caller_valid) 10 5 packets
+private theorem old_callers : Callers base [caller] ⟨[1, 2], [1], []⟩ :=
+  scanCallers_spec (by simpa using caller_valid) (by decide +kernel)
+private theorem kept_callers : Preserves base world [1, 2] :=
+  (base.stackCells_keeps well_formed 10 (packets.map Prod.fst) [1, 2]).preserves
+
+private theorem remaining_closed : ∀ index ∈ remainingSlots active.count 2,
+    ∃ ty, SlotTyped (active.state index) ty ∧ Borrow.Closed ty := by
+  intro index hm
+  have indices : index = 0 ∨ index = 1 ∨ index = 3 ∨ index = 4 := by
+    change index ∈ remainingSlots 5 2 at hm
+    simp only [remainingSlots, List.mem_filter, List.mem_range, bne_iff_ne] at hm
+    omega
+  rcases indices with rfl | rfl | rfl | rfl
+  · exact ⟨.u32, .empty _, .u32⟩
+  · with_unfolding_all exact ⟨.owned .u32, .owned (.number (value := 7) (by decide +kernel)), .owned .u32⟩
+  · with_unfolding_all exact ⟨.u32, .number (value := 9) (by decide +kernel), .u32⟩
+  · exact ⟨.u32, .empty _, .u32⟩
+private theorem reference_permission : Derived.RootLoansAllowed world active [caller] 2 ⟨4, 4⟩ :=
+  Derived.RootLoansAllowed.of_closed_preserved remaining_closed old_callers well_formed kept_callers (by decide +kernel)
+
+private def endedWorld := world.retire [4]
+private def ended : Activation := {active with roots := active.roots.set 2 none, state := active.state.set 2 .empty}
+private theorem end_reference : Derived.storageDead world active [caller] 2 = some (endedWorld, ended) :=
+  Derived.storageDead_complete active_valid (by simpa using caller_entered) world_valid initial_roots_separate
+    entered_resources.1 (by with_unfolding_all rfl) (by with_unfolding_all rfl) reference_permission
+private theorem end_step : Derived.Step world active [caller] (.storageDead 2) endedWorld ended (SourceEval.Cost.local 1) :=
+  (Derived.storageDead_spec active_valid (by simpa using caller_entered) world_valid end_reference).1
+private theorem ended_resources :
+    OwnerFrame endedWorld (ended.owners endedWorld ++ (callerOwners endedWorld [caller] ++ [])) ∧
+    BoxCoverage endedWorld (ended.owners endedWorld ++ (callerOwners endedWorld [caller] ++ [])) :=
+  (Derived.storageDead_owner_resources active_valid (by simpa using caller_entered) world_valid
+    entered_resources.1 entered_resources.2 end_reference).2.2
+private theorem kept_ended : Preserves base endedWorld [1, 2] :=
+  kept_callers.trans (world.retire_keeps (guards := [1, 2]) (discarded := [4]) (by simp)).preserves
+private theorem ended_closed : ∀ index ∈ remainingSlots ended.count 1,
+    ∃ ty, SlotTyped (ended.state index) ty ∧ Borrow.Closed ty := by
+  intro index hm
+  have indices : index = 0 ∨ index = 2 ∨ index = 3 ∨ index = 4 := by
+    change index ∈ remainingSlots 5 1 at hm
+    simp only [remainingSlots, List.mem_filter, List.mem_range, bne_iff_ne] at hm
+    omega
+  rcases indices with rfl | rfl | rfl | rfl
+  · exact ⟨.u32, .empty _, .u32⟩
+  · exact ⟨.u32, .empty _, .u32⟩
+  · with_unfolding_all exact ⟨.u32, .number (value := 9) (by decide +kernel), .u32⟩
+  · exact ⟨.u32, .empty _, .u32⟩
+private theorem drop_permission : Derived.DropLoansAllowed endedWorld ended [caller] 1 ⟨3, 3⟩ :=
+  Derived.DropLoansAllowed.of_closed_preserved ended_closed old_callers well_formed kept_ended
+    (by decide +kernel) (by intro item represented; simp)
+
+-- Ending the shared view is constructed first; the formerly blocked owning
+-- drop is then constructed with exact destruction and complete final ownership.
+example : ∃ discarded, Derived.drop endedWorld ended [caller] 1 =
+      some (endedWorld.retire discarded, {ended with state := ended.state.set 1 .empty}) ∧
+    discarded.length = 1 ∧
+    OwnerFrame (endedWorld.retire discarded)
+      (({ended with state := ended.state.set 1 .empty} : Activation).owners (endedWorld.retire discarded) ++
+        (callerOwners (endedWorld.retire discarded) [caller] ++ [])) ∧
+    BoxCoverage (endedWorld.retire discarded)
+      (({ended with state := ended.state.set 1 .empty} : Activation).owners (endedWorld.retire discarded) ++
+        (callerOwners (endedWorld.retire discarded) [caller] ++ [])) := by
+  obtain ⟨discarded, run, _, length, frame, coverage⟩ := Derived.drop_total end_step.valid end_step.callers
+    end_step.wellFormed (initial_roots_separate.erase 2) ended_resources.1 ended_resources.2
+    (by with_unfolding_all rfl) drop_permission
+  have boxes : (ended.state 1).dropWork.boxes = 1 := by with_unfolding_all rfl
+  exact ⟨discarded, run, length.trans boxes, frame, coverage⟩
+
+-- Unique complete owners alone do not justify dropping through a live loan.
+-- The initial shared input really contributes address zero to the permission.
+example : ¬ Derived.DropLoansAllowed world active [caller] 1 ⟨3, 3⟩ := by
+  intro allowed
+  obtain ⟨_, frame⟩ := active_valid.2
+  have item : LocalResources world active.frame active.roots active.state 1 ⟨[0, 3], [0], []⟩ :=
+    frame.inspectSlot_spec (by decide +kernel)
+  obtain ⟨remainder, scan, inventory, _⟩ := active.context_complete active_valid 1
+  have actual : active.scanExcept world 1 = some (⟨[0, 4, 5], [], [0]⟩ : Resources) := by decide +kernel
+  have same := Option.some.inj (scan.symm.trans actual)
+  cases same
+  obtain ⟨suspended, _, callers⟩ := scanCallers_complete [caller] (by simpa using caller_entered)
+  exact List.disjoint_left.mp (allowed _ _ _ item inventory callers)
+    (show 0 ∈ [3, 0] from by decide +kernel)
+    (show 0 ∈ [0] ++ suspended.loans from by simp)
 
 end SourceOwnerLifecycleTests
