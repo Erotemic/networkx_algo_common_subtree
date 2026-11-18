@@ -2214,3 +2214,14 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_subtotal_overflow_body_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.subtotal_overflow_native
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.subtotal_overflow_total_fresh
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_older_masks
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_return_storage
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cleanupSubtotal_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.rootOverflow_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_root_presence
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_overflow_pack_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_overflow_continuation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_root_overflow_body_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_overflow_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_overflow_total_fresh

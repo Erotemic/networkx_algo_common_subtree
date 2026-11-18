@@ -1,34 +1,36 @@
 # Lean complexity campaign: proto-roadmap
 
-[Complete subtotal-overflow dispatch and both witness drops](evidence/memo-evaluator-subtotal-overflow.md)
+[Complete root-overflow dispatch and scalar cleanup](evidence/memo-evaluator-root-overflow.md)
 now constructs the whole original parent body, guarded return and checked
-dispatch/closure when both child results succeed and their subtotal overflows.
-Two smaller `NativeTotalFresh` contracts and independent native success/overflow
-equations remain explicit. Actual entry/prefixes derive seventeen score roots,
-older holes, optional inspections and empty return storage. Failure packing
-retains its actual trailing storage-dead continuation; its original `.done`
-statement is unchanged. The updated table moves into None output, both retained
-owned witnesses are dropped through their owner bounds, and all three cleanup
-joins and parameter retirement execute. Complete ownership/coverage, allowed
-old query/table aliases, protected reads, source/native agreement, None-result
-provenance and exact world/packet/full cost at larger sufficient bounds survive.
-The 4,323-job library build and all eight affected Lean suites pass. The new
-kernel consumer discharges both smaller contracts with proved empty instances,
-uses repeated table-owned query aliases and two-owner cached witnesses, and
-returns four output owners with complete coverage. All ten runtime cases pass;
-the new both-owned subtotal failure checks 1,059 source steps/three solver calls,
-full source/addressed cost agreement, caller bytes/liveness and the complete
-final owner ledger. All 2,089 audited endpoints retain the accepted axioms;
-eleven new theorems across six proof modules are included. Eight statement seeds
-export 1,316 unique records without unknown references. Thirteen Rust tests and
-nine Python checks pass. The new consumer is included in CI's fifty-two suites;
-this checkpoint freshly ran the eight affected suites, not the full fifty-two.
-Next construct root overflow and both contraction-failure returns, then universal
-pair/pair `NativeTotalFresh` induction. Dynamic regions/destructors, public
-maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other
-planning requirement remain open. No full SRC-01/C3 or production resource
-closure is claimed; the full goal stays active. Earlier successful-parent and
-[head/tail failure](evidence/memo-evaluator-tail-failure.md) endpoints remain checked.
+dispatch/closure when the subtotal fits and adding the root edge overflows.
+Two smaller `NativeTotalFresh` contracts and independent native child successes,
+subtotal success and root overflow remain explicit. Actual six-prefix execution
+derives eighteen root-score roots, older masks, empty return storage and all
+three earlier optional tags. Real failure packing retires result59; its cleanup
+join retires total payload58. Both owned witnesses are dropped through retained
+bounds before the remaining joins and parameter return. Complete ownership/
+coverage, allowed old table/query aliases, protected reads, source/native
+agreement, None-result provenance and exact world/packet/full cost at larger
+sufficient bounds survive. The existing `pair_right_older_masks` statement is
+unchanged and reuses the factored root checkpoint.
+The 4,328-job library build and all nine affected Lean suites pass. The new
+kernel consumer discharges both smaller contracts with proved empty instances: two
+nonempty witnesses score max u32 and zero, the left query aliases the old table,
+and five external right-query owners remain covered. Output owns ten cells.
+All eleven runtime cases pass, including both-owned root overflow at 1,481
+source steps/three solver calls with full source/addressed value/table/cost
+agreement, caller guards/bytes and complete owner coverage. All 2,099 audited
+endpoints retain the accepted axioms; ten new theorems across six proof modules
+are included. Eight statement seeds export 1,333 unique records without unknown
+references. Thirteen Rust tests and nine Python checks pass. The new consumer is
+included in CI's fifty-three suites; this checkpoint freshly ran the nine
+affected suites, not the full fifty-three. See the evidence report for exact commands.
+Next construct both contraction-failure returns, then universal pair/pair
+`NativeTotalFresh` induction. Dynamic regions/destructors, public maximum/
+cold-table teardown, wrappers/input policy/resources/G3 and every other planning
+requirement remain open. No full SRC-01/C3 or production resource closure is
+claimed; the full goal stays active. Earlier [subtotal overflow](evidence/memo-evaluator-subtotal-overflow.md),
+[head/tail failure](evidence/memo-evaluator-tail-failure.md) and successful-parent endpoints remain checked.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.

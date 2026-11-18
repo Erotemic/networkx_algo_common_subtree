@@ -53,6 +53,7 @@ jobs:
           lake env lean Tests/SourceAddressedControl.lean
           lake env lean Tests/SourceCacheMissSetup.lean
           lake env lean Tests/SourceSubtotalOverflow.lean
+          lake env lean Tests/SourceRootOverflow.lean
           lake env lean Tests/SourceNoneResultProvenance.lean
           lake env lean Tests/SourceParentOutput.lean
           lake env lean Tests/SourceParentChoices.lean

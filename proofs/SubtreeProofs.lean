@@ -378,3 +378,5 @@ public import SubtreeProofs.Rust.SourcePairSuccessfulTotality
 public import SubtreeProofs.Rust.SourceTailFailureTotality
 
 public import SubtreeProofs.Rust.SourceSubtotalOverflowTotality
+
+public import SubtreeProofs.Rust.SourceRootOverflowTotality

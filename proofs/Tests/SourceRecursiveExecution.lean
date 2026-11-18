@@ -158,5 +158,10 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
   -- children remain live after subtotal failure retires all four fresh cells.
   checkWarm "subtotal-overflow-owned-both" pairWord pairWord true 1059 3
     (.Entry ⟨.Empty, .Empty, ⟨pairWord, 4294967295#u32⟩⟩ .Empty)
+  -- The two warm keys supply nonempty witnesses scoring max u32 and zero.
+  -- Their subtotal fits; only the root-edge addition fails. Both copies retire.
+  checkWarm "root-overflow-owned-both" pairWord (.Pair .Empty pairWord) true 1481 3
+    (.Entry ⟨.Empty, .Empty, ⟨pairWord, 4294967295#u32⟩⟩
+      (.Entry ⟨.Empty, pairWord, ⟨pairWord, 0#u32⟩⟩ .Empty))
 
 end SourceRecursiveExecutionTests

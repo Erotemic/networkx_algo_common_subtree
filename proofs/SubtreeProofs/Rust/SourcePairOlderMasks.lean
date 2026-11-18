@@ -34,9 +34,9 @@ theorem PairOlderMasks.through_prefix {callee : Derived.Callees} {callers : List
     steps.optional_hole_untouched masks.tailHole (safe 41 (by simp)),
     (steps.boxes_same_calls (safe 51 (by simp))).trans masks.subtotalZero⟩
 
-theorem pair_right_older_masks (fuel budget : Nat)
-    {entered lookupWorld missWorld headWorld tailWorld scoreWorld rootWorld leftWorld final : World}
-    {active lookupActive missActive headActive tailActive scoreActive rootActive leftActive after : Activation}
+theorem pair_root_older_masks (fuel budget : Nat)
+    {entered lookupWorld missWorld headWorld tailWorld scoreWorld rootWorld : World}
+    {active lookupActive missActive headActive tailActive scoreActive rootActive : Activation}
     {callers : List Activation}
     (valid : active.Valid entered) (callersValid : ∀ caller ∈ callers, caller.Valid entered) (wellFormed : entered.WellFormed)
     (typed : LocalsTyped CallingCertificate.originalEvaluator.locals active.state)
@@ -45,10 +45,8 @@ theorem pair_right_older_masks (fuel budget : Nat)
     (head : Calling.Prefix (Recursive.original budget fuel) callers headCases headActions missWorld missActive headWorld headActive)
     (tail : Calling.Prefix (Recursive.original budget fuel) callers tailCases tailActions headWorld headActive tailWorld tailActive)
     (score : Calling.Prefix (Recursive.original budget fuel) callers scoreCases scoreActions tailWorld tailActive scoreWorld scoreActive)
-    (root : Calling.Prefix (Recursive.original budget fuel) callers rootScoreCases rootScoreActions scoreWorld scoreActive rootWorld rootActive)
-    (left : Calling.Prefix (Recursive.original budget fuel) callers matchedCases matchedActions rootWorld rootActive leftWorld leftActive)
-    (right : Calling.Prefix (Recursive.original budget fuel) callers rightContractionCases rightActions leftWorld leftActive final after) :
-    PairOlderMasks after := by
+    (root : Calling.Prefix (Recursive.original budget fuel) callers rootScoreCases rootScoreActions scoreWorld scoreActive rootWorld rootActive) :
+    PairOlderMasks rootActive := by
   have respects := Recursive.original_typed_respects budget fuel
   have sourceTyped := Types.original_run_typed fuel
   have constraints := evaluator_prefix_constraints
@@ -86,6 +84,24 @@ theorem pair_right_older_masks (fuel budget : Nat)
     · exact root.optional_hole_untouched (score.optional_hole_untouched hole31 (by decide +kernel)) (by decide +kernel)
     · exact root.empty_untouched (score.empty_untouched table32 (by decide +kernel)) (by decide +kernel)
     · exact root.optional_hole_untouched hole41 (by decide +kernel)
+  exact older
+
+theorem pair_right_older_masks (fuel budget : Nat)
+    {entered lookupWorld missWorld headWorld tailWorld scoreWorld rootWorld leftWorld final : World}
+    {active lookupActive missActive headActive tailActive scoreActive rootActive leftActive after : Activation}
+    {callers : List Activation}
+    (valid : active.Valid entered) (callersValid : ∀ caller ∈ callers, caller.Valid entered) (wellFormed : entered.WellFormed)
+    (typed : LocalsTyped CallingCertificate.originalEvaluator.locals active.state)
+    (common : Calling.Prefix (Recursive.original budget fuel) callers lookupSwitch commonPrefix entered active lookupWorld lookupActive)
+    (setup : Calling.Prefix (Recursive.original budget fuel) callers missCases missSetupActions lookupWorld lookupActive missWorld missActive)
+    (head : Calling.Prefix (Recursive.original budget fuel) callers headCases headActions missWorld missActive headWorld headActive)
+    (tail : Calling.Prefix (Recursive.original budget fuel) callers tailCases tailActions headWorld headActive tailWorld tailActive)
+    (score : Calling.Prefix (Recursive.original budget fuel) callers scoreCases scoreActions tailWorld tailActive scoreWorld scoreActive)
+    (root : Calling.Prefix (Recursive.original budget fuel) callers rootScoreCases rootScoreActions scoreWorld scoreActive rootWorld rootActive)
+    (left : Calling.Prefix (Recursive.original budget fuel) callers matchedCases matchedActions rootWorld rootActive leftWorld leftActive)
+    (right : Calling.Prefix (Recursive.original budget fuel) callers rightContractionCases rightActions leftWorld leftActive final after) :
+    PairOlderMasks after := by
+  have older := pair_root_older_masks fuel budget valid callersValid wellFormed typed common setup head tail score root
   have atLeft := older.through_prefix left (List.all_eq_true.mp (by decide +kernel))
   exact atLeft.through_prefix right (List.all_eq_true.mp (by decide +kernel))
 
