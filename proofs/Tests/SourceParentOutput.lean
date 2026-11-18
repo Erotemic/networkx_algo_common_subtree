@@ -1,4 +1,5 @@
 import SubtreeProofs.Rust.SourcePairReturnRetirement
+import SubtreeProofs.Rust.SourceFreshRetirement
 
 /-! Output assembly retains a shared tuple alias into the old table while
 moving its two old owners beside a six-owner fresh witness. Witness provenance
@@ -164,6 +165,29 @@ example : ∃ start startActive final after resources,
   have fresh2 : LocalOwnersAbove 2 entered initial 2 := LocalOwnersAbove.of_resource rep2 (by
     intro address member; rw [owners2] at member
     simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega)
+  -- A nonempty six-owner local can be dropped before ending its storage while
+  -- the tuple still borrows the two old table cells.
+  have positivePlan : RetirementPlan initial.roots [.drop 2, .storageDead 2] (initial.roots.set 2 none) :=
+    RetirementPlan.of_presence (by decide +kernel)
+  obtain ⟨cleanupWorld, cleanupActive, cleanupSteps, cleanupMachine, cleanupRoots, _, cleanupMemory⟩ :=
+    positivePlan.complete_fresh (Helpers.callee 0 0) .done machine rfl
+      (by intro slot member
+          have same : slot = 13 := by simpa using member
+          subst slot
+          change 13 < 113
+          decide)
+      (by intro slot member
+          have same : slot = 2 := by simpa using member
+          subst slot
+          change LocalOwnersAbove 2 entered initial 2
+          exact fresh2)
+      (by simp [retirementZeroChecks, clearBoxCount])
+  have cleaned2 : cleanupActive.roots 2 = none := by rw [cleanupRoots]; simp [Roots.set]
+  have retainedTuple : cleanupActive.state 13 = SourceEval.Evaluator.queryTuple .Empty .Empty :=
+    (cleanupSteps.unshared_local_same_calls (by rw [initial_tuple]; intro value impossible; cases impossible) (by decide +kernel)).trans initial_tuple
+  have cleanedMask : cleanupActive.state 2 = .empty := by
+    obtain ⟨_, cleanupFrame⟩ := cleanupMachine.native.valid.2
+    simpa only [cleaned2] using cleanupFrame.slots 2
   let callee := Helpers.callee 0 0
   obtain ⟨w1, a1, p1, m1, r1, c1, _, e1, v104, _⟩ := original_move_view_complete machine callee (prepCode 2)
     (source := 1) (destination := 104) (by decide) (by decide) rfl (table_typed memo) (.adt .table) (by change 104 < 113; decide) rfl
@@ -268,5 +292,15 @@ example : ∃ start startActive final after resources,
     refine ⟨?_, by rw [rootsAfter 111 (by decide)]; exact dead111⟩
     exact (sameAfter 111 (by decide) (by rw [emptyP 111 (by decide)]; intro value eq; cases eq)).trans (emptyP 111 (by decide))
   · exact retired slot (by simp only [List.mem_cons, List.not_mem_nil, or_false] at member ⊢; omega)
+
+-- Execute the same physical cleanup and observe all six descendant owners
+-- retired, both old table owners still live, and the selected stack root gone.
+example : (Calling.exec (Helpers.callee 0 0) []
+    (.step (.drop 2) (.step (.storageDead 2) .done)) entered initial).map
+      (fun result => match result.1 with
+        | .next final after => ([2, 3, 4, 5, 6, 7].map final.live, final.live 0 && final.live 1, (after.roots 2).isSome)
+        | .returned _ _ _ => ([], false, true)) =
+    some ([false, false, false, false, false, false], true, false) := by
+  decide +kernel
 
 end SourceParentOutputTests

@@ -21,6 +21,7 @@ import SubtreeProofs.Rust.SourcePairFinishChoices
 import SubtreeProofs.Rust.SourcePairFinishInsertion
 import SubtreeProofs.Rust.SourcePairFinishPacking
 import SubtreeProofs.Rust.SourcePairRightStorageEntry
+import SubtreeProofs.Rust.SourcePairFinishClosure
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1664,9 +1665,23 @@ example : ∃ beforeFinish beforeActive final after selectedResources tableResou
     rcases member with rfl | rfl | rfl | rfl | rfl <;>
       exact ⟨insertionScope.moved _ (by decide +kernel), insertionScope.retired _ (by decide +kernel)⟩
 
--- Empty return storage is derived from parsed entry and every actual prior
--- checkpoint. No empty-root premise is supplied to this complete consumer.
-example : ∃ beforeFinish beforeActive final after resources fuel budget,
+private def finishAnswer := SourceEval.Evaluator.matchedWitness wideWitness wideWitness 15#u32
+
+private def FinishClosureEvidence (start : World) (initial : Activation) : Prop :=
+  ∃ fuel budget middle after final cell cost owners,
+    close middle after [] [] (cell, SourceEval.Evaluator.encodeOutput (some finishAnswer)
+      (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable)) = some final ∧
+    Readable final.memory final.live cell (SourceEval.Evaluator.encodeOutput (some finishAnswer)
+      (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable)) ∧
+    final.WellFormed ∧ Footprint final.memory cell owners ∧ owners.length = 38 ∧
+    ResultOwnersAbove finishWorld.memory.length final.memory cell ∧
+    ∀ largerFuel largerBudget, fuel ≤ largerFuel → budget ≤ largerBudget →
+      Calling.exec (Recursive.original largerBudget largerFuel) [] SourceEval.Evaluator.finish start initial =
+        some (.returned middle after (cell, SourceEval.Evaluator.encodeOutput (some finishAnswer)
+          (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable)), cost)
+
+-- Storage, older masks and exact root presence all follow parsed entry.
+private theorem parsed_finish_cleanup_fixture : ∃ beforeFinish beforeActive final after resources fuel budget,
     OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
     SourceEval.Evaluator.FinishPackedScope .Empty .Empty .Empty .Empty wideWitness wideWitness wideWitness wideWitness finishTable 15#u32 after ∧
     LocalResultOwnersAbove finishWorld.memory.length final after 0 ∧
@@ -1674,7 +1689,10 @@ example : ∃ beforeFinish beforeActive final after resources fuel budget,
     (∀ slot ∈ [71, 85], LocalOwnersAbove finishWorld.memory.length final after slot) ∧
     Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.finishCode 56) (SourceEval.Evaluator.finishActions.take 56)
       beforeFinish beforeActive final after ∧
-    (∀ slot ∈ [99, 104, 110, 111, 112], after.state slot = .empty ∧ after.roots slot = none) := by
+    (∀ slot ∈ [99, 104, 110, 111, 112], after.state slot = .empty ∧ after.roots slot = none) ∧
+    SourceEval.Evaluator.PairOlderMasks after ∧
+    rootPresence after.roots = (fun slot => SourceEval.Evaluator.pairRightLiveRoots.contains slot) ∧ 113 ≤ after.count ∧
+    FinishClosureEvidence beforeFinish beforeActive := by
   have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
     .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
   have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
@@ -1683,8 +1701,11 @@ example : ∃ beforeFinish beforeActive final after resources fuel budget,
     (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
   have rightNative := SourceEval.Evaluator.cache_hit_native finishTable (.Pair .Empty .Empty) .Empty wideWitness
     (by simp [finishTable, MemoizedOrderedSolver.findResult])
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wp, ap,
-    result, output, _, _, _, _, _, machine, scope, _, native, _, count, future, _, _, fresh, held, storage, _, _⟩ :=
+  obtain ⟨entered, initial, entryFuel, entryBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
+    tailWorld, tailActive, scoreWorld, scoreActive, rootWorld, rootActive, matchedWorld, matchedActive, concatWorld, concatActive,
+    viewsWorld, viewsActive, argumentWorld, argumentActive, callWorld, callActive, leftWorld, leftActive, rightConcatWorld, rightConcatActive,
+    rightViewsWorld, rightViewsActive, rightArgumentWorld, rightArgumentActive, rightCallWorld, rightCallActive, wp, ap,
+    result, output, _, _, _, _, entryRun, machine, scope, _, native, _, count, future, _, _, fresh, held, storage, _, priorStable⟩ :=
     SourceEval.Evaluator.entry_pair_right_scope_storage_complete_provenance (external := [])
       (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
       .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
@@ -1696,9 +1717,46 @@ example : ∃ beforeFinish beforeActive final after resources fuel budget,
       (SourceEval.Evaluator.native_empty_total_fresh .Empty (.Pair .Empty .Empty) (Or.inl rfl)) wideWitness finishTable leftNative
       (SourceEval.Evaluator.native_empty_total_fresh (.Pair .Empty .Empty) .Empty (Or.inr rfl))
   obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans rightNative))
+  obtain ⟨sameWorld, sameActive, sameEntry, initialMachine, initialStateEq, _, _, _⟩ :=
+    SourceEval.Evaluator.native_entry_machine (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      (.Pair .Empty .Empty) (.Pair .Empty .Empty) finishTable pairCell pairCell finishCell
+      finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Option.some.inj (entryRun.symm.trans sameEntry))
+  have initialTyped : LocalsTyped SourceEval.CallingCertificate.originalEvaluator.locals initial.state := by
+    rw [initialStateEq]
+    refine SourceEval.Types.initial_typed ?_ SourceEval.CallingCertificate.originalEvaluator.boundary
+    rw [SourceEval.CallingCertificate.originalEvaluator_spec.1]
+    exact .cons (.shared (word_typed _)) (.cons (.shared (word_typed _)) (.cons (table_typed _) .nil))
+  obtain ⟨common, setup, head, tail, score, root, _, _, _, _, _, _, _, leftWhole, _, _, _, _, _, _, rightWhole⟩ :=
+    priorStable entryFuel entryBudget (by rfl) (by rfl)
+  have older := SourceEval.Evaluator.pair_right_older_masks entryFuel entryBudget initialMachine.valid
+    initialMachine.callersValid initialMachine.wellFormed initialTyped common setup head tail score root leftWhole rightWhole
+  have present := SourceEval.Evaluator.pair_right_root_presence entryFuel entryBudget entryRun
+    (by simp [SourceEval.Evaluator.inputPackets]) common setup head tail score root leftWhole rightWhole
+  have completeFinish : FinishClosureEvidence wp ap := by
+    obtain ⟨fullFuel, fullBudget, middle, ended, closed, cell, cost, closeRun, _, closedWf,
+      closedRead, _, _, owners, resultFresh, stableFinish⟩ :=
+      SourceEval.Evaluator.pair_finish_closed_complete machine scope fresh held storage older present
+        (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1])
+        (by intro slot member
+            have bound : 96 ≤ slot := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+            exact future slot bound)
+        (guards := []) (by simp)
+    have nativeValue : SourceEval.Evaluator.selectedWitness
+        (SourceEval.Evaluator.matchedWitness wideWitness wideWitness 15#u32) wideWitness wideWitness = finishAnswer := by
+      with_unfolding_all rfl
+    rw [nativeValue] at closeRun closedRead stableFinish
+    obtain ⟨outputOwners, footprint, _, _⟩ := owners
+    have readCopy := closedRead
+    obtain ⟨used, graph, _⟩ := readCopy
+    have boxes := (Rep.of_full graph.represents footprint).boxes
+    exact ⟨fullFuel, fullBudget, middle, ended, closed, cell, cost, outputOwners, closeRun, closedRead, closedWf,
+      footprint, boxes.trans (by with_unfolding_all rfl), resultFresh, stableFinish⟩
   obtain ⟨root0, bound0, raw0⟩ := storage.root
   obtain ⟨minFuel, minBudget, _, _, _, _, _, _, final, after, finalMachine, packedScope, freshAfter, heldAfter,
-    _, _, _, _, stable⟩ :=
+    packedCount, _, _, _, stable⟩ :=
     SourceEval.Evaluator.pair_finish_packing_complete machine scope fresh held bound0 raw0 storage.empty
       (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1])
       (by intro slot member
@@ -1711,10 +1769,44 @@ example : ∃ beforeFinish beforeActive final after resources fuel budget,
   rw [packedScope.output] at boxes
   have thirtyEight : resources.owners.length = 38 := boxes.trans (by with_unfolding_all rfl)
   refine ⟨wp, ap, final, after, resources, minFuel, minBudget, finalMachine, packedScope, freshAfter,
-    represented, thirtyEight, heldAfter, whole, ?_⟩
-  intro slot member
-  simp only [List.mem_cons, List.not_mem_nil, or_false] at member
-  rcases member with rfl | rfl | rfl | rfl | rfl <;>
-    exact ⟨packedScope.moved _ (by decide +kernel), packedScope.retired _ (by decide +kernel)⟩
+    represented, thirtyEight, heldAfter, whole, ?_, older.through_finish_56 whole,
+    SourceEval.Evaluator.pair_finish_56_root_presence present whole, ?_, completeFinish⟩
+  · intro slot member
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl | rfl | rfl | rfl <;>
+      exact ⟨packedScope.moved _ (by decide +kernel), packedScope.retired _ (by decide +kernel)⟩
+  · rw [packedCount, count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1]
+
+-- Every remaining cleanup instruction and checked return execute from the
+-- parsed fixture. Its old table owns twenty cells before insertion; returned
+-- output owns thirty-eight cells and the activation retains no initialized mask.
+example : ∃ start initial final after cell cost owners,
+    Calling.exec (Helpers.callee 0 0) [] (SourceEval.Evaluator.finishCode 56) start initial =
+      some (.returned final after (cell, SourceEval.Evaluator.encodeOutput (some finishAnswer)
+        (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable)), cost) ∧
+    (∀ slot, after.state slot = .empty) ∧
+    Readable final.memory final.live cell (SourceEval.Evaluator.encodeOutput (some finishAnswer)
+      (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable)) ∧
+    Footprint final.memory cell owners ∧ owners.length = 38 ∧
+    ResultOwnersAbove finishWorld.memory.length final.memory cell := by
+  obtain ⟨_, _, start, initial, _, _, _, machine, scope, fresh, _, _, held, _, _, older, present, count, _⟩ := parsed_finish_cleanup_fixture
+  obtain ⟨final, after, cell, cost, owners, run, empty, _, _, _, _, _, _, readable, footprint, _, _, provenance, _⟩ :=
+    SourceEval.Evaluator.pair_finish_return_complete machine (Helpers.callee 0 0) scope older present count fresh held
+  have nativeValue : SourceEval.Evaluator.selectedWitness
+      (SourceEval.Evaluator.matchedWitness wideWitness wideWitness 15#u32) wideWitness wideWitness = finishAnswer := by
+    with_unfolding_all rfl
+  rw [nativeValue] at run readable
+  have readCopy := readable
+  obtain ⟨used, graph, _⟩ := readCopy
+  have boxes := (Rep.of_full graph.represents footprint).boxes
+  exact ⟨start, initial, final, after, cell, cost, owners, run, empty, readable, footprint,
+    boxes.trans (by with_unfolding_all rfl), provenance⟩
+
+-- The same parsed entry constructs the entire finish continuation and actual
+-- frame closure, preserving its thirty-eight output owners at larger bounds.
+example : ∃ start initial, FinishClosureEvidence start initial := by
+  obtain ⟨start, initial, _, _, _, _, _, facts⟩ := parsed_finish_cleanup_fixture
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, evidence⟩ := facts
+  exact ⟨start, initial, evidence⟩
 
 end SourceCacheMissSetupTests

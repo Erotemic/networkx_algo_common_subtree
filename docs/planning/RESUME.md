@@ -2,38 +2,37 @@
 
 Branch: `Droschinsky-algos`.
 
-[Parsed return storage through complete output assembly](lean-complexity-campaign/evidence/memo-evaluator-return-storage.md) now
-derives the empty return-root mask and actual empty bytes from parsed entry.
-The pinned type certificate supplies action constraints and call readiness;
-generic typed-prefix/root preservation carries the real `storageLive 0` result
-through all eight actual phases to the right-result checkpoint. The augmented
-entry endpoint exports that storage and local typing alongside every previous
-native/resource/provenance/checkpoint guarantee. Earlier statements, smaller
-contracts, independent hypotheses and source semantics are unchanged.
-The unchanged finish constructor now consumes derived storage to reach
-`finishCode 56` from parsed entry, without a later empty-root or desired parent
-post-frame premise. The actual return tuple has thirty-eight owners, comprising
-a bounded six-owner witness and thirty-two-owner inserted table; old table owners
-remain unrestricted. Both owned-query bounds and five retired assembly roots
-survive. Remaining finish cleanup and checked return/closure are still open.
-The 4,291-job library build passes. All six affected Lean suites pass,
-including eight runtime cases, the complete aliasing output fixture and the new
-parsed-entry consumer through instruction 56. No later return-storage premise
-is supplied to that consumer.
-All 2,020 audited endpoints retain the accepted axioms; twelve new theorems
-across six modules are included. Eight statement seeds resolve 1,329 unique
-records without unknown references. Thirteen Rust tests and nine Python checks
-pass. Next retain older root/hole/empty-mask facts and execute all remaining
-owned-query/zero-temporary cleanup, then checked return and call closure.
-Both optional joins, overflow/failure exits, remaining parent returns, full
-pair/pair induction, dynamic regions/destructors, public maximum/cold-table
-teardown, wrappers/input policy/resources/G3 and every other planning requirement
-remain open. No C3 or production resource closure is claimed; the full goal stays
-active. Earlier [output assembly](lean-complexity-campaign/evidence/memo-evaluator-parent-output.md),
-[actual insertion](lean-complexity-campaign/evidence/memo-evaluator-parent-insertion.md),
-[parent choices](lean-complexity-campaign/evidence/memo-evaluator-parent-choices.md) and
-[generic choice constructor](lean-complexity-campaign/evidence/memo-evaluator-choice-owner-constructor.md)
-remain checked prerequisites.
+[Successful-right cleanup, return and frame closure](lean-complexity-campaign/evidence/memo-evaluator-finish-cleanup.md) now
+constructs all ninety-seven finish instructions, the guarded return and actual
+checked call-frame closure. Generic instruction/prefix facts derive exact root
+presence and older empty/payload-hole/scalar masks from the existing parsed
+prefixes and type certificate. Mixed retirement drops the fresh owned queries
+and checks zero owners before ending storage. Only return root0 remains before
+extraction; every mask is empty afterward. Closure preserves readable output,
+complete ownership/coverage, returned witness provenance and protected caller
+reads while allowing old table/query aliases. Earlier endpoint statements,
+smaller contracts, independent hypotheses and source semantics are unchanged.
+The complete finish continuation retains its exact world, packet and full source
+cost at larger sufficient fuel/budget bounds. This is a constructed continuation
+and closure, not yet a whole-parent dispatcher or universal pair/pair theorem.
+The 4,302-job library build passes. All 2,053 audited endpoints retain only the
+accepted axioms; thirty-three new theorems across eleven modules are included.
+Eight statement seeds resolve 1,161 unique records without unknown references.
+The positive cleanup fixture constructs a six-owner drop while preserving two
+old table owners and nested shared aliases; actual executor observations confirm
+all six descendants retired and the selected stack root gone. Thirteen Rust
+tests and nine Python frontend checks pass. All six affected Lean suites pass,
+including eight runtime cases and the parsed-entry consumer for the complete
+finish/closure with thirty-eight output owners. See the evidence report for
+reproduction commands and exact scope.
+Next compose finish/closure with earlier actual switches and parsed entry to
+obtain whole successful-parent body/dispatcher endpoints and witness provenance.
+Both optional joins, overflow/failure exits, remaining parent returns, universal
+pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum
+and cold-table teardown, wrappers/input policy/resources/G3 and every other
+planning requirement remain open. No full SRC-01/C3 or production resource closure
+is claimed; the full goal stays active. Earlier return-storage/output/insertion/
+choice checkpoints remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.
@@ -1016,12 +1015,16 @@ See the latest evidence report for reproduction and scope.
    supported cases; all six actual choice local types are closed. Forward
    stores/assignments (including references), selected owned moves, scrutinees
    and returns are now constructed from independent local source facts and
-   semantic permissions, with derived post-RHS resources. Next construct whole
-   pinned choice execution/entry/cleanup, maintaining fresh roots/scope, old
-   caller reads and the relation between current owners and legal owned inputs.
-   Then compose actual calls and source-path permissions through the recursive
-   evaluator/public maximum on legal native inputs/warm tables. Discharge the
-   evaluator's reference-local loans rather than treating its locals as closed. Reuse exact helper growth, global recursive
+   semantic permissions, with derived post-RHS resources. Pinned choice,
+   cache-hit, empty-input and head-failure constructors are checked foundations.
+   The successful-right finish now constructs all ninety-seven instructions,
+   guarded return and frame closure. Next compose it with earlier actual
+   switches and parsed entry, retaining returned witness provenance, then
+   complete optional joins, overflow/failure exits and universal pair/pair
+   NativeTotalFresh induction. Compose the remaining source-path permissions
+   through the evaluator/public maximum on legal native inputs/warm tables.
+   Discharge reference-local loans rather than treating all locals as closed.
+   Reuse exact helper growth, global recursive
    owner resources, computed loan coverage, certified reference views, independent
    typing, protected caller bytes and actual entry/closure. Do not assume the
    desired parent source/native execution to establish permissions. Preserve
