@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceCacheMissEntry
+import SubtreeProofs.Rust.SourceEmptyTotality
 
 namespace SourceCacheMissSetupTests
 
@@ -76,5 +76,48 @@ example : ∃ entered active minFuel minBudget lookupWorld lookupActive final af
       owned.1 owned.2.1 owned.2.2 (by simp [table, MemoizedOrderedSolver.findResult])
   exact ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, final, after, machine, scope,
     tupleOrigin, words, scope.tuple, left, right, stable⟩
+
+-- Complete invocation now includes native insertion, all cleanup, checked
+-- closure and one fixed world/packet/full cost at every larger pair of bounds.
+example : ∃ minFuel minBudget final packet lookupCost insertCost,
+    packet.2 = SourceEval.Evaluator.encodeOutput (some SourceEval.Evaluator.emptyWitness)
+      (.Entry ⟨.Empty, .Empty, SourceEval.Evaluator.emptyWitness⟩ table) ∧
+    Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧
+    (∃ output, Footprint final.memory packet.1 output ∧ OwnerFrame final output ∧ BoxCoverage final output) ∧
+    ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+      Recursive.original budget fuel world [] [] .evaluate packets =
+        some (final, packet, SourceEval.Evaluator.emptyRunCost .Empty lookupCost insertCost) := by
+  have owned := resources
+  obtain ⟨fuel, budget, final, packet, lookupCost, insertCost, value, _, _, _, readable, wf, _, owners, stable⟩ :=
+    SourceEval.Evaluator.empty_miss_total (guards := []) (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty table queryCell queryCell tableCell query_readable query_readable table_readable
+      owned.1 owned.2.1 owned.2.2 (by simp) (Or.inl rfl) (by simp [table, MemoizedOrderedSolver.findResult])
+  exact ⟨fuel, budget, final, packet, lookupCost, insertCost, value, readable, wf, by simpa [callerOwners] using owners, stable⟩
+
+private def pairCell : Cell := .shared ⟨0, [1]⟩
+private theorem pair_readable : Readable world.memory world.live pairCell (.reference (encodeWord (.Pair .Empty .Empty))) := by
+  exact ⟨[2, 3, 0], .shared rfl (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))),
+    by simp [AliveOn, world]⟩
+
+-- The nonempty-left / empty-right route takes both actual word switches.
+-- Both queries again read data owned by the table being transferred/inserted.
+example : ∃ minFuel minBudget final packet lookupCost insertCost,
+    packet.2 = SourceEval.Evaluator.encodeOutput (some SourceEval.Evaluator.emptyWitness)
+      (.Entry ⟨.Pair .Empty .Empty, .Empty, SourceEval.Evaluator.emptyWitness⟩ table) ∧
+    Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧
+    (∃ output, Footprint final.memory packet.1 output ∧ OwnerFrame final output ∧ BoxCoverage final output) ∧
+    ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+      Recursive.original budget fuel world [] [] .evaluate
+        (SourceEval.Evaluator.inputPackets pairCell queryCell tableCell (.Pair .Empty .Empty) .Empty table) =
+        some (final, packet, SourceEval.Evaluator.emptyRunCost (.Pair .Empty .Empty) lookupCost insertCost) := by
+  have owned := resources
+  have footprint : FieldsFootprint world.memory [pairCell, queryCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  obtain ⟨fuel, budget, final, packet, lookupCost, insertCost, value, _, _, _, readable, wf, _, owners, stable⟩ :=
+    SourceEval.Evaluator.empty_miss_total (guards := []) (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      (.Pair .Empty .Empty) .Empty table pairCell queryCell tableCell pair_readable query_readable table_readable
+      footprint owned.2.1 owned.2.2 (by simp) (Or.inr rfl) (by simp [table, MemoizedOrderedSolver.findResult])
+  exact ⟨fuel, budget, final, packet, lookupCost, insertCost, value, readable, wf, by simpa [callerOwners] using owners, stable⟩
 
 end SourceCacheMissSetupTests

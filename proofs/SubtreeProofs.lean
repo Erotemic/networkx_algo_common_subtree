@@ -315,3 +315,5 @@ public import SubtreeProofs.Rust.SourceEvaluatorCommonEntry
 public import SubtreeProofs.Rust.SourceCacheHitTotality
 
 public import SubtreeProofs.Rust.SourceCacheMissEntry
+
+public import SubtreeProofs.Rust.SourceEmptyTotality

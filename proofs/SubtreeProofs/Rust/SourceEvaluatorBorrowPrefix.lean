@@ -38,7 +38,7 @@ theorem borrow_prefix_complete {before world : World} {active : Activation} {cal
       resultMemory firstMemory secondMemory resultEmpty firstEmpty secondEmpty
   have tableResult : tables.roots 4 = some resultRoot := by rw [tableRoots]; exact resultBinding
   have tableFirst : tables.roots 5 = some firstView := by rw [tableRoots]; exact firstBinding
-  obtain ⟨leftWorld, leftState, leftSteps, leftMachine, leftRoots, leftCount, leftValue, leftKeep, leftEmpty, leftMemory, leftEnded, leftQueries⟩ :=
+  obtain ⟨leftWorld, leftState, leftSteps, leftMachine, leftRoots, leftCount, leftValue, leftKeep, leftEmpty, leftMemory, leftEnded, leftQueries, _⟩ :=
     query_view_complete tableMachine callee (borrowCode 8) 7 1 left tableInputs.left
       (by rw [tableCount, openedCount]; omega) (by rw [tableRoots]; exact seven)
   have leftInputs : InputLocals left right table leftState.state := by
@@ -54,7 +54,7 @@ theorem borrow_prefix_complete {before world : World} {active : Activation} {cal
   have leftResultMemory := leftMemory 4 resultRoot tableResult _ tableMemory
   have leftTable : leftState.state 5 = .shared (encodeTable table) :=
     (leftKeep 5 (by decide) (by decide +kernel) (by decide +kernel)).trans tableValue
-  obtain ⟨final, after, rightSteps, finalMachine, finalRoots, finalCount, rightValue, rightKeep, rightEmpty, rightMemory, rightEnded, rightQueries⟩ :=
+  obtain ⟨final, after, rightSteps, finalMachine, finalRoots, finalCount, rightValue, rightKeep, rightEmpty, rightMemory, rightEnded, rightQueries, _⟩ :=
     query_view_complete leftMachine callee lookupSuffix 8 2 right leftInputs.right
       (by rw [leftCount, tableCount, openedCount]; omega)
       (by rw [leftRoots]; simpa only [Roots.set] using tableRoots ▸ eight)

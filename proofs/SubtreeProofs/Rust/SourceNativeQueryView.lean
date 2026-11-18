@@ -35,7 +35,9 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
         LoanEnding.endsBeforeObservation index (.step (.storageLive destination)
           (.step (.assign destination (.address (.deref (.local query)))) suffix)) = true → after.state index = .empty) ∧
       (ReferenceQueries active.state → QueryOrigins world active before.memory.length → destination ∉ [1, 2] →
-        QueryOrigins final after before.memory.length) := by
+        QueryOrigins final after before.memory.length) ∧
+      (∀ index, index ≠ destination → (active.state index).dropWork.boxes = 0 →
+        LoanOrigin world active before.memory.length index → LoanOrigin final after before.memory.length index) := by
   let next : Code := .step (.assign destination (.address (.deref (.local query)))) suffix
   let code : Code := .step (.storageLive destination) next
   have different : query ≠ destination := by
@@ -79,7 +81,7 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
   refine ⟨final, after,
     .cons (Calling.instruction_noncall_run (act := .storageLive destination) openedRun)
       (.cons (Calling.instruction_noncall_run (act := .assign destination (.address (.deref (.local query)))) assigned) (.nil _ _)),
-    finalMachine, rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    finalMachine, rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · simp only [after, Partial.Locals.set, ite_true, Slot.ofValue]
   · intro index different firstObserved secondObserved
     simp only [after, Partial.Locals.set, different, ite_false]
@@ -112,5 +114,25 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
     have qAfter := (qOpened.prepare next).write_other preparedMachine.valid preparedRefs destinationBinding different
       (preparedMachine.fresh destination _ destinationBinding) cell
     exact qAfter.set_other destination different (Slot.ofValue (.reference (encodeWord word)))
+  · intro index different zero origin
+    have firstZero : (first.state index).dropWork.boxes = 0 := by
+      change (LoanEnding.forget code (List.range active.count) active.state index).dropWork.boxes = 0
+      rcases LoanEnding.forget_eq_or_empty code (List.range active.count) active.state index with same | empty
+      · rw [same]; exact zero
+      · rw [empty]; simp only [Slot.dropWork]
+    have openedZero : (opened.state index).dropWork.boxes = 0 := by
+      simpa only [opened, Partial.Locals.set, different, ite_false] using firstZero
+    have preparedZero : (prepared.state index).dropWork.boxes = 0 := by
+      change (LoanEnding.forget next (List.range opened.count) opened.state index).dropWork.boxes = 0
+      rcases LoanEnding.forget_eq_or_empty next (List.range opened.count) opened.state index with same | empty
+      · rw [same]; exact openedZero
+      · rw [empty]; simp only [Slot.dropWork]
+    have atOpened : LoanOrigin openedWorld opened before.memory.length index :=
+      ((origin.prepare code).allocate firstMachine.wellFormed (.stack first.frame destination world.memory.length) (.node .tuple 0 [])).congr
+      (after := opened) rfl (by simp only [opened, first, Roots.set, different, ite_false])
+      (by simp only [opened, first, Partial.Locals.set, different, ite_false])
+    have written := (atOpened.prepare next).write_other preparedMachine.valid destinationBinding different preparedZero
+      (preparedMachine.fresh destination _ destinationBinding) cell
+    exact written.congr (after := after) rfl rfl (by simp only [after, prepared, Partial.Locals.set, different, ite_false])
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

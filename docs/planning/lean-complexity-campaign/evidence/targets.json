@@ -1296,6 +1296,40 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight recursive runtime cases, thirteen ordered Rust tests and nine Python frontend regressions freshly pass."
         },
         "next": "Construct actual empty-witness locals, table transfer, insertion reference views, helper insertion call, post-call retirement and native output/return from MissScope. Preserve original tuple-loan origins while temporary embedding views are live and derive selected physical/owner-transfer permissions without banning query/table/caller aliases. Finish all pair/pair recursion/overflow/failure paths and stable budget composition, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_empty_totality_followup": {
+        "baseline_commit": "45b9f6c",
+        "evidence": "memo-evaluator-empty-totality.md",
+        "endpoint": "SubtreeProofs.Rust.SourceEval.Evaluator.empty_miss_total",
+        "status": "Constructed complete actual parsed evaluator empty-query cache-miss invocation from independent native readable packets, actual callers and complete input/caller/external ownership. All common/miss-setup/47 empty-branch actions, native insertion, both empty routes, return extraction and checked closure execute. Original query-tuple loans and temporary embedding views derive selected permissions while allowing table-owned query and caller aliases. Fixed sufficient fuel/readback thresholds retain one final readable native empty-witness/inserted-table packet, world and exact full emptyRunCost at every larger pair, with complete output/caller/external ownership and live-Box coverage. No cache-soundness, successful physical run, expected physical result or global owner/loan disjointness premise. Pair/pair and every remaining planning obligation stay open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4093,
+          "new_proof_modules": 21,
+          "new_theorems": 53,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1652,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 1314,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumer": "Two whole-invocation consumers use query references into the input table-owned entry: repeated identical empty queries, and nonempty-left/empty-right queries taking both native word switches. Both derive native inserted output, readability, well-formedness, complete ownership/coverage and stable actual world/packet/full cost without physical-success or disjointness hypotheses.",
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, all eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
+        },
+        "next": "Construct pair/pair recursive source scopes, query field views and selected recursive call transfers from MissScope, using smaller native requests and finite stable sufficient budgets. Compose success/overflow/failure/choice/insertion/cleanup paths while retaining permitted query/table/caller aliases and distinguishing fresh witness loans from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1484,7 +1518,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit totality remains checked. Parsed native miss entry/common prefix and all eleven miss-setup instructions now reach MissScope with actual word routing, original tuple-loan origins, complete ownership and stable sufficient prefix budgets. Construct actual empty-witness locals, table transfer, insertion reference views, helper insertion call, post-call retirement and native output/return from MissScope. Preserve original tuple-loan origins while temporary embedding views are live and derive selected physical/owner-transfer permissions without banning query/table/caller aliases. Finish all pair/pair recursion/overflow/failure paths and stable budget composition, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete actual cache-hit and empty-query miss totality are checked. Both empty routes include native insertion, complete ownership, return/closure and stable final world/packet/full cost from independent readable inputs. Construct pair/pair recursive source scopes, query field views and selected recursive call transfers from MissScope, using smaller native requests and finite stable sufficient budgets. Compose success/overflow/failure/choice/insertion/cleanup paths while retaining permitted query/table/caller aliases and distinguishing fresh witness loans from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

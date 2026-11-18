@@ -2,6 +2,23 @@
 
 Branch: `Droschinsky-algos`.
 
+[Complete actual evaluator empty-query miss execution](lean-complexity-campaign/evidence/memo-evaluator-empty-totality.md) now
+constructs parsed entry, lookup, all eleven miss-setup and 47 empty-branch
+actions, native insertion, both empty routes, return and checked closure.
+`Rust.SourceEval.Evaluator.empty_miss_total` derives the empty witness/inserted
+table, readable output, complete ownership/coverage and one exact final world,
+packet and full cost at every larger fuel/readback pair. Original query-tuple
+loans and temporary embedding views permit legal query/table/caller aliases;
+no successful physical run, cache soundness or global owner/loan disjointness
+is assumed. The 4,093-job build and six affected Lean suites pass, including
+eight recursive runtime cases and two whole-invocation table-alias consumers.
+Thirteen ordered Rust tests and nine Python frontend regressions pass.
+All 1,652 audited endpoints retain only the accepted axiom baseline; ten
+statement seeds cover 1,314 unique declarations with no unknown references.
+Pair/pair recursion/overflow/failure, dynamic regions/destructors, public
+maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other
+planning obligation remain open. The full goal remains active.
+
 [Constructed evaluator miss setup and native word routing](lean-complexity-campaign/evidence/memo-evaluator-miss-setup.md) now
 constructs all eleven miss-setup instructions after parsed native entry and the
 common lookup prefix. Exact shared-pointer copies assemble tuple 13, whose loans
@@ -113,6 +130,13 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Evaluator.empty_miss_total`: complete actual empty-query cache-miss
+  invocation from independent native readable inputs and complete ownership,
+  with native insertion, both empty routes, checked closure, exact full source
+  cost and stable final world/packet at every larger fuel/readback pair.
+- `Evaluator.{empty_branch_complete,entry_empty_body_complete}` constructs
+  all empty-branch actions, return, actual switches and parsed entry/body.
+  `OriginalLoanMachine` and embedding-loan permissions retain legal aliases.
 - `Evaluator.{entry_common_prefix_complete,common_prefix_complete,
   lookup_switch_native}`: actual parsed native entry, all fourteen common
   instructions, independent native lookup answer, initialized `LookupScope`,
