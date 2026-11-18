@@ -1820,3 +1820,15 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_unpack_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.score_tail_payload_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_result_scrutinee_source
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_number_copy_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_open_local_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_score_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.number_call_arguments
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.number_result_scrutinee_source
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_checked_add_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_checked_add_operands_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.result_score_read

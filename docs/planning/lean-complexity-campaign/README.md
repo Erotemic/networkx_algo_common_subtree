@@ -1,5 +1,28 @@
 # Lean complexity campaign: proto-roadmap
 
+[Constructed subtotal arithmetic and actual result switch](evidence/memo-evaluator-subtotal-scope.md) now
+constructs all fifteen score-prefix instructions after native head/tail success:
+owned tail extraction, both scalar score copies, actual checked addition and
+argument retirement. `Evaluator.entry_pair_score_scope_complete` connects parsed
+entry and all five common/miss/head/tail/score prefix boundaries at shared
+sufficient bounds, retaining both owned witnesses, the updated table and the
+actual subtotal discriminant. Native-width result/overflow and complete cost
+are identified by source reflection. Smaller head/tail `NativeTotal` contracts
+remain explicit. `original_checked_add_operands_complete` also supports the
+literal operand needed by the subsequent root-score addition.
+The 4,140-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,730 audited endpoints use only the accepted axiom baseline; eight
+statement seeds resolve 1,314 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Two kernel consumers
+use proved empty-input contracts with table-owned query aliases: a head miss/
+tail hit yielding subtotal zero, and warm maximum-width scores selecting overflow
+without cache soundness or a successful physical parent premise.
+Root-score arithmetic, recursive witness freshness/owned cleanup, overflow exits,
+contractions, choice, insertion, remaining parent returns and full pair/pair
+induction remain open. Dynamic regions/destructors, public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and every other planning target
+remain. The full goal stays active.
+
 [Complete tail scope and owned-drop support](evidence/memo-evaluator-tail-scope.md) now
 constructs all twenty-four tail-prefix instructions through the actual tail-result
 switch: argument retirement, native optional/table extraction, moved-output

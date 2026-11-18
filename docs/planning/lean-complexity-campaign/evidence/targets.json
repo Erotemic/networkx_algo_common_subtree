@@ -1439,6 +1439,47 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
         },
         "next": "Construct scalar score copies and checked-add calls, then root-score overflow and both contraction requests, choice, final insertion and remaining cleanup/return. Derive selected recursive witness owner freshness (or equivalent loan-disjointness) from actual source execution; complete ownership alone does not establish it. Use the checked drop_fresh bridge once that provenance is available. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Discharge all smaller NativeTotal premises by complete pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_subtotal_scope_followup": {
+        "baseline_commit": "daf1b8a",
+        "evidence": "memo-evaluator-subtotal-scope.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_score_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.original_checked_add_operands_complete"
+        ],
+        "status": "Constructed all fifteen actual subtotal-prefix instructions after native head/tail success, including owned tail extraction, scalar copies, actual checked-add call and scalar argument retirement. Parsed entry/common/miss/head/tail/score prefixes reach the actual subtotal discriminant at shared sufficient bounds, with both owned witnesses, updated table, complete original-loan ownership and exact native-width result/overflow. Generic checked-add construction accepts actual inline operand lists, including the root-add literal, and derives exact source cost by reflection. Smaller head/tail NativeTotal and independent native success equations remain explicit; no successful physical parent run, cache soundness or global alias ban is assumed. Root-score/later parent paths, witness freshness and full pair/pair induction remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4140,
+          "new_proof_modules": 7,
+          "new_theorems": 11,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1730,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1314,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumers": [
+            "Both parent queries alias a nonempty word inside a table-owned entry. Proved empty-input contracts discharge both smaller calls; head miss/tail hit reaches subtotal Some 0, all five stable prefix boundaries and retired scalar roots.",
+            "An additional warm table contains the maximum-width Empty/Empty score. Both queries still alias table-owned data. Proved empty-input contracts and native cache-hit equations derive the actual subtotal None/overflow discriminant with complete owned witnesses/table, without cache soundness or successful physical-run premises."
+          ],
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
+        },
+        "next": "Construct all twelve root-score instructions after successful subtotal: copy/extract subtotal, retire optional storage, open total-result storage, checked-add the literal one, retire its argument and inspect the native root-score result. Derive selected recursive witness owner freshness or equivalent loan-disjointness from actual source execution and use drop_fresh for owned cleanup; complete ownership alone does not establish this provenance. Complete overflow exits, both contraction requests, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1627,7 +1668,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. All twenty-four successful-head/tail instructions now reach the actual tail-result switch; the first six successful-tail score instructions retain both owned witnesses. An alias consumer discharges smaller calls using proved empty cases. Construct scalar score copies and checked-add calls, then root-score overflow and both contraction requests, choice, final insertion and remaining cleanup/return. Derive selected recursive witness owner freshness (or equivalent loan-disjointness) from actual source execution; complete ownership alone does not establish it. Use the checked drop_fresh bridge once that provenance is available. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Discharge all smaller NativeTotal premises by complete pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail execution now reaches the actual subtotal switch through all fifteen score instructions. Aliased table-owned consumers discharge smaller calls with proved empty cases and derive subtotal success and maximum-width overflow without cache soundness. Construct all twelve root-score instructions after successful subtotal: copy/extract subtotal, retire optional storage, open total-result storage, checked-add the literal one, retire its argument and inspect the native root-score result. Derive selected recursive witness owner freshness or equivalent loan-disjointness from actual source execution and use drop_fresh for owned cleanup; complete ownership alone does not establish this provenance. Complete overflow exits, both contraction requests, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

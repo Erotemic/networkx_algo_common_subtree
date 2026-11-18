@@ -1,5 +1,6 @@
 import SubtreeProofs.Rust.SourcePairTailEntry
 import SubtreeProofs.Rust.SourcePairTailScopeEntry
+import SubtreeProofs.Rust.SourcePairScoreEntry
 
 namespace SourceCacheMissSetupTests
 
@@ -228,5 +229,113 @@ example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorl
   exact ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
     final, after, machine, scope, scope.retired 43 (by simp), scope.retired 44 (by simp),
     scope.retired 45 (by simp), scope.retired 46 (by simp), inspection, stable⟩
+
+
+-- A head miss followed by a tail hit reaches the actual subtotal switch.
+-- Both queries alias table-owned data; the witnesses stay owned while their
+-- scalar arguments clear and retire. Only proved empty-input contracts are used.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive headWorld headActive tailWorld tailActive final after,
+    OriginalLoanMachine world [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.ScoreSumScope SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness headMemo final after ∧
+    after.state 52 = Slot.ofValue (SourceEval.encodeNumberOption (some 0)) ∧
+    after.roots 53 = none ∧ after.roots 54 = none ∧
+    Derived.scrutinee final after [] (.discriminant (.local 52)) = some (.variant .optional 1, after) ∧
+    ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix
+        entered active lookupWorld lookupActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions
+        lookupWorld lookupActive missWorld missActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions
+        missWorld missActive headWorld headActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.tailCases SourceEval.Evaluator.tailActions
+        headWorld headActive tailWorld tailActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.scoreCases SourceEval.Evaluator.scoreActions
+        tailWorld tailActive final after := by
+  have owned := resources
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  have headNative := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  have tailNative := SourceEval.Evaluator.cache_hit_native headMemo .Empty .Empty SourceEval.Evaluator.emptyWitness
+    (by simp [headMemo, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
+    tailWorld, tailActive, final, after, _, _, machine, scope, value, inspection, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_score_scope_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table headMemo headMemo SourceEval.Evaluator.emptyWitness SourceEval.Evaluator.emptyWitness
+      pairCell pairCell tableCell pair_readable pair_readable table_readable footprint owned.2.1 owned.2.2
+      (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) headNative tailNative
+  refine ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, headWorld, headActive,
+    tailWorld, tailActive, final, after, machine, scope, ?_, scope.retired 53 (by simp), scope.retired 54 (by simp), ?_, stable⟩
+  · simpa [SourceEval.Evaluator.emptyWitness, SourceEval.checkedAdd32, SourceEval.checkedAdd32_native] using scope.result
+  · simpa [SourceEval.Evaluator.emptyWitness, SourceEval.checkedAdd32, SourceEval.Evaluator.numberKey] using inspection
+
+
+-- Arbitrary typed warm scores exercise the overflow branch without a cache
+-- soundness premise. Both query references still point into the owned table.
+private def maxWitness : CommonEmbedding := ⟨.Empty, 4294967295#u32⟩
+private def maxEntry : Cell := .node .entry 0 [.node .word 0 [], .node .word 0 [],
+  .node .embedding 0 [.node .word 0 [], .number maxWitness.edges.val]]
+private def overflowTable : MemoTable := .Entry ⟨.Empty, .Empty, maxWitness⟩ table
+private def overflowCell : Cell := .node .table 1 [.owned 4, .owned 5]
+private def overflowWorld : World := ⟨world.memory ++ [maxEntry, tableCell],
+  fun address => if address < 6 then some .box else none, fun address => decide (address < 6)⟩
+
+private theorem overflow_extends : Heap.Extends world.memory overflowWorld.memory := Heap.Extends.append _ _
+private theorem max_graph : Graph overflowWorld.memory maxEntry
+    (.node .entry 0 [encodeWord .Empty, encodeWord .Empty, encodeResult maxWitness]) [] :=
+  .node (.cons (.node .nil) (.cons (.node .nil) (.cons
+    (.node (.cons (.node .nil) (.cons (.number _) .nil))) .nil)))
+private theorem max_footprint : Footprint overflowWorld.memory maxEntry [] :=
+  .node (.cons (.node .nil) (.cons (.node .nil) (.cons
+    (.node (.cons (.node .nil) (.cons (.number _) .nil))) .nil)))
+private theorem overflow_footprint : Footprint overflowWorld.memory overflowCell [4, 2, 3, 0, 1, 5] :=
+  .node (.cons (.owned rfl max_footprint) (.cons (.owned rfl
+    (.node (.cons (.owned rfl (Heap.Spatial.footprint_mono overflow_extends entry_footprint))
+      (.cons (.owned rfl (.node .nil)) .nil)))) .nil))
+private theorem overflow_readable : Readable overflowWorld.memory overflowWorld.live overflowCell (encodeTable overflowTable) := by
+  refine ⟨[4, 2, 3, 0, 1, 5], .node (.cons (.owned rfl max_graph) (.cons (.owned rfl
+    (.node (.cons (.owned rfl (entry_graph.mono overflow_extends)) (.cons (.owned rfl (.node .nil)) .nil)))) .nil)), ?_⟩
+  simp [AliveOn, overflowWorld]
+private theorem overflow_pair_readable : Readable overflowWorld.memory overflowWorld.live pairCell
+    (.reference (encodeWord (.Pair .Empty .Empty))) :=
+  ⟨[2, 3, 0], .shared rfl (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))),
+    by simp [AliveOn, overflowWorld]⟩
+private theorem overflow_resources : OwnerFrame overflowWorld [4, 2, 3, 0, 1, 5] ∧
+    BoxCoverage overflowWorld [4, 2, 3, 0, 1, 5] := by
+  refine ⟨⟨by decide +kernel, ?_, ?_⟩, ?_⟩
+  · intro address member
+    have bound : address < 6 := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [overflowWorld, bound]
+  · intro address member
+    have bound : address < 6 := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [overflowWorld, bound]
+  · intro address classified _
+    have bound : address < 6 := by simpa [overflowWorld] using classified
+    simp only [List.mem_cons, List.not_mem_nil, or_false]; omega
+
+example : ∃ final after,
+    OriginalLoanMachine overflowWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.ScoreSumScope maxWitness maxWitness overflowTable final after ∧
+    after.state 52 = Slot.ofValue (SourceEval.encodeNumberOption none) ∧
+    Derived.scrutinee final after [] (.discriminant (.local 52)) = some (.variant .optional 0, after) := by
+  have footprint : FieldsFootprint overflowWorld.memory [pairCell, pairCell, overflowCell] [4, 2, 3, 0, 1, 5] :=
+    .cons (.shared _) (.cons (.shared _) (.cons overflow_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native overflowTable .Empty .Empty maxWitness
+    (by simp [overflowTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨entered, active, fuel, budget, wl, al, wm, am, wh, ah, wt, aTail, final, after,
+    _, _, machine, scope, _, inspection, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_score_scope_complete (by simp [World.WellFormed, overflowWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty overflowTable overflowTable overflowTable maxWitness maxWitness pairCell pairCell overflowCell
+      overflow_pair_readable overflow_pair_readable overflow_readable footprint
+      (by simpa [callerOwners] using overflow_resources.1) (by simpa [callerOwners] using overflow_resources.2)
+      (by simp [overflowTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) hit hit
+  refine ⟨final, after, machine, scope, ?_, ?_⟩
+  · simpa [maxWitness, SourceEval.checkedAdd32] using scope.result
+  · simpa [maxWitness, SourceEval.checkedAdd32, SourceEval.Evaluator.numberKey] using inspection
 
 end SourceCacheMissSetupTests
