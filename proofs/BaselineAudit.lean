@@ -2225,3 +2225,15 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_root_overflow_body_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_overflow_native
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_overflow_total_fresh
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_failure_outer_return_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cleanupLeft_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.leftFailure_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_root_presence
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_failure_cleanup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_failure_continuation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_left_failure_body_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_failure_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.left_failure_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.empty_request_some
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_minimal_pair_total_fresh

@@ -380,3 +380,6 @@ public import SubtreeProofs.Rust.SourceTailFailureTotality
 public import SubtreeProofs.Rust.SourceSubtotalOverflowTotality
 
 public import SubtreeProofs.Rust.SourceRootOverflowTotality
+
+public import SubtreeProofs.Rust.SourceLeftFailureTotality
+public import SubtreeProofs.Rust.SourceMinimalPairTotality

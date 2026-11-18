@@ -163,5 +163,10 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
   checkWarm "root-overflow-owned-both" pairWord (.Pair .Empty pairWord) true 1481 3
     (.Entry ⟨.Empty, .Empty, ⟨pairWord, 4294967295#u32⟩⟩
       (.Entry ⟨.Empty, pairWord, ⟨pairWord, 0#u32⟩⟩ .Empty))
+  -- Parent scores fit; the smaller left request doubles the cached 2^31 score
+  -- and fails. Parent cleanup drops its six-owner candidate and two-owner query.
+  checkWarm "left-failure-owned-candidate-query" (.Pair .Empty pairWord) pairWord true 3130 6
+    (.Entry ⟨.Empty, .Empty, ⟨pairWord, 2147483648#u32⟩⟩
+      (.Entry ⟨pairWord, .Empty, ⟨pairWord, 0#u32⟩⟩ .Empty))
 
 end SourceRecursiveExecutionTests
