@@ -1093,6 +1093,30 @@
           "broader_regression": "Full 47-suite/native-WP/nine-Python at d49f638; runtime cold/warm/overflow/failure at a56e701; thirteen ordered Rust tests at 823df34; not rerun."
         },
         "next": "Construct forward stores/assignments, selected move routes, scrutinees and returned packets, then whole choice/evaluator/maximum physical success and finite-budget composition. Discharge actual shared-loan permissions via native copy freshness/last-use certificates without banning allowed query/table/insertion aliases. Interpret dynamic regions/destructors; finish public teardown, wrappers/input policy/global resources/G3 and the remaining full planning goal."
+      },
+      "evaluator_forward_operations_followup": {
+        "baseline_commit": "a446876",
+        "evidence": "memo-evaluator-forward-operations.md",
+        "status": "Forward arbitrary packet stores (including references), one-pass assignments, owned move routes, returns and switch inspection. Source-local RHS/materialization/scrutinee facts and selected semantic loan/root permissions construct actual runs, intermediate frames and complete ownership. Whole pinned choice/evaluator/maximum scope and all-path permission discharge, dynamic regions/destructors and all other planning targets remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4010,
+          "affected_lean_suites": [
+            "SourceAddressedExpressions",
+            "SourceAddressedControl"
+          ],
+          "new_theorems": 23,
+          "audited_endpoints": 1356,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 414,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "broader_regression": "Full 47-suite/native-WP/nine-Python at d49f638; runtime at a56e701; thirteen ordered Rust tests at 823df34; not rerun."
+        },
+        "next": "Construct whole actual six-local pinned choice from legal native inputs, with fresh roots/scope, preserved old caller reads, closed locals and current-owner/initial-input relations. Compose actual argument/callee/store calls and all-path permissions through the recursive evaluator/public maximum, retaining permitted query/table/insertion aliases. Interpret dynamic regions/destructors; complete public teardown/wrappers/input policy/resources/G3 and the full planning goal."
       }
     },
     {

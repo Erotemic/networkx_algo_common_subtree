@@ -1416,3 +1416,27 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.actual_local_types
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.actual_local_types_closed
 #print axioms SubtreeProofs.Rust.SourceEval.Choice.typed_inventory_no_loans
+
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.OwnerFrame.of_append_right
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Graph.stack_root_not_read
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.PacketLoansAvoid.of_closed
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.StoreLoansAllowed.of_parts
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.StoreLoansAllowed.of_closed
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.store_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.store_total
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Rep.take_locate_root
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.move_route
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.Activation.move_not_in_caller_reads
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.allowed_local
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.allowed_local_from_loans
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.move_allowed_from_loans
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.ReturnLoansAllowed.of_closed_preserved
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.returnValue_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.returnValue_total
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.ExpressionLoansAvoid.of_closed
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_total
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_complete_closed
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.scrutinee_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.scrutinee_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.scrutinee_total

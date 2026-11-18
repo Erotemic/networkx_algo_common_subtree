@@ -301,3 +301,5 @@ public import SubtreeProofs.Rust.SourceHelperTotality
 public import SubtreeProofs.Rust.SourceRecursiveBudget
 
 public import SubtreeProofs.Rust.SourceChoicePermissions
+
+public import SubtreeProofs.Rust.SourceScrutineeTotality

@@ -2,15 +2,16 @@
 
 Branch: `Droschinsky-algos`.
 
-[Forward storage, drop and cleanup permissions](lean-complexity-campaign/evidence/memo-evaluator-forward-permissions.md) now construct actual
-runs from complete owner resources and independent live-loan/root permissions.
-Read inventories partition into owners/loans/stack roots, and scans are canonical.
-Fresh roots and preserved callers derive loan bounds; the pinned choice's closed
-local types eliminate its active loans. Forward assignments/moves/returns,
-complete interpreted execution and all other planning obligations remain open.
-The 4,005-job build and affected lifecycle consumer pass. The 1,333-endpoint audit
-includes 44 new theorems with only the accepted axiom baseline. Ten selected
-statement seeds cover 958 unique declarations with no unknown references.
+[Forward assignments, moves and return extraction](lean-complexity-campaign/evidence/memo-evaluator-forward-operations.md) now construct
+actual stores (including references), one-pass assignments, selected owned move
+permissions, returns and switch inspection. Independent local source steps and
+semantic loan/root facts remain explicit; post-RHS frames and owner inventories
+are derived. Together with forward storage/drop/cleanup, these are the local
+contracts for constructing the whole pinned choice and recursive evaluator.
+Whole-function scope/loan discharge and all other planning obligations remain
+open. The 4,010-job build and two affected consumers pass. The 1,356-endpoint audit
+includes 23 new theorems with only the accepted axiom baseline. Eight selected
+statement seeds cover 414 unique declarations with no unknown references.
 
 [Stable recursive fuel and readback budgets](lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
 completed actual run's exact world/packet/full cost at all larger bounds.
@@ -52,6 +53,16 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Derived.{store_complete,store_total,assign_complete,assign_total}`: arbitrary
+  readable packet stores and one-pass RHS/assignment construction, including
+  shared references, with derived intermediate frames and complete ownership.
+- `Partial.Addressed.Rep.take_locate_root`, `Activation.move_route` and
+  `Addressed.{allowed_local_from_loans,move_allowed_from_loans}`: actual selected
+  move roots are local stack roots or owned Boxes; guards reduce to shared loans.
+- `Derived.{returnValue_total,scrutinee_total}`: actual output extraction and
+  retained-tag/boolean inspection, with exact source return costs and complete
+  owner resources. Local source materialization/RHS/scrutinee steps and semantic
+  move/loan permissions remain explicit, not complete parent executions.
 - `ResourceRep.read_partition`, `ResourceRep.trace`, `Callers.{scan,unique}`:
   complete read/owner/loan occurrences and canonical actual inventories.
 - `Storage.initialActivation_rootsSeparate`, `Activation.partition_owner_frame`,
@@ -505,11 +516,15 @@ See the latest evidence report for reproduction and scope.
    closed-output cleanup now derive actual checks from owner/class invariants,
    separate roots and semantic loan permissions. Canonical scans, preserved old
    caller read bounds and closed partial types discharge those loan facts in
-   supported cases; all six actual choice local types are closed. Next construct
-   forward stores/assignments, selected move routes/scrutinees/return packets,
-   scope/control and whole-function success for legal native inputs/warm tables.
-   Discharge the evaluator's actual reference-local loan permissions rather than
-   treating its locals as closed. Reuse exact helper growth, global recursive
+   supported cases; all six actual choice local types are closed. Forward
+   stores/assignments (including references), selected owned moves, scrutinees
+   and returns are now constructed from independent local source facts and
+   semantic permissions, with derived post-RHS resources. Next construct whole
+   pinned choice execution/entry/cleanup, maintaining fresh roots/scope, old
+   caller reads and the relation between current owners and legal owned inputs.
+   Then compose actual calls and source-path permissions through the recursive
+   evaluator/public maximum on legal native inputs/warm tables. Discharge the
+   evaluator's reference-local loans rather than treating its locals as closed. Reuse exact helper growth, global recursive
    owner resources, computed loan coverage, certified reference views, independent
    typing, protected caller bytes and actual entry/closure. Do not assume the
    desired parent source/native execution to establish permissions. Preserve

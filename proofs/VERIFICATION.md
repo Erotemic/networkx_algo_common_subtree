@@ -462,15 +462,16 @@ pass; 19 new theorems bring the accepted-baseline audit to 1,289 endpoints.
 Eight selected statement seeds cover 1,070 unique declarations with no unknown
 references. Broader regression evidence is inherited from the preceding commits.
 
-[Forward storage, drop and cleanup permissions](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-forward-permissions.md) now construct actual
-runs from complete owner resources and independent live-loan/root permissions.
-Read inventories partition into owners/loans/stack roots, and scans are canonical.
-Fresh roots and preserved callers derive loan bounds; the pinned choice's closed
-local types eliminate its active loans. Forward assignments/moves/returns,
-complete interpreted execution and all other planning obligations remain open.
-The 4,005-job build and affected lifecycle consumer pass. The 1,333-endpoint audit
-includes 44 new theorems with only the accepted axiom baseline. Ten selected
-statement seeds cover 958 unique declarations with no unknown references.
+[Forward assignments, moves and return extraction](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-forward-operations.md) now construct
+actual stores (including references), one-pass assignments, selected owned move
+permissions, returns and switch inspection. Independent local source steps and
+semantic loan/root facts remain explicit; post-RHS frames and owner inventories
+are derived. Together with forward storage/drop/cleanup, these are the local
+contracts for constructing the whole pinned choice and recursive evaluator.
+Whole-function scope/loan discharge and all other planning obligations remain
+open. The 4,010-job build and two affected consumers pass. The 1,356-endpoint audit
+includes 23 new theorems with only the accepted axiom baseline. Eight selected
+statement seeds cover 414 unique declarations with no unknown references.
 
 ## VM caches
 

@@ -1,3 +1,4 @@
+import SubtreeProofs.Rust.SourceAssignmentTotality
 import SubtreeProofs.Rust.SourceEvalAddressedCompleteness
 
 namespace SourceAddressedExpressionTests
@@ -184,5 +185,101 @@ example (call : SourceEval.Calls) : ∃ (cell : Cell) (value : Value) (middle : 
 
 example : Frame (world.write 4 (.shared ⟨2, [1]⟩)) 20 callerRoots caller [1, 5] :=
   caller_frame.write (address := 4) (by simp) _
+
+-- Forward assignment derives its actual context and permits shared aliases.
+private def activation : Activation := ⟨10, 4, roots, state⟩
+private def suspendedCaller : Activation := ⟨20, 1, callerRoots, caller⟩
+private theorem activation_valid : activation.Valid world :=
+  ⟨by intro slot hs; change 4 ≤ slot at hs; simp [activation, roots, show ¬ slot < 4 by omega], _, frame⟩
+private theorem suspended_valid : suspendedCaller.Valid world :=
+  ⟨by intro slot hs; change 1 ≤ slot at hs; simp [suspendedCaller, callerRoots, show slot ≠ 0 by omega], _, caller_frame⟩
+private theorem caller_resources : Callers world [suspendedCaller] ⟨[1, 5], [], [1]⟩ :=
+  scanCallers_spec (by simpa using suspended_valid) (by decide +kernel)
+private theorem roots_separate : activation.RootsSeparate [suspendedCaller] := by
+  intro slot binding hb current hm other target ht equality
+  have same : current = suspendedCaller := by simpa only [List.mem_singleton] using hm
+  subst current
+  obtain ⟨_, _, _, first, _, _⟩ := frame.get hb
+  obtain ⟨_, _, _, second, _, _⟩ := caller_frame.get ht
+  rw [equality] at first
+  cases first.symm.trans second
+private theorem global_frame : OwnerFrame world
+    (activation.owners world ++ (callerOwners world [suspendedCaller] ++ [])) := by
+  rw [show activation.owners world ++ (callerOwners world [suspendedCaller] ++ []) = [0] by decide +kernel]
+  refine ⟨by decide +kernel, ?_, ?_⟩
+  · intro a ha; have zero := List.mem_singleton.mp ha; subst a; rfl
+  · intro a ha; have zero := List.mem_singleton.mp ha; subst a; rfl
+private theorem global_coverage : BoxCoverage world
+    (activation.owners world ++ (callerOwners world [suspendedCaller] ++ [])) := by
+  rw [show activation.owners world ++ (callerOwners world [suspendedCaller] ++ []) = [0] by decide +kernel]
+  intro a hc _
+  by_cases hz : a = 0
+  · simp [hz]
+  · simp only [world, hz, ite_false] at hc
+    split_ifs at hc <;> cases hc
+private theorem root_permission : SourceEval.Addressed.Derived.RootLoansAllowed world activation [suspendedCaller] 3 ⟨4, 0⟩ := by
+  intro remainder suspended inventory callers forbidden
+  have actual : activation.scanExcept world 3 = some (⟨[1, 0, 2, 2, 3], [0], [2]⟩ : Resources) := by decide +kernel
+  have first := Option.some.inj (inventory.inspect.symm.trans actual)
+  have second := callers.unique caller_resources
+  cases first
+  cases second
+  simp at forbidden
+private theorem reborrow_any (guarded : List Nat) : SourceEval.Addressed.expression world roots guarded state reborrow =
+    some ((.shared ⟨2, [1]⟩, .reference (.number 9)), state) := by
+  simpa only [reborrow, SourceEval.Addressed.expression] using borrowed
+private theorem payload_permission : SourceEval.Addressed.Derived.PacketLoansAvoid world
+    (.shared ⟨2, [1]⟩, .reference (.number 9)) 4 := by
+  intro loans footprint member
+  simp only [Slot.ofValue] at footprint
+  cases footprint with
+  | shared graph =>
+    have actual : Graph world.memory (.shared ⟨2, [1]⟩) (.reference (.number 9)) [2] := .shared rfl (.number 9)
+    rw [graph.guards_unique actual] at member
+    simp at member
+
+example : ∃ cell, SourceEval.Addressed.Derived.assign world activation [suspendedCaller] 3 reborrow =
+      some (world.write 4 cell, {activation with state := state.set 3 (Slot.ofValue (.reference (.number 9)))}) ∧
+    SourceEval.Addressed.Derived.Step world activation [suspendedCaller] (.assign 3 reborrow) (world.write 4 cell)
+      {activation with state := state.set 3 (Slot.ofValue (.reference (.number 9)))}
+      (SourceEval.Cost.local (SourceEval.Action.assign 3 reborrow).weight) ∧
+    OwnerFrame (world.write 4 cell)
+      (({activation with state := state.set 3 (Slot.ofValue (.reference (.number 9)))} : Activation).owners (world.write 4 cell) ++
+        (callerOwners (world.write 4 cell) [suspendedCaller] ++ [])) ∧
+    BoxCoverage (world.write 4 cell)
+      (({activation with state := state.set 3 (Slot.ofValue (.reference (.number 9)))} : Activation).owners (world.write 4 cell) ++
+        (callerOwners (world.write 4 cell) [suspendedCaller] ++ [])) := by
+  apply SourceEval.Addressed.Derived.assign_total (slot := 3) (binding := ⟨4, 0⟩)
+    (value := .reference (.number 9)) (middle := state) activation_valid (by simpa using suspended_valid) well_formed
+    roots_separate global_frame global_coverage (by rfl) (SourceEval.Addressed.expression_readable frame borrowed).1 (by rfl)
+  · intro current suspended _ _; trivial
+  · exact root_permission
+  · intro current suspended _ _ packet masks run
+    change SourceEval.Addressed.expression world roots (current.loans ++ suspended.reads) state reborrow = some (packet, masks) at run
+    rw [reborrow_any] at run
+    obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Option.some.inj run)
+    exact payload_permission
+
+-- The selected owned payload root is unborrowed even though an inline sibling
+-- and the caller's scalar have live shared aliases.
+example : SourceEval.Addressed.Allowed world roots ([2] ++ [1, 5]) (.move payload) := by
+  apply SourceEval.Addressed.move_allowed_from_loans (current := ⟨[], [], [2]⟩)
+    activation_valid roots_separate global_frame caller_resources source_move
+  intro cell target located
+  have actual : Storage.locate world roots payload = some (.number 7, ⟨0, []⟩) := rfl
+  change Storage.locate world roots payload = some (cell, target) at located
+  rw [actual] at located
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Option.some.inj located)
+  decide +kernel
+
+-- A shared packet that points back into its destination fails the independent
+-- loan condition, even though it carries no Box owners.
+example : ¬ SourceEval.Addressed.Derived.PacketLoansAvoid world
+    (.shared ⟨4, []⟩, .reference (.node .tuple 0 [])) 4 := by
+  intro allowed
+  have represented : BorrowFootprint world.memory (.shared ⟨4, []⟩) (Slot.ofValue (.reference (.node .tuple 0 []))) [4] := by
+    simpa only [Slot.ofValue] using
+      (BorrowFootprint.shared (.shared rfl (.node .nil)) : BorrowFootprint world.memory (.shared ⟨4, []⟩) (.shared (.node .tuple 0 [])) [4])
+  exact allowed [4] represented (by simp)
 
 end SourceAddressedExpressionTests
