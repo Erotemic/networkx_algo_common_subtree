@@ -1,6 +1,7 @@
 module
 
 public import SubtreeProofs.Rust.SourceEvaluatorLookupRetirement
+public import SubtreeProofs.Rust.SourceQueryCallPreservation
 
 /-! Construct lookup and retirement together, recovering the independent native
 lookup answer from the existing source theorem at sufficient fuel. All moves,
@@ -32,6 +33,7 @@ theorem lookup_continuation_complete {before world : World} {active : Activation
       (∀ other target, other ≠ 4 → active.roots other = some target → ∀ cell,
         world.memory[target.address]? = some cell → final.memory[target.address]? = some cell) ∧
       (∀ index, index ∉ [4, 5, 7, 8] → active.state index = .empty → after.state index = .empty) ∧
+      (QueryOrigins world active before.memory.length → QueryOrigins final after before.memory.length) ∧
       ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
         Calling.Prefix (Recursive.original budget fuel) callers lookupSwitch
           (.call .lookup lookupArgs 4 :: lookupRetire) world active final after := by
@@ -87,13 +89,13 @@ theorem lookup_continuation_complete {before world : World} {active : Activation
   have tableRead := (keeps 5 tableView (by decide) tableBinding).reads _ (by simp) _ tableMemory
   have leftRead := (keeps 7 leftView (by decide) leftBinding).reads _ (by simp) _ leftMemory
   have rightRead := (keeps 8 rightView (by decide) rightBinding).reads _ (by simp) _ rightMemory
-  obtain ⟨final, after, retire, finalMachine, finalInputs, finalRoots, finalCount, finalValue, finalMemory, finalEmpty⟩ :=
+  obtain ⟨final, after, retire, finalMachine, finalInputs, finalRoots, finalCount, finalValue, finalMemory, finalEmpty, retireQueries⟩ :=
     retire_lookup_complete resultMachine (Helpers.callee 0 0) left right table resultInputs tableRoot leftRoot rightRoot
       tableRead leftRead rightRead
       (by rw [resultState]; simp [Partial.Locals.set])
       (by rw [resultState]; simp [Partial.Locals.set])
       (by rw [resultState]; simp [Partial.Locals.set])
-  refine ⟨sufficient, minBudget, final, after, finalMachine, finalInputs, ?_, finalCount.trans count, ?_, ?_, ?_, ?_⟩
+  refine ⟨sufficient, minBudget, final, after, finalMachine, finalInputs, ?_, finalCount.trans count, ?_, ?_, ?_, ?_, ?_⟩
   · rw [finalRoots, roots]; rfl
   · rw [finalValue, resultState]; simp only [Partial.Locals.set, ite_true]
   · intro other target different hb cell memory
@@ -108,6 +110,30 @@ theorem lookup_continuation_complete {before world : World} {active : Activation
     rw [resultState]
     simp only [Partial.Locals.set, four, five, seven, eight, ite_false]
     exact LoanEnding.forget_empty _ _ empty
+  · intro queries
+    have atResult : QueryOrigins returned result before.memory.length := by
+      intro index member
+      obtain ⟨r, represented, bound⟩ := (queries.prepare lookupSuffix) index member
+      have four : index ≠ 4 := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; rcases member with rfl | rfl <;> decide
+      have maskSame : (((observed.state.set 5 .empty).set 7 .empty).set 8 .empty) index = observed.state index := by
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+        rcases member with rfl | rfl <;> simp [Partial.Locals.set]
+      have eightBound : 8 < active.count := by
+        by_contra no
+        have noneRoot := h.valid.1 8 (by omega)
+        rw [rightBinding] at noneRoot
+        cases noneRoot
+      have indexBound : index < observed.count := by
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+        rcases member with rfl | rfl <;> change _ < active.count <;> omega
+      have kept := Derived.call_preserves_other_local (Recursive.original_typed_respects minBudget sufficient)
+        machine.valid machine.callersValid machine.wellFormed .lookup lookupArgs 4 ready arguments maskSame four indexBound represented execute
+      refine ⟨r, ?_, bound⟩
+      rw [callSpec.2.1]
+      apply (represented.transport kept).congr_at (congrFun roots index)
+      rw [resultState]
+      simpa only [Partial.Locals.set, four, ite_false] using maskSame
+    exact retireQueries atResult
   · intro fuel budget fuelBound budgetBound
     have tail := retire.noncall_callee (Recursive.original budget fuel) (by decide +kernel)
     exact .cons (Calling.instruction_call_run (stable fuel budget ((Nat.le_max_left _ _).trans fuelBound) budgetBound).1) tail

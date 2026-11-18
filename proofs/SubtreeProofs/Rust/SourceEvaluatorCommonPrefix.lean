@@ -44,14 +44,15 @@ theorem common_prefix_complete {before world : World} {active : Activation} {cal
     (unbound : ∀ slot ∈ [0, 4, 5, 6, 7, 8], active.roots slot = none) :
     ∃ minimumFuel minimumBudget final after,
       LoanSafeMachine before callers previous external final after ∧ LookupScope active left right table final after ∧
+      (QueryOrigins world active before.memory.length → QueryOrigins final after before.memory.length) ∧
       ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
         Calling.Prefix (Recursive.original budget fuel) callers lookupSwitch commonPrefix world active final after := by
   obtain ⟨middle, current, resultRoot, tableView, leftView, rightView, steps, machine, native, countEq,
     resultBinding, tableBinding, leftBinding, rightBinding, destination, empty, tableValue, leftValue, rightValue,
-    sixEmpty, sixStorage, returnStorage, otherRoots, returnEmpty⟩ :=
+    sixEmpty, sixStorage, returnStorage, otherRoots, returnEmpty, beforeQueries⟩ :=
     borrow_prefix_complete h (Helpers.callee 0 0) count left right table inputs unbound
   obtain ⟨minFuel, minBudget, final, after, finalMachine, finalInputs, finalRoots, finalCount, finalValue,
-    memoryKept, emptyKept, tail⟩ := lookup_continuation_complete machine left right table native
+    memoryKept, emptyKept, afterQueries, tail⟩ := lookup_continuation_complete machine left right table native
       resultBinding tableBinding leftBinding rightBinding destination empty tableValue leftValue rightValue
   have scope : LookupScope active left right table final after := by
     refine ⟨finalInputs, finalCount.trans countEq, finalValue, ?_, ?_, emptyKept 0 (by decide) returnEmpty, ?_, emptyKept 6 (by decide) sixEmpty, ?_, ?_⟩
@@ -68,7 +69,7 @@ theorem common_prefix_complete {before world : World} {active : Activation} {cal
       have seven : slot ≠ 7 := by intro same; subst slot; simp at member
       have eight : slot ≠ 8 := by intro same; subst slot; simp at member
       simpa only [finalRoots, Roots.set, five, seven, eight, ite_false] using otherRoots slot member
-  refine ⟨minFuel, minBudget, final, after, finalMachine, scope, ?_⟩
+  refine ⟨minFuel, minBudget, final, after, finalMachine, scope, fun queries => afterQueries (beforeQueries queries), ?_⟩
   intro fuel budget fuelBound budgetBound
   exact (steps.noncall_callee (Recursive.original budget fuel) (by decide +kernel)).append
     (tail fuel budget fuelBound budgetBound)

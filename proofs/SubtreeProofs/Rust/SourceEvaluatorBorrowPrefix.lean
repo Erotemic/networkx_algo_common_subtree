@@ -28,16 +28,17 @@ theorem borrow_prefix_complete {before world : World} {active : Activation} {cal
       after.state 8 = .shared (encodeWord right) ∧ after.state 6 = .empty ∧
       (∃ secondView pointer, after.roots 6 = some secondView ∧ final.memory[secondView.address]? = some (.shared pointer)) ∧
       (∃ returnRoot, after.roots 0 = some returnRoot ∧ final.memory[returnRoot.address]? = some (.node .tuple 0 [])) ∧
-      (∀ index, index ∉ [0, 4, 5, 6, 7, 8] → after.roots index = active.roots index) ∧ after.state 0 = .empty := by
+      (∀ index, index ∉ [0, 4, 5, 6, 7, 8] → after.roots index = active.roots index) ∧ after.state 0 = .empty ∧
+      (QueryOrigins world active before.memory.length → QueryOrigins final after before.memory.length) := by
   obtain ⟨openedWorld, opened, returnRoot, resultRoot, firstView, secondView, storage, openedMachine, openedInputs,
     openedCount, returnBinding, resultBinding, firstBinding, secondBinding, resultMemory, firstMemory, secondMemory,
-    resultEmpty, firstEmpty, secondEmpty, seven, eight, returnMemory, openedOther, returnEmpty⟩ := storage_prefix_complete h callee count left right table inputs unbound
-  obtain ⟨tableWorld, tables, tableSteps, tableMachine, tableInputs, tableRoots, tableCount, tableEmpty, tableValue, tableMemory, tableSix, tableSixMemory, tableOther, tableEmptyOther⟩ :=
+    resultEmpty, firstEmpty, secondEmpty, seven, eight, returnMemory, openedOther, returnEmpty, openedQueries⟩ := storage_prefix_complete h callee count left right table inputs unbound
+  obtain ⟨tableWorld, tables, tableSteps, tableMachine, tableInputs, tableRoots, tableCount, tableEmpty, tableValue, tableMemory, tableSix, tableSixMemory, tableOther, tableEmptyOther, tableQueries⟩ :=
     table_views_complete openedMachine callee left right table openedInputs resultBinding firstBinding secondBinding
       resultMemory firstMemory secondMemory resultEmpty firstEmpty secondEmpty
   have tableResult : tables.roots 4 = some resultRoot := by rw [tableRoots]; exact resultBinding
   have tableFirst : tables.roots 5 = some firstView := by rw [tableRoots]; exact firstBinding
-  obtain ⟨leftWorld, leftState, leftSteps, leftMachine, leftRoots, leftCount, leftValue, leftKeep, leftEmpty, leftMemory, leftEnded⟩ :=
+  obtain ⟨leftWorld, leftState, leftSteps, leftMachine, leftRoots, leftCount, leftValue, leftKeep, leftEmpty, leftMemory, leftEnded, leftQueries⟩ :=
     query_view_complete tableMachine callee (borrowCode 8) 7 1 left tableInputs.left
       (by rw [tableCount, openedCount]; omega) (by rw [tableRoots]; exact seven)
   have leftInputs : InputLocals left right table leftState.state := by
@@ -53,7 +54,7 @@ theorem borrow_prefix_complete {before world : World} {active : Activation} {cal
   have leftResultMemory := leftMemory 4 resultRoot tableResult _ tableMemory
   have leftTable : leftState.state 5 = .shared (encodeTable table) :=
     (leftKeep 5 (by decide) (by decide +kernel) (by decide +kernel)).trans tableValue
-  obtain ⟨final, after, rightSteps, finalMachine, finalRoots, finalCount, rightValue, rightKeep, rightEmpty, rightMemory, rightEnded⟩ :=
+  obtain ⟨final, after, rightSteps, finalMachine, finalRoots, finalCount, rightValue, rightKeep, rightEmpty, rightMemory, rightEnded, rightQueries⟩ :=
     query_view_complete leftMachine callee lookupSuffix 8 2 right leftInputs.right
       (by rw [leftCount, tableCount, openedCount]; omega)
       (by rw [leftRoots]; simpa only [Roots.set] using tableRoots ▸ eight)
@@ -90,7 +91,7 @@ theorem borrow_prefix_complete {before world : World} {active : Activation} {cal
   refine ⟨final, after, resultRoot, firstView, ⟨tableWorld.memory.length, tableWorld.memory.length⟩,
     ⟨leftWorld.memory.length, leftWorld.memory.length⟩, whole, finalMachine, finalInputs,
     finalCount.trans (leftCount.trans (tableCount.trans openedCount)), finalResult, finalFirst, finalLeft, finalRight,
-    finalMemory, finalEmpty, finalTable, finalWord, rightValue, finalSix, ⟨secondView, secondPointer, finalSecond, finalSecondMemory⟩, ?_, ?_, ?_⟩
+    finalMemory, finalEmpty, finalTable, finalWord, rightValue, finalSix, ⟨secondView, secondPointer, finalSecond, finalSecondMemory⟩, ?_, ?_, ?_, ?_⟩
   · have tableZero : tables.roots 0 = some returnRoot := by rw [tableRoots]; exact returnBinding
     have leftZero : leftState.roots 0 = some returnRoot := by simpa [leftRoots, Roots.set] using tableZero
     have finalZero : after.roots 0 = some returnRoot := by simpa [finalRoots, Roots.set] using leftZero
@@ -107,5 +108,9 @@ theorem borrow_prefix_complete {before world : World} {active : Activation} {cal
     exact openedOther index (by simp [zero, four, five, six])
   · exact rightEmpty 0 (by decide) (leftEmpty 0 (by decide)
       (tableEmptyOther 0 (by decide) (by decide) returnEmpty))
+  · intro queries
+    have atTable := tableQueries (openedQueries queries)
+    have atLeft := leftQueries tableInputs.references atTable (by decide)
+    exact rightQueries leftInputs.references atLeft (by decide)
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

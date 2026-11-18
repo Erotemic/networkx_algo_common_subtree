@@ -29,7 +29,8 @@ theorem storage_prefix_complete {before world : World} {active : Activation} {ca
       after.state 4 = .empty ∧ after.state 5 = .empty ∧ after.state 6 = .empty ∧
       after.roots 7 = none ∧ after.roots 8 = none ∧
       final.memory[returnRoot.address]? = some (.node .tuple 0 []) ∧
-      (∀ index, index ∉ [0, 4, 5, 6] → after.roots index = active.roots index) ∧ after.state 0 = .empty := by
+      (∀ index, index ∉ [0, 4, 5, 6] → after.roots index = active.roots index) ∧ after.state 0 = .empty ∧
+      (QueryOrigins world active before.memory.length → QueryOrigins final after before.memory.length) := by
   let p0 := active.forgetRefs (borrowCode 0)
   have hp0 := h.prepare (borrowCode 0)
   have ip0 := inputs.prepare 0 (by decide)
@@ -88,7 +89,7 @@ theorem storage_prefix_complete {before world : World} {active : Activation} {ca
         (.cons (Calling.instruction_noncall_run (act := .storageLive 5) r5)
           (.cons (Calling.instruction_noncall_run (act := .storageLive 6) r6) (.nil _ _)))),
     h6, i6, rfl, ?_, ?_, ?_, ?_, read4, read5, (w5.allocate_spec _ _).2.1,
-    empty4, empty5, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    empty4, empty5, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · simp [a6, p6, a5, p5, a4, p4, a0, p0, Activation.forgetRefs, Roots.set]
   · simp [a6, p6, a5, p5, a4, p4, Roots.set, Activation.forgetRefs]
   · simp [a6, p6, a5, p5, Roots.set, Activation.forgetRefs]
@@ -110,5 +111,13 @@ theorem storage_prefix_complete {before world : World} {active : Activation} {ca
     simp only [a4, Partial.Locals.set, show (0 : Nat) ≠ 4 by decide, ite_false]
     apply LoanEnding.forget_empty
     simp only [a0, Partial.Locals.set, ite_true]
+  · intro queries
+    have q0 := (queries.prepare (borrowCode 0)).allocate hp0.wellFormed 0 (by decide)
+    change QueryOrigins w0 a0 before.memory.length at q0
+    have q4 := (q0.prepare (borrowCode 1)).allocate hp4.wellFormed 4 (by decide)
+    change QueryOrigins w4 a4 before.memory.length at q4
+    have q5 := (q4.prepare (borrowCode 2)).allocate hp5.wellFormed 5 (by decide)
+    change QueryOrigins w5 a5 before.memory.length at q5
+    exact (q5.prepare (borrowCode 3)).allocate hp6.wellFormed 6 (by decide)
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

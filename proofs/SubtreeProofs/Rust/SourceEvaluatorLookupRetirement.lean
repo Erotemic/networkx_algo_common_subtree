@@ -56,7 +56,8 @@ theorem retire_lookup_complete {before world : World} {active : Activation} {cal
       LoanSafeMachine before callers previous external final after ∧ InputLocals left right table after.state ∧
       after.roots = ((active.roots.set 8 none).set 7 none).set 5 none ∧ after.count = active.count ∧
       after.state 4 = active.state 4 ∧ final.memory = world.memory ∧
-      (∀ index, index ∉ [5, 7, 8] → active.state index = .empty → after.state index = .empty) := by
+      (∀ index, index ∉ [5, 7, 8] → active.state index = .empty → after.state index = .empty) ∧
+      (QueryOrigins world active before.memory.length → QueryOrigins final after before.memory.length) := by
   let p8 := active.forgetRefs (retireCode 0)
   have h8 := h.prepare (retireCode 0)
   have i8 := inputs.prepare_retire 0 (by decide)
@@ -98,7 +99,7 @@ theorem retire_lookup_complete {before world : World} {active : Activation} {cal
     .cons (Calling.instruction_noncall_run (act := .storageDead 8) r8)
       (.cons (Calling.instruction_noncall_run (act := .storageDead 7) r7)
         (.cons (Calling.instruction_noncall_run (act := .storageDead 5) r5) (.nil _ _))),
-    m5, i5.set 5 .empty (by simp), rfl, rfl, ?_, rfl, ?_⟩
+    m5, i5.set 5 .empty (by simp), rfl, rfl, ?_, rfl, ?_, ?_⟩
   · simp only [after, Partial.Locals.set, show (4 : Nat) ≠ 5 by decide, ite_false]
     rw [Activation.forgetRefs_observed a7 _ 4 (retire_observes 2 (by decide) 4 (by simp))]
     simp only [a7, Partial.Locals.set, show (4 : Nat) ≠ 7 by decide, ite_false]
@@ -115,5 +116,14 @@ theorem retire_lookup_complete {before world : World} {active : Activation} {cal
     apply LoanEnding.forget_empty
     simp only [a8, Partial.Locals.set, eight, ite_false]
     exact LoanEnding.forget_empty _ _ empty
+  · intro queries
+    have q8 := (queries.prepare (retireCode 0)).retire_other h8.valid i8.references rightBinding (by decide)
+      (h8.fresh 8 rightView rightBinding)
+    change QueryOrigins w8 a8 before.memory.length at q8
+    have q7 := (q8.prepare (retireCode 1)).retire_other h7.valid i7.references leftStill (by decide)
+      (h7.fresh 7 leftView leftStill)
+    change QueryOrigins w7 a7 before.memory.length at q7
+    exact (q7.prepare (retireCode 2)).retire_other h5.valid i5.references tableStill (by decide)
+      (h5.fresh 5 tableView tableStill)
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

@@ -311,3 +311,5 @@ public import SubtreeProofs.Rust.SourceChoiceCallTotality
 public import SubtreeProofs.Rust.SourceEvaluatorEntryPrefix
 
 public import SubtreeProofs.Rust.SourceEvaluatorCommonEntry
+
+public import SubtreeProofs.Rust.SourceCacheHitTotality

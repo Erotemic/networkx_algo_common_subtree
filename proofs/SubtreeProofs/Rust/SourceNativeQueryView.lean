@@ -33,7 +33,9 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
         world.memory[binding.address]? = some cell → final.memory[binding.address]? = some cell) ∧
       (∀ index value, index ≠ destination → index < active.count → active.state index = .shared value →
         LoanEnding.endsBeforeObservation index (.step (.storageLive destination)
-          (.step (.assign destination (.address (.deref (.local query)))) suffix)) = true → after.state index = .empty) := by
+          (.step (.assign destination (.address (.deref (.local query)))) suffix)) = true → after.state index = .empty) ∧
+      (ReferenceQueries active.state → QueryOrigins world active before.memory.length → destination ∉ [1, 2] →
+        QueryOrigins final after before.memory.length) := by
   let next : Code := .step (.assign destination (.address (.deref (.local query)))) suffix
   let code : Code := .step (.storageLive destination) next
   have different : query ≠ destination := by
@@ -77,7 +79,7 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
   refine ⟨final, after,
     .cons (Calling.instruction_noncall_run (act := .storageLive destination) openedRun)
       (.cons (Calling.instruction_noncall_run (act := .assign destination (.address (.deref (.local query)))) assigned) (.nil _ _)),
-    finalMachine, rfl, rfl, ?_, ?_, ?_, ?_, ?_⟩
+    finalMachine, rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · simp only [after, Partial.Locals.set, ite_true, Slot.ofValue]
   · intro index different firstObserved secondObserved
     simp only [after, Partial.Locals.set, different, ite_false]
@@ -101,5 +103,14 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
     apply LoanEnding.forget_empty
     simp only [opened, Partial.Locals.set, different, ite_false]
     exact LoanEnding.forget_ended_shared code (List.range active.count) (List.mem_range.mpr bound) shared ended
+  · intro refs queries different
+    have qOpened := (queries.prepare code).allocate firstMachine.wellFormed destination different
+    change QueryOrigins openedWorld opened before.memory.length at qOpened
+    have firstRefs : ReferenceQueries first.state := refs.prepare code _
+    have openedRefs : ReferenceQueries opened.state := firstRefs.set_other destination different .empty
+    have preparedRefs : ReferenceQueries prepared.state := openedRefs.prepare next _
+    have qAfter := (qOpened.prepare next).write_other preparedMachine.valid preparedRefs destinationBinding different
+      (preparedMachine.fresh destination _ destinationBinding) cell
+    exact qAfter.set_other destination different (Slot.ofValue (.reference (encodeWord word)))
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

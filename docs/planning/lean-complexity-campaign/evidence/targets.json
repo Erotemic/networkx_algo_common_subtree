@@ -1231,6 +1231,38 @@
           "broader_regression": "Eight recursive runtime cases freshly rerun. Full 47-suite/native-WP/nine-Python at d49f638 and thirteen ordered Rust tests at 823df34; not rerun."
         },
         "next": "Construct cache-hit branch and return/closure from checked native scope, then empty-query insertion/return and all pair/pair recursion/overflow/failure paths. Derive remaining selected root/owner-transfer loans from actual query origins, copy freshness, closed masks and last use while preserving permitted aliases; compose stable sufficient budgets. Complete dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target."
+      },
+      "evaluator_cache_hit_totality_followup": {
+        "baseline_commit": "e5e229d",
+        "evidence": "memo-evaluator-cache-hit-totality.md",
+        "status": "Constructed whole actual parsed evaluator cache-hit invocation from independent native readable packets, actual callers and complete input/caller/external ownership. Derived pre-entry query-loan origins persist through the fourteen common instructions; selected fresh stack-root permissions permit query/table/caller shared aliases. All twenty hit actions, return extraction and checked closure execute. Fixed sufficient fuel/readback bounds retain one final native output packet/world/full hit cost at every larger pair; native table unchanged, complete output ownership and live-Box coverage. No cache-soundness, all-owner/all-loan separation, expected physical output or successful-run premise. Other evaluator paths and all remaining planning obligations stay open; no C3 closure.",
+        "endpoint": "SubtreeProofs.Rust.SourceEval.Evaluator.cache_hit_total",
+        "validation": {
+          "library_jobs": 4061,
+          "affected_lean_suites": [
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "new_theorems": 79,
+          "audited_endpoints": 1559,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 1326,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumer": "Whole actual cache-hit invocation where both query pointers select inline words in the same Box owned by the input table. Native output, complete owner resources and stable world/packet/full cost follow without transfer-disjointness or successful-run hypotheses. Existing warm-prefix/cold-suspended-caller consumers remain checked.",
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Five affected Lean suites, all eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
+        },
+        "next": "Construct empty-query miss insertion/return from the checked common native scope, then all pair/pair recursion/overflow/failure paths with finite stable sufficient budgets. Derive remaining source-point scope, masks and selected physical/owner-transfer permissions while preserving allowed query/table/caller aliases. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1408,7 +1440,7 @@
   ],
   "executed_followup": "executed-g0-w02.json",
   "current_backend_decision": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "evidence": "g1-backend-decision.md",
     "selected": "native Std.WP over the existing deterministic operational interpreter",
     "scope": "C2 route-selection decision; no generic/application target closure",
@@ -1419,7 +1451,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 actual parsed native evaluator entry and all fourteen common instructions through lookup/result storage and temporary retirement are constructed with the independent native lookup answer and checked LookupScope; actual hit/miss inspection/routing also checks. Next construct cache-hit and empty-query branch bodies, then all pair/pair recursion/overflow/failure paths and return/closure. Derive remaining selected source-point/transfer loans from query origins, copy freshness and closed masks; compose stable sufficient budgets while preserving allowed aliases and complete ownership. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. No full SRC-01/C3 or production resource closure."
+      "W06-C3 actual parsed evaluator cache-hit totality is constructed through native entry, lookup, all twenty branch actions, return and checked closure, with fixed stable sufficient budgets, exact full cost and complete ownership. Construct empty-query miss insertion/return from the checked common native scope, then all pair/pair recursion/overflow/failure paths with finite stable sufficient budgets. Derive remaining source-point scope, masks and selected physical/owner-transfer permissions while preserving allowed query/table/caller aliases. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

@@ -52,21 +52,22 @@ theorem entry_common_prefix_complete {world : World} {callers : List Activation}
       active.state = initialState [.reference (encodeWord left), .reference (encodeWord right), encodeTable table] ∧
       active.count = 113 ∧ (∀ slot, slot ∉ [1, 2, 3] → active.roots slot = none) ∧
       LoanSafeMachine world callers previous external final after ∧ LookupScope active left right table final after ∧
+      QueryOrigins final after world.memory.length ∧
       Derived.scrutinee final after callers (.discriminant (.local 4)) =
         some (lookupKey (LookupEvents.lookup table left right).1, after) ∧
       ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
         Calling.Prefix (Recursive.original budget fuel) callers lookupSwitch commonPrefix entered active final after := by
   dsimp only
-  obtain ⟨entered, active, entryRun, machine, state, count, unbound⟩ :=
+  obtain ⟨entered, active, entryRun, machine, state, count, unbound, origins⟩ :=
     native_entry_machine hw hc view left right table leftCell rightCell tableCell leftRead rightRead tableRead input frame covered
   have inputs : InputLocals left right table active.state := by rw [state]; exact initial_inputs left right table
-  obtain ⟨minFuel, minBudget, final, after, finalMachine, scope, stable⟩ := common_prefix_complete machine
+  obtain ⟨minFuel, minBudget, final, after, finalMachine, scope, preservedOrigins, stable⟩ := common_prefix_complete machine
     (by rw [count]; decide +kernel) left right table inputs (by
       intro slot member
       apply unbound
       simp only [List.mem_cons, List.not_mem_nil, or_false] at member
       rcases member with rfl | rfl | rfl | rfl | rfl | rfl <;> decide +kernel)
   exact ⟨entered, active, minFuel, minBudget, final, after, entryRun, state, count, unbound,
-    finalMachine, scope, (lookup_switch_native finalMachine left right table scope).1, stable⟩
+    finalMachine, scope, preservedOrigins origins, (lookup_switch_native finalMachine left right table scope).1, stable⟩
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

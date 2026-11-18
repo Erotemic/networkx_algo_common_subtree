@@ -138,7 +138,7 @@ theorem lookup_prefix_complete {before world : World} {active : Activation} {cal
         Calling.Prefix (Recursive.original budget fuel) callers afterLookup
           (borrowPrefix ++ [Action.call .lookup lookupArgs 4]) world active final after := by
   obtain ⟨middle, current, resultRoot, tableView, leftView, rightView, steps, machine, _, _,
-    resultBinding, tableBinding, leftBinding, rightBinding, destination, empty, tableValue, leftValue, rightValue, _, _, _, _, _⟩ :=
+    resultBinding, tableBinding, leftBinding, rightBinding, destination, empty, tableValue, leftValue, rightValue, _, _, _, _, _, _⟩ :=
     borrow_prefix_complete h (Helpers.callee 0 0) count left right table inputs unbound
   obtain ⟨minFuel, minBudget, final, after, cost, valid, wf, callersValid, frame, coverage, stable⟩ :=
     lookup_call_complete machine left right table resultBinding tableBinding leftBinding rightBinding

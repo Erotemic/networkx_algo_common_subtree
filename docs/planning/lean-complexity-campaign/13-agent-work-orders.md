@@ -86,6 +86,22 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
+[Complete actual evaluator cache-hit execution](evidence/memo-evaluator-cache-hit-totality.md) now
+constructs parsed entry, lookup, all twenty hit actions, return and checked closure
+from independent native readable packets and complete ownership. Query-loan
+origins derive selected fresh stack-root permissions while permitting queries
+inside table-owned Boxes. `Rust.SourceEval.Evaluator.cache_hit_total` returns the
+cached result and unchanged native table, complete output/caller/external owner
+resources, and one exact final world/packet/full cost at every larger fuel/readback
+pair. No cache soundness or successful physical run is assumed. The 4,061-job
+build and five affected suites pass, including eight recursive runtime cases and
+a whole-invocation table-alias consumer. All 1,559 audited endpoints use only the
+accepted axiom baseline; ten statement seeds cover 1,326 unique declarations with
+zero unknown references. Thirteen ordered Rust tests and nine Python frontend
+checks pass. Empty-query misses,
+pair/pair recursion/overflow/failure, public maximum, dynamic regions/destructors
+and the remaining planning targets stay open; the full goal remains active.
+
 [Complete common evaluator prefix and native lookup routing](evidence/memo-evaluator-common-prefix.md) now
 constructs actual parsed entry and all fourteen common instructions through
 lookup-temporary retirement, followed by actual native hit/miss inspection.

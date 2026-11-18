@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceEvaluatorCommonEntry
+import SubtreeProofs.Rust.SourceCacheHitTotality
 import SubtreeProofs.Rust.SourceChoiceCallTotality
 import SubtreeProofs.Rust.SourceEvalAddressedChoice
 
@@ -404,7 +404,7 @@ example : ∃ entered active minimumFuel minimumBudget final after,
       Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch
         SourceEval.Evaluator.commonPrefix entered active final after := by
   have resources := alias_resources
-  obtain ⟨entered, active, minFuel, minBudget, final, after, _, _, _, _, machine, scope, branch, stable⟩ :=
+  obtain ⟨entered, active, minFuel, minBudget, final, after, _, _, _, _, machine, scope, _, branch, stable⟩ :=
     SourceEval.Evaluator.entry_common_prefix_complete (by simp [World.WellFormed, aliasWorld])
       (by simp) Callers.nil .Empty .Empty aliasTable (.shared ⟨0, [0]⟩) (.shared ⟨0, [1]⟩) aliasTableCell
       (alias_readable (.shared ⟨0, [0]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
@@ -416,6 +416,30 @@ example : ∃ entered active minimumFuel minimumBudget final after,
     scope.retired 5 (by simp), scope.retired 7 (by simp), scope.retired 8 (by simp), ?_, stable⟩
   · simpa only [native] using scope.result
   · simpa only [native, SourceEval.Evaluator.lookupKey] using branch
+
+-- Whole parsed cache-hit invocation with both queries borrowing inline words
+-- in a table-owned Box. No transfer-disjointness or successful-run premise is
+-- available; complete output ownership and stable full costs follow from totality.
+example : ∃ (minimumFuel minimumBudget : Nat) (final : World) (packet : ValueCell) (lookupCost : Cost),
+    packet.2 = SourceEval.Evaluator.encodeOutput (some ⟨.Empty, 0#u32⟩) aliasTable ∧
+    lookupCost.events = (LookupEvents.lookup aliasTable .Empty .Empty).2 ∧
+    Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧
+    (∃ output, Footprint final.memory packet.1 output ∧
+      OwnerFrame final (output ++ (callerOwners final [] ++ [])) ∧
+      BoxCoverage final (output ++ (callerOwners final [] ++ []))) ∧
+    ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+      Recursive.original budget fuel aliasWorld [] [] .evaluate aliasPackets =
+        some (final, packet, SourceEval.Evaluator.hitRunCost lookupCost) := by
+  have resources := alias_resources
+  obtain ⟨minFuel, minBudget, final, packet, lookupCost, value, events, _, readable, wellFormed, _, owned, stable⟩ :=
+    SourceEval.Evaluator.cache_hit_total (by simp [World.WellFormed, aliasWorld])
+      (by simp) Callers.nil .Empty .Empty aliasTable (.shared ⟨0, [0]⟩) (.shared ⟨0, [1]⟩) aliasTableCell
+      (alias_readable (.shared ⟨0, [0]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      (alias_readable (.shared ⟨0, [1]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      (alias_readable (aliasTableCell, encodeTable aliasTable) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      resources.1 resources.2.1 resources.2.2 (guards := []) (by simp) ⟨.Empty, 0#u32⟩
+      (by simp [aliasTable, MemoizedOrderedSolver.findResult])
+  exact ⟨minFuel, minBudget, final, packet, lookupCost, value, events, readable, wellFormed, owned, stable⟩
 
 -- Cold lookup with both query references borrowing the same actual suspended
 -- caller root exercises the miss route and preservation across all retirements.
@@ -459,7 +483,7 @@ example : ∃ previous entered active minimumFuel minimumBudget final after,
     ⟨[0], .shared rfl (.node .nil), by simp [AliveOn, coldWorld, World.stackCells, base, coldWordPackets]⟩
   have tableRead : Readable coldWorld.memory coldWorld.live (.node .table 0 []) (encodeTable .Empty) :=
     ⟨[], .node .nil, by simp [AliveOn]⟩
-  obtain ⟨entered, active, minFuel, minBudget, final, after, _, _, _, _, machine, scope, branch, stable⟩ :=
+  obtain ⟨entered, active, minFuel, minBudget, final, after, _, _, _, _, machine, scope, _, branch, stable⟩ :=
     SourceEval.Evaluator.entry_common_prefix_complete (well_formed.stackCells _ _) callersValid callerView
       .Empty .Empty .Empty (.shared ⟨0, []⟩) (.shared ⟨0, []⟩) (.node .table 0 []) queryRead queryRead tableRead
       (owners := []) (.cons (.shared _) (.cons (.shared _) (.cons (.node .nil) .nil))) frame coverage

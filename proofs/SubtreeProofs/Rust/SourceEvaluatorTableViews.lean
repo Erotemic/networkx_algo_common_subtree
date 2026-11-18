@@ -34,7 +34,8 @@ theorem table_views_complete {before world : World} {active : Activation} {calle
       (∃ pointer, final.memory[secondView.address]? = some (.shared pointer)) ∧
       (∀ index binding, index ≠ 5 → index ≠ 6 → active.roots index = some binding → ∀ cell,
         world.memory[binding.address]? = some cell → final.memory[binding.address]? = some cell) ∧
-      (∀ index, index ≠ 5 → index ≠ 6 → active.state index = .empty → after.state index = .empty) := by
+      (∀ index, index ≠ 5 → index ≠ 6 → active.state index = .empty → after.state index = .empty) ∧
+      (QueryOrigins world active before.memory.length → QueryOrigins final after before.memory.length) := by
   let p6 := active.forgetRefs (borrowCode 4)
   have hp6 := h.prepare (borrowCode 4)
   have ip6 := inputs.prepare 4 (by decide)
@@ -74,7 +75,7 @@ theorem table_views_complete {before world : World} {active : Activation} {calle
   refine ⟨final, after,
     .cons (Calling.instruction_noncall_run (act := .assign 6 (.address (.local 3))) r6)
       (.cons (Calling.instruction_noncall_run (act := .assign 5 (.address (.deref (.local 6)))) r5) (.nil _ _)),
-    h5, ip5.set 5 _ (by simp), rfl, rfl, ?_, ?_, finalRead, ?_, ?_, ?_, ?_⟩
+    h5, ip5.set 5 _ (by simp), rfl, rfl, ?_, ?_, finalRead, ?_, ?_, ?_, ?_, ?_⟩
   · simp only [after, Partial.Locals.set, show (4 : Nat) ≠ 5 by decide, ite_false]
     apply LoanEnding.forget_empty
     simp only [a6, Partial.Locals.set, show (4 : Nat) ≠ 6 by decide, ite_false]
@@ -91,5 +92,13 @@ theorem table_views_complete {before world : World} {active : Activation} {calle
     apply LoanEnding.forget_empty
     simp only [a6, Partial.Locals.set, six, ite_false]
     exact LoanEnding.forget_empty _ _ empty
+  · intro queries
+    have q6 := (queries.prepare (borrowCode 4)).write_other hp6.valid ip6.references secondBinding (by decide)
+      (hp6.fresh 6 secondView secondBinding) cell6
+    have qa6 := q6.set_other 6 (by decide) (Slot.ofValue (.reference (encodeTable table)))
+    change QueryOrigins w6 a6 before.memory.length at qa6
+    have q5 := (qa6.prepare (borrowCode 5)).write_other hp5.valid ip5.references firstBinding (by decide)
+      (hp5.fresh 5 firstView firstBinding) cell5
+    exact q5.set_other 5 (by decide) (Slot.ofValue (.reference (encodeTable table)))
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

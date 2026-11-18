@@ -1,6 +1,7 @@
 module
 
 public import SubtreeProofs.Rust.SourceEvaluatorLookupPrefix
+public import SubtreeProofs.Rust.SourceNativeQueryEntry
 public import SubtreeProofs.Rust.SourceOwnerEntry
 public import SubtreeProofs.Rust.SourceEvaluatorEntryCertificate
 
@@ -46,7 +47,8 @@ theorem native_entry_machine {world : World} {callers : List Activation} {previo
       enter world world.memory.length CallingCertificate.originalEvaluator.source.localCount packets = some (entered, active) ∧
       LoanSafeMachine world callers previous external entered active ∧
       active.state = initialState [.reference (encodeWord left), .reference (encodeWord right), encodeTable table] ∧
-      active.count = 113 ∧ (∀ slot, slot ∉ [1, 2, 3] → active.roots slot = none) := by
+      active.count = 113 ∧ (∀ slot, slot ∉ [1, 2, 3] → active.roots slot = none) ∧
+      QueryOrigins entered active world.memory.length := by
   dsimp only
   let packets := inputPackets leftCell rightCell tableCell left right table
   let entered := world.stackCells world.memory.length (packets.map Prod.fst)
@@ -70,7 +72,7 @@ theorem native_entry_machine {world : World} {callers : List Activation} {previo
       split at hb
       next => cases hb; change world.memory.length ≤ world.memory.length + (slot - 1); omega
       next => cases hb
-  refine ⟨entered, active, ?_, machine, rfl, rfl, ?_⟩
+  refine ⟨entered, active, ?_, machine, rfl, rfl, ?_, ?_⟩
   · rw [CallingCertificate.originalEvaluator_spec.2.1]
     exact entryRun
   · intro slot member
@@ -81,6 +83,11 @@ theorem native_entry_machine {world : World} {callers : List Activation} {previo
       List.length_cons, List.length_nil, Nat.reduceAdd]
     have no : ¬ (0 < slot ∧ slot ≤ 3) := by omega
     simp only [no, ite_false]
+  · intro slot member
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl
+    · exact initial_shared_loan_origin hw world.memory.length 113 (by decide) (by rfl) leftRead
+    · exact initial_shared_loan_origin hw world.memory.length 113 (by decide) (by rfl) rightRead
 
 theorem entry_lookup_complete {world : World} {callers : List Activation} {previous : Resources}
     (hw : world.WellFormed) (hc : ∀ caller ∈ callers, caller.Valid world) (view : Callers world callers previous)
@@ -103,7 +110,7 @@ theorem entry_lookup_complete {world : World} {callers : List Activation} {previ
         Calling.Prefix (Recursive.original budget fuel) callers afterLookup
           (borrowPrefix ++ [.call .lookup lookupArgs 4]) entered active final after := by
   dsimp only
-  obtain ⟨entered, active, entryRun, machine, state, count, unbound⟩ :=
+  obtain ⟨entered, active, entryRun, machine, state, count, unbound, _⟩ :=
     native_entry_machine hw hc view left right table leftCell rightCell tableCell leftRead rightRead tableRead input frame covered
   obtain ⟨minFuel, minBudget, final, after, result⟩ := lookup_prefix_complete machine (by rw [count]; decide +kernel)
     left right table (state ▸ initial_inputs left right table) (by

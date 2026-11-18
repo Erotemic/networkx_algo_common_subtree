@@ -1,6 +1,6 @@
 module
 
-public import SubtreeProofs.Rust.SourceCallingPrefixes
+public import SubtreeProofs.Rust.SourceQueryLoanOrigins
 public import SubtreeProofs.Rust.SourceEvalBodyCertificate
 import Mathlib.Tactic.IntervalCases
 
@@ -41,6 +41,14 @@ structure InputLocals (left right : BalancedWord) (table : MemoTable) (state : S
   left : state 1 = .shared (encodeWord left)
   right : state 2 = .shared (encodeWord right)
   table : state 3 = Slot.ofValue (encodeTable table)
+
+theorem InputLocals.references {left right : BalancedWord} {table : MemoTable} {state : State}
+    (h : InputLocals left right table state) : ReferenceQueries state := by
+  intro slot member
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+  rcases member with rfl | rfl
+  · exact Or.inr ⟨encodeWord left, h.left⟩
+  · exact Or.inr ⟨encodeWord right, h.right⟩
 
 theorem InputLocals.prepare {left right : BalancedWord} {table : MemoTable} {active : Activation}
     (h : InputLocals left right table active.state) (index : Nat) (bound : index ≤ 10) :
