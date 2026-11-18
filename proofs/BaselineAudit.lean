@@ -2111,3 +2111,14 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_choices_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_first_choice_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_second_choice_complete
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.memo_origins
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.MemoLoanOrigins.prepare
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Inventory.memo_cells_above
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.allowed_table_local_with_origins
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_insertion_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_arguments
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_setup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_views_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_insertion_complete

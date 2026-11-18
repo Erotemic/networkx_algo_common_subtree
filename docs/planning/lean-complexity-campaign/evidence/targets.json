@@ -2225,6 +2225,48 @@
           "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun."
         },
         "next": "Construct real insertion argument setup104-109, original-query reborrows, fresh selected-witness views, insertion call and cleanup. Assemble optional result/table output and remaining owned-query/zero-temporary cleanup, checked return/closure, both optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Both choices are constructed; full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_parent_insertion_followup": {
+        "baseline_commit": "c432f5c",
+        "evidence": "memo-evaluator-parent-insertion.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_insertion_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_insertion_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_call_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_setup_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_insert_views_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.allowed_table_local_with_origins",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Inventory.memo_cells_above",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.FinishInsertionScope"
+        ],
+        "status": "All eighteen actual insertion instructions are constructed: output/table/query setup104-109, fresh selected99 views109/108, the guarded actual insert call105/106/107/108 to104, physical argument retirement and observation. Successful-right payload plus both choices plus insertion construct all thirty-nine finish instructions through finishCode39 output assembly entry. A mixed original-origin/native-view guard permits the fresh table-root move without restricting all original referents. Native inserted table, selected99/owned71/85 bounds, complete ownership/coverage, older root bytes, counts/frames and unchanged masks/roots survive. Five argument/direct-view masks are empty and physically retired. Table output may retain old owners and has no all-fresh conclusion. All preceding statements, smaller contracts and source hypotheses remain unchanged; no whole-parent success/post-frame is supplied.",
+        "validation": {
+          "library_jobs": 4280,
+          "new_proof_modules": 6,
+          "new_theorems": 10,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "parsed_insertion_consumer": "passed: parsed entry and all four proved smaller fresh contracts, twenty old table owners/table-owned aliases, selected inventory six bounded owners, inserted table inventory thirty-two owners, full39 prefix and all five empty/retired insertion temporaries",
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 2003,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1048,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited, not a fresh full-suite run."
+        },
+        "next": "Construct optional result/table output assembly while retaining selected-witness field provenance beside transferred original table owners, then all remaining owned-query/zero-temporary cleanup and checked return/closure. Preserve the older hole/empty masks needed by the rest of the parent frame. Complete both optional joins, overflow/failure exits, remaining parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal is active."
       }
     },
     {
@@ -2413,7 +2455,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now constructs both actual parent choices and all twenty-one successful-right payload/choice instructions through finishCode21. Selected99 and both owned-query bounds survive with complete resources and exact actual call costs. Construct real insertion argument setup104-109, original-query reborrows, fresh selected-witness views, insertion call and cleanup. Assemble optional result/table output and remaining owned-query/zero-temporary cleanup, checked return/closure, both optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Both choices are constructed; full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 now constructs all thirty-nine successful-right payload, choice and insertion instructions through finishCode39. Original loan origins and fresh witness views jointly discharge insertion table-root permission. Complete native resources, selected99 and owned71/85 bounds survive; all five insertion temporaries are empty and physically retired. Construct optional result/table output assembly while retaining selected-witness field provenance beside transferred original table owners, then all remaining owned-query/zero-temporary cleanup and checked return/closure. Preserve the older hole/empty masks needed by the rest of the parent frame. Complete both optional joins, overflow/failure exits, remaining parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal is active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

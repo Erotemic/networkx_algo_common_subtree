@@ -1,31 +1,35 @@
 # Lean complexity campaign: proto-roadmap
 
-[Both actual parent choices through insertion setup](evidence/memo-evaluator-parent-choices.md) now
-constructs all temporary storage and argument moves, both recursive chooseLonger
-calls with exact complete costs, all moved-argument retirement and the final
-observation. The first choice selects candidate/left into 100; the second selects
-100/right into 99. All fifteen choice instructions and the six successful-right
-payload instructions reach the actual `finishCode 21` insertion continuation.
-Selected witness 99 and owned queries 71/85 retain bounds relative to the
-original parent heap. Complete ownership/coverage, native query/table snapshots,
-count/frame, root/heap guarantees, emptied candidate masks and physically retired
-argument roots remain checked. Earlier endpoint statements, smaller contracts,
-independent hypotheses and source semantics are unchanged.
-The 4,274-job library build and five affected Lean suites pass, including parsed
-entry with twenty old table owners/table-owned aliases, distinct-shape candidate
-wins/ties and eight runtime cases. Actual selected inventories have six owners
-in the parsed case and two/four/six/two across first/middle/last/tied test cases.
-All 1,993 audited endpoints retain the accepted axiom baseline; four new theorems
-across four modules are included. Eight statement seeds resolve 1,319 unique
-declarations without unknown references. Thirteen Rust tests and nine Python
-frontend checks freshly pass.
-Construct insertion arguments/views/call and cleanup, output assembly, remaining
-owned cleanup and checked return/closure. Optional joins, overflow/failure exits,
-parent returns, full pair/pair induction, dynamic regions/destructors, public
-maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other
-planning requirement remain open. The full goal stays active; no C3 or production
-resource closure is claimed.
-Earlier [choice owner ledgers and generic forward constructor](evidence/memo-evaluator-choice-owner-constructor.md)
+[Actual parent insertion through output assembly entry](evidence/memo-evaluator-parent-insertion.md) now
+constructs the nine table/query/output setup instructions, two fresh witness
+view assignments, actual insertion call and six cleanup instructions. The full
+eighteen-instruction insertion region, successful-right payload and both choices
+reach `finishCode 39` through thirty-nine actual instructions. A mixed loan guard
+retains original bounded loans without imposing native word/embedding shape on
+every original referent; fresh witness views use their actual native graphs.
+The insertion result is the independent native table entry. All five insertion
+argument/direct-view masks are empty and their roots physically retired.
+Selected 99 and owned queries 71/85 retain original heap bounds; complete native
+ownership/coverage, older root bytes, counts/frames, untouched masks and roots
+survive. Earlier statements, smaller contracts and source hypotheses are unchanged.
+The 4,280-job build passes. All five affected Lean suites pass,
+including eight runtime cases and the parsed-entry insertion consumer with twenty
+old table owners/table-owned aliases. The selected witness has six bounded
+owners; the inserted table has thirty-two owners. All five argument/direct-view
+masks are empty and roots retired.
+All 2,003 audited endpoints retain the accepted axiom baseline; ten new theorems
+across six modules are included. Eight statement seeds resolve 1,048 unique
+records with no unknown references. Thirteen Rust tests and nine Python frontend
+checks freshly pass.
+Construct optional result/table output assembly, retaining selected-witness field
+provenance alongside transferred old table owners, then remaining owned-query/
+zero-temporary cleanup and checked return/closure. Both optional joins, overflow/
+failure exits, remaining parent returns, full pair/pair induction, dynamic regions/
+destructors, public maximum/cold-table teardown, wrappers/input policy/resources/
+G3 and every other planning requirement remain open. The full goal stays active;
+no C3 or production resource closure is claimed. Earlier
+[parent choices](evidence/memo-evaluator-parent-choices.md) and
+[generic choice constructor](evidence/memo-evaluator-choice-owner-constructor.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)

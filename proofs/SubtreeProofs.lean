@@ -364,3 +364,5 @@ public import SubtreeProofs.Rust.SourcePairFinishProvenance
 public import SubtreeProofs.Rust.SourceOriginalChoice
 
 public import SubtreeProofs.Rust.SourcePairFinishChoices
+
+public import SubtreeProofs.Rust.SourcePairFinishInsertion

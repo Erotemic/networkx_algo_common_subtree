@@ -18,6 +18,7 @@ import SubtreeProofs.Rust.SourcePairRightFreshPayload
 import SubtreeProofs.Rust.SourcePairRightProvenanceEntry
 import SubtreeProofs.Rust.SourcePairFinishProvenance
 import SubtreeProofs.Rust.SourcePairFinishChoices
+import SubtreeProofs.Rust.SourcePairFinishInsertion
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1599,5 +1600,66 @@ example : ∃ beforeFinish beforeActive final after resources fuel budget,
   intro slot member
   simp only [List.mem_cons, List.not_mem_nil, or_false] at member
   rcases member with rfl | rfl | rfl | rfl <;> exact choiceScope.retired _ (by simp)
+
+-- Actual insertion with two original aliases into a twenty-Box input table.
+-- The native inserted table has thirty-two owners; the separately returned
+-- six-Box selected witness remains bounded by the original heap boundary.
+example : ∃ beforeFinish beforeActive final after selectedResources tableResources fuel budget,
+    OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.FinishInsertionScope .Empty .Empty .Empty .Empty wideWitness wideWitness wideWitness wideWitness finishTable 15#u32 after ∧
+    LocalResources final after.frame after.roots after.state 99 selectedResources ∧ selectedResources.owners.length = 6 ∧
+    (∀ address ∈ selectedResources.owners, finishWorld.memory.length ≤ address) ∧
+    LocalResources final after.frame after.roots after.state 104 tableResources ∧ tableResources.owners.length = 32 ∧
+    (∀ slot ∈ [71, 85], LocalOwnersAbove finishWorld.memory.length final after slot) ∧
+    Calling.Prefix (Recursive.original budget fuel) [] (SourceEval.Evaluator.finishCode 39) (SourceEval.Evaluator.finishActions.take 39)
+      beforeFinish beforeActive final after ∧
+    (∀ slot ∈ [105, 106, 107, 108, 109], after.state slot = .empty ∧ after.roots slot = none) := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native finishTable .Empty (.Pair .Empty .Empty) wideWitness
+    (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
+  have rightNative := SourceEval.Evaluator.cache_hit_native finishTable (.Pair .Empty .Empty) .Empty wideWitness
+    (by simp [finishTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wp, ap,
+    result, output, _, _, _, _, _, machine, scope, _, native, _, count, future, _, _, fresh, held, _⟩ :=
+    SourceEval.Evaluator.entry_pair_right_scope_complete_provenance (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty (.Pair .Empty .Empty) (Or.inl rfl)) wideWitness finishTable leftNative
+      (SourceEval.Evaluator.native_empty_total_fresh (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans rightNative))
+  obtain ⟨minFuel, minBudget, _, _, _, _, _, _, final, after, _, finalMachine, insertionScope, freshAfter,
+    _, _, _, _, stable⟩ :=
+    SourceEval.Evaluator.pair_finish_insertion_complete machine scope fresh held
+      (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1]; decide)
+      (by intro slot member
+          have bound : 96 ≤ slot := by simp only [List.mem_cons, List.not_mem_nil, or_false] at member; omega
+          exact future slot bound)
+  have whole := (stable minFuel minBudget (by rfl) (by rfl)).2.2.2.2.2
+  obtain ⟨_, frame⟩ := finalMachine.native.valid.2
+  obtain ⟨selectedResources, _, selectedRep⟩ := frame.inspectSlot 99
+  obtain ⟨tableResources, _, tableRep⟩ := frame.inspectSlot 104
+  have selectedBoxes := selectedRep.boxes
+  rw [insertionScope.selected] at selectedBoxes
+  have six : selectedResources.owners.length = 6 := selectedBoxes.trans (by with_unfolding_all rfl)
+  have tableBoxes := tableRep.boxes
+  rw [insertionScope.tableValue] at tableBoxes
+  have thirtyTwo : tableResources.owners.length = 32 := tableBoxes.trans (by with_unfolding_all rfl)
+  refine ⟨wp, ap, final, after, selectedResources, tableResources, minFuel, minBudget, finalMachine, insertionScope,
+    selectedRep, six, freshAfter 99 (by simp) selectedResources selectedRep, tableRep, thirtyTwo, ?_, whole, ?_⟩
+  · intro slot member
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl <;> exact freshAfter _ (by decide +kernel)
+  · intro slot member
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl | rfl | rfl | rfl <;>
+      exact ⟨insertionScope.moved _ (by decide +kernel), insertionScope.retired _ (by decide +kernel)⟩
 
 end SourceCacheMissSetupTests
