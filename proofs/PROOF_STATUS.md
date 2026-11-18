@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+[Typed helper totality and sufficient budgets](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-totality.md) now derives actual
+success for all eight helpers/intrinsics from independently typed readable input
+packets. Sufficient fuel and ghost readback thresholds require no supplied native
+height, expected output or successful run. Larger readback budgets preserve the
+identical world/packet/full cost; source agreement and complete output/caller/
+external ownership compose. Interpreted choice/evaluator/maximum physical success,
+dynamic regions/destructors, public teardown/wrappers/resources/G3 and the other
+planning targets remain open. The full goal is active.
+The 3,992-job build and all four affected helper/typed/recursive/runtime suites
+pass, including five new warm-cache/overflow/failure paths with complete owner
+and cleanup checks. The 1,270-endpoint audit includes 27 new theorems with only the accepted axiom baseline;
+eight selected statement seeds cover 828 unique declarations with no unknown
+references. Full-suite/native-WP/Python/Rust evidence is inherited, not rerun here.
+
 ## Derived typed call domains and recursive source refinement: 2026-11-17
 
 [Global ownership for recursive source execution](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-global-owners.md)

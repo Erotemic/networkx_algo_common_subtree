@@ -96,4 +96,57 @@ private def pairAnswer : Value → Bool
         unless value == packet.2 && decide (sourceCost = cost) do
           throw (IO.userError "nonempty complete source value/table or cost mismatch")
 
+-- Warm tables can contain arbitrary typed scores. These cases exercise each
+-- checked-add overflow and recursive failure branch without assuming cache
+-- soundness. They check source behavior and actual storage, not optimality.
+private def warmFixture (left right : BalancedWord) (table : MemoTable) : World × Activation × List ValueCell × List Nat :=
+  let (lc, lm) := packWord left []
+  let (rc, rm) := packWord right lm
+  let (tc, tm) := packTable table rm
+  let base : World := ⟨tm, fun a => if a < tm.length then some .box else none, fun a => decide (a < tm.length)⟩
+  let query : List ValueCell := [(lc, encodeWord left), (rc, encodeWord right)]
+  let world := base.stackCells 90 (query.map Prod.fst)
+  let parent := initialActivation base 90 3 query
+  (world, parent, [(.shared ⟨tm.length, []⟩, .reference (encodeWord left)),
+    (.shared ⟨tm.length + 1, []⟩, .reference (encodeWord right)), (tc, encodeTable table)], [tm.length, tm.length + 1])
+
+private def overflowTable : MemoTable := .Entry ⟨.Empty, .Empty, ⟨.Empty, 4294967295#u32⟩⟩ .Empty
+
+private def checkWarm (label : String) (left right : BalancedWord) (expectNone : Bool) (steps calls : Nat) : IO Unit := do
+  let (world, caller, args, guards) := warmFixture left right overflowTable
+  match SourceEval.run SourceEval.Certificate.original.body 48 .evaluate (args.map Prod.snd) with
+  | none => throw (IO.userError s!"warm source failed: {label}")
+  | some (value, work) =>
+    let noneResult := match value with
+      | .node .tuple 0 [.node .optional 0 [], _] => true
+      | _ => false
+    unless noneResult == expectNone && work.work.steps == steps && work.solverCalls == calls do
+      throw (IO.userError s!"wrong warm source result/cost: {label}")
+    match Recursive.original 128 48 world guards [caller] .evaluate args with
+    | none => throw (IO.userError s!"warm addressed execution failed: {label}")
+    | some (final, packet, cost) =>
+      unless value == packet.2 && decide (work = cost) do
+        throw (IO.userError s!"warm complete value/table/cost mismatch: {label}")
+      unless (guards.all final.live) && guards.all (fun a => final.memory[a]? == world.memory[a]?) do
+        throw (IO.userError s!"warm caller roots changed: {label}")
+      match traceResources final.memory packet.1 (Slot.ofValue packet.2) with
+      | none => throw (IO.userError s!"warm output resource readback failed: {label}")
+      | some output =>
+        let owners := output.owners ++ caller.owners final
+        unless decide owners.Nodup && owners.all (fun a => decide (final.classes a = some .box) && final.live a) do
+          throw (IO.userError s!"warm owners duplicate, dead or not Boxes: {label}")
+        unless (List.range final.memory.length).all (fun a =>
+            if decide (final.classes a = some .box) && final.live a then decide (a ∈ owners) else true) do
+          throw (IO.userError s!"warm live Box missing from complete ledger: {label}")
+        unless (List.range final.memory.length).all (fun a =>
+            final.live a == decide (a ∈ guards ∨ a ∈ owners)) do
+          throw (IO.userError s!"warm callee storage remains live: {label}")
+
+#eval show IO Unit from do
+  checkWarm "cache-hit" .Empty .Empty false 271 1
+  checkWarm "subtotal-overflow" pairWord pairWord true 911 3
+  checkWarm "root-overflow" (.Pair .Empty pairWord) pairWord true 1115 3
+  checkWarm "heads-failure" (.Pair pairWord .Empty) (.Pair pairWord .Empty) true 1189 4
+  checkWarm "tails-failure" (.Pair .Empty pairWord) (.Pair .Empty pairWord) true 1517 5
+
 end SourceRecursiveExecutionTests

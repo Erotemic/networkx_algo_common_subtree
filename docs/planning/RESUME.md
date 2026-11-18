@@ -1,6 +1,22 @@
 # Resume on another machine
 
-Branch: `Droschinsky-algos`. The latest increment establishes
+Branch: `Droschinsky-algos`.
+
+[Typed helper totality and sufficient budgets](lean-complexity-campaign/evidence/memo-evaluator-helper-totality.md) now derives actual
+success for all eight helpers/intrinsics from independently typed readable input
+packets. Sufficient fuel and ghost readback thresholds require no supplied native
+height, expected output or successful run. Larger readback budgets preserve the
+identical world/packet/full cost; source agreement and complete output/caller/
+external ownership compose. Interpreted choice/evaluator/maximum physical success,
+dynamic regions/destructors, public teardown/wrappers/resources/G3 and the other
+planning targets remain open. The full goal is active.
+The 3,992-job build and all four affected helper/typed/recursive/runtime suites
+pass, including five new warm-cache/overflow/failure paths with complete owner
+and cleanup checks. The 1,270-endpoint audit includes 27 new theorems with only the accepted axiom baseline;
+eight selected statement seeds cover 828 unique declarations with no unknown
+references. Full-suite/native-WP/Python/Rust evidence is inherited, not rerun here.
+
+The preceding increment establishes
 [global ownership for recursive source execution](lean-complexity-campaign/evidence/memo-evaluator-global-owners.md).
 Exact existing helper-driver owner ledgers, typed callee profiles, complete
 caller argument/result transfer, selected control, actual parsed entry/return
@@ -17,6 +33,17 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Heap.SnapshotTyped.{native_word,native_result,native_entry,native_table}`
+  and `Helpers.typed_ready_exists`: finite native helper shapes and sufficient
+  call fuel follow from independent actual readable packet types.
+- `Helpers.{execute_budget_enlarge,typed_total,typed_owned_total,
+  typed_sufficient_fuel}`: actual helper success at sufficient bounds, exact
+  source/full-cost agreement, readable output/protected callers and complete
+  owner-frame/coverage. All eight helpers/intrinsics are covered; interpreted
+  functions retain their separate physical-totality obligations.
+- `Partial.Addressed.{snapshot_depth,snapshot_enlarge}` and
+  `Storage.{readPacket_depth,readPacket_enlarge}`: actual successful readback
+  supplies its own depth bound and enlarges with the exact value/read list.
 - `Heap.Owners.{Conserves,Grows,action_grows,guarded_grows}`: exact complete old
   occurrence conservation and fresh-Box growth through existing guarded helpers.
 - `Heap.Owners.{ConservingDriver.grows,lookup_grows}` and
@@ -434,8 +461,10 @@ See the latest evidence report for reproduction and scope.
 1. **Prove adequate budgets and physical success.** Actual source types derive
    selected call input conditions, and successful recursive/native execution now
    retains complete output/caller/external ownership and live-Box coverage. This
-   remains conditional on concrete success. Derive sufficient call/readback
-   budgets and success of each move/write/drop/storage/return/cleanup check for
+   remains conditional on concrete success for interpreted functions. All eight
+   helpers now have forward existence and sufficient fuel/readback thresholds
+   derived from independent actual types. Compose these across selected recursive
+   execution and prove every move/write/drop/storage/return/cleanup check for
    legal native inputs/warm tables. Reuse exact helper growth, global recursive
    owner resources, computed loan coverage, certified reference views, independent
    typing, protected caller bytes and actual entry/closure. Do not assume the

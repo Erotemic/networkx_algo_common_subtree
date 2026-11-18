@@ -25,6 +25,20 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Typed helper totality and sufficient budgets](lean-complexity-campaign/evidence/memo-evaluator-helper-totality.md) now derives actual
+success for all eight helpers/intrinsics from independently typed readable input
+packets. Sufficient fuel and ghost readback thresholds require no supplied native
+height, expected output or successful run. Larger readback budgets preserve the
+identical world/packet/full cost; source agreement and complete output/caller/
+external ownership compose. Interpreted choice/evaluator/maximum physical success,
+dynamic regions/destructors, public teardown/wrappers/resources/G3 and the other
+planning targets remain open. The full goal is active.
+The 3,992-job build and all four affected helper/typed/recursive/runtime suites
+pass, including five new warm-cache/overflow/failure paths with complete owner
+and cleanup checks. The 1,270-endpoint audit includes 27 new theorems with only the accepted axiom baseline;
+eight selected statement seeds cover 828 unique declarations with no unknown
+references. Full-suite/native-WP/Python/Rust evidence is inherited, not rerun here.
+
 [Global ownership for recursive source execution](lean-complexity-campaign/evidence/memo-evaluator-global-owners.md)
 now composes exact helper input/fresh/output ledgers, complete actual calls,
 selected calling control, parsed entry/return cleanup and recursive dispatch.

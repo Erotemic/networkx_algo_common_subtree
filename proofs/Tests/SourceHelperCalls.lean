@@ -1,5 +1,6 @@
 module
 
+import SubtreeProofs.Rust.SourceHelperTotality
 import SubtreeProofs.Rust.SourceEvalHelperCalls
 import SubtreeProofs.Rust.SourceEvalTypedRecursive
 import SubtreeProofs.Rust.SourceOwnerCallTransfer
@@ -193,6 +194,28 @@ example : (Helpers.execute 1 0 world .checkedAdd [(.number 4294967294, .number 4
     (fun (_, packet, _) => match packet.1 with | .node .optional 1 [.number n] => some n | _ => none) =
     some (some 4294967295) := by decide +kernel
 example : (Helpers.execute 1 0 world .checkedAdd [(.number 4294967296, .number 4294967296), (.number 1, .number 1)]).isNone = true := by decide +kernel
+
+-- Sufficient bounds are derived from actual independent packet types, even
+-- when shared inputs alias an owned table. No execution/fuel answer is given.
+private theorem packet_types : Derived.TypedReady base .insert packets := by
+  refine ⟨SourceEval.Types.inputs .insert, .adt .table, ?_, ?_⟩
+  · exact .cons (table_typed table) (.cons (.shared (word_typed .Empty))
+      (.cons (.shared (word_typed .Empty)) (.cons (.shared (result_typed result)) .nil)))
+  · with_unfolding_all rfl
+
+example : ∃ minimumFuel, ∀ fuel, minimumFuel ≤ fuel →
+    ∃ minimumBudget final packet cost, ∀ budget, minimumBudget ≤ budget →
+      Helpers.execute fuel budget base .insert packets = some (final, packet, cost) :=
+  Helpers.typed_sufficient_fuel rfl well_formed readable packet_types
+
+-- Enlarging ghost readback preserves the identical actual world, packet and
+-- complete cost; the existing zero-budget failure above is intentional.
+example : ∀ budget, 32 ≤ budget → Helpers.execute 8 budget world .insert packets = Helpers.execute 8 32 world .insert packets := by
+  intro budget bound
+  have hs : (Helpers.execute 8 32 world .insert packets).isSome = true := by decide +kernel
+  obtain ⟨triple, run⟩ := Option.isSome_iff_exists.mp hs
+  rcases triple with ⟨final, packet, cost⟩
+  exact (Helpers.execute_budget_enlarge bound run).trans run.symm
 
 end SourceHelperCallsTests
 

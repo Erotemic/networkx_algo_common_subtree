@@ -1019,6 +1019,33 @@
           "rust_validation": "Rust/generated artifacts unchanged; thirteen ordered Rust tests remain evidence at 823df34, not a fresh run."
         },
         "next": "Derive sufficient source-call/readback budgets and every move/write/drop/storage/return/cleanup permission and actual physical success on legal native inputs/warm tables, using the checked complete recursive owner invariant and actual loan coverage without assuming parent success. Interpret actual dynamic parsed region binders/destructor instances under explicit compiler/runtime/allocator boundaries. Finish native public maximum/cold-table teardown, wrappers/input policy/global resources/G3 and other planning targets."
+      },
+      "evaluator_helper_totality_followup": {
+        "baseline_commit": "d49f638",
+        "evidence": "memo-evaluator-helper-totality.md",
+        "status": "All eight actual helpers/intrinsics execute from independent typed readable inputs at sufficient call fuel/readback budgets, preserving source/full-cost and complete owner contracts. No supplied success, native height or expected output. Interpreted recursive physical success, dynamic regions/destructors and other planning targets remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 3992,
+          "affected_lean_suites": [
+            "SourceHelperCalls",
+            "SourceTypedCalls",
+            "SourceRecursiveCalls",
+            "SourceRecursiveExecution"
+          ],
+          "runtime_suite": "passed retained cold cases and five new warm-cache/overflow/failure paths with exact full costs, caller roots, complete live Box owners and cleanup",
+          "audited_endpoints": 1270,
+          "new_theorems": 27,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 828,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "broader_regression": "47-suite/native-WP/nine-Python evidence at d49f638; Rust at 823df34; not rerun."
+        },
+        "next": "Compose helper sufficient budgets into forward interpreted whole-program physical success and derive each actual storage/move/write/drop/return/cleanup permission. Interpret dynamic parsed regions/destructor instances; complete native public maximum/table teardown, wrappers/input policy/global resources/G3 and the other planning targets."
       }
     },
     {
