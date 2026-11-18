@@ -464,13 +464,15 @@ The 4,005-job build and affected lifecycle consumer pass. The 1,333-endpoint aud
 includes 44 new theorems with only the accepted axiom baseline. Ten selected
 statement seeds cover 958 unique declarations with no unknown references.
 
-[Forward assignments, moves and return extraction](memo-evaluator-forward-operations.md) now construct
-actual stores (including references), one-pass assignments, selected owned move
-permissions, returns and switch inspection. Independent local source steps and
-semantic loan/root facts remain explicit; post-RHS frames and owner inventories
-are derived. Together with forward storage/drop/cleanup, these are the local
-contracts for constructing the whole pinned choice and recursive evaluator.
-Whole-function scope/loan discharge and all other planning obligations remain
-open. The 4,010-job build and two affected consumers pass. The 1,356-endpoint audit
-includes 23 new theorems with only the accepted axiom baseline. Eight selected
-statement seeds cover 414 unique declarations with no unknown references.
+[Whole pinned choice totality](memo-evaluator-choice-totality.md) now constructs actual parsed entry,
+its complete body, both winner branches, losing-value destruction, return and
+checked closure for arbitrary native embeddings. The native tie rule, exact
+full cost, readable output, protected caller bytes and complete output/caller/
+external ownership with live-Box coverage compose. Initial readable inputs,
+complete ownership and input-owner/suspended-loan separation remain explicit;
+arbitrary helper fuel/readback budgets suffice for this call-free body. Actual
+recursive dispatch and evaluator/maximum scope/loan/budget composition, dynamic
+regions/destructors and every other planning target remain open. The 4,016-job
+build and three affected suites pass. The 1,383-endpoint audit includes 27 new
+theorems with only the accepted axiom baseline. Eight selected statement seeds
+cover 1,124 unique declarations with no unknown references. The full goal is active.

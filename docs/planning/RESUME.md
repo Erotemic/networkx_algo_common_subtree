@@ -2,16 +2,18 @@
 
 Branch: `Droschinsky-algos`.
 
-[Forward assignments, moves and return extraction](lean-complexity-campaign/evidence/memo-evaluator-forward-operations.md) now construct
-actual stores (including references), one-pass assignments, selected owned move
-permissions, returns and switch inspection. Independent local source steps and
-semantic loan/root facts remain explicit; post-RHS frames and owner inventories
-are derived. Together with forward storage/drop/cleanup, these are the local
-contracts for constructing the whole pinned choice and recursive evaluator.
-Whole-function scope/loan discharge and all other planning obligations remain
-open. The 4,010-job build and two affected consumers pass. The 1,356-endpoint audit
-includes 23 new theorems with only the accepted axiom baseline. Eight selected
-statement seeds cover 414 unique declarations with no unknown references.
+[Whole pinned choice totality](lean-complexity-campaign/evidence/memo-evaluator-choice-totality.md) now constructs actual parsed entry,
+its complete body, both winner branches, losing-value destruction, return and
+checked closure for arbitrary native embeddings. The native tie rule, exact
+full cost, readable output, protected caller bytes and complete output/caller/
+external ownership with live-Box coverage compose. Initial readable inputs,
+complete ownership and input-owner/suspended-loan separation remain explicit;
+arbitrary helper fuel/readback budgets suffice for this call-free body. Actual
+recursive dispatch and evaluator/maximum scope/loan/budget composition, dynamic
+regions/destructors and every other planning target remain open. The 4,016-job
+build and three affected suites pass. The 1,383-endpoint audit includes 27 new
+theorems with only the accepted axiom baseline. Eight selected statement seeds
+cover 1,124 unique declarations with no unknown references. The full goal is active.
 
 [Stable recursive fuel and readback budgets](lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
 completed actual run's exact world/packet/full cost at all larger bounds.
@@ -53,6 +55,16 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Choice.{prelude_complete,branch_complete,tail_complete,body_complete}`:
+  construct the actual complete selected choice body and empty returned masks
+  from independent native inputs, valid closed storage and legal transfer.
+- `Choice.invoke_total`: actual pinned guarded entry/body/closure with exact
+  native result/full cost, readable output, caller-byte preservation and complete
+  ownership/coverage. Input owners must avoid suspended loans; deriving that
+  sufficient permission at recursive evaluator call sites remains required.
+- `ClosedMachine.{advance,storageLive,storageDead,assign,drop,switchBool}`:
+  fresh roots, preserved actual callers, closed masks and complete owner resources
+  construct non-call operations; active owners remain a subset of prior owners.
 - `Derived.{store_complete,store_total,assign_complete,assign_total}`: arbitrary
   readable packet stores and one-pass RHS/assignment construction, including
   shared references, with derived intermediate frames and complete ownership.

@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceScrutineeTotality
+import SubtreeProofs.Rust.SourceChoiceTotality
 import SubtreeProofs.Rust.SourceEvalAddressedChoice
 
 namespace SourceAddressedControlTests
@@ -185,5 +185,50 @@ example : ∃ cell owners final, Derived.returnValue [] freshReturnWorld freshRe
     (by intro current represented; exact List.nil_subset _)
     (by intro slot binding root current represented; cases represented; simp)
   exact ⟨cell, owners, final, run, closed, retired 0 ⟨0, 0⟩ (by rfl), output, foot, frame, coverage⟩
+
+-- Arbitrary score pairs and arbitrary helper budgets now have a constructed
+-- parsed entry/body/closure run. The owned nonempty first word exercises both
+-- losing Box retirement and tie retention; no run-success fact is supplied.
+example (left right : Aeneas.Std.U32) (fuel budget : Nat) :
+    ∃ final packet,
+      Calling.guardedInvoke (Helpers.callee fuel budget) [] [] SourceEval.CallingCertificate.originalChoice
+        choiceBase (choicePackets left right) = some (final, packet, SourceEval.Choice.cost (first left) (second right)) ∧
+      packet.2 = encodeResult (OrderedSolver.selectResult (first left) (second right)) ∧
+      Readable final.memory final.live packet.1 packet.2 ∧ final.WellFormed ∧
+      ∃ owners, Footprint final.memory packet.1 owners ∧
+        OwnerFrame final owners ∧ BoxCoverage final owners := by
+  have firstReadable := choice_readable left right
+    (.node .embedding 0 [.node .word 1 [.owned 0, .owned 1], .number left.val], encodeResult (first left))
+    (by simp [choicePackets])
+  have secondReadable := choice_readable left right
+    (.node .embedding 0 [.node .word 0 [], .number right.val], encodeResult (second right))
+    (by simp [choicePackets])
+  have input : FieldsFootprint choiceBase.memory ((choicePackets left right).map Prod.fst) [0, 1] :=
+    .cons (.node (.cons (.node (.cons (.owned rfl (.node .nil))
+      (.cons (.owned rfl (.node .nil)) .nil))) (.cons (.number left.val) .nil)))
+      (.cons (.node (.cons (.node .nil) (.cons (.number right.val) .nil))) .nil)
+  have frame : OwnerFrame choiceBase ([0, 1] ++ (callerOwners choiceBase [] ++ [])) := by
+    refine ⟨by decide +kernel, ?_, ?_⟩
+    · intro address member
+      have cases : address = 0 ∨ address = 1 := by simpa [callerOwners] using member
+      rcases cases with rfl | rfl <;> rfl
+    · intro address member
+      have cases : address = 0 ∨ address = 1 := by simpa [callerOwners] using member
+      rcases cases with rfl | rfl <;> rfl
+  have covered : BoxCoverage choiceBase ([0, 1] ++ (callerOwners choiceBase [] ++ [])) := by
+    intro address classified _
+    by_cases small : address < 2
+    · have cases : address = 0 ∨ address = 1 := by omega
+      simpa [callerOwners] using cases
+    · have bound : address < 2 := by simpa [choiceBase] using classified
+      exact False.elim (small bound)
+  obtain ⟨final, packet, run, result, readable, wf, _, owners, foot, frame, coverage⟩ :=
+    SourceEval.Choice.invoke_total fuel budget (guards := []) (inputOwners := [0, 1]) (external := []) choice_well_formed (by simp) (first left) (second right)
+      (.node .embedding 0 [.node .word 1 [.owned 0, .owned 1], .number left.val])
+      (.node .embedding 0 [.node .word 0 [], .number right.val])
+      firstReadable secondReadable (previous := {}) .nil input frame covered (by simp) (by simp)
+  exact ⟨final, packet, run, result, readable, wf, owners, foot,
+    by simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using frame,
+    by simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using coverage⟩
 
 end SourceAddressedControlTests
