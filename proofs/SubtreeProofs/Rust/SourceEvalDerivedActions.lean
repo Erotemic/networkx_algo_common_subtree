@@ -38,7 +38,7 @@ theorem action_spec {world final : World} {active after : Activation} {callers :
   | fakeRead place =>
     obtain ⟨rfl, rfl⟩ := Option.some.inj h
     obtain ⟨suspended, hs, hv⟩ := scanCallers_complete callers hc
-    exact ⟨fun _ => rfl, rfl, rfl, ha, hw, suspended, hs, hv⟩
+    exact ⟨fun _ => rfl, rfl, rfl, ha, hw, suspended, hs, hv, Preserves.refl _ _⟩
   | call _ _ _ | undefinedBehavior => cases h
 
 def actions (world : World) (active : Activation) (callers : List Activation) : List Action → Option (World × Activation × Cost)

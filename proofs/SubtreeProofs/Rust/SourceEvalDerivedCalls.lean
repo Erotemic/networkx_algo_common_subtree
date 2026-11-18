@@ -86,7 +86,8 @@ theorem call_spec {callee : Callees} {source : Calls} {ready : Ready}
     SourceEval.action source active.state (.call function args slot) = some (after.state, cost) ∧
       after.frame = active.frame ∧ after.count = active.count ∧ after.roots = active.roots ∧
       after.Valid final ∧ (∀ a ∈ callers, a.Valid final) ∧ final.WellFormed ∧
-      ∃ suspended, scanCallers world callers = some suspended ∧ Callers final callers suspended := by
+      ∃ suspended, scanCallers world callers = some suspended ∧ Callers final callers suspended ∧
+        Preserves world final suspended.reads := by
   unfold call at h
   cases hcurrent : active.scan world with
   | none => simp [hcurrent] at h
@@ -146,7 +147,7 @@ theorem call_spec {callee : Callees} {source : Calls} {ready : Ready}
                 obtain ⟨hstate, ⟨guards, hframe⟩, hwrite, hfinal⟩ := store_spec hreturned hcontext' hpacket hstore
                 have keepCallers := (retained.trans hwrite).weaken (fun _ hm => List.mem_append_right _ hm)
                 have hcallers := callerFrame.transport keepCallers
-                refine ⟨?_, rfl, rfl, rfl, ⟨ha.1, guards, hframe⟩, ?_, hfinal, suspended, rfl, hcallers⟩
+                refine ⟨?_, rfl, rfl, rfl, ⟨ha.1, guards, hframe⟩, ?_, hfinal, suspended, rfl, hcallers, keepCallers⟩
                 · simp only [SourceEval.action, hsource, hcallSource, Bind.bind, Option.bind, hstate]
                 · intro a hm
                   obtain ⟨_, hv, _, _, _⟩ := hcallers.get hm

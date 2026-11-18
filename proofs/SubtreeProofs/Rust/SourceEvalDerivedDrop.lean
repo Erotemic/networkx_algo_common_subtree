@@ -120,7 +120,8 @@ theorem drop_spec {world final : World} {active after : Activation} {callers : L
               ((remainder.reads ++ suspended.reads) ++ [] ++ [binding.address]) := by
             simpa only [Roots.set_restore hb, locals_set_overwrite] using rebound.2
           refine ⟨⟨fun _ => rfl, rfl, rfl, ⟨ha.1, _, hframe⟩, hw.retire _,
-              suspended, hs, callers.transport (hp.preserves.weaken (fun _ hm => List.mem_append_right _ hm))⟩,
+              suspended, hs, callers.transport (hp.preserves.weaken (fun _ hm => List.mem_append_right _ hm)),
+              hp.preserves.weaken (fun _ hm => List.mem_append_right _ hm)⟩,
             rfl, rfl, item, binding, rfl, rfl, rfl, ready.1, ready.2.1, hv.source.destroy, hv.boxes, ?_, hl⟩
           intro a hm
           exact ⟨hv.alive a (hv.owners_subset_reads hm), retire_member _ hm⟩

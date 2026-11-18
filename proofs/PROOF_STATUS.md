@@ -1,5 +1,23 @@
 # Common-subtree proof status
 
+## Caller preservation and recursive addressed dispatch: 2026-11-17
+
+[Caller preservation and recursive addressed dispatch](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-calls.md)
+now retain stored caller bytes through guarded actions, selected control,
+parsed entry and cleanup, and compose the actual recursive choice/evaluator/
+maximum dispatcher at unchanged source costs. Native choice readiness is
+discharged; evaluator refinement retains explicit input readiness and
+physical success. A cold empty evaluator runs completely. A real nonempty
+cache-hit path exposes the next lifetime gap: local 6 remains initialized
+after its last use and the current guard blocks moving its borrowed table.
+Interpret active loan endings, then finish universal readiness/success,
+exclusive transfer, dynamic regions/destructors and the remaining public
+core/wrappers/resources/G3. W06-C3 and the full planning goal stay open.
+The 3,956-job build, all 43 Lean suites, native WP, nine Python tests and
+1,055-endpoint axiom audit pass. Shared statement inspection covers 1,225 unique
+declarations from six seeds with no unknown references.
+
+
 ## Calling control, parsed entry and checked cleanup: 2026-11-17
 
 [Evidence report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-calling-entry.md).

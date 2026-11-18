@@ -71,4 +71,15 @@ theorem originalChoice_spec : originalChoice.source.function = .chooseLonger ∧
   obtain ⟨hf, rest⟩ := Prod.mk.inj (Option.some.inj h)
   exact ⟨hf, (Prod.mk.inj rest).1, (Prod.mk.inj rest).2⟩
 
+theorem original_codes : ∀ decl ∈ originalProgram.definitions,
+    decl.source.code = Certificate.original.body decl.source.function := by
+  have checked := TypeReader.Certificate.original_checked
+  unfold TypeReader.check at checked
+  rw [originalProgram_read] at checked
+  intro decl hm
+  exact of_decide_eq_true (List.all_eq_true.mp checked decl hm)
+
+theorem choice_lookup : originalProgram.definitions.find? (fun decl => decl.source.function == .chooseLonger) =
+    some originalChoice := (Option.some_get _).symm
+
 end SubtreeProofs.Rust.SourceEval.CallingCertificate

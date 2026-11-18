@@ -768,6 +768,43 @@
             "Quot.sound"
           ]
         }
+      },
+      "evaluator_recursive_calls_followup": {
+        "baseline_commit": "2b4f628",
+        "evidence": "memo-evaluator-recursive-calls.md",
+        "status": "Whole-run guarded caller-byte/class/liveness retention and actual parsed recursive choice/evaluator/maximum compose with existing helpers/intrinsics at unchanged source costs. Native choice readiness is discharged; evaluator native refinement retains independent path readiness and physical success. Cold empty execution succeeds. A real nonempty cache-hit path exposes initialized-reference versus active-loan lifetime separation; no universal physical success, C3 or full planning closure.",
+        "operational_gap": {
+          "evidence_level": "Executed pinned source/addressed programs and a diagnostic trace; not a universal proof.",
+          "input": "Both query words Pair Empty Empty, cold table; complete caller owns the six input cells.",
+          "call_fuel": 16,
+          "ghost_readback_budget": 128,
+          "source_score": 1,
+          "source_steps": 2615,
+          "source_solver_calls": 5,
+          "addressed_result": "none",
+          "first_failed_action": "Evaluator.cacheHit: assign 12 (use (move (local 3)))",
+          "stored_reference_local": 6,
+          "table_root_in_probe": 61,
+          "maximum_call_fuel": 17,
+          "maximum_source_steps": 2704,
+          "next": "Interpret actual loan activity/endings while retaining storage/source correspondence and the active-loan guard; then derive universal readiness and physical success."
+        },
+        "validation": {
+          "library_jobs": 3956,
+          "lean_suites": 43,
+          "native_wp": "passed",
+          "python_reifier_tests": 9,
+          "audited_endpoints": 1055,
+          "new_audited_theorems": 25,
+          "unique_statement_records": 1225,
+          "statement_seeds": 6,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
       }
     },
     {
@@ -956,7 +993,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 compose the actual recursive parsed program dispatcher using Calling.exec/invoke, the completed helper/intrinsic backend, actual post-argument suspended stack, checked zero-owner stack cleanup and actual choice declaration/native refinement. Discharge whole-run protected caller Preserves for recursive CallsRespect, derive native input readiness, source/ghost budgets and universal physical check success along every actual evaluator branch. Complete exclusive argument/temporary/output ownership and dynamic region/destructor composition. Preserve transferred insertion owners and shared aliases; reuse completed source/native/type/binder/control/entry/cleanup proofs. Then public maximum/cold-table teardown, separate wrappers/input policy/resources/G3. D12 keeps the explicit source-operation boundary; compiler/runtime/provenance/mutable/unwind/physical allocation remain declared. No full SRC-01/C3 or application runtime closure."
+      "W06-C3 interpret actual active loan endings, starting with the real nonempty cache-hit failure: local 6 still stores the old table reference after its last use, blocking assign 12 from moving local 3. Source evaluation scores 1 at 2615 steps/five solver calls (fuel 16), and public maximum at 2704 steps (fuel 17); addressed runs fail at that borrow guard. Keep active-loan protection and derive certified inactive-reference/storage/source correspondence, aliases, caller transfer and destructor accounting. Then close universal native Recursive.Ready, source/ghost budgets, physical success, exclusive temporary/argument/output transfer and dynamic parsed regions/destructors. Reuse completed recursive dispatcher/CallsRespect, protected guard coverage, whole-run caller-byte retention and source/native/type/binder/helper/control/entry/cleanup proofs. Finish public maximum/cold-table teardown, wrappers/input policy/resources/G3 and remaining full program goals. D12 retains explicit source-operation boundaries; no full SRC-01/C3 or application runtime closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

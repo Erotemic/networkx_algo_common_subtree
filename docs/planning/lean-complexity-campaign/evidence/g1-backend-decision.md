@@ -373,3 +373,13 @@ retains its native tie rule and full entry/body cost. Recursive dispatch and
 whole-run protected caller preservation, universal readiness/physical success,
 exclusive transfer and dynamic regions/destructors still require composition;
 the source-operation boundary and full remaining goal are unchanged.
+
+The [recursive-calls follow-up](memo-evaluator-recursive-calls.md) now proves
+whole-run caller-byte retention and the recursive callee source/cost contract
+for actual parsed choice/evaluator/maximum. Native choice readiness is closed;
+evaluator refinement retains input readiness and physical success. A cold empty
+run executes fully. A nonempty cache-hit run identifies the next operational
+loan-activity gap at `assign 12`: a stored reference outlives its last use under
+the current all-initialized-reference guard. Interpret loan endings, then derive
+universal readiness/physical success and global owner/region/destructor closure.
+C3, production resource adequacy and the full planning goal remain open.

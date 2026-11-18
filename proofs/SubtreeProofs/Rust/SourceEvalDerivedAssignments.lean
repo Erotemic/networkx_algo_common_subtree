@@ -53,7 +53,8 @@ theorem assign_spec {world final : World} {active after : Activation} {callers :
     SourceEval.action call active.state (.assign slot rhs) = some (after.state, Cost.local (Action.assign slot rhs).weight) ∧
       after.frame = active.frame ∧ after.count = active.count ∧ after.roots = active.roots ∧ after.Valid final ∧
       (∀ a ∈ callers, a.Valid final) ∧ final.WellFormed ∧
-      ∃ suspended, scanCallers world callers = some suspended ∧ Callers final callers suspended := by
+      ∃ suspended, scanCallers world callers = some suspended ∧ Callers final callers suspended ∧
+        Preserves world final suspended.reads := by
   unfold assign at h
   cases hcurrent : active.scan world with
   | none => simp [hcurrent] at h
@@ -104,7 +105,7 @@ theorem assign_spec {world final : World} {active after : Activation} {callers :
             obtain ⟨_, _, _, _, _, _, _, hsource, _, _, hframe, _, hkeep, hworld⟩ :=
               Addressed.assign_spec hactive.frame hw call rhs hselector hold
             have hfinalCallers := hcallers.transport (hkeep.weaken (fun _ ha => List.mem_append_right _ ha))
-            refine ⟨hsource, rfl, rfl, rfl, ?_, ?_, hworld, suspended, rfl, hfinalCallers⟩
+            refine ⟨hsource, rfl, rfl, rfl, ?_, ?_, hworld, suspended, rfl, hfinalCallers, hkeep.weaken (fun _ ha => List.mem_append_right _ ha)⟩
             · exact ⟨hactive.bounded, _, hframe⟩
             · intro a hm
               obtain ⟨_, hv, _, _, _⟩ := hfinalCallers.get hm

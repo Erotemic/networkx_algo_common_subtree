@@ -289,3 +289,5 @@ public import SubtreeProofs.Rust.SourceEvalAddressedChoice
 public import SubtreeProofs.Rust.SourceEvalHelperCalls
 
 public import SubtreeProofs.Rust.SourceEvalCallingCertificate
+
+public import SubtreeProofs.Rust.SourceEvalRecursiveRefinement

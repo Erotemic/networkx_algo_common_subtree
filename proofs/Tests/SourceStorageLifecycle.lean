@@ -120,7 +120,7 @@ example : (Derived.storageDead withCaller active [] 3).isSome = true := by decid
 example : ∃ final after,
     Derived.storageDead withCaller active [caller] 2 = some (final, after) ∧
     after.Valid final ∧ caller.Valid final ∧
-    ∃ r, scanCallers withCaller [caller] = some r ∧ Callers final [caller] r := by
+    ∃ r, scanCallers withCaller [caller] = some r ∧ Callers final [caller] r ∧ Preserves withCaller final r.reads := by
   have hs : (Derived.storageDead withCaller active [caller] 2).isSome = true := by decide +kernel
   obtain ⟨⟨final, after⟩, hr⟩ := Option.isSome_iff_exists.mp hs
   have h := (Derived.storageDead_spec active_with_caller (by simpa using caller_valid)

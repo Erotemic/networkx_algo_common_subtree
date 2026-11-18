@@ -110,7 +110,7 @@ example (call : SourceEval.Calls) :
     SourceEval.action call active.state (.assign 2 rhs) = some (after.state, SourceEval.Cost.local (SourceEval.Action.assign 2 rhs).weight) ∧
       after.frame = active.frame ∧ after.count = active.count ∧ after.roots = active.roots ∧ after.Valid next ∧
       (∀ a ∈ [caller], a.Valid next) ∧ next.WellFormed ∧
-      ∃ r, scanCallers world [caller] = some r ∧ Callers next [caller] r :=
+      ∃ r, scanCallers world [caller] = some r ∧ Callers next [caller] r ∧ Preserves world next r.reads :=
   SourceEval.Addressed.Derived.assign_spec active_valid (by simpa using caller_valid) well_formed call 2 rhs derived_run
 
 -- The caller's loan to Box root 0 is discovered without a supplied blocked

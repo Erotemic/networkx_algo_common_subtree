@@ -49,6 +49,8 @@ cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.t
 (cd proofs && lake env lean Tests/SourceAddressedControl.lean)
 (cd proofs && lake env lean Tests/SourceHelperCalls.lean)
 (cd proofs && lake env lean Tests/SourceCallingProgram.lean)
+(cd proofs && lake env lean Tests/SourceRecursiveCalls.lean)
+(cd proofs && lake env lean Tests/SourceRecursiveExecution.lean)
 (cd proofs && lake env lean Tests/LookupHeap.lean)
 (cd proofs && lake env lean Tests/LookupFrame.lean)
 (cd proofs && lake env lean Tests/Memo.lean)
@@ -356,6 +358,19 @@ See the [calling-entry report](../docs/planning/lean-complexity-campaign/evidenc
 The 3,951-job build, all 41 Lean suites, native WP, nine Python tests and
 1,030-endpoint axiom audit pass. Shared statement inspection covers 1,124 unique
 declarations from five seeds with no unknown references.
+
+The recursive-calls increment adds five maintained modules, strengthens old
+suspended-action results with stored-byte preservation, and composes actual
+parsed recursive choice/evaluator/maximum dispatch with the existing helpers.
+Choice readiness/native refinement are discharged; evaluator refinement retains
+independent readiness and physical success. The complete cold empty execution
+agrees with source/native output and costs. A nonempty cache hit exposes the
+remaining initialized-reference versus active-loan distinction; the report
+contains its exact failing action and reproduction. See the
+[recursive-calls report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-calls.md).
+The 3,956-job build, all 43 Lean suites, native WP, nine Python tests and
+1,055-endpoint axiom audit pass. Shared statement inspection covers 1,225 unique
+declarations from six seeds with no unknown references.
 
 ## VM caches
 

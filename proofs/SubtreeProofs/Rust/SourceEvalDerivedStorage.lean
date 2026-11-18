@@ -66,12 +66,12 @@ structure Step (world : World) (active : Activation) (callers : List Activation)
   count : after.count = active.count
   valid : after.Valid final
   wellFormed : final.WellFormed
-  suspended : ∃ r, scanCallers world callers = some r ∧ Callers final callers r
+  suspended : ∃ r, scanCallers world callers = some r ∧ Callers final callers r ∧ Preserves world final r.reads
 
 theorem Step.callers {world final : World} {active after : Activation} {callers : List Activation}
     {instruction : Action} {cost : Cost} (h : Step world active callers instruction final after cost) :
     ∀ a ∈ callers, a.Valid final := by
-  obtain ⟨_, _, hc⟩ := h.suspended
+  obtain ⟨_, _, hc, _⟩ := h.suspended
   intro a hm
   obtain ⟨_, hs, _, _, _⟩ := hc.get hm
   exact hs.valid
@@ -105,7 +105,8 @@ theorem storageLive_spec {world final : World} {active after : Activation} {call
         have callers := scanCallers_spec hc hs
         have hf := AddressedPrimitives.action_storageLive current.frame hw (fun _ _ => none) slot world.memory.length ready.2
         exact ⟨fun _ => rfl, rfl, rfl, ⟨ha.1.set_some ready.1 _, _, hf.2.1⟩, hf.2.2,
-          suspended, hs, callers.transport (world.allocate_keeps hw _ _ _).preserves⟩
+          suspended, hs, callers.transport (world.allocate_keeps hw _ _ _).preserves,
+          (world.allocate_keeps hw _ _ _).preserves⟩
   next => cases h
 
 def storageDead (world : World) (active : Activation) (callers : List Activation) (slot : Nat) :
@@ -148,7 +149,7 @@ theorem storageDead_spec {world final : World} {active after : Activation} {call
             intro a hm he
             exact ready.2.2.2 (List.mem_append_right _ (List.mem_singleton.mp he ▸ hm)))
           refine ⟨⟨fun _ => rfl, rfl, rfl, ⟨ha.1.set_none _, _, hf⟩, hw.retire _,
-            suspended, hs, callers.transport hp.preserves⟩, rfl, rfl, zero, binding, rfl, rfl, ?_⟩
+            suspended, hs, callers.transport hp.preserves, hp.preserves⟩, rfl, rfl, zero, binding, rfl, rfl, ?_⟩
           exact retire_member _ (by simp)
         · simp only [ite_eq_right ready] at h
           cases h
