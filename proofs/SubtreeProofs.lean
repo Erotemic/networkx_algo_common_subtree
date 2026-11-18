@@ -307,3 +307,5 @@ public import SubtreeProofs.Rust.SourceScrutineeTotality
 public import SubtreeProofs.Rust.SourceChoiceTotality
 
 public import SubtreeProofs.Rust.SourceChoiceCallTotality
+
+public import SubtreeProofs.Rust.SourceEvaluatorEntryPrefix

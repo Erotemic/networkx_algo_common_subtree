@@ -1,3 +1,4 @@
+import SubtreeProofs.Rust.SourceEvaluatorEntryPrefix
 import SubtreeProofs.Rust.SourceChoiceCallTotality
 import SubtreeProofs.Rust.SourceEvalAddressedChoice
 
@@ -323,5 +324,80 @@ example (left right : Aeneas.Std.U32) (budget fuel : Nat) :
   · rw [state]; simp only [Partial.Locals.set, ite_true]
   · simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using frame
   · simpa only [callerOwners, List.flatMap_nil, List.nil_append, List.append_nil] using coverage
+
+-- Both query pointers refer inside a Box owned by the input table. Construct
+-- the actual entry/common prefix without an owner-versus-query-loan ban.
+private def aliasTable : MemoTable := .Entry ⟨.Empty, .Empty, ⟨.Empty, 0#u32⟩⟩ .Empty
+private def aliasEntry : Cell := .node .entry 0
+  [.node .word 0 [], .node .word 0 [], .node .embedding 0 [.node .word 0 [], .number 0]]
+private def aliasWorld : World := ⟨[aliasEntry, .node .table 0 []],
+  fun a => if a < 2 then some .box else none, fun a => decide (a < 2)⟩
+private def aliasTableCell : Cell := .node .table 1 [.owned 0, .owned 1]
+private def aliasPackets : List ValueCell := SourceEval.Evaluator.inputPackets
+  (.shared ⟨0, [0]⟩) (.shared ⟨0, [1]⟩) aliasTableCell .Empty .Empty aliasTable
+
+private theorem alias_entry_graph : Graph aliasWorld.memory aliasEntry
+    (.node .entry 0 [encodeWord .Empty, encodeWord .Empty, encodeResult ⟨.Empty, 0#u32⟩]) [] := by
+  have result : Graph aliasWorld.memory (.node .embedding 0 [.node .word 0 [], .number 0])
+      (encodeResult ⟨.Empty, 0#u32⟩) [] := .node (.cons (.node .nil) (.cons (.number 0) .nil))
+  exact .node (.cons (.node .nil) (.cons (.node .nil) (.cons result .nil)))
+
+private theorem alias_entry_footprint : Footprint aliasWorld.memory aliasEntry [] := by
+  have result : Footprint aliasWorld.memory (.node .embedding 0 [.node .word 0 [], .number 0]) [] :=
+    .node (.cons (.node .nil) (.cons (.number 0) .nil))
+  exact .node (.cons (.node .nil) (.cons (.node .nil) (.cons result .nil)))
+
+private theorem alias_readable : ∀ p ∈ aliasPackets, Readable aliasWorld.memory aliasWorld.live p.1 p.2 := by
+  intro p member
+  simp only [aliasPackets, SourceEval.Evaluator.inputPackets, List.mem_cons, List.not_mem_nil, or_false] at member
+  rcases member with rfl | rfl | rfl
+  · exact ⟨[0], .shared rfl (.node .nil), by simp [AliveOn, aliasWorld]⟩
+  · exact ⟨[0], .shared rfl (.node .nil), by simp [AliveOn, aliasWorld]⟩
+  · exact ⟨[0, 1], .node (.cons (.owned rfl alias_entry_graph)
+      (.cons (.owned rfl (.node .nil)) .nil)), by simp [AliveOn, aliasWorld]⟩
+
+private theorem alias_resources : FieldsFootprint aliasWorld.memory (aliasPackets.map Prod.fst) [0, 1] ∧
+    OwnerFrame aliasWorld ([0, 1] ++ (callerOwners aliasWorld [] ++ [])) ∧
+    BoxCoverage aliasWorld ([0, 1] ++ (callerOwners aliasWorld [] ++ [])) := by
+  refine ⟨?_, ?_, ?_⟩
+  · have table : Footprint aliasWorld.memory aliasTableCell [0, 1] :=
+      .node (.cons (.owned rfl alias_entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))
+    exact .cons (.shared _) (.cons (.shared _) (.cons table .nil))
+  · refine ⟨by decide +kernel, ?_, ?_⟩
+    · intro address member
+      have cases : address = 0 ∨ address = 1 := by simpa [callerOwners] using member
+      rcases cases with rfl | rfl <;> rfl
+    · intro address member
+      have cases : address = 0 ∨ address = 1 := by simpa [callerOwners] using member
+      rcases cases with rfl | rfl <;> rfl
+  · intro address classified _
+    have bound : address < 2 := by simpa [aliasWorld] using classified
+    have cases : address = 0 ∨ address = 1 := by omega
+    simpa [callerOwners] using cases
+
+example : ∃ entered active minimumFuel minimumBudget final after,
+    enter aliasWorld aliasWorld.memory.length SourceEval.CallingCertificate.originalEvaluator.source.localCount aliasPackets =
+      some (entered, active) ∧
+    LoanSafeMachine aliasWorld [] {} [] final after ∧
+    ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.afterLookup
+        (SourceEval.Evaluator.borrowPrefix ++ [.call .lookup SourceEval.Evaluator.lookupArgs 4]) entered active final after := by
+  have resources := alias_resources
+  obtain ⟨entered, active, minFuel, minBudget, final, after, entryRun, _, _, _, _, _, machine, stable⟩ :=
+    SourceEval.Evaluator.entry_lookup_complete (by simp [World.WellFormed, aliasWorld])
+      (by simp) Callers.nil .Empty .Empty aliasTable (.shared ⟨0, [0]⟩) (.shared ⟨0, [1]⟩) aliasTableCell
+      (alias_readable (.shared ⟨0, [0]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      (alias_readable (.shared ⟨0, [1]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      (alias_readable (aliasTableCell, encodeTable aliasTable) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets])) resources.1 resources.2.1 resources.2.2
+  exact ⟨entered, active, minFuel, minBudget, final, after, entryRun, machine, stable⟩
+
+-- The structural rule intentionally excludes unit and reference-containing
+-- referents; general loan guards still handle those separate cases.
+example : ¬ NativeData (.node .tuple 0 []) := by
+  intro data
+  cases data with
+  | node nonempty _ => exact nonempty rfl rfl rfl
+
+example : ¬ NativeData (.reference (encodeWord .Empty)) := by intro data; cases data
 
 end SourceAddressedControlTests

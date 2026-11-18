@@ -1,5 +1,18 @@
 # Common-subtree proof status
 
+[Constructed native evaluator entry and lookup prefix](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-native-prefix.md) now derives
+all physical permissions for the actual parsed 113-local entry and first eleven
+instructions through lookup/result storage. Native graph structure and preserved
+old caller reads permit shared query/table aliases, including queries inside a
+table-owned Box. Fixed sufficient fuel/readback thresholds retain one final
+machine with protected caller bytes and complete ownership/coverage. Retirement
+of lookup temporaries, every branch/recursive return/closure, public maximum,
+dynamic regions/destructors and the other planning targets remain open.
+The 4,035-job build and five affected suites pass, including all eight recursive
+runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
+accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
+declarations with no unknown references. The full goal is active.
+
 [Constructed recursive helper and choice calls](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-call-totality.md) now compose actual
 argument extraction, callee execution and checked result storage from independent
 local source steps, types, ownership and selected loan permissions. Choice runs

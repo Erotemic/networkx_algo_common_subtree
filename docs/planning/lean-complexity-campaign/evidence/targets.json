@@ -1170,6 +1170,35 @@
           "broader_regression": "Eight recursive runtime cases freshly rerun. Full 47-suite/native-WP/nine-Python at d49f638 and thirteen ordered Rust tests at 823df34; not rerun."
         },
         "next": "Construct common lookup prelude and cache-hit/empty-query actual evaluator paths, then pair/pair recursion and all overflows/failures. Derive per-source-point scope, initialization, destination/move/selected-owner loans from native inputs, copy/result freshness and reference last use; compose stable helper/recursive budgets. Preserve shared aliases and complete ownership. Finish dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target."
+      },
+      "evaluator_native_prefix_followup": {
+        "baseline_commit": "05b2519",
+        "evidence": "memo-evaluator-native-prefix.md",
+        "status": "Constructed actual parsed 113-local evaluator entry and first eleven instructions through lookup/result storage from independent native readable packets and complete ownership. All selected prefix move/destination/payload loans derived from native graph structure and preserved caller bounds, retaining query/table/caller read aliases. Stable sufficient fuel/readback thresholds retain one final machine, protected original caller bytes and complete ownership/coverage. All branches/recursive return/closure and remaining planning targets stay open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4035,
+          "affected_lean_suites": [
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "new_theorems": 64,
+          "audited_endpoints": 1465,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 1097,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "adversarial_consumer": "Both query pointers select inline words in the same Box owned by the input table; actual entry/common prefix is constructed without an owner/query-loan separation premise. Unit and reference-containing referents are excluded by negative kernel checks.",
+          "broader_regression": "Eight recursive runtime cases freshly rerun. Full 47-suite/native-WP/nine-Python at d49f638 and thirteen ordered Rust tests at 823df34; not rerun."
+        },
+        "next": "Construct retirement of lookup temporaries and cache-hit path with actual local-6 last use before moving table local 3, then empty-query insertion and all pair/pair recursive/overflow/failure paths. Derive source-point scope, masks, selected moves, root/payload/transfer permissions and stable sufficient budgets. Finish dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target."
       }
     },
     {
@@ -1358,7 +1387,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 construct all actual evaluator/maximum paths using now-constructed whole recursive helper/choice calls. Derive source-point scope, initialization, selected moves, destination loans and argument-owner transfer permissions; compose sufficient stable helper/recursive bounds while retaining allowed shared aliases and complete ownership. Complete dynamic parsed regions/destructor instances, public cold-table teardown, wrappers/input policy/global resources/G3 and every other planning target. No full SRC-01/C3 or production resource closure."
+      "W06-C3 actual native evaluator entry and eleven-instruction lookup prefix are constructed with all selected physical permissions, stable sufficient bounds, protected original caller bytes and complete ownership. Next retire lookup temporaries and construct cache-hit/empty-query paths, then all pair/pair recursion/overflow/failure paths and return/closure. Derive remaining per-source scope/move/transfer loans and compose finite stable budgets while retaining allowed native aliases. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/global resources/G3 and every other planning target. No full SRC-01/C3 or production resource closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
