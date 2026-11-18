@@ -2142,6 +2142,44 @@
           "inherited_regression": "Seven Lean suites/eight runtime cases, thirteen ordered Rust tests and nine Python checks at 2db7171; full 47-suite/native-WP evidence at d49f638. Not rerun for this proof-only extension."
         },
         "next": "Construct both actual chooseLonger calls, insertion, output assembly and later selected owned cleanup using combined candidate64/left81/right95/word71/word85 bounds. Complete optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_choice_owner_constructor_followup": {
+        "baseline_commit": "f8c29e2",
+        "evidence": "memo-evaluator-choice-owner-constructor.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.original_choice_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.arguments_loans_of_fresh",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_choice_callee_same",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_noCalls_owner_subset",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_noCalls_owner_ledger",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.guardedInvoke_noCalls_owner_ledger",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_choice_owner_ledger",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.choice_call_owner_provenance"
+        ],
+        "status": "Actual no-call control, parsed entry, returned packet and stack closure preserve an output-owner subset of input owners. The real recursive choice call and checked destination storage derive the selected witness bound from actual input footprints. Fresh input bounds and the original loan family derive transfer permission without a universal alias ban. original_choice_complete constructs the full exact-cost parsed recursive choice and guarded store, complete original-loan machine, selected native output/bound, exact roots/count/frame, untouched root bytes and bounded untouched inventories; the constructed result is stable for every positive fuel and any helper budget. No desired successful call/post-frame is supplied. The actual parent two-choice temporary/call/cleanup sequence remains to be assembled. Earlier APIs/native contracts/source semantics are unchanged.",
+        "validation": {
+          "library_jobs": 4270,
+          "new_proof_modules": 4,
+          "new_theorems": 10,
+          "affected_lean_suites": [
+            "SourceAddressedControl"
+          ],
+          "audited_endpoints": 1989,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1081,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "consumers": [
+            "Complete arbitrary-score choice with nonempty first and empty second witness: output footprint is a subset of its actual two-owner input inventory, covering both branches and ties.",
+            "Actual parent choice call constructed using original_choice_complete, deriving native selected output, exact call cost and complete resources for any positive fuel and helper budget without a successful call/post-frame premise."
+          ],
+          "inherited_regression": "Complete parent suite at f8c29e2; seven Lean suites/eight runtime cases, thirteen ordered Rust tests and nine Python checks at 2db7171; full 47-suite/native-WP evidence at d49f638. Not rerun for this proof-only extension."
+        },
+        "next": "Use original_choice_complete to assemble real parent temporary setup99-102 and first choice101/102 to100, retirement, transfer95 to103 and second choice100/103 to99, and retain output/word bounds through cleanup. Construct insertion, output assembly, later owned cleanup, optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -2330,7 +2368,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now combines all three candidate bounds and both owned contraction-query bounds at actual finishCode6 after complete right recursion and cleanup. Construct both actual chooseLonger calls, insertion, output assembly and later selected owned cleanup using combined candidate64/left81/right95/word71/word85 bounds. Complete optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 now has the generic full forward original-loan choice constructor, actual input-owner subset ledgers and selected output provenance. All three candidate and both owned-query bounds coexist at finishCode6. Use original_choice_complete to assemble real parent temporary setup99-102 and first choice101/102 to100, retirement, transfer95 to103 and second choice100/103 to99, and retain output/word bounds through cleanup. Construct insertion, output assembly, later owned cleanup, optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

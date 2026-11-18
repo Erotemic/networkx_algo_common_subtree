@@ -2094,3 +2094,15 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_prefix_complete_provenance
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_prefix_complete_provenance
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_scope_complete_provenance
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_choice_owner_ledger
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.choice_call_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_noCalls_owner_ledger
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.guardedInvoke_noCalls_owner_ledger
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.scrutinee_active_owner_perm
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.Flow.OwnerSubset.mono
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_noCalls_owner_subset
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_choice_callee_same
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.arguments_loans_of_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_choice_complete

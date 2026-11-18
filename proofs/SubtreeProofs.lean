@@ -360,3 +360,5 @@ public import SubtreeProofs.Rust.SourcePairRightFreshPayload
 
 public import SubtreeProofs.Rust.SourcePairRightProvenanceEntry
 public import SubtreeProofs.Rust.SourcePairFinishProvenance
+
+public import SubtreeProofs.Rust.SourceOriginalChoice

@@ -25,32 +25,32 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
-[Combined witness/query bounds through complete right execution](lean-complexity-campaign/evidence/memo-evaluator-retained-right-provenance.md) now
-retains candidate 64, left witness 81 and owned left query 71 across right-query
-construction, actual right recursion and all cleanup. Owned right query 85 and
-optional right witness 88 receive derived bounds. The six real successful-right
-payload instructions retain these inventories and transfer the right witness to
-95. All three candidate bounds and both owned-query bounds are now available
-together at the actual `finishCode 6` continuation.
-Parsed entry retains all seventeen earlier checkpoints, both actual contraction
-calls and exact costs, complete source prefixes, native outputs, ownership/
-coverage and future unbound roots. Smaller head/tail/left/right `NativeTotalFresh`
-contracts and independent native success/checked-add hypotheses remain explicit.
+[Choice owner ledgers and a constructive original-loan call](lean-complexity-campaign/evidence/memo-evaluator-choice-owner-constructor.md) now
+derives that actual primitive control, parsed entry, return extraction and stack
+closure return only input owner identities. The actual recursive choice ledger
+and guarded caller store retain independently established input bounds.
+`original_choice_complete` constructs a full exact-cost choice call from two
+initialized bounded witnesses, deriving transfer permission against the original
+loan family, the selected output bound, complete machine resources, unchanged
+root/frame/count and retained bounds for untouched locals. Its constructed final
+world/activation and cost are stable at every positive fuel and any helper budget.
 Earlier endpoint statements, native contracts and source semantics are unchanged.
-The 4,266-job library build, complete affected parent consumer suite and
-1,979-endpoint axiom audit pass. Eight new theorems across seven modules retain
-the accepted axiom baseline. Eight statement seeds resolve 1,317 declarations
-without unknown references. A combined nonempty consumer has simultaneous real
-inventories of six/two/two bounded owners at 64/81/95, with twenty old table
-owners and table-owned query aliases. Earlier seven-suite/eight-runtime-case,
-thirteen Rust and nine Python checks at `2db7171` are inherited, not rerun.
-Construct both actual choices, insertion, output assembly and later selected
-owned cleanup using these combined bounds. Optional joins, overflow/failure
-exits, parent returns, full pair/pair induction, dynamic regions/destructors,
-public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all
-other planning requirements remain open. The full goal is active; no C3 or
-production resource closure is claimed.
-Earlier [left witness and retained candidate/query provenance](lean-complexity-campaign/evidence/memo-evaluator-left-witness-provenance.md)
+The 4,270-job library build, affected addressed-control suite and 1,989-endpoint
+axiom audit pass. Ten new theorems across four modules retain the accepted axiom
+baseline. Eight statement seeds resolve 1,081 unique declarations without unknown
+references. Arbitrary-score consumers cover both branches/ties, input-owner
+subset and direct use of the new forward constructor without a run/post-frame
+premise. Parent-suite evidence at `f8c29e2` and broader regression at `2db7171`
+are inherited, not rerun for this proof-only extension.
+All three parent candidate bounds and both owned-query bounds remain available
+at the checked `finishCode 6` checkpoint. Assemble actual temporaries and the two
+source choices using the new constructor, then insertion, output assembly and
+later selected owned cleanup. Optional joins, overflow/failure exits, parent
+returns, full pair/pair induction, dynamic regions/destructors, public maximum/
+cold-table teardown, wrappers/input policy/resources/G3 and every other planning
+requirement remain open. The full goal is active; no C3 or production resource
+closure is claimed.
+Earlier [combined bounds through complete right execution](lean-complexity-campaign/evidence/memo-evaluator-retained-right-provenance.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)
