@@ -2175,3 +2175,17 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_return_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_closed_complete
+
+#print axioms SubtreeProofs.Rust.SourceEval.optional_read_node
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.typed_payload_tag
+#print axioms SubtreeProofs.Rust.SourceEval.Types.call_result_type
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_score_option_types
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_route_inspections
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.exec_switch_right_returned
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_body_routing
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_successful_body_complete
+#print axioms SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.close_memory
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_returned_close
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_body_close_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_total_fresh

@@ -25,37 +25,35 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
-[Successful-right cleanup, return and frame closure](lean-complexity-campaign/evidence/memo-evaluator-finish-cleanup.md) now
-constructs all ninety-seven finish instructions, the guarded return and actual
-checked call-frame closure. Generic instruction/prefix facts derive exact root
-presence and older empty/payload-hole/scalar masks from the existing parsed
-prefixes and type certificate. Mixed retirement drops the fresh owned queries
-and checks zero owners before ending storage. Only return root0 remains before
-extraction; every mask is empty afterward. Closure preserves readable output,
-complete ownership/coverage, returned witness provenance and protected caller
-reads while allowing old table/query aliases. Earlier endpoint statements,
-smaller contracts, independent hypotheses and source semantics are unchanged.
-The complete finish continuation retains its exact world, packet and full source
-cost at larger sufficient fuel/budget bounds. This is a constructed continuation
-and closure, not yet a whole-parent dispatcher or universal pair/pair theorem.
-The 4,302-job library build passes. All 2,053 audited endpoints retain only the
-accepted axioms; thirty-three new theorems across eleven modules are included.
-Eight statement seeds resolve 1,161 unique records without unknown references.
-The positive cleanup fixture constructs a six-owner drop while preserving two
-old table owners and nested shared aliases; actual executor observations confirm
-all six descendants retired and the selected stack root gone. Thirteen Rust
-tests and nine Python frontend checks pass. All six affected Lean suites pass,
-including eight runtime cases and the parsed-entry consumer for the complete
-finish/closure with thirty-eight output owners. See the evidence report for
-reproduction commands and exact scope.
-Next compose finish/closure with earlier actual switches and parsed entry to
-obtain whole successful-parent body/dispatcher endpoints and witness provenance.
-Both optional joins, overflow/failure exits, remaining parent returns, universal
-pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum
-and cold-table teardown, wrappers/input policy/resources/G3 and every other
-planning requirement remain open. No full SRC-01/C3 or production resource closure
-is claimed; the full goal stays active. Earlier return-storage/output/insertion/
-choice checkpoints remain checked prerequisites.
+[Whole successful pair/pair body and dispatcher](lean-complexity-campaign/evidence/memo-evaluator-parent-success.md) now
+constructs the entire original parent body from parsed entry and lifts it through
+checked recursive dispatch and frame closure. Four smaller NativeTotalFresh
+contracts and independent head/tail, checked-add and left/right success equations
+select this case. Successful payload reads derive earlier optional inspections;
+actual prefixes and all retained switches compose with the complete finish.
+The native parent equation is proved from the smaller equations. The endpoint
+exports source/native agreement, readable output, complete ownership/coverage,
+protected caller reads, returned witness provenance and exact world/packet/full
+cost at larger sufficient bounds. Old table/query aliases remain legal; only
+the witness field receives the fresh owner bound. Earlier endpoint statements,
+induction contracts, independent specifications and source semantics are unchanged.
+The 4,311-job library build and all six affected Lean suites pass, including
+eight runtime cases and the new whole-parent dispatcher consumer. Its four
+smaller contracts are proved instances; twenty old table owners/table-owned
+query aliases lead to thirty-eight output owners after closure, comprising a
+six-owner matched witness and thirty-two-owner inserted table. No parent run,
+later mask/root/storage invariant or expected final frame is supplied.
+All 2,066 audited endpoints retain the accepted axioms; thirteen new theorems
+across nine modules are included. Eight statement seeds export 1,346 unique
+records without unknown references. Thirteen Rust tests and nine Python checks
+pass. See the evidence report for exact scope and reproduction commands.
+Next complete the other optional-result joins, overflow/failure exits and parent
+returns, including stronger None-result provenance at existing failure bases,
+then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors,
+public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every
+other planning requirement remain open. No full SRC-01/C3 or production resource
+closure is claimed; the full goal stays active. Earlier finish/return-storage/
+output/insertion/choice checkpoints remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.

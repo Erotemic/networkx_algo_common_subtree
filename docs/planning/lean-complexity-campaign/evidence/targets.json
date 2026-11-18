@@ -2400,6 +2400,50 @@
           "parsed_consumer": "passed: twenty old table owners and table-owned query aliases, four proved smaller fresh contracts, older masks and exact roots derived from eight actual prefixes, complete97 finish with stable bounds and checked frame closure, thirty-eight-owner readable output with bounded six-owner witness and unrestricted old table owners; separate direct instruction56-to-return consumer"
         },
         "next": "Compose the constructed successful-right finish/closure with earlier actual pair/pair switches and parsed entry to obtain whole-parent body/dispatcher endpoints and returned witness provenance. Complete both optional joins, overflow/failure exits, remaining parent returns, universal pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal stays active."
+      },
+      "evaluator_parent_success_followup": {
+        "baseline_commit": "1f0a202",
+        "evidence": "memo-evaluator-parent-success.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_successful_body_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_body_routing",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_route_inspections",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.typed_payload_tag",
+          "SubtreeProofs.Rust.SourceEval.Types.call_result_type",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_body_close_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.invoke_returned_close"
+        ],
+        "status": "The entire successful pair/pair parent body is constructed from parsed entry and lifted through actual checked recursive dispatch/closure. Four smaller NativeTotalFresh contracts and independent native head/tail, checked-add and left/right success equations select this case. Typed successful payload reads derive four earlier optional inspections; actual prefix determinism aligns early miss/word inspections. All eight prefixes, the intermediate done branch and returning switches compose with complete finish. The parent native equation is derived, not assumed. Generic invoke reflection identifies the actual returned packet and preserves witness-field provenance through closure. Complete ownership/coverage, legal old query/table aliases, protected reads and exact world/packet/full cost at larger bounds are retained. Earlier statements, induction contracts, independent specifications, source semantics, generated artifacts, maintained Rust and pins are unchanged. Other return cases and universal pair/pair induction remain open.",
+        "validation": {
+          "library_jobs": 4311,
+          "new_proof_modules": 9,
+          "new_theorems": 13,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceParentOutput",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "fresh_lean_suites": "All six listed suites pass, including eight runtime cases and the whole-parent dispatcher consumer.",
+          "parsed_consumer": "passed: all four smaller fresh contracts discharged with proved empty-query instances, twenty old table owners and table-owned query aliases, entire actual parent body/dispatch/closure, source/native evaluation, thirty-eight closed output owners comprising six fresh witness and thirty-two inserted-table owners, complete output ownership/coverage and stability at larger bounds; no parent execution or later mask/root/storage/frame premise supplied",
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 2066,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1346,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited, not a fresh full-suite run."
+        },
+        "next": "Complete the other optional-result joins, overflow/failure exits and parent returns, including stronger None-result provenance at existing failure bases, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -2588,7 +2632,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now constructs all ninety-seven successful-right finish instructions, actual guarded return and checked frame closure, deriving older root/mask facts from parsed prefixes and the existing type certificate. Compose the constructed successful-right finish/closure with earlier actual pair/pair switches and parsed entry to obtain whole-parent body/dispatcher endpoints and returned witness provenance. Complete both optional joins, overflow/failure exits, remaining parent returns, universal pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open; the full goal stays active."
+      "W06-C3 now constructs the entire successful pair/pair parent body from parsed entry and actual recursive dispatch/closure, with source/native agreement, complete ownership/coverage, protected reads, returned witness provenance and stable sufficient bounds from four explicit smaller fresh contracts. Complete the other optional-result joins, overflow/failure exits and parent returns, including stronger None-result provenance at existing failure bases, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

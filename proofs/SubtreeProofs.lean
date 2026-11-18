@@ -372,3 +372,5 @@ public import SubtreeProofs.Rust.SourcePairFinishPacking
 public import SubtreeProofs.Rust.SourcePairRightStorageEntry
 
 public import SubtreeProofs.Rust.SourcePairFinishClosure
+
+public import SubtreeProofs.Rust.SourcePairSuccessfulTotality

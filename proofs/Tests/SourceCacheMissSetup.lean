@@ -22,6 +22,7 @@ import SubtreeProofs.Rust.SourcePairFinishInsertion
 import SubtreeProofs.Rust.SourcePairFinishPacking
 import SubtreeProofs.Rust.SourcePairRightStorageEntry
 import SubtreeProofs.Rust.SourcePairFinishClosure
+import SubtreeProofs.Rust.SourcePairSuccessfulTotality
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1808,5 +1809,52 @@ example : ∃ start initial, FinishClosureEvidence start initial := by
   obtain ⟨start, initial, _, _, _, _, _, facts⟩ := parsed_finish_cleanup_fixture
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, evidence⟩ := facts
   exact ⟨start, initial, evidence⟩
+
+-- Whole parsed parent dispatch, rather than only its finish continuation.
+-- All four smaller contracts are proved instances; old table/query aliases
+-- survive alongside the six fresh witness owners in the closed output.
+example : ∃ fuel budget final packet cost owners,
+    packet.2 = SourceEval.Evaluator.encodeOutput (some finishAnswer)
+      (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable) ∧
+    Readable final.memory final.live packet.1 packet.2 ∧
+    Footprint final.memory packet.1 owners ∧ owners.length = 38 ∧
+    OwnerFrame final owners ∧ BoxCoverage final owners ∧
+    ResultOwnersAbove finishWorld.memory.length final.memory packet.1 ∧
+    SourceEval.Evaluator.Evaluation fuel (.Pair .Empty .Empty) (.Pair .Empty .Empty) finishTable (some finishAnswer)
+      (.Entry ⟨.Pair .Empty .Empty, .Pair .Empty .Empty, finishAnswer⟩ finishTable) cost ∧
+    ∀ largerFuel largerBudget, fuel ≤ largerFuel → budget ≤ largerBudget →
+      Recursive.original largerBudget largerFuel finishWorld [] [] .evaluate
+        (SourceEval.Evaluator.inputPackets pairCell pairCell finishCell (.Pair .Empty .Empty) (.Pair .Empty .Empty) finishTable) =
+        some (final, packet, cost) := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native finishTable .Empty (.Pair .Empty .Empty) wideWitness
+    (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
+  have rightNative := SourceEval.Evaluator.cache_hit_native finishTable (.Pair .Empty .Empty) .Empty wideWitness
+    (by simp [finishTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨fuel, budget, final, packet, cost, value, native, readable, wf, preserved, resources, evaluation, provenance, stable⟩ :=
+    SourceEval.Evaluator.pair_successful_total_fresh (external := []) (guards := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2) (by simp)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty (.Pair .Empty .Empty) (Or.inl rfl)) wideWitness finishTable leftNative
+      (SourceEval.Evaluator.native_empty_total_fresh (.Pair .Empty .Empty) .Empty (Or.inr rfl)) wideWitness finishTable rightNative
+  have nativeValue : SourceEval.Evaluator.selectedWitness
+      (SourceEval.Evaluator.matchedWitness wideWitness wideWitness 15#u32) wideWitness wideWitness = finishAnswer := by
+    with_unfolding_all rfl
+  rw [nativeValue] at value evaluation
+  obtain ⟨owners, footprint, ownerFrame, covered⟩ := resources
+  have readCopy := readable
+  obtain ⟨used, graph, _⟩ := readCopy
+  rw [value] at graph
+  have boxes := (Rep.of_full graph.represents footprint).boxes
+  exact ⟨fuel, budget, final, packet, cost, owners, value, readable, footprint, boxes.trans (by with_unfolding_all rfl),
+    by simpa [callerOwners] using ownerFrame, by simpa [callerOwners] using covered, provenance, evaluation, stable⟩
 
 end SourceCacheMissSetupTests
