@@ -1,31 +1,31 @@
 # Common-subtree proof status
 
-[Choice owner ledgers and a constructive original-loan call](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-choice-owner-constructor.md) now
-derives that actual primitive control, parsed entry, return extraction and stack
-closure return only input owner identities. The actual recursive choice ledger
-and guarded caller store retain independently established input bounds.
-`original_choice_complete` constructs a full exact-cost choice call from two
-initialized bounded witnesses, deriving transfer permission against the original
-loan family, the selected output bound, complete machine resources, unchanged
-root/frame/count and retained bounds for untouched locals. Its constructed final
-world/activation and cost are stable at every positive fuel and any helper budget.
-Earlier endpoint statements, native contracts and source semantics are unchanged.
-The 4,270-job library build, affected addressed-control suite and 1,989-endpoint
-axiom audit pass. Ten new theorems across four modules retain the accepted axiom
-baseline. Eight statement seeds resolve 1,081 unique declarations without unknown
-references. Arbitrary-score consumers cover both branches/ties, input-owner
-subset and direct use of the new forward constructor without a run/post-frame
-premise. Parent-suite evidence at `f8c29e2` and broader regression at `2db7171`
-are inherited, not rerun for this proof-only extension.
-All three parent candidate bounds and both owned-query bounds remain available
-at the checked `finishCode 6` checkpoint. Assemble actual temporaries and the two
-source choices using the new constructor, then insertion, output assembly and
-later selected owned cleanup. Optional joins, overflow/failure exits, parent
-returns, full pair/pair induction, dynamic regions/destructors, public maximum/
-cold-table teardown, wrappers/input policy/resources/G3 and every other planning
-requirement remain open. The full goal is active; no C3 or production resource
-closure is claimed.
-Earlier [combined bounds through complete right execution](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-retained-right-provenance.md)
+[Both actual parent choices through insertion setup](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-parent-choices.md) now
+constructs all temporary storage and argument moves, both recursive chooseLonger
+calls with exact complete costs, all moved-argument retirement and the final
+observation. The first choice selects candidate/left into 100; the second selects
+100/right into 99. All fifteen choice instructions and the six successful-right
+payload instructions reach the actual `finishCode 21` insertion continuation.
+Selected witness 99 and owned queries 71/85 retain bounds relative to the
+original parent heap. Complete ownership/coverage, native query/table snapshots,
+count/frame, root/heap guarantees, emptied candidate masks and physically retired
+argument roots remain checked. Earlier endpoint statements, smaller contracts,
+independent hypotheses and source semantics are unchanged.
+The 4,274-job library build and five affected Lean suites pass, including parsed
+entry with twenty old table owners/table-owned aliases, distinct-shape candidate
+wins/ties and eight runtime cases. Actual selected inventories have six owners
+in the parsed case and two/four/six/two across first/middle/last/tied test cases.
+All 1,993 audited endpoints retain the accepted axiom baseline; four new theorems
+across four modules are included. Eight statement seeds resolve 1,319 unique
+declarations without unknown references. Thirteen Rust tests and nine Python
+frontend checks freshly pass.
+Construct insertion arguments/views/call and cleanup, output assembly, remaining
+owned cleanup and checked return/closure. Optional joins, overflow/failure exits,
+parent returns, full pair/pair induction, dynamic regions/destructors, public
+maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other
+planning requirement remain open. The full goal stays active; no C3 or production
+resource closure is claimed.
+Earlier [choice owner ledgers and generic forward constructor](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-choice-owner-constructor.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)

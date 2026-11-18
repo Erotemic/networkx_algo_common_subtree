@@ -2180,6 +2180,51 @@
           "inherited_regression": "Complete parent suite at f8c29e2; seven Lean suites/eight runtime cases, thirteen ordered Rust tests and nine Python checks at 2db7171; full 47-suite/native-WP evidence at d49f638. Not rerun for this proof-only extension."
         },
         "next": "Use original_choice_complete to assemble real parent temporary setup99-102 and first choice101/102 to100, retirement, transfer95 to103 and second choice100/103 to99, and retain output/word bounds through cleanup. Construct insertion, output assembly, later owned cleanup, optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_parent_choices_followup": {
+        "baseline_commit": "ebae9c9",
+        "evidence": "memo-evaluator-parent-choices.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_choices_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_choices_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_first_choice_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_second_choice_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.original_choice_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.choice_call_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_complete_provenance",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.FinishChoicesScope"
+        ],
+        "status": "Both actual parent choices, all temporary setup/moves, complete exact-cost recursive calls, physical argument retirement and final observation are constructed. First region6-14 selects101/102 into100; second15-20 selects100/103 into99. Successful-right payload6 plus choices15 reach actual finishCode21 insertion continuation. Selected99 and owned71/85 retain derived parent-heap bounds; original query/table snapshots, complete resources, counts/roots/heap bytes and moved/retired masks remain checked. All earlier endpoint statements, smaller contracts, independent success/addition hypotheses and actual source semantics remain unchanged. No whole-parent success/post-frame is supplied.",
+        "validation": {
+          "library_jobs": 4274,
+          "new_proof_modules": 4,
+          "new_theorems": 4,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1993,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1319,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "consumers": [
+            "Actual parsed entry with twenty old table Box owners, table-owned nonempty query aliases and four nonempty cached Pair witnesses: both contractions, payload and both choices derive a six-owner selected witness at99 and both owned-query bounds at insertion continuation.",
+            "Independent valid complete fixture with three different native word shapes and arbitrary U32 score triples executes the real fifteen-instruction two-choice region. Input owners are bounded beyond the two-cell original heap; two older external Boxes remain live. First/middle/last/tied kernel consumers have selected inventories of two/four/six/two owners. No successful run or desired post-frame is supplied."
+          ],
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun."
+        },
+        "next": "Construct real insertion argument setup104-109, original-query reborrows, fresh selected-witness views, insertion call and cleanup. Assemble optional result/table output and remaining owned-query/zero-temporary cleanup, checked return/closure, both optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Both choices are constructed; full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -2368,7 +2413,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now has the generic full forward original-loan choice constructor, actual input-owner subset ledgers and selected output provenance. All three candidate and both owned-query bounds coexist at finishCode6. Use original_choice_complete to assemble real parent temporary setup99-102 and first choice101/102 to100, retirement, transfer95 to103 and second choice100/103 to99, and retain output/word bounds through cleanup. Construct insertion, output assembly, later owned cleanup, optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 now constructs both actual parent choices and all twenty-one successful-right payload/choice instructions through finishCode21. Selected99 and both owned-query bounds survive with complete resources and exact actual call costs. Construct real insertion argument setup104-109, original-query reborrows, fresh selected-witness views, insertion call and cleanup. Assemble optional result/table output and remaining owned-query/zero-temporary cleanup, checked return/closure, both optional joins, overflow/failure exits, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Both choices are constructed; full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

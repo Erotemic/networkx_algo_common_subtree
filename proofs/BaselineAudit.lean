@@ -2106,3 +2106,8 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_choice_callee_same
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.OriginalLoanMachine.arguments_loans_of_fresh
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_choice_complete
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_choices_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_choices_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_first_choice_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_second_choice_complete
