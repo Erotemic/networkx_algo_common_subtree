@@ -1480,6 +1480,47 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
         },
         "next": "Construct all twelve root-score instructions after successful subtotal: copy/extract subtotal, retire optional storage, open total-result storage, checked-add the literal one, retire its argument and inspect the native root-score result. Derive selected recursive witness owner freshness or equivalent loan-disjointness from actual source execution and use drop_fresh for owned cleanup; complete ownership alone does not establish this provenance. Complete overflow exits, both contraction requests, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_root_score_scope_followup": {
+        "baseline_commit": "342a742",
+        "evidence": "memo-evaluator-root-score-scope.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_root_score_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_scope_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.shape"
+        ],
+        "status": "Constructed all twelve actual root-score instructions after successful native subtotal, including scalar payload copies, subtotal/temporary retirement, fresh total/result storage, actual checked-add of the literal one and argument cleanup. Parsed entry plus all six common/miss/head/tail/subtotal/root-score prefixes reach the actual root-score discriminant at shared sufficient bounds, retaining complete original-loan machinery, both owned witnesses, updated table, subtotal and native U32 result/overflow. General executable shape lemmas derive activation count/frame and untouched-root support across calls without readiness/callee postcondition assumptions. Smaller head/tail NativeTotal and independent native head/tail/subtotal success remain explicit. No successful physical parent run, cache soundness or global alias ban is assumed. Matched witness, contractions, recursive witness freshness, remaining parent paths and full pair/pair induction remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4148,
+          "new_proof_modules": 8,
+          "new_theorems": 14,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1744,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1295,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumers": [
+            "Table-owned aliased parent queries with proved empty-input recursive contracts derive all six stable prefixes, native root-score Some 1, retired roots 52/55/60 and the actual successful discriminant.",
+            "Distinct warm keys provide head score 4294967295 and tail score zero. Proved empty-input contracts derive a successful maximum-width subtotal followed by actual root-score None/overflow. The left query aliases table-owned data; the larger right query is held by an explicit complete external Box owner ledger. No cache soundness or successful physical-run premise is supplied."
+          ],
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
+        },
+        "next": "Construct the successful root-score branch: extract the total into 58, construct the owned matched witness in 64 from moved head/tail words and native score, concatenate the left query into 71, then build/retire its fresh query references and execute the smaller contraction call. Track original bounded query loans separately from fresh word/embedding references rather than banning legal aliases. Derive recursive witness owner freshness or equivalent selected destructor loan-disjointness from actual source execution and use drop_fresh for owned cleanup. Complete overflow exits, both contraction paths, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1668,7 +1709,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail execution now reaches the actual subtotal switch through all fifteen score instructions. Aliased table-owned consumers discharge smaller calls with proved empty cases and derive subtotal success and maximum-width overflow without cache soundness. Construct all twelve root-score instructions after successful subtotal: copy/extract subtotal, retire optional storage, open total-result storage, checked-add the literal one, retire its argument and inspect the native root-score result. Derive selected recursive witness owner freshness or equivalent loan-disjointness from actual source execution and use drop_fresh for owned cleanup; complete ownership alone does not establish this provenance. Complete overflow exits, both contraction requests, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Preserve original query/table/caller aliases and track fresh copied/concatenated query loans separately. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit/empty-query and selected head-failure totality remain checked. Successful head/tail execution now reaches the root-score switch through all twelve actual root-add instructions, with native success and overflow consumers discharging smaller calls using proved empty cases. Construct the successful root-score branch: extract the total into 58, construct the owned matched witness in 64 from moved head/tail words and native score, concatenate the left query into 71, then build/retire its fresh query references and execute the smaller contraction call. Track original bounded query loans separately from fresh word/embedding references rather than banning legal aliases. Derive recursive witness owner freshness or equivalent selected destructor loan-disjointness from actual source execution and use drop_fresh for owned cleanup. Complete overflow exits, both contraction paths, choice, insertion, remaining parent return/closure and full pair/pair NativeTotal induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

@@ -25,6 +25,30 @@ program. Read these in order:
 
 ## Current execution order: usable software first
 
+[Constructed root-score arithmetic and native switch](lean-complexity-campaign/evidence/memo-evaluator-root-score-scope.md) now
+constructs all twelve actual root-score instructions after successful subtotal:
+scalar payload copying, subtotal/temporary retirement, fresh total/result storage,
+checked addition of the literal one and argument cleanup. The parsed endpoint
+`Evaluator.entry_pair_root_score_scope_complete` retains all six actual prefix
+boundaries, both owned witnesses, the updated table, native subtotal and exact
+root-score result/overflow. `Calling.Prefix.shape` derives activation count and
+untouched-root support across actual calls without extra readiness assumptions.
+Smaller head/tail `NativeTotal` and independent native success equations remain
+explicit; no physical parent success, cache soundness or alias ban is assumed.
+The 4,148-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,744 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,295 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Kernel consumers derive
+root-score `Some 1` with table-owned query aliases, and root overflow from a valid
+maximum-width subtotal with distinct cached head/tail scores and explicit external
+query ownership. Both recursive contracts are discharged by proved empty cases.
+Matched-witness construction, concatenated contraction queries and fresh query
+loan tracking, recursive witness freshness/owned cleanup, overflow exits, both
+contraction calls, choice, insertion, remaining returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and every other planning target stay open.
+The full goal remains active.
+
 [Constructed subtotal arithmetic and actual result switch](lean-complexity-campaign/evidence/memo-evaluator-subtotal-scope.md) now
 constructs all fifteen score-prefix instructions after native head/tail success:
 owned tail extraction, both scalar score copies, actual checked addition and

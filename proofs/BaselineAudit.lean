@@ -1832,3 +1832,18 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_call_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_scope_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.result_score_read
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.shape
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.instruction_shape
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.action_shape
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_shape
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.original_number_assign_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.addRoot_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_root_score_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.number_local_read
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.number_option_payload_read
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_arguments_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_scope_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_subtotal_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.root_score_arguments_source

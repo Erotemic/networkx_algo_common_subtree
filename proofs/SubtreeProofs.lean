@@ -327,3 +327,5 @@ public import SubtreeProofs.Rust.SourcePairScoreProgram
 public import SubtreeProofs.Rust.SourceOriginalOwnedDrop
 
 public import SubtreeProofs.Rust.SourcePairScoreEntry
+
+public import SubtreeProofs.Rust.SourcePairRootScoreEntry
