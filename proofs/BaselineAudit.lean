@@ -2053,3 +2053,26 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.open_result_field_owner_provenance
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.unpack_result_owner_provenance
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.retire_unpack_result_owner_provenance
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.OperandSourcesAbove.two_moves
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.aggregate_two_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_keeps_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.helper_call_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.original_helper_call_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.checkedAdd_ready_of_call
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.checkedAdd_keeps_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.original_boxed_word_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_head_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_head_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_tail_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_boxes_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_embedding_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_matched_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_matched_word_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_root_score_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_score_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_scope_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.score_tail_payload_complete_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_scope_complete_fresh

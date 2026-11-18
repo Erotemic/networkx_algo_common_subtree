@@ -2030,6 +2030,48 @@
           "broader_regression": "Seven affected Lean suites including the full SourceCacheMissSetup suite, eight recursive runtime cases, thirteen ordered Rust tests and nine Python checks freshly pass. Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun."
         },
         "next": "Derive and propagate head/tail/left recursive witness bounds, matched-candidate provenance and both concatenated word owner bounds at the parent checkpoints. Construct both actual chooseLonger calls, insertion, output assembly and later owned cleanup while retaining legal original query/table/caller aliases. The first six successful-right payload instructions are constructed; their remaining finish continuation and both optional failure/success joins are open. Prove overflow/failure paths, remaining parent returns and full pair/pair induction, including the general NativeTotalFresh contract. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_head_tail_candidate_provenance_followup": {
+        "baseline_commit": "2569452",
+        "evidence": "memo-evaluator-head-tail-candidate-provenance.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_matched_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_tail_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_root_score_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.original_boxed_word_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.original_helper_call_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.aggregate_two_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.checkedAdd_keeps_owner_provenance"
+        ],
+        "status": "[Head/tail provenance through the actual matched candidate](memo-evaluator-head-tail-candidate-provenance.md) now\nconstructs bounded witnesses at 31/37 and 41/47, preserves both across actual\nsubtotal/root-score calls and cleanup, and transfers their words through two\nreal Box helpers into matched candidate 64. The helper ledger accounts for\nbounded transferred payload owners and each new shell. All thirty construction\ninstructions and seven parsed-entry checkpoints retain complete ownership,\nnative values, count, retired roots and future unbound storage.\nExplicit smaller head/tail `NativeTotalFresh` contracts and independent native\nsuccess/checked-add hypotheses remain; earlier endpoint statements and both\nnative contract definitions are unchanged. The generic optional-payload theorem\nis relocated without changing its statement or proof.\nThe 4,251-job build and seven affected Lean suites pass, including a new consumer\nwith twenty old table owners, table-owned query aliases and two nonempty cached\nwitnesses of score seven. Actual candidate 64 has exactly six bounded Box owners.\nAll 1,963 audited endpoints retain the accepted axiom baseline; 22 new theorems\nand eighteen modules are included. Eight statement seeds resolve 1,320 unique\ndeclarations without unknown references. Thirteen Rust tests and nine Python\nfrontend checks pass.\nCarry the matched candidate bound through later contraction calls, derive the\nleft witness and both word bounds at parent checkpoints, then combine them with\nthe earlier right witness bound for both choices, insertion and later cleanup.\nOptional joins, overflow/failure exits, parent returns, full pair/pair induction,\ndynamic regions/destructors, public maximum/cold-table teardown, wrappers/input\npolicy/resources/G3 and all other planning requirements remain open.\nThe full goal is active; no C3 or production resource closure is claimed.\nEarlier [right-child provenance and successful payload transfer](memo-evaluator-right-payload-provenance.md)\nremain checked prerequisites.\n",
+        "validation": {
+          "library_jobs": 4251,
+          "new_proof_modules": 18,
+          "new_theorems": 22,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceOwnerProvenance",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1963,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1320,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9
+        },
+        "next": "Carry candidate64 provenance through both later contraction calls. Derive the left recursive witness bound and payload81, retain both concatenated-word bounds, combine with right95, construct both actual choices, insertion, output assembly and later owned cleanup. Complete optional joins, overflow/failure paths, parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. No full SRC-01/C3 or production resource closure."
       }
     },
     {
@@ -2218,7 +2260,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 right-child provenance now reaches all seventeen existing parsed-entry checkpoints and the first six actual successful-right payload instructions. Local 88 and then 95 receive derived witness owner bounds; old table owners remain unrestricted. Actual preparation ends child-view masks 27-30, which are recorded as empty rather than falsely preserved. Derive and propagate head/tail/left recursive witness bounds, matched-candidate provenance and both concatenated word owner bounds at the parent checkpoints. Construct both actual chooseLonger calls, insertion, output assembly and later owned cleanup while retaining legal original query/table/caller aliases. The first six successful-right payload instructions are constructed; their remaining finish continuation and both optional failure/success joins are open. Prove overflow/failure paths, remaining parent returns and full pair/pair induction, including the general NativeTotalFresh contract. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 head/tail witness provenance now reaches the actual matched candidate64 after all thirty construction instructions and seven parsed-entry checkpoints. Carry candidate64 provenance through both later contraction calls. Derive the left recursive witness bound and payload81, retain both concatenated-word bounds, combine with right95, construct both actual choices, insertion, output assembly and later owned cleanup. Complete optional joins, overflow/failure paths, parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. No full SRC-01/C3 or production resource closure."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

@@ -12,6 +12,7 @@ import SubtreeProofs.Rust.SourcePairLeftScopeEntry
 import SubtreeProofs.Rust.SourcePairRightPrefixEntry
 import SubtreeProofs.Rust.SourcePairRightScopeEntry
 import SubtreeProofs.Rust.SourceOriginalConcatenateFresh
+import SubtreeProofs.Rust.SourcePairMatchedFreshEntry
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1401,5 +1402,37 @@ example : ∃ beforePayload beforeActive final after resources,
   have two : resources.owners.length = 2 := boxes.trans (by with_unfolding_all rfl)
   exact ⟨wp, ap, final, after, resources, finalMachine, payload, steps, represented, two,
     bound resources represented, payload.retired 96 (by simp)⟩
+
+
+-- The actual matched candidate combines two nonempty cached witnesses. Twenty
+-- old table owners and table-owned query aliases remain legal; the candidate's
+-- six owners are derived from the two smaller fresh contracts and new shells.
+example : ∃ final after resources,
+    OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.MatchedScope wideWitness wideWitness finishTable 15#u32 after ∧
+    LocalResources final after.frame after.roots after.state 64 resources ∧ resources.owners.length = 6 ∧
+    (∀ address ∈ resources.owners, finishWorld.memory.length ≤ address) ∧
+    (∀ slot ∈ [65, 66, 67, 68, 69, 70], after.roots slot = none) := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, final, after,
+    _, machine, scope, _, retired, _, _, fresh, _⟩ :=
+    SourceEval.Evaluator.entry_pair_matched_scope_complete_fresh (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+  obtain ⟨_, frame⟩ := machine.native.valid.2
+  obtain ⟨resources, _, represented⟩ := frame.inspectSlot 64
+  have boxes := represented.boxes
+  rw [scope.candidate] at boxes
+  have six : resources.owners.length = 6 := boxes.trans (by with_unfolding_all rfl)
+  exact ⟨final, after, resources, machine, scope, represented, six, fresh resources represented,
+    fun slot member => retired slot (by simpa only [List.mem_cons, List.not_mem_nil, or_false] using Or.inr (Or.inr member))⟩
 
 end SourceCacheMissSetupTests

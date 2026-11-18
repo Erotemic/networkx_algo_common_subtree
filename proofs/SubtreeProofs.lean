@@ -352,3 +352,5 @@ public import SubtreeProofs.Rust.SourceEvaluatorNativeFresh
 public import SubtreeProofs.Rust.SourceEvaluatorFreshCallTotality
 
 public import SubtreeProofs.Rust.SourcePairFinishPayload
+
+public import SubtreeProofs.Rust.SourcePairMatchedFreshEntry

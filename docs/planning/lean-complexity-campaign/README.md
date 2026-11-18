@@ -1,36 +1,31 @@
 # Lean complexity campaign: proto-roadmap
 
-[Derived right-child provenance and successful payload transfer](evidence/memo-evaluator-right-payload-provenance.md) now
-carries the explicit stronger right-child contract through actual argument scans,
-guarded storage, tuple-field extraction and all eleven cleanup instructions.
-Parsed entry retains all seventeen prior stable checkpoints and derives the
-witness owner bound at optional local 88; transferred old table owners at 89
-remain unrestricted. Native outputs, complete ownership/coverage, exact call
-costs, query aliases and future unbound roots remain checked.
-The first six real successful-right instructions then transfer that bound
-through scratch 96 into held payload 95, drop/retire the scratch and reach the
-actual `finishCode 6` continuation. `FinishPayloadScope` records child-view masks
-27--30 ending logically here; their physical stack roots await later cleanup.
-The right child uses `NativeTotalFresh`; head/tail/left contracts and independent
-success/checked-add hypotheses remain explicit. Earlier endpoint statements,
-`NativeTotal` and `NativeTotalFresh` are unchanged.
-The 4,233-job build and seven affected Lean suites pass, including the new
-nonempty parent consumer and eight recursive runtime cases. All 1,941 audited
-endpoints, including sixteen new theorems across six modules, retain the accepted
-axiom baseline. Eight statement seeds resolve 1,328 declarations with no unknown
-references. Thirteen Rust tests and nine Python frontend checks pass.
-A new consumer from parsed entry uses twenty old table Box owners, table-owned query
-aliases and four nonempty cached Pair witnesses of score seven. After parsed
-entry and the successful-right payload prefix, local 95 has an actual inventory
-of exactly two bounded Box owners. No desired post-frame or successful whole
-parent invocation is supplied.
-Derive remaining head/tail/left/candidate/word provenance, construct both choices,
-insertion, output assembly and later owned cleanup. Complete both optional joins,
-overflow/failure paths, remaining parent returns and the general pair/pair
-induction. Dynamic regions/destructors, public maximum/cold-table teardown,
-wrappers/input policy/resources/G3 and the remaining planning targets stay open.
-The full goal remains active; no C3 or production resource closure is claimed.
-Earlier [complete warm-hit provenance, stronger empty bases and caller storage](evidence/memo-evaluator-warm-hit-provenance.md)
+[Head/tail provenance through the actual matched candidate](evidence/memo-evaluator-head-tail-candidate-provenance.md) now
+constructs bounded witnesses at 31/37 and 41/47, preserves both across actual
+subtotal/root-score calls and cleanup, and transfers their words through two
+real Box helpers into matched candidate 64. The helper ledger accounts for
+bounded transferred payload owners and each new shell. All thirty construction
+instructions and seven parsed-entry checkpoints retain complete ownership,
+native values, count, retired roots and future unbound storage.
+Explicit smaller head/tail `NativeTotalFresh` contracts and independent native
+success/checked-add hypotheses remain; earlier endpoint statements and both
+native contract definitions are unchanged. The generic optional-payload theorem
+is relocated without changing its statement or proof.
+The 4,251-job build and seven affected Lean suites pass, including a new consumer
+with twenty old table owners, table-owned query aliases and two nonempty cached
+witnesses of score seven. Actual candidate 64 has exactly six bounded Box owners.
+All 1,963 audited endpoints retain the accepted axiom baseline; 22 new theorems
+and eighteen modules are included. Eight statement seeds resolve 1,320 unique
+declarations without unknown references. Thirteen Rust tests and nine Python
+frontend checks pass.
+Carry the matched candidate bound through later contraction calls, derive the
+left witness and both word bounds at parent checkpoints, then combine them with
+the earlier right witness bound for both choices, insertion and later cleanup.
+Optional joins, overflow/failure exits, parent returns, full pair/pair induction,
+dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input
+policy/resources/G3 and all other planning requirements remain open.
+The full goal is active; no C3 or production resource closure is claimed.
+Earlier [right-child provenance and successful payload transfer](evidence/memo-evaluator-right-payload-provenance.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
