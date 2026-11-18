@@ -1890,6 +1890,54 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Seven affected Lean suites, eight runtime cases, thirteen Rust tests and nine Python checks freshly pass."
         },
         "next": "Establish recursive witness owner provenance from actual complete evaluator execution, including arbitrary typed warm-cache hits. Preserve the existing NativeTotal contract and independent specifications; any stronger induction contract must prove its base cases and project to the existing totality statement. Propagate derived helper provenance through payload/field moves, candidate assembly, choice and the actual later selected owned-word/witness cleanup. Complete both left/right optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_move_return_owner_provenance_followup": {
+        "baseline_commit": "c87634a",
+        "evidence": "memo-evaluator-move-return-provenance.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.empty_miss_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_result_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.return_result_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.close_result_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.move_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.operands_owner_provenance",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_result_field_owner_provenance"
+        ],
+        "status": "Derived owner-bound transfer through actual owned projections, primitive operands, operand lists, aggregate/scalar/address expressions and guarded assignments. A selected move transfers only actual source owner occurrences and preserves bounds of the remaining source, including emptied Box shells and untouched siblings. Actual storage opening and unrelated guarded drops/assignments preserve established local owner bounds. ResultOwnersAbove and LocalResultOwnersAbove bound only the optional witness field of an actual tuple, retaining unrestricted old table owners. The guarded packet write preserves its actual read graph; mixed tuple construction, selected first-field extraction, return movement and checked closure retain the selected witness bound. Complete actual empty-query requested-key-miss totality additionally derives witness-field provenance while preserving all preceding native output/table, premises, complete ownership/coverage, exact cost and stable larger-bound runs. Its empty witness has no Box owners; the warm typed table can retain old owners and nonempty cached witnesses, and legal query/table/caller aliases remain supported. Existing NativeTotal is unchanged. Four new semantic consumers check nonempty clone-to-return/close composition, selected witness extraction from an old-owning tuple, retained Box shells and complete warm-table empty-miss execution. The parent source frontier remains the seventeen-checkpoint right-result scope; complete warm cache-hit and general recursive witness provenance, parent joins, choice, later owned cleanup, remaining paths and full pair/pair induction remain open. No C3 or production resource closure.",
+        "validation": {
+          "library_jobs": 4223,
+          "new_proof_modules": 5,
+          "new_theorems": 20,
+          "affected_lean_suites": [
+            "SourceOwnerProvenance",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1902,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1168,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumers": [
+            "Actual nonempty cached witness clone through the recursive dispatcher retains its two bounded owners through a partial field move, zero-owner shell drop, embedding/optional reconstruction, a mixed old-table tuple, actual return extraction and stack closure. Both old table witness Boxes and fresh returned witness Boxes remain live. This is a complete helper/primitive/return/close composition, not a claimed complete parsed parent invocation.",
+            "Extract only the bounded optional witness from that mixed tuple. Actual guarded storage yields two bounded destination owners while the partial source tuple still owns four old table Boxes. Freshness of the whole mixed tuple is not asserted or required.",
+            "Move through an owned Box dereference to extract its empty payload. The emptied shell remains in the source inventory; both remaining source Box owners retain their established bound.",
+            "Complete actual empty-query miss execution starts with a nonempty arbitrary typed warm table and a nonempty cached witness of score seven. Both queries borrow table-owned data. Native insertion and checked closure return the stable exact packet/cost with a proved witness-field bound, discharging original input/frame/coverage premises without cache soundness or physical-success assumptions."
+          ],
+          "broader_regression": "Six affected Lean suites, eight runtime cases, thirteen ordered Rust tests and nine Python checks freshly pass. SourceCacheMissSetup at c87634a and full 47-suite/native-WP evidence at d49f638 are inherited, not rerun."
+        },
+        "next": "Apply helper-derived owner provenance to the complete actual warm cache-hit path, including nonempty cached witnesses, optional payload movement/wrapping, mixed witness/table result construction and cleanup. Combine it with empty_miss_total_fresh for a proved stronger empty-query induction base that projects to unchanged NativeTotal. Establish general recursive witness provenance from actual execution; transport it through recursive result field extraction, parent payloads/candidate assembly, choice and later selected owned-word/witness cleanup. Complete both left/right optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -2078,7 +2126,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 cache-hit/empty-query and selected head-failure totality remain checked. The parent source frontier remains the seventeen-checkpoint native right-result scope, with full left/right region prefixes and exact contraction calls. Actual helper clone/lookup/concatenation descendant-owner provenance and exact guarded store ownership are now derived from allocation ledgers; native concatenation constructs a safe owned-word drop with original aliases retained. Canonical inventories, closed preparation and anchored advances preserve established provenance. Nonempty cache-copy/lookup and four-Box concatenation/drop consumers pass; actual insertion retains an old owner and checks the fresh-output boundary. Existing NativeTotal is unchanged and general recursive witness provenance remains open. Establish recursive witness owner provenance from actual complete evaluator execution, including arbitrary typed warm-cache hits. Preserve the existing NativeTotal contract and independent specifications; any stronger induction contract must prove its base cases and project to the existing totality statement. Propagate derived helper provenance through payload/field moves, candidate assembly, choice and the actual later selected owned-word/witness cleanup. Complete both left/right optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 cache-hit/empty-query and selected head-failure totality remain checked; the parent source frontier is the seventeen-checkpoint native right-result scope. Helper-derived owner bounds now transfer through actual partial moves, aggregates, guarded assignments, mixed witness/table return construction, selected witness-field extraction, return movement and closure. Empty-query requested-key-miss totality additionally proves returned witness-field provenance at the full actual packet/cost endpoint; its witness owns no Boxes and the warm table can retain old owners. Nonempty return/close, partial Box shell, mixed old-table extraction and warm-table full miss consumers pass. Existing NativeTotal is unchanged and complete warm-hit/general recursive witness provenance remains open. Apply helper-derived owner provenance to the complete actual warm cache-hit path, including nonempty cached witnesses, optional payload movement/wrapping, mixed witness/table result construction and cleanup. Combine it with empty_miss_total_fresh for a proved stronger empty-query induction base that projects to unchanged NativeTotal. Establish general recursive witness provenance from actual execution; transport it through recursive result field extraction, parent payloads/candidate assembly, choice and later selected owned-word/witness cleanup. Complete both left/right optional failure/success joins, successful right payload transfer, overflow exits, insertion, remaining parent returns and full pair/pair induction. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining planning targets. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

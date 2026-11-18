@@ -344,3 +344,6 @@ public import SubtreeProofs.Rust.SourcePairRightScopeEntry
 
 public import SubtreeProofs.Rust.SourceOriginalConcatenateFresh
 public import SubtreeProofs.Rust.SourceAnchoredOwnerProvenance
+
+public import SubtreeProofs.Rust.SourceEmptyOwnerProvenance
+public import SubtreeProofs.Rust.SourceRetainedOwnerProvenance

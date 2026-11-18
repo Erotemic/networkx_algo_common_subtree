@@ -1,5 +1,33 @@
 # Lean complexity campaign: proto-roadmap
 
+[Owner provenance through moves, mixed returns and closure](evidence/memo-evaluator-move-return-provenance.md) now
+transfers helper-derived bounds through actual owned projections, operand lists,
+aggregates and guarded assignments. Partial moves retain bounded Box shells and
+siblings in the source. A mixed return tuple bounds only its optional witness
+field; its old table owners remain unrestricted. Checked extraction of that
+field, return movement and stack closure preserve the selected bound.
+The complete empty-query cache-miss endpoint additionally derives returned
+witness-field provenance with all prior premises, native output/table, complete
+ownership/coverage, exact cost and stable larger-bound runs preserved. That
+empty witness has no Box owners; arbitrary typed warm tables and legal original
+aliases remain allowed on a requested-key miss. Existing `NativeTotal` is unchanged.
+The 4,223-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,902 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,168 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Four new consumers check a
+nonempty clone through mixed return/closure; selected-field extraction with two
+bounded result owners and four old table owners left in the partial source;
+retained Box shells after payload movement; and complete warm-table empty-miss
+execution with table-owned query aliases.
+The parent frontier remains the seventeen-checkpoint right-result scope. Full
+warm cache-hit provenance and the stronger general recursive witness contract
+still need proof. Both optional joins, successful right payload transfer, parent
+candidate/choice provenance, later general owned cleanup, overflow exits,
+insertion, remaining parent returns and full pair/pair induction remain.
+Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input
+policy/resources/G3 and the remaining planning targets stay open. The full goal
+remains active.
+
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.
 Copy/lookup/concatenation helpers receive no owned input cells; every result Box
