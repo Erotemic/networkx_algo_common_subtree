@@ -350,3 +350,5 @@ public import SubtreeProofs.Rust.SourceRetainedOwnerProvenance
 
 public import SubtreeProofs.Rust.SourceEvaluatorNativeFresh
 public import SubtreeProofs.Rust.SourceEvaluatorFreshCallTotality
+
+public import SubtreeProofs.Rust.SourcePairFinishPayload

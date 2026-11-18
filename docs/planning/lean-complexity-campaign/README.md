@@ -1,36 +1,36 @@
 # Lean complexity campaign: proto-roadmap
 
-[Complete warm-hit provenance and stronger empty-query bases](evidence/memo-evaluator-warm-hit-provenance.md) now
-proves returned witness-field owner bounds through the entire actual parsed
-warm cache-hit evaluator, including nonempty typed cached witnesses, actual
-return and checked closure. Old table owners and legal query/table/caller aliases
-remain allowed. Native output/table, complete ownership/coverage, protected reads,
-exact full costs and stable larger-bound runs are retained.
-Separate `NativeTotalFresh` has proved empty-query bases for arbitrary warm
-hits and requested-key misses; it projects to unchanged `NativeTotal`.
-`Derived.evaluator_call_total_fresh` constructs the actual child invocation and
-guarded caller store, retaining the witness-field bound at the destination.
-Stable-call comparison recovers that bound at existing constructed checkpoints.
-Generic primitive-prefix transfer and retirement lemmas follow existing actual
-execution and source mutation certificates. No stronger general instance,
-cache-soundness assumption or desired physical post-frame is introduced.
-The 4,227-job build and seven affected Lean suites pass, including the parent
-cache-miss setup suite and eight recursive runtime cases. All 1,925 audited
-endpoints, including 23 new theorems, retain the accepted axiom baseline. Eight
-statement seeds resolve 1,285 declarations with no unknown references.
-Thirteen Rust tests and nine Python frontend checks pass.
-Two new consumers check a complete warm hit with both queries borrowing old
-cached-witness Boxes and a nonempty score-seven result with exactly two bounded
-owners; and a complete recursive call/store consuming the stronger empty base
-while retaining old query and cached-witness aliases.
-The parent frontier remains the seventeen-checkpoint right-result scope.
-Propagate stronger child contracts/provenance through head/tail/left/right calls,
-payloads, candidate assembly, choice and later owned cleanup. Both optional joins,
-successful right payload transfer, overflow exits, insertion, remaining returns
-and full pair/pair induction remain. Dynamic regions/destructors, public
-maximum/cold-table teardown, wrappers/input policy/resources/G3 and the remaining
-planning targets stay open. The full goal remains active.
-Earlier [move/return provenance and the empty-miss endpoint](evidence/memo-evaluator-move-return-provenance.md)
+[Derived right-child provenance and successful payload transfer](evidence/memo-evaluator-right-payload-provenance.md) now
+carries the explicit stronger right-child contract through actual argument scans,
+guarded storage, tuple-field extraction and all eleven cleanup instructions.
+Parsed entry retains all seventeen prior stable checkpoints and derives the
+witness owner bound at optional local 88; transferred old table owners at 89
+remain unrestricted. Native outputs, complete ownership/coverage, exact call
+costs, query aliases and future unbound roots remain checked.
+The first six real successful-right instructions then transfer that bound
+through scratch 96 into held payload 95, drop/retire the scratch and reach the
+actual `finishCode 6` continuation. `FinishPayloadScope` records child-view masks
+27--30 ending logically here; their physical stack roots await later cleanup.
+The right child uses `NativeTotalFresh`; head/tail/left contracts and independent
+success/checked-add hypotheses remain explicit. Earlier endpoint statements,
+`NativeTotal` and `NativeTotalFresh` are unchanged.
+The 4,233-job build and seven affected Lean suites pass, including the new
+nonempty parent consumer and eight recursive runtime cases. All 1,941 audited
+endpoints, including sixteen new theorems across six modules, retain the accepted
+axiom baseline. Eight statement seeds resolve 1,328 declarations with no unknown
+references. Thirteen Rust tests and nine Python frontend checks pass.
+A new consumer from parsed entry uses twenty old table Box owners, table-owned query
+aliases and four nonempty cached Pair witnesses of score seven. After parsed
+entry and the successful-right payload prefix, local 95 has an actual inventory
+of exactly two bounded Box owners. No desired post-frame or successful whole
+parent invocation is supplied.
+Derive remaining head/tail/left/candidate/word provenance, construct both choices,
+insertion, output assembly and later owned cleanup. Complete both optional joins,
+overflow/failure paths, remaining parent returns and the general pair/pair
+induction. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and the remaining planning targets stay open.
+The full goal remains active; no C3 or production resource closure is claimed.
+Earlier [complete warm-hit provenance, stronger empty bases and caller storage](evidence/memo-evaluator-warm-hit-provenance.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)

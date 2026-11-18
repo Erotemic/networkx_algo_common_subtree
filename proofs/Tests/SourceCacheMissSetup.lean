@@ -12,6 +12,7 @@ import SubtreeProofs.Rust.SourcePairLeftScopeEntry
 import SubtreeProofs.Rust.SourcePairRightPrefixEntry
 import SubtreeProofs.Rust.SourcePairRightScopeEntry
 import SubtreeProofs.Rust.SourceOriginalConcatenateFresh
+import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
 
@@ -1312,5 +1313,93 @@ example : ∃ final after cost nativeCost discarded,
   refine ⟨final, after, cost, nativeCost, discarded, finalMachine, fresh, value, dropRun, ?_, dropMachine, events, costEq⟩
   rw [dropLength, value]
   simp [encodeWord, Slot.ofValue, ofFields, Slot.dropWork, dropFields, DropWork.plus]
+
+private def finishEntry : Cell := .node .entry 0
+  [.node .word 1 [.owned 18, .owned 19], .node .word 0 [],
+   .node .embedding 0 [.node .word 1 [.owned 16, .owned 17], .number 7]]
+private def finishTable : MemoTable := .Entry ⟨.Pair .Empty .Empty, .Empty, wideWitness⟩ leftWideTable
+private def finishCell : Cell := .node .table 1 [.owned 14, .owned 15]
+private def finishWorld : World := ⟨leftWideWorld.memory ++ [finishEntry, leftWideCell, .node .word 0 [],
+  .node .word 0 [], .node .word 0 [], .node .word 0 []],
+  fun address => if address < 20 then some .box else none, fun address => decide (address < 20)⟩
+private def finishOwners : List Nat := [18, 19, 16, 17, 14, 12, 13, 10, 11, 8, 6, 7, 4, 2, 3, 0, 1, 5, 9, 15]
+private theorem finish_extends : Heap.Extends leftWideWorld.memory finishWorld.memory := Heap.Extends.append _ _
+private theorem finish_entry_graph : Graph finishWorld.memory finishEntry
+    (.node .entry 0 [encodeWord (.Pair .Empty .Empty), encodeWord .Empty, encodeResult wideWitness]) [18, 19, 16, 17] :=
+  .node (.cons (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil)))
+    (.cons (.node .nil) (.cons (.node (.cons
+      (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))) (.cons (.number 7) .nil))) .nil)))
+private theorem finish_footprint : Footprint finishWorld.memory finishCell finishOwners :=
+  .node (.cons (.owned rfl (finish_entry_graph.footprint
+    (Borrow.typed_unborrowed (finish_entry_graph.represents.typed
+      (.node .entry (.cons (word_typed _) (.cons (word_typed _) (.cons (result_typed _) .nil)))) ) (.adt .entry))))
+    (.cons (.owned rfl (Heap.Spatial.footprint_mono finish_extends left_wide_footprint)) .nil))
+private theorem finish_resources : OwnerFrame finishWorld finishOwners ∧ BoxCoverage finishWorld finishOwners := by
+  refine ⟨⟨by decide +kernel, ?_, ?_⟩, ?_⟩
+  · intro address member
+    have bound : address < 20 := by simp only [finishOwners, List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [finishWorld, bound]
+  · intro address member
+    have bound : address < 20 := by simp only [finishOwners, List.mem_cons, List.not_mem_nil, or_false] at member; omega
+    simp [finishWorld, bound]
+  · intro address classified _
+    have bound : address < 20 := by simpa [finishWorld] using classified
+    simp only [finishOwners, List.mem_cons, List.not_mem_nil, or_false]; omega
+private theorem finish_readable : Readable finishWorld.memory finishWorld.live finishCell (encodeTable finishTable) := by
+  obtain ⟨reads, graph, _⟩ := left_wide_readable
+  have first := Graph.owned (address := 14) (show finishWorld.memory[14]? = some finishEntry by rfl) finish_entry_graph
+  have second := Graph.owned (address := 15) (show finishWorld.memory[15]? = some leftWideCell by rfl) (graph.mono finish_extends)
+  have next := Graph.node (kind := .table) (tag := 1)
+    (GraphFields.cons first (GraphFields.cons second (GraphFields.nil (memory := finishWorld.memory))))
+  exact readable_of_footprint next.represents
+    (Borrow.typed_unborrowed (next.represents.typed (table_typed finishTable)) (.adt .table)) finish_footprint finish_resources.1.alive
+private theorem finish_pair_readable : Readable finishWorld.memory finishWorld.live pairCell
+    (.reference (encodeWord (.Pair .Empty .Empty))) :=
+  ⟨[2, 3, 0], .shared rfl (.node (.cons (.owned rfl (.node .nil)) (.cons (.owned rfl (.node .nil)) .nil))),
+    by simp [AliveOn, finishWorld]⟩
+
+-- All child requests hit typed nonempty cached witnesses of score seven.
+-- Actual parsed entry reaches right option 88 with a derived bound, then all
+-- six real successful-right payload instructions move its two fresh owners to
+-- 95. Original queries alias table-owned words; child views end logically.
+example : ∃ beforePayload beforeActive final after resources,
+    OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.FinishPayloadScope .Empty .Empty .Empty .Empty wideWitness wideWitness wideWitness wideWitness finishTable 15#u32 after ∧
+    Calling.Prefix (Helpers.callee 0 0) [] (SourceEval.Evaluator.finishCode 6) (SourceEval.Evaluator.finishActions.take 6)
+      beforePayload beforeActive final after ∧
+    LocalResources final after.frame after.roots after.state 95 resources ∧ resources.owners.length = 2 ∧
+    (∀ address ∈ resources.owners, finishWorld.memory.length ≤ address) ∧ after.roots 96 = none := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native finishTable .Empty (.Pair .Empty .Empty) wideWitness
+    (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
+  have rightNative := SourceEval.Evaluator.cache_hit_native finishTable (.Pair .Empty .Empty) .Empty wideWitness
+    (by simp [finishTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wp, ap,
+    result, output, _, _, _, _, _, machine, scope, _, native, _, count, future, _, _, fresh, _⟩ :=
+    SourceEval.Evaluator.entry_pair_right_scope_complete_fresh (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total .Empty (.Pair .Empty .Empty) (Or.inl rfl)) wideWitness finishTable leftNative
+      (SourceEval.Evaluator.native_empty_total_fresh (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans rightNative))
+  obtain ⟨final, after, steps, finalMachine, payload, bound, _, _, _, _⟩ :=
+    SourceEval.Evaluator.pair_finish_payload_complete machine (Helpers.callee 0 0) scope fresh
+      (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1]; decide)
+      (future 96 (by decide))
+  obtain ⟨_, frame⟩ := finalMachine.native.valid.2
+  obtain ⟨resources, _, represented⟩ := frame.inspectSlot 95
+  have boxes := represented.boxes
+  rw [payload.rightWitness] at boxes
+  have two : resources.owners.length = 2 := boxes.trans (by with_unfolding_all rfl)
+  exact ⟨wp, ap, final, after, resources, finalMachine, payload, steps, represented, two,
+    bound resources represented, payload.retired 96 (by simp)⟩
 
 end SourceCacheMissSetupTests
