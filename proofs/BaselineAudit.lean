@@ -2085,3 +2085,12 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_word_views_complete_fresh
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_matched_queries_complete_fresh
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_payload_complete_fresh
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_finish_payload_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_concat_call_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_concat_scope_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_from_concat_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_scope_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_prefix_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_right_prefix_complete_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_scope_complete_provenance

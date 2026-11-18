@@ -2,32 +2,32 @@
 
 Branch: `Droschinsky-algos`.
 
-[Left witness provenance and retained candidate/query bounds](lean-complexity-campaign/evidence/memo-evaluator-left-witness-provenance.md) now
-carries candidate 64 through actual left concatenation, fresh views, argument
-moves, recursion and all eleven result cleanup instructions. Owned left query
-71 retains its independently derived bound. The actual recursive checkpoint
-derives the left witness bound at optional 74; six real payload instructions
-transfer it through scratch 82 into held 81 and physically retire the scratch.
-Parsed entry retains all twelve earlier checkpoints, the complete actual left
-call/cost, full sixty-instruction matched/left prefix, native result/table and
-future unbound roots. Smaller head/tail/left `NativeTotalFresh` contracts and
-independent native successes/checked additions remain explicit. Earlier endpoint
-statements, native contracts and source semantics are unchanged.
-The 4,259-job library build, affected complete parent consumer suite and
-1,971-endpoint axiom audit pass. Eight new theorems across eight modules retain
-the accepted axiom baseline. Eight statement seeds resolve 1,312 declarations
-without unknown references. A nonempty consumer derives two bounded owners at
-81 beside the retained six-owner candidate 64 with twenty old table owners and
-table-owned query aliases. The seven-suite/eight-runtime-case, thirteen Rust and
-nine Python checks at `2db7171` are inherited, not rerun for this extension.
-Carry these three bounds through right-query construction/right recursion,
-derive and retain word 85, and combine with right witness 95 for both choices,
-insertion, output assembly and later cleanup. Optional joins, overflow/failure
+[Combined witness/query bounds through complete right execution](lean-complexity-campaign/evidence/memo-evaluator-retained-right-provenance.md) now
+retains candidate 64, left witness 81 and owned left query 71 across right-query
+construction, actual right recursion and all cleanup. Owned right query 85 and
+optional right witness 88 receive derived bounds. The six real successful-right
+payload instructions retain these inventories and transfer the right witness to
+95. All three candidate bounds and both owned-query bounds are now available
+together at the actual `finishCode 6` continuation.
+Parsed entry retains all seventeen earlier checkpoints, both actual contraction
+calls and exact costs, complete source prefixes, native outputs, ownership/
+coverage and future unbound roots. Smaller head/tail/left/right `NativeTotalFresh`
+contracts and independent native success/checked-add hypotheses remain explicit.
+Earlier endpoint statements, native contracts and source semantics are unchanged.
+The 4,266-job library build, complete affected parent consumer suite and
+1,979-endpoint axiom audit pass. Eight new theorems across seven modules retain
+the accepted axiom baseline. Eight statement seeds resolve 1,317 declarations
+without unknown references. A combined nonempty consumer has simultaneous real
+inventories of six/two/two bounded owners at 64/81/95, with twenty old table
+owners and table-owned query aliases. Earlier seven-suite/eight-runtime-case,
+thirteen Rust and nine Python checks at `2db7171` are inherited, not rerun.
+Construct both actual choices, insertion, output assembly and later selected
+owned cleanup using these combined bounds. Optional joins, overflow/failure
 exits, parent returns, full pair/pair induction, dynamic regions/destructors,
 public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all
 other planning requirements remain open. The full goal is active; no C3 or
 production resource closure is claimed.
-Earlier [head/tail provenance and matched construction](lean-complexity-campaign/evidence/memo-evaluator-head-tail-candidate-provenance.md)
+Earlier [left witness and retained candidate/query provenance](lean-complexity-campaign/evidence/memo-evaluator-left-witness-provenance.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)

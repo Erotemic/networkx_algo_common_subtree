@@ -15,6 +15,8 @@ import SubtreeProofs.Rust.SourceOriginalConcatenateFresh
 import SubtreeProofs.Rust.SourcePairMatchedFreshEntry
 import SubtreeProofs.Rust.SourcePairLeftFreshEntry
 import SubtreeProofs.Rust.SourcePairRightFreshPayload
+import SubtreeProofs.Rust.SourcePairRightProvenanceEntry
+import SubtreeProofs.Rust.SourcePairFinishProvenance
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1481,5 +1483,67 @@ example : ∃ final after leftResources candidateResources,
     leftBoxes.trans (by with_unfolding_all rfl), leftAbove leftResources leftRep, candidateRep,
     candidateBoxes.trans (by with_unfolding_all rfl), candidateAbove candidateResources candidateRep,
     wordAbove, payload.held.retired 82 (by simp)⟩
+
+
+-- Both contraction calls and all cleanup preserve the constructed candidate
+-- and both fresh query words. All three held choices have concrete bounded
+-- owner inventories at the actual finishCode 6 continuation.
+example : ∃ final after,
+    OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.FinishPayloadScope .Empty .Empty .Empty .Empty wideWitness wideWitness wideWitness wideWitness finishTable 15#u32 after ∧
+    (∀ slot ∈ [64, 81, 95], ∃ resources,
+      LocalResources final after.frame after.roots after.state slot resources ∧
+      resources.owners.length = (if slot = 64 then 6 else 2) ∧
+      ∀ address ∈ resources.owners, finishWorld.memory.length ≤ address) ∧
+    (∀ slot ∈ [71, 85], LocalOwnersAbove finishWorld.memory.length final after slot) := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native finishTable .Empty (.Pair .Empty .Empty) wideWitness
+    (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
+  have rightNative := SourceEval.Evaluator.cache_hit_native finishTable (.Pair .Empty .Empty) .Empty wideWitness
+    (by simp [finishTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wp, ap,
+    result, output, _, _, _, _, _, machine, scope, _, native, _, count, future, _, _, fresh, held, _⟩ :=
+    SourceEval.Evaluator.entry_pair_right_scope_complete_provenance (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty (.Pair .Empty .Empty) (Or.inl rfl)) wideWitness finishTable leftNative
+      (SourceEval.Evaluator.native_empty_total_fresh (.Pair .Empty .Empty) .Empty (Or.inr rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans rightNative))
+  obtain ⟨final, after, _, finalMachine, payload, rightAbove, heldAbove, _, _, _, _⟩ :=
+    SourceEval.Evaluator.pair_finish_payload_complete_provenance machine (Helpers.callee 0 0) scope fresh held
+      (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1]; decide) (future 96 (by decide))
+  refine ⟨final, after, finalMachine, payload, ?_, ?_⟩
+  · intro slot member
+    obtain ⟨_, frame⟩ := finalMachine.native.valid.2
+    obtain ⟨resources, _, represented⟩ := frame.inspectSlot slot
+    have above : LocalOwnersAbove finishWorld.memory.length final after slot := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+      rcases member with rfl | rfl | rfl
+      · exact heldAbove 64 (by simp)
+      · exact heldAbove 81 (by simp)
+      · exact rightAbove
+    refine ⟨resources, represented, ?_, above resources represented⟩
+    have boxes := represented.boxes
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl | rfl
+    · rw [payload.matched.candidate] at boxes
+      exact boxes.trans (by with_unfolding_all rfl)
+    · rw [payload.leftWitness] at boxes
+      exact boxes.trans (by with_unfolding_all rfl)
+    · rw [payload.rightWitness] at boxes
+      exact boxes.trans (by with_unfolding_all rfl)
+  · intro slot member
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at member
+    rcases member with rfl | rfl
+    · exact heldAbove 71 (by decide)
+    · exact heldAbove 85 (by decide)
 
 end SourceCacheMissSetupTests
