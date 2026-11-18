@@ -154,5 +154,9 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
   -- table-owned witness and the suspended caller's words remain live.
   checkWarm "tails-failure-owned-head" (.Pair .Empty pairWord) (.Pair .Empty pairWord) true 1739 5
     (.Entry ⟨.Empty, .Empty, ⟨pairWord, 4294967295#u32⟩⟩ .Empty)
+  -- Both retained recursive witnesses own two copied children. The old table's
+  -- children remain live after subtotal failure retires all four fresh cells.
+  checkWarm "subtotal-overflow-owned-both" pairWord pairWord true 1059 3
+    (.Entry ⟨.Empty, .Empty, ⟨pairWord, 4294967295#u32⟩⟩ .Empty)
 
 end SourceRecursiveExecutionTests

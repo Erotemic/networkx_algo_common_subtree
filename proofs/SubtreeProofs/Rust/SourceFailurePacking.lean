@@ -27,11 +27,14 @@ def failurePackActions (source optional table : Nat) : List Action :=
 def failurePackCode (source optional table index : Nat) : Code :=
   ((failurePackActions source optional table).drop index).foldr Control.Tree.step .done
 
+def failurePackCodeWith (suffix : Code) (source optional table index : Nat) : Code :=
+  ((failurePackActions source optional table).drop index).foldr Control.Tree.step suffix
+
 theorem headsFailure_actions : headsFailure = (failurePackActions 32 39 40).foldr Control.Tree.step .done := rfl
 
-theorem failure_pack_complete {before world : World} {active : Activation} {callers : List Activation}
+theorem failure_pack_complete_with_suffix {before world : World} {active : Activation} {callers : List Activation}
     {previous : Resources} {external exceptions : List Nat}
-    (h : OriginalLoanMachine before callers previous external exceptions world active) (callee : Derived.Callees)
+    (h : OriginalLoanMachine before callers previous external exceptions world active) (callee : Derived.Callees) (suffix : Code)
     (source optional table : Nat) (sourceOutside : source ∉ exceptions) (optionOutside : optional ∉ exceptions)
     (tableOutside : table ∉ exceptions) (zeroOutside : 0 ∉ exceptions)
     (sourceNonzero : source ≠ 0) (optionNonzero : optional ≠ 0) (tableNonzero : table ≠ 0)
@@ -42,12 +45,12 @@ theorem failure_pack_complete {before world : World} {active : Activation} {call
     {root0 : Binding} (bound0 : active.roots 0 = some root0) (raw0 : world.memory[root0.address]? = some (.node .tuple 0 []))
     (empty0 : active.state 0 = .empty) :
     ∃ final after,
-      Calling.Prefix callee callers .done (failurePackActions source optional table) world active final after ∧
+      Calling.Prefix callee callers suffix (failurePackActions source optional table) world active final after ∧
       OriginalLoanMachine before callers previous external exceptions final after ∧
       after.roots = active.roots ∧ after.count = active.count ∧ after.frame = active.frame ∧
       after.state 0 = Slot.ofValue (encodeOutput none nativeTable) ∧ after.state source = .empty := by
   obtain ⟨wo, ao, optionRun, mo, optionRoots, optionCount, optionFrame, optionValue, optionMemory⟩ :=
-    original_constant_view_complete h callee (failurePackCode source optional table 2) optionOutside .optional 0
+    original_constant_view_complete h callee (failurePackCodeWith suffix source optional table 2) optionOutside .optional 0
       (option_typed none) (.adt .optional) optionBound optionUnbound
   have sourceValue : ao.state source = Slot.ofValue (encodeTable nativeTable) := by
     have same := optionRun.closed_local_same (index := source) h.native.valid h.native.callersValid h.native.wellFormed
@@ -55,18 +58,18 @@ theorem failure_pack_complete {before world : World} {active : Activation} {call
       (by simp [LocalPreservation.action, LocalPreservation.expression, LocalPreservation.operands, sourceOption])
     exact same.trans input
   obtain ⟨wt, tableActive, tableRun, mt, tableRoots, tableCount, tableFrame, sourceEmpty, tableValue, tableMemory⟩ :=
-    original_move_view_complete mo callee (failurePackCode source optional table 4) sourceOutside tableOutside sourceValue
+    original_move_view_complete mo callee (failurePackCodeWith suffix source optional table 4) sourceOutside tableOutside sourceValue
       (table_typed nativeTable) (.adt .table) (by rw [optionCount]; exact tableBound)
       (by simpa [optionRoots, Roots.set, Ne.symm optionTable] using tableUnbound)
-  have first4 : Calling.Prefix callee callers (failurePackCode source optional table 4)
+  have first4 : Calling.Prefix callee callers (failurePackCodeWith suffix source optional table 4)
       ((failurePackActions source optional table).take 4) world active wt tableActive :=
-    Calling.Prefix.append (suffix := failurePackCode source optional table 4)
+    Calling.Prefix.append (suffix := failurePackCodeWith suffix source optional table 4)
       (rest := [.storageLive table, .assign table (.use (.move (.local source)))]) optionRun tableRun
   have bound0O : ao.roots 0 = some root0 := by simpa [optionRoots, Roots.set, Ne.symm optionNonzero] using bound0
   have bound0T : tableActive.roots 0 = some root0 := by simpa [tableRoots, Roots.set, Ne.symm tableNonzero] using bound0O
   have raw0T := tableMemory 0 root0 bound0O _ (optionMemory 0 root0 bound0 _ raw0)
-  let prepared := tableActive.forgetRefs (failurePackCode source optional table 4)
-  have machine := mt.prepare (failurePackCode source optional table 4)
+  let prepared := tableActive.forgetRefs (failurePackCodeWith suffix source optional table 4)
+  have machine := mt.prepare (failurePackCodeWith suffix source optional table 4)
   have optionT : tableActive.state optional = Slot.ofValue (encodeOption none) := by
     exact (tableRun.closed_local_same (index := optional) mo.native.valid mo.native.callersValid mo.native.wellFormed
       (by rw [optionValue]; exact ofValue_typed (option_typed none)) (.adt .optional) rfl
@@ -105,11 +108,11 @@ theorem failure_pack_complete {before world : World} {active : Activation} {call
     intro index member
     have selected : index = table ∨ index = optional := by simpa using member
     rcases selected with rfl | rfl <;> simp [a0, Partial.Locals.set, tableNonzero, optionNonzero, optionTable, Slot.dropWork]
-  obtain ⟨final, after, cleanup, afterMachine, rootsAfter, countAfter, memoryAfter⟩ := plan.complete_original callee .done finalMachine rfl zero
-  have last5 : Calling.Prefix callee callers .done ((failurePackActions source optional table).drop 4) wt tableActive final after :=
+  obtain ⟨final, after, cleanup, afterMachine, rootsAfter, countAfter, memoryAfter⟩ := plan.complete_original callee suffix finalMachine rfl zero
+  have last5 : Calling.Prefix callee callers suffix ((failurePackActions source optional table).drop 4) wt tableActive final after :=
     .cons (Calling.instruction_noncall_run (act := .assign 0 (.aggregate .tuple 0 [.move (.local optional), .move (.local table)])) assign0) cleanup
-  have whole : Calling.Prefix callee callers .done (failurePackActions source optional table) world active final after :=
-    Calling.Prefix.append (suffix := .done) (rest := (failurePackActions source optional table).drop 4) first4 last5
+  have whole : Calling.Prefix callee callers suffix (failurePackActions source optional table) world active final after :=
+    Calling.Prefix.append (suffix := suffix) (rest := (failurePackActions source optional table).drop 4) first4 last5
   have output0 : a0.state 0 = Slot.ofValue (encodeOutput none nativeTable) := by simp only [a0, Partial.Locals.set, ite_true]
   have zeroSource : a0.state source = .empty := by
     simp only [a0, Partial.Locals.set, sourceNonzero, sourceTable, sourceOption, ite_false]
@@ -130,5 +133,26 @@ theorem failure_pack_complete {before world : World} {active : Activation} {call
   · exact (cleanup.closed_local_same (index := source) finalMachine.native.valid finalMachine.native.callersValid finalMachine.native.wellFormed
       (by rw [zeroSource]; exact .empty .u32) .u32 rfl
       (by simp [LocalPreservation.action, sourceOption, sourceTable])).trans zeroSource
+
+theorem failure_pack_complete {before world : World} {active : Activation} {callers : List Activation}
+    {previous : Resources} {external exceptions : List Nat}
+    (h : OriginalLoanMachine before callers previous external exceptions world active) (callee : Derived.Callees)
+    (source optional table : Nat) (sourceOutside : source ∉ exceptions) (optionOutside : optional ∉ exceptions)
+    (tableOutside : table ∉ exceptions) (zeroOutside : 0 ∉ exceptions)
+    (sourceNonzero : source ≠ 0) (optionNonzero : optional ≠ 0) (tableNonzero : table ≠ 0)
+    (sourceOption : source ≠ optional) (sourceTable : source ≠ table) (optionTable : optional ≠ table)
+    (optionBound : optional < active.count) (tableBound : table < active.count)
+    (optionUnbound : active.roots optional = none) (tableUnbound : active.roots table = none)
+    {nativeTable : MemoTable} (input : active.state source = Slot.ofValue (encodeTable nativeTable))
+    {root0 : Binding} (bound0 : active.roots 0 = some root0) (raw0 : world.memory[root0.address]? = some (.node .tuple 0 []))
+    (empty0 : active.state 0 = .empty) :
+    ∃ final after,
+      Calling.Prefix callee callers .done (failurePackActions source optional table) world active final after ∧
+      OriginalLoanMachine before callers previous external exceptions final after ∧
+      after.roots = active.roots ∧ after.count = active.count ∧ after.frame = active.frame ∧
+      after.state 0 = Slot.ofValue (encodeOutput none nativeTable) ∧ after.state source = .empty :=
+  failure_pack_complete_with_suffix h callee .done source optional table sourceOutside optionOutside tableOutside zeroOutside
+    sourceNonzero optionNonzero tableNonzero sourceOption sourceTable optionTable optionBound tableBound optionUnbound tableUnbound
+    input bound0 raw0 empty0
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

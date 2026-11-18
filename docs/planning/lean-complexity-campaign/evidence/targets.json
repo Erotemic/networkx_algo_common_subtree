@@ -2497,6 +2497,59 @@
           "ci_added_commands_passed": true
         },
         "next": "Construct subtotal/root overflow and both contraction-failure returns, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      },
+      "evaluator_subtotal_overflow_followup": {
+        "baseline_commit": "9554d33",
+        "evidence": "memo-evaluator-subtotal-overflow.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.subtotal_overflow_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_subtotal_overflow_body_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.subtotal_overflow_continuation_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.subtotal_overflow_cleanup_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.subtotal_overflow_pack_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_score_root_presence",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.failure_pack_complete_with_suffix",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.failure_pack_complete"
+        ],
+        "status": "Constructed whole subtotal-overflow original body and checked dispatch/closure from parsed readable inputs and complete resources, two explicit smaller NativeTotalFresh contracts, independent child successes and native checked-add overflow. Actual score prefix derives seventeen roots, scalar/hole masks and empty return storage. Generalized failure packing retains its actual suffix; the original .done statement is unchanged. The updated table transfers to output, both fresh owned witnesses are dropped through retained bounds, actual mask counts justify later storage retirement, and all cleanup joins/parameter return execute. Readable None/table output, complete ownership/coverage, original aliases, protected reads, source/native agreement, result-field provenance and exact world/packet/full-cost stability survive. No parent execution/native equation or successful close is assumed. Root overflow, both contraction failures and universal induction remain open.",
+        "validation": {
+          "library_jobs": 4323,
+          "new_proof_files": 5,
+          "proof_modules_touched": 6,
+          "new_theorems": 11,
+          "affected_lean_suites": [
+            "SourceSubtotalOverflow",
+            "SourceNoneResultProvenance",
+            "SourceCacheMissSetup",
+            "SourceParentOutput",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "fresh_lean_suites": "All eight listed suites pass, including ten runtime cases and all prior whole-parent/output/choice/cleanup consumers.",
+          "subtotal_consumer": "passed: both smaller fresh contracts discharged by proved empty-input instances; two-owner maximum-score cached witness copied for both children, repeated table-owned query aliases, complete checked parent dispatch, readable None/table output, four final owners, complete coverage, provenance and stable larger bounds",
+          "owned_both_runtime": "passed: actual two-owner head and two-owner tail copies are retired on subtotal overflow; 1059 source steps/three solver calls, complete source/addressed value/table/cost agreement, caller guards/bytes, owner uniqueness/live-Box classification/full coverage and retirement of all other new storage",
+          "recursive_runtime_cases": 10,
+          "audited_endpoints": 2089,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1316,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "ci_lean_suites": 52,
+          "ci_added_suites": [
+            "SourceSubtotalOverflow"
+          ],
+          "ci_added_commands_passed": true,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited. This checkpoint runs the eight affected suites, not all 52 CI suites."
+        },
+        "next": "Construct root overflow and both contraction-failure returns, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -2685,7 +2738,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now has witness provenance for complete head failure and a constructed whole tail-failure body/dispatcher with two explicit smaller fresh contracts, owned-head cleanup, source/native agreement, complete resources, protected reads and stable sufficient bounds. Construct subtotal/root overflow and both contraction-failure returns, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      "W06-C3 now also constructs whole subtotal-overflow body and checked dispatch/closure, both owned witness drops, updated-table None output and all cleanup joins from two explicit smaller fresh contracts and independent native equations. Construct root overflow and both contraction-failure returns, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
