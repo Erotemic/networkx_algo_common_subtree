@@ -13,6 +13,8 @@ import SubtreeProofs.Rust.SourcePairRightPrefixEntry
 import SubtreeProofs.Rust.SourcePairRightScopeEntry
 import SubtreeProofs.Rust.SourceOriginalConcatenateFresh
 import SubtreeProofs.Rust.SourcePairMatchedFreshEntry
+import SubtreeProofs.Rust.SourcePairLeftFreshEntry
+import SubtreeProofs.Rust.SourcePairRightFreshPayload
 import SubtreeProofs.Rust.SourcePairFinishPayload
 
 namespace SourceCacheMissSetupTests
@@ -1434,5 +1436,50 @@ example : ∃ final after resources,
   have six : resources.owners.length = 6 := boxes.trans (by with_unfolding_all rfl)
   exact ⟨final, after, resources, machine, scope, represented, six, fresh resources represented,
     fun slot member => retired slot (by simpa only [List.mem_cons, List.not_mem_nil, or_false] using Or.inr (Or.inr member))⟩
+
+
+-- A nonempty left recursive cache result has two fresh owners. Its actual call,
+-- eleven cleanup instructions and six payload steps preserve the six-Box
+-- matched candidate and transfer the left witness through scratch 82 into 81.
+example : ∃ final after leftResources candidateResources,
+    OriginalLoanMachine finishWorld [] {} [] [45, 44, 35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.RightPayloadScope .Empty .Empty .Empty .Empty wideWitness wideWitness wideWitness finishTable 15#u32 after ∧
+    LocalResources final after.frame after.roots after.state 81 leftResources ∧ leftResources.owners.length = 2 ∧
+    (∀ address ∈ leftResources.owners, finishWorld.memory.length ≤ address) ∧
+    LocalResources final after.frame after.roots after.state 64 candidateResources ∧ candidateResources.owners.length = 6 ∧
+    (∀ address ∈ candidateResources.owners, finishWorld.memory.length ≤ address) ∧
+    LocalOwnersAbove finishWorld.memory.length final after 71 ∧ after.roots 82 = none := by
+  have input : FieldsFootprint finishWorld.memory [pairCell, pairCell, finishCell] finishOwners :=
+    .cons (.shared _) (.cons (.shared _) (.cons finish_footprint .nil))
+  have hit := SourceEval.Evaluator.cache_hit_native finishTable .Empty .Empty wideWitness
+    (by simp [finishTable, leftWideTable, wideTable, MemoizedOrderedSolver.findResult])
+  have leftNative := SourceEval.Evaluator.cache_hit_native finishTable .Empty (.Pair .Empty .Empty) wideWitness
+    (by simp [finishTable, leftWideTable, MemoizedOrderedSolver.findResult])
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, wp, ap,
+    result, output, _, _, machine, scope, native, _, count, future, leftFresh, candidateFresh, wordFresh, _⟩ :=
+    SourceEval.Evaluator.entry_pair_left_scope_complete_fresh (external := [])
+      (by simp [World.WellFormed, finishWorld, leftWideWorld, wideWorld, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty finishTable finishTable finishTable wideWitness wideWitness 14#u32 15#u32
+      pairCell pairCell finishCell finish_pair_readable finish_pair_readable finish_readable input
+      (by simpa [callerOwners] using finish_resources.1) (by simpa [callerOwners] using finish_resources.2)
+      (by simp [finishTable, leftWideTable, wideTable, table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl))
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty .Empty (Or.inl rfl)) hit hit (by decide +kernel) (by decide +kernel)
+      (SourceEval.Evaluator.native_empty_total_fresh .Empty (.Pair .Empty .Empty) (Or.inl rfl))
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans leftNative))
+  obtain ⟨final, after, _, finalMachine, payload, _, _, _, leftAbove, candidateAbove, wordAbove, _⟩ :=
+    SourceEval.Evaluator.pair_right_payload_complete_fresh machine (Helpers.callee 0 0) scope leftFresh candidateFresh wordFresh
+      (by rw [count, SourceEval.CallingCertificate.originalEvaluator_spec.2.1]; decide) (future 82 (by decide))
+  obtain ⟨_, frame⟩ := finalMachine.native.valid.2
+  obtain ⟨leftResources, _, leftRep⟩ := frame.inspectSlot 81
+  obtain ⟨candidateResources, _, candidateRep⟩ := frame.inspectSlot 64
+  have leftBoxes := leftRep.boxes
+  rw [payload.held.leftWitness] at leftBoxes
+  have candidateBoxes := candidateRep.boxes
+  rw [payload.held.matched.candidate] at candidateBoxes
+  exact ⟨final, after, leftResources, candidateResources, finalMachine, payload, leftRep,
+    leftBoxes.trans (by with_unfolding_all rfl), leftAbove leftResources leftRep, candidateRep,
+    candidateBoxes.trans (by with_unfolding_all rfl), candidateAbove candidateResources candidateRep,
+    wordAbove, payload.held.retired 82 (by simp)⟩
 
 end SourceCacheMissSetupTests

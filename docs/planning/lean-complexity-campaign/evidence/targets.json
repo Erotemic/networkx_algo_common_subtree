@@ -2072,6 +2072,41 @@
           "python_frontend_tests": 9
         },
         "next": "Carry candidate64 provenance through both later contraction calls. Derive the left recursive witness bound and payload81, retain both concatenated-word bounds, combine with right95, construct both actual choices, insertion, output assembly and later owned cleanup. Complete optional joins, overflow/failure paths, parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. No full SRC-01/C3 or production resource closure."
+      },
+      "evaluator_left_witness_provenance_followup": {
+        "baseline_commit": "2db7171",
+        "evidence": "memo-evaluator-left-witness-provenance.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_right_payload_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_word_views_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_left_concat_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_concat_call_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_left_concat_scope_complete_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_matched_queries_complete_fresh"
+        ],
+        "status": "The bounded matched candidate and fresh left concatenation word survive actual argument moves, anchored recursive execution and all eleven left-result cleanup steps. An explicit smaller NativeTotalFresh contract derives the actual tuple witness-field bound, then unpacking derives optional74. Parsed entry retains twelve stable checkpoints, the actual exact-cost left call, full sixty-instruction matched/left prefix, complete resources, native outputs and future unbound roots. Six successful-left payload instructions move the bounded witness through scratch82 to held81 and retire the scratch while retaining candidate64/word71. Earlier endpoints and source/native contracts remain unchanged. No desired post-frame or complete-parent success is supplied.",
+        "validation": {
+          "library_jobs": 4259,
+          "new_proof_modules": 8,
+          "new_theorems": 8,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup"
+          ],
+          "audited_endpoints": 1971,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1312,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "adversarial_consumer": "Twenty old table Box owners, table-owned nonempty query aliases, and nonempty head/tail/left cached Pair witnesses. Actual parsed entry, left recursion, full result cleanup and payload extraction yield exactly two bounded left-witness owners at81 beside exactly six bounded candidate owners at64. Owned query71 retains its bound and scratch82 is physically unbound.",
+          "inherited_regression": "Seven Lean suites/eight runtime cases, thirteen ordered Rust tests and nine Python checks at 2db7171; full 47-suite/native-WP evidence at d49f638. Not rerun for this proof-only extension."
+        },
+        "next": "Retain candidate64/left81/word71 through right-query construction and recursion, derive and retain word85, combine with right95 for both actual choices, insertion, output assembly and later owned cleanup. Complete optional joins, overflow/failure paths, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -2260,7 +2295,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 head/tail witness provenance now reaches the actual matched candidate64 after all thirty construction instructions and seven parsed-entry checkpoints. Carry candidate64 provenance through both later contraction calls. Derive the left recursive witness bound and payload81, retain both concatenated-word bounds, combine with right95, construct both actual choices, insertion, output assembly and later owned cleanup. Complete optional joins, overflow/failure paths, parent returns, general pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all remaining planning requirements. No full SRC-01/C3 or production resource closure."
+      "W06-C3 now derives left witness74/81 and retains candidate64/word71 through complete actual left recursion and cleanup under explicit smaller fresh contracts. Retain candidate64/left81/word71 through right-query construction and recursion, derive and retain word85, combine with right95 for both actual choices, insertion, output assembly and later owned cleanup. Complete optional joins, overflow/failure paths, parent returns, full pair/pair NativeTotalFresh induction, dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

@@ -2,32 +2,32 @@
 
 Branch: `Droschinsky-algos`.
 
-[Head/tail provenance through the actual matched candidate](lean-complexity-campaign/evidence/memo-evaluator-head-tail-candidate-provenance.md) now
-constructs bounded witnesses at 31/37 and 41/47, preserves both across actual
-subtotal/root-score calls and cleanup, and transfers their words through two
-real Box helpers into matched candidate 64. The helper ledger accounts for
-bounded transferred payload owners and each new shell. All thirty construction
-instructions and seven parsed-entry checkpoints retain complete ownership,
-native values, count, retired roots and future unbound storage.
-Explicit smaller head/tail `NativeTotalFresh` contracts and independent native
-success/checked-add hypotheses remain; earlier endpoint statements and both
-native contract definitions are unchanged. The generic optional-payload theorem
-is relocated without changing its statement or proof.
-The 4,251-job build and seven affected Lean suites pass, including a new consumer
-with twenty old table owners, table-owned query aliases and two nonempty cached
-witnesses of score seven. Actual candidate 64 has exactly six bounded Box owners.
-All 1,963 audited endpoints retain the accepted axiom baseline; 22 new theorems
-and eighteen modules are included. Eight statement seeds resolve 1,320 unique
-declarations without unknown references. Thirteen Rust tests and nine Python
-frontend checks pass.
-Carry the matched candidate bound through later contraction calls, derive the
-left witness and both word bounds at parent checkpoints, then combine them with
-the earlier right witness bound for both choices, insertion and later cleanup.
-Optional joins, overflow/failure exits, parent returns, full pair/pair induction,
-dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input
-policy/resources/G3 and all other planning requirements remain open.
-The full goal is active; no C3 or production resource closure is claimed.
-Earlier [right-child provenance and successful payload transfer](lean-complexity-campaign/evidence/memo-evaluator-right-payload-provenance.md)
+[Left witness provenance and retained candidate/query bounds](lean-complexity-campaign/evidence/memo-evaluator-left-witness-provenance.md) now
+carries candidate 64 through actual left concatenation, fresh views, argument
+moves, recursion and all eleven result cleanup instructions. Owned left query
+71 retains its independently derived bound. The actual recursive checkpoint
+derives the left witness bound at optional 74; six real payload instructions
+transfer it through scratch 82 into held 81 and physically retire the scratch.
+Parsed entry retains all twelve earlier checkpoints, the complete actual left
+call/cost, full sixty-instruction matched/left prefix, native result/table and
+future unbound roots. Smaller head/tail/left `NativeTotalFresh` contracts and
+independent native successes/checked additions remain explicit. Earlier endpoint
+statements, native contracts and source semantics are unchanged.
+The 4,259-job library build, affected complete parent consumer suite and
+1,971-endpoint axiom audit pass. Eight new theorems across eight modules retain
+the accepted axiom baseline. Eight statement seeds resolve 1,312 declarations
+without unknown references. A nonempty consumer derives two bounded owners at
+81 beside the retained six-owner candidate 64 with twenty old table owners and
+table-owned query aliases. The seven-suite/eight-runtime-case, thirteen Rust and
+nine Python checks at `2db7171` are inherited, not rerun for this extension.
+Carry these three bounds through right-query construction/right recursion,
+derive and retain word 85, and combine with right witness 95 for both choices,
+insertion, output assembly and later cleanup. Optional joins, overflow/failure
+exits, parent returns, full pair/pair induction, dynamic regions/destructors,
+public maximum/cold-table teardown, wrappers/input policy/resources/G3 and all
+other planning requirements remain open. The full goal is active; no C3 or
+production resource closure is claimed.
+Earlier [head/tail provenance and matched construction](lean-complexity-campaign/evidence/memo-evaluator-head-tail-candidate-provenance.md)
 remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)
