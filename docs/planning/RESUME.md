@@ -2,6 +2,19 @@
 
 Branch: `Droschinsky-algos`.
 
+[Complete common evaluator prefix and native lookup routing](lean-complexity-campaign/evidence/memo-evaluator-common-prefix.md) now
+constructs actual parsed entry and all fourteen common instructions through
+lookup-temporary retirement, followed by actual native hit/miss inspection.
+The checked scope retains the independent lookup answer, ended table view 6,
+fresh empty return storage, original caller bytes and complete ownership/coverage.
+Shared query/table/caller aliases remain allowed. Branch bodies, recursive
+budget composition, return/closure, public maximum, dynamic regions/destructors
+and the other planning targets remain open. The 4,042-job build and five affected
+suites pass, including all eight recursive runtime cases and new warm-alias/cold-
+caller consumers. The 1,480-endpoint audit includes 15 new theorems with only the
+accepted axiom baseline. Ten selected statement seeds cover 1,085 unique
+declarations with no unknown references. The full goal remains active.
+
 [Constructed native evaluator entry and lookup prefix](lean-complexity-campaign/evidence/memo-evaluator-native-prefix.md) now derives
 all physical permissions for the actual parsed 113-local entry and first eleven
 instructions through lookup/result storage. Native graph structure and preserved
@@ -68,6 +81,17 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Evaluator.{entry_common_prefix_complete,common_prefix_complete,
+  lookup_switch_native}`: actual parsed native entry, all fourteen common
+  instructions, independent native lookup answer, initialized `LookupScope`,
+  temporary-root retirement and actual hit/miss inspection at stable sufficient
+  bounds. Branch bodies, recursive composition and return/closure remain open.
+- `Derived.call_preserves_other_root`, `LoanSafeMachine.storageDead_reference`,
+  and `LoanEnding.forget_ended_shared`: actual calls retain moved-reference
+  pointer cells; native graph structure/old caller bounds discharge retirement,
+  and the existing scan records table view 6's last use.
+- `Evaluator.native_entry_machine` factors the original parsed entry into a
+  reusable native machine with exact initial state/count/unbound local roots.
 - `Evaluator.{entry_lookup_complete,lookup_prefix_complete}`: construct actual
   parsed 113-local entry and the first eleven instructions through lookup/store,
   at sufficient stable fuel/readback bounds, with protected original caller

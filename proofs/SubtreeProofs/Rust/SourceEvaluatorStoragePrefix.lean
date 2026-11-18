@@ -27,7 +27,9 @@ theorem storage_prefix_complete {before world : World} {active : Activation} {ca
       final.memory[firstView.address]? = some (.node .tuple 0 []) ∧
       final.memory[secondView.address]? = some (.node .tuple 0 []) ∧
       after.state 4 = .empty ∧ after.state 5 = .empty ∧ after.state 6 = .empty ∧
-      after.roots 7 = none ∧ after.roots 8 = none := by
+      after.roots 7 = none ∧ after.roots 8 = none ∧
+      final.memory[returnRoot.address]? = some (.node .tuple 0 []) ∧
+      (∀ index, index ∉ [0, 4, 5, 6] → after.roots index = active.roots index) ∧ after.state 0 = .empty := by
   let p0 := active.forgetRefs (borrowCode 0)
   have hp0 := h.prepare (borrowCode 0)
   have ip0 := inputs.prepare 0 (by decide)
@@ -86,7 +88,7 @@ theorem storage_prefix_complete {before world : World} {active : Activation} {ca
         (.cons (Calling.instruction_noncall_run (act := .storageLive 5) r5)
           (.cons (Calling.instruction_noncall_run (act := .storageLive 6) r6) (.nil _ _)))),
     h6, i6, rfl, ?_, ?_, ?_, ?_, read4, read5, (w5.allocate_spec _ _).2.1,
-    empty4, empty5, ?_, ?_, ?_⟩
+    empty4, empty5, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · simp [a6, p6, a5, p5, a4, p4, a0, p0, Activation.forgetRefs, Roots.set]
   · simp [a6, p6, a5, p5, a4, p4, Roots.set, Activation.forgetRefs]
   · simp [a6, p6, a5, p5, Roots.set, Activation.forgetRefs]
@@ -94,5 +96,19 @@ theorem storage_prefix_complete {before world : World} {active : Activation} {ca
   · simp [a6, Partial.Locals.set]
   · simpa [a6, p6, a5, p5, a4, p4, a0, p0, Activation.forgetRefs, Roots.set] using unbound 7 (by simp)
   · simpa [a6, p6, a5, p5, a4, p4, a0, p0, Activation.forgetRefs, Roots.set] using unbound 8 (by simp)
+  · exact (w5.allocate_keeps h5.wellFormed _ _ []).memory _ _
+      ((w4.allocate_keeps h4.wellFormed _ _ []).memory _ _
+        ((w0.allocate_keeps h0.wellFormed _ _ []).memory _ _ (world.allocate_spec _ _).2.1))
+  · intro index member
+    simp only [List.mem_cons, List.not_mem_nil, or_false, not_or] at member
+    simp only [a6, p6, a5, p5, a4, p4, a0, p0, Activation.forgetRefs, Roots.set,
+      member.1, member.2.1, member.2.2.1, member.2.2.2, ite_false]
+  · simp only [a6, Partial.Locals.set, show (0 : Nat) ≠ 6 by decide, ite_false]
+    apply LoanEnding.forget_empty
+    simp only [a5, Partial.Locals.set, show (0 : Nat) ≠ 5 by decide, ite_false]
+    apply LoanEnding.forget_empty
+    simp only [a4, Partial.Locals.set, show (0 : Nat) ≠ 4 by decide, ite_false]
+    apply LoanEnding.forget_empty
+    simp only [a0, Partial.Locals.set, ite_true]
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

@@ -1553,3 +1553,19 @@ import SubtreeProofs
 
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.body_lookup_prefix
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.actual_body_lookup_prefix
+
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.call_preserves_other_root
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.source_call_state
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSafeMachine.storageDead_reference
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.LoanSafeMachine.shared_root
+#print axioms SubtreeProofs.Rust.SourceEval.LoanEnding.forget_ended_shared
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.afterLookup_retire
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.retire_observes
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.InputLocals.prepare_retire
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.retire_lookup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.lookup_continuation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.actual_body_common_prefix
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.common_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.lookup_switch_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_common_prefix_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_entry_machine

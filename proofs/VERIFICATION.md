@@ -488,6 +488,19 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
+[Complete common evaluator prefix and native lookup routing](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-common-prefix.md) now
+constructs actual parsed entry and all fourteen common instructions through
+lookup-temporary retirement, followed by actual native hit/miss inspection.
+The checked scope retains the independent lookup answer, ended table view 6,
+fresh empty return storage, original caller bytes and complete ownership/coverage.
+Shared query/table/caller aliases remain allowed. Branch bodies, recursive
+budget composition, return/closure, public maximum, dynamic regions/destructors
+and the other planning targets remain open. The 4,042-job build and five affected
+suites pass, including all eight recursive runtime cases and new warm-alias/cold-
+caller consumers. The 1,480-endpoint audit includes 15 new theorems with only the
+accepted axiom baseline. Ten selected statement seeds cover 1,085 unique
+declarations with no unknown references. The full goal remains active.
+
 ## VM caches
 
 On virtiofs VMs, put build outputs on VM-local disk before running Lean,

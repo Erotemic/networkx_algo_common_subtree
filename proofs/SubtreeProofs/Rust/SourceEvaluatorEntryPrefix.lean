@@ -31,7 +31,7 @@ theorem initial_safe (left right : BalancedWord) (table : MemoTable) :
   · simpa only [Slot.ofValue] using LoanSafe.shared (NativeData.word right)
   · exact (NativeData.table table).loan_safe
 
-theorem entry_lookup_complete {world : World} {callers : List Activation} {previous : Resources}
+theorem native_entry_machine {world : World} {callers : List Activation} {previous : Resources}
     (hw : world.WellFormed) (hc : ∀ caller ∈ callers, caller.Valid world) (view : Callers world callers previous)
     (left right : BalancedWord) (table : MemoTable) (leftCell rightCell tableCell : Cell)
     (leftRead : Readable world.memory world.live leftCell (.reference (encodeWord left)))
@@ -42,15 +42,11 @@ theorem entry_lookup_complete {world : World} {callers : List Activation} {previ
     (frame : OwnerFrame world (owners ++ (callerOwners world callers ++ external)))
     (covered : BoxCoverage world (owners ++ (callerOwners world callers ++ external))) :
     let packets := inputPackets leftCell rightCell tableCell left right table
-    ∃ entered active minimumFuel minimumBudget final after,
+    ∃ entered active,
       enter world world.memory.length CallingCertificate.originalEvaluator.source.localCount packets = some (entered, active) ∧
-      after.Valid final ∧ final.WellFormed ∧ (∀ caller ∈ callers, caller.Valid final) ∧
-      OwnerFrame final (after.owners final ++ (callerOwners final callers ++ external)) ∧
-      BoxCoverage final (after.owners final ++ (callerOwners final callers ++ external)) ∧
-      LoanSafeMachine world callers previous external final after ∧
-      ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
-        Calling.Prefix (Recursive.original budget fuel) callers afterLookup
-          (borrowPrefix ++ [.call .lookup lookupArgs 4]) entered active final after := by
+      LoanSafeMachine world callers previous external entered active ∧
+      active.state = initialState [.reference (encodeWord left), .reference (encodeWord right), encodeTable table] ∧
+      active.count = 113 ∧ (∀ slot, slot ∉ [1, 2, 3] → active.roots slot = none) := by
   dsimp only
   let packets := inputPackets leftCell rightCell tableCell left right table
   let entered := world.stackCells world.memory.length (packets.map Prod.fst)
@@ -74,14 +70,47 @@ theorem entry_lookup_complete {world : World} {callers : List Activation} {previ
       split at hb
       next => cases hb; change world.memory.length ≤ world.memory.length + (slot - 1); omega
       next => cases hb
-  obtain ⟨minFuel, minBudget, final, after, result⟩ := lookup_prefix_complete machine (by change 9 ≤ 113; decide +kernel)
-    left right table (initial_inputs left right table) (by
+  refine ⟨entered, active, ?_, machine, rfl, rfl, ?_⟩
+  · rw [CallingCertificate.originalEvaluator_spec.2.1]
+    exact entryRun
+  · intro slot member
+    have one : slot ≠ 1 := by intro same; subst slot; simp at member
+    have two : slot ≠ 2 := by intro same; subst slot; simp at member
+    have three : slot ≠ 3 := by intro same; subst slot; simp at member
+    simp only [active, initialActivation, argumentRoots, packets, inputPackets,
+      List.length_cons, List.length_nil, Nat.reduceAdd]
+    have no : ¬ (0 < slot ∧ slot ≤ 3) := by omega
+    simp only [no, ite_false]
+
+theorem entry_lookup_complete {world : World} {callers : List Activation} {previous : Resources}
+    (hw : world.WellFormed) (hc : ∀ caller ∈ callers, caller.Valid world) (view : Callers world callers previous)
+    (left right : BalancedWord) (table : MemoTable) (leftCell rightCell tableCell : Cell)
+    (leftRead : Readable world.memory world.live leftCell (.reference (encodeWord left)))
+    (rightRead : Readable world.memory world.live rightCell (.reference (encodeWord right)))
+    (tableRead : Readable world.memory world.live tableCell (encodeTable table))
+    {owners external : List Nat}
+    (input : FieldsFootprint world.memory [leftCell, rightCell, tableCell] owners)
+    (frame : OwnerFrame world (owners ++ (callerOwners world callers ++ external)))
+    (covered : BoxCoverage world (owners ++ (callerOwners world callers ++ external))) :
+    let packets := inputPackets leftCell rightCell tableCell left right table
+    ∃ entered active minimumFuel minimumBudget final after,
+      enter world world.memory.length CallingCertificate.originalEvaluator.source.localCount packets = some (entered, active) ∧
+      after.Valid final ∧ final.WellFormed ∧ (∀ caller ∈ callers, caller.Valid final) ∧
+      OwnerFrame final (after.owners final ++ (callerOwners final callers ++ external)) ∧
+      BoxCoverage final (after.owners final ++ (callerOwners final callers ++ external)) ∧
+      LoanSafeMachine world callers previous external final after ∧
+      ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+        Calling.Prefix (Recursive.original budget fuel) callers afterLookup
+          (borrowPrefix ++ [.call .lookup lookupArgs 4]) entered active final after := by
+  dsimp only
+  obtain ⟨entered, active, entryRun, machine, state, count, unbound⟩ :=
+    native_entry_machine hw hc view left right table leftCell rightCell tableCell leftRead rightRead tableRead input frame covered
+  obtain ⟨minFuel, minBudget, final, after, result⟩ := lookup_prefix_complete machine (by rw [count]; decide +kernel)
+    left right table (state ▸ initial_inputs left right table) (by
       intro slot member
+      apply unbound
       simp only [List.mem_cons, List.not_mem_nil, or_false] at member
-      rcases member with rfl | rfl | rfl | rfl | rfl | rfl <;>
-        simp [active, initialActivation, argumentRoots, packets, inputPackets])
-  refine ⟨entered, active, minFuel, minBudget, final, after, ?_, result⟩
-  rw [CallingCertificate.originalEvaluator_spec.2.1]
-  exact entryRun
+      rcases member with rfl | rfl | rfl | rfl | rfl | rfl <;> decide +kernel)
+  exact ⟨entered, active, minFuel, minBudget, final, after, entryRun, result⟩
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

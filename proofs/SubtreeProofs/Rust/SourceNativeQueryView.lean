@@ -1,6 +1,7 @@
 module
 
 public import SubtreeProofs.Rust.SourceEvaluatorTableViews
+public import SubtreeProofs.Rust.SourceReferenceLastUse
 
 /-! A fresh query-reference local is constructed through actual storage,
 continuation-aware reference preparation and reborrowing. Existing roots retain
@@ -29,7 +30,10 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
         after.state index = active.state index) ∧
       (∀ index, index ≠ destination → active.state index = .empty → after.state index = .empty) ∧
       (∀ index binding, active.roots index = some binding → ∀ cell,
-        world.memory[binding.address]? = some cell → final.memory[binding.address]? = some cell) := by
+        world.memory[binding.address]? = some cell → final.memory[binding.address]? = some cell) ∧
+      (∀ index value, index ≠ destination → index < active.count → active.state index = .shared value →
+        LoanEnding.endsBeforeObservation index (.step (.storageLive destination)
+          (.step (.assign destination (.address (.deref (.local query)))) suffix)) = true → after.state index = .empty) := by
   let next : Code := .step (.assign destination (.address (.deref (.local query)))) suffix
   let code : Code := .step (.storageLive destination) next
   have different : query ≠ destination := by
@@ -73,7 +77,7 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
   refine ⟨final, after,
     .cons (Calling.instruction_noncall_run (act := .storageLive destination) openedRun)
       (.cons (Calling.instruction_noncall_run (act := .assign destination (.address (.deref (.local query)))) assigned) (.nil _ _)),
-    finalMachine, rfl, rfl, ?_, ?_, ?_, ?_⟩
+    finalMachine, rfl, rfl, ?_, ?_, ?_, ?_, ?_⟩
   · simp only [after, Partial.Locals.set, ite_true, Slot.ofValue]
   · intro index different firstObserved secondObserved
     simp only [after, Partial.Locals.set, different, ite_false]
@@ -92,5 +96,10 @@ theorem query_view_complete {before world : World} {active : Activation} {caller
     have read : openedWorld.memory[binding.address]? = some raw :=
       (world.allocate_keeps h.wellFormed _ _ []).memory _ _ memory
     exact Activation.write_other_root preparedMachine.valid destinationBinding stillBound (Ne.symm different) read cell
+  · intro index value different bound shared ended
+    simp only [after, Partial.Locals.set, different, ite_false]
+    apply LoanEnding.forget_empty
+    simp only [opened, Partial.Locals.set, different, ite_false]
+    exact LoanEnding.forget_ended_shared code (List.range active.count) (List.mem_range.mpr bound) shared ended
 
 end SubtreeProofs.Rust.SourceEval.Evaluator

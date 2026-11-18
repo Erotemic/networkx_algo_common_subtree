@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceEvaluatorEntryPrefix
+import SubtreeProofs.Rust.SourceEvaluatorCommonEntry
 import SubtreeProofs.Rust.SourceChoiceCallTotality
 import SubtreeProofs.Rust.SourceEvalAddressedChoice
 
@@ -390,6 +390,88 @@ example : ∃ entered active minimumFuel minimumBudget final after,
       (alias_readable (.shared ⟨0, [1]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
       (alias_readable (aliasTableCell, encodeTable aliasTable) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets])) resources.1 resources.2.1 resources.2.2
   exact ⟨entered, active, minFuel, minBudget, final, after, entryRun, machine, stable⟩
+
+-- The stronger endpoint reaches the actual switch, retires all three lookup
+-- argument roots and records the real end of table view 6. The expected warm
+-- answer is checked against the independent native lookup, not supplied to Lean.
+example : ∃ entered active minimumFuel minimumBudget final after,
+    LoanSafeMachine aliasWorld [] {} [] final after ∧
+    SourceEval.Evaluator.LookupScope active .Empty .Empty aliasTable final after ∧
+    after.state 4 = Slot.ofValue (encodeOption (some ⟨.Empty, 0#u32⟩)) ∧
+    after.state 6 = .empty ∧ after.roots 5 = none ∧ after.roots 7 = none ∧ after.roots 8 = none ∧
+    Derived.scrutinee final after [] (.discriminant (.local 4)) = some (.variant .optional 1, after) ∧
+    ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch
+        SourceEval.Evaluator.commonPrefix entered active final after := by
+  have resources := alias_resources
+  obtain ⟨entered, active, minFuel, minBudget, final, after, _, _, _, _, machine, scope, branch, stable⟩ :=
+    SourceEval.Evaluator.entry_common_prefix_complete (by simp [World.WellFormed, aliasWorld])
+      (by simp) Callers.nil .Empty .Empty aliasTable (.shared ⟨0, [0]⟩) (.shared ⟨0, [1]⟩) aliasTableCell
+      (alias_readable (.shared ⟨0, [0]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      (alias_readable (.shared ⟨0, [1]⟩, .reference (encodeWord .Empty)) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets]))
+      (alias_readable (aliasTableCell, encodeTable aliasTable) (by simp [aliasPackets, SourceEval.Evaluator.inputPackets])) resources.1 resources.2.1 resources.2.2
+  have native : (LookupEvents.lookup aliasTable .Empty .Empty).1 = some ⟨.Empty, 0#u32⟩ := by
+    simp [LookupEvents.lookup_value, aliasTable, MemoizedOrderedSolver.findResult]
+  refine ⟨entered, active, minFuel, minBudget, final, after, machine, scope, ?_, scope.viewEnded,
+    scope.retired 5 (by simp), scope.retired 7 (by simp), scope.retired 8 (by simp), ?_, stable⟩
+  · simpa only [native] using scope.result
+  · simpa only [native, SourceEval.Evaluator.lookupKey] using branch
+
+-- Cold lookup with both query references borrowing the same actual suspended
+-- caller root exercises the miss route and preservation across all retirements.
+private def coldWordPackets : List ValueCell := [(.node .word 0 [], encodeWord .Empty)]
+private def coldWorld := base.stackCells 90 (coldWordPackets.map Prod.fst)
+private def coldCaller := initialActivation base 90 2 coldWordPackets
+private theorem cold_caller_valid : coldCaller.Valid coldWorld :=
+  initialActivation_valid well_formed 90 2 (by
+    intro packet member
+    have same : packet = (.node .word 0 [], encodeWord .Empty) := by simpa [coldWordPackets] using member
+    subst packet
+    exact ⟨[], .node .nil, by simp [AliveOn]⟩) (by decide +kernel)
+
+example : ∃ previous entered active minimumFuel minimumBudget final after,
+    LoanSafeMachine coldWorld [coldCaller] previous [] final after ∧
+    SourceEval.Evaluator.LookupScope active .Empty .Empty .Empty final after ∧
+    after.state 4 = Slot.ofValue (encodeOption none) ∧
+    final.memory[0]? = some (.node .word 0 []) ∧ final.live 0 = true ∧
+    Derived.scrutinee final after [coldCaller] (.discriminant (.local 4)) = some (.variant .optional 0, after) ∧
+    ∀ fuel budget, minimumFuel ≤ fuel → minimumBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [coldCaller] SourceEval.Evaluator.lookupSwitch
+        SourceEval.Evaluator.commonPrefix entered active final after := by
+  have callersValid : ∀ caller ∈ [coldCaller], caller.Valid coldWorld := by
+    intro caller member
+    have same := List.mem_singleton.mp member
+    subst caller
+    exact cold_caller_valid
+  obtain ⟨previous, _, callerView⟩ := scanCallers_complete [coldCaller] callersValid
+  have owners : callerOwners coldWorld [coldCaller] = [] := by decide +kernel
+  have frame : OwnerFrame coldWorld ([] ++ (callerOwners coldWorld [coldCaller] ++ [])) := by
+    rw [owners]
+    refine ⟨by simp, ?_, ?_⟩
+    · intro address member
+      cases member
+    · intro address member
+      cases member
+  have coverage : BoxCoverage coldWorld ([] ++ (callerOwners coldWorld [coldCaller] ++ [])) := by
+    intro address classified _
+    simp [coldWorld, World.stackCells, base] at classified
+  have queryRead : Readable coldWorld.memory coldWorld.live (.shared ⟨0, []⟩) (.reference (encodeWord .Empty)) :=
+    ⟨[0], .shared rfl (.node .nil), by simp [AliveOn, coldWorld, World.stackCells, base, coldWordPackets]⟩
+  have tableRead : Readable coldWorld.memory coldWorld.live (.node .table 0 []) (encodeTable .Empty) :=
+    ⟨[], .node .nil, by simp [AliveOn]⟩
+  obtain ⟨entered, active, minFuel, minBudget, final, after, _, _, _, _, machine, scope, branch, stable⟩ :=
+    SourceEval.Evaluator.entry_common_prefix_complete (well_formed.stackCells _ _) callersValid callerView
+      .Empty .Empty .Empty (.shared ⟨0, []⟩) (.shared ⟨0, []⟩) (.node .table 0 []) queryRead queryRead tableRead
+      (owners := []) (.cons (.shared _) (.cons (.shared _) (.cons (.node .nil) .nil))) frame coverage
+  obtain ⟨_, scanned, reads, _, _⟩ := callerView.get (a := coldCaller) (by simp)
+  obtain ⟨_, _, _, _, _, included⟩ := scanned.frame.get (show coldCaller.roots 1 = some ⟨0, 0⟩ from rfl)
+  have root : 0 ∈ previous.reads := reads (included (List.mem_append_right _ (by simp)))
+  have native : (LookupEvents.lookup .Empty .Empty .Empty).1 = none := by decide +kernel
+  have value := scope.result
+  rw [native] at value
+  rw [native] at branch
+  exact ⟨previous, entered, active, minFuel, minBudget, final, after, machine, scope,
+    value, machine.kept.reads 0 root _ (by rfl), machine.kept.alive 0 root (by rfl), branch, stable⟩
 
 -- The structural rule intentionally excludes unit and reference-containing
 -- referents; general loan guards still handle those separate cases.

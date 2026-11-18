@@ -1,6 +1,7 @@
 module
 
 public import SubtreeProofs.Rust.SourceEvaluatorStoragePrefix
+public import SubtreeProofs.Rust.SourceNativeStorageRetirement
 
 /-! Construct both actual table-reference assignments in the common evaluator
 prelude. The table stays owned while its two shared views may alias it and each
@@ -28,7 +29,12 @@ theorem table_views_complete {before world : World} {active : Activation} {calle
         [.assign 6 (.address (.local 3)), .assign 5 (.address (.deref (.local 6)))] world active final after ∧
       LoanSafeMachine before callers previous external final after ∧ InputLocals left right table after.state ∧
       after.roots = active.roots ∧ after.count = active.count ∧ after.state 4 = .empty ∧
-      after.state 5 = .shared (encodeTable table) ∧ final.memory[resultRoot.address]? = some (.node .tuple 0 []) := by
+      after.state 5 = .shared (encodeTable table) ∧ final.memory[resultRoot.address]? = some (.node .tuple 0 []) ∧
+      after.state 6 = .shared (encodeTable table) ∧
+      (∃ pointer, final.memory[secondView.address]? = some (.shared pointer)) ∧
+      (∀ index binding, index ≠ 5 → index ≠ 6 → active.roots index = some binding → ∀ cell,
+        world.memory[binding.address]? = some cell → final.memory[binding.address]? = some cell) ∧
+      (∀ index, index ≠ 5 → index ≠ 6 → active.state index = .empty → after.state index = .empty) := by
   let p6 := active.forgetRefs (borrowCode 4)
   have hp6 := h.prepare (borrowCode 4)
   have ip6 := inputs.prepare 4 (by decide)
@@ -68,11 +74,22 @@ theorem table_views_complete {before world : World} {active : Activation} {calle
   refine ⟨final, after,
     .cons (Calling.instruction_noncall_run (act := .assign 6 (.address (.local 3))) r6)
       (.cons (Calling.instruction_noncall_run (act := .assign 5 (.address (.deref (.local 6)))) r5) (.nil _ _)),
-    h5, ip5.set 5 _ (by simp), rfl, rfl, ?_, ?_, finalRead⟩
+    h5, ip5.set 5 _ (by simp), rfl, rfl, ?_, ?_, finalRead, ?_, ?_, ?_, ?_⟩
   · simp only [after, Partial.Locals.set, show (4 : Nat) ≠ 5 by decide, ite_false]
     apply LoanEnding.forget_empty
     simp only [a6, Partial.Locals.set, show (4 : Nat) ≠ 6 by decide, ite_false]
     exact LoanEnding.forget_empty _ _ resultEmpty
   · simp only [after, Partial.Locals.set, ite_true, Slot.ofValue]
+  · simpa only [after, Partial.Locals.set, show (6 : Nat) ≠ 5 by decide, ite_false] using initialized6
+  · obtain ⟨pointer, memory⟩ := hp5.shared_root secondBinding initialized6
+    exact ⟨pointer, Activation.write_other_root hp5.valid firstBinding secondBinding (by decide) memory cell5⟩
+  · intro index binding five six hb raw memory
+    have first := Activation.write_other_root hp6.valid secondBinding hb (Ne.symm six) memory cell6
+    exact Activation.write_other_root hp5.valid firstBinding hb (Ne.symm five) first cell5
+  · intro index five six empty
+    simp only [after, Partial.Locals.set, five, ite_false]
+    apply LoanEnding.forget_empty
+    simp only [a6, Partial.Locals.set, six, ite_false]
+    exact LoanEnding.forget_empty _ _ empty
 
 end SubtreeProofs.Rust.SourceEval.Evaluator
