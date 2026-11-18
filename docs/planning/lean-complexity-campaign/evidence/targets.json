@@ -1330,6 +1330,40 @@
           "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, all eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
         },
         "next": "Construct pair/pair recursive source scopes, query field views and selected recursive call transfers from MissScope, using smaller native requests and finite stable sufficient budgets. Compose success/overflow/failure/choice/insertion/cleanup paths while retaining permitted query/table/caller aliases and distinguishing fresh witness loans from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      },
+      "evaluator_head_scope_followup": {
+        "baseline_commit": "54b1a96",
+        "evidence": "memo-evaluator-head-scope.md",
+        "endpoint": "SubtreeProofs.Rust.SourceEval.Evaluator.entry_pair_head_scope_complete",
+        "status": "Constructed parsed native pair/pair miss entry, common/miss setup and all twenty-six actual head-prefix instructions from independent readable packets and complete ownership. The explicit induction premise is NativeTotal for the strictly smaller head query pair; no global pair/pair instance, successful parent execution or parent return is assumed. Canonical shared-route loan inclusion constructs all four Box-field views and the native head arguments while permitting query/table/caller aliases. Actual recursive dispatch, argument retirement, native optional-result/table extraction, fresh payload/return storage, head-result inspection, complete ownership and original loan origins compose with stable prefix worlds at all larger fuel/readback pairs. Universal pair/pair totality and selected later paths remain open; no C3 closure.",
+        "validation": {
+          "library_jobs": 4112,
+          "new_proof_modules": 19,
+          "new_theorems": 34,
+          "affected_lean_suites": [
+            "SourceCacheMissSetup",
+            "SourceAddressedExpressions",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "recursive_runtime_cases": 8,
+          "audited_endpoints": 1686,
+          "selected_statement_seeds": 10,
+          "unique_statement_records": 1322,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "adversarial_consumer": "Both parent queries select the same nonempty word in a table-owned entry; all four Box-field views overlap. The actual empty/empty head recursion uses proved NativeTotal, supplying no child-success or recursive-totality premise. Parsed/common/miss/full-head prefixes, native result and inserted head table, complete original-loan machine, PairHeadScope, retired output root and actual head-result inspection are derived.",
+          "broader_regression": "Full 47-suite/native-WP evidence at d49f638 is inherited, not rerun. Six affected Lean suites, eight recursive runtime cases, thirteen ordered Rust tests and nine standalone Python frontend regressions freshly pass."
+        },
+        "next": "Use PairHeadScope to construct selected head-failure cleanup/output and successful-head/tail recursion, then overflow, both contraction requests, choice, final insertion and cleanup/return. Discharge every smaller-request NativeTotal premise by complete pair/pair induction, composing actual routing, whole bodies and checked closure. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
       }
     },
     {
@@ -1518,7 +1552,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 complete actual cache-hit and empty-query miss totality are checked. Both empty routes include native insertion, complete ownership, return/closure and stable final world/packet/full cost from independent readable inputs. Construct pair/pair recursive source scopes, query field views and selected recursive call transfers from MissScope, using smaller native requests and finite stable sufficient budgets. Compose success/overflow/failure/choice/insertion/cleanup paths while retaining permitted query/table/caller aliases and distinguishing fresh witness loans from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
+      "W06-C3 complete cache-hit and empty-query miss totality remain checked. Parsed pair/pair head recursion/result scope now constructs all twenty-six head-prefix instructions under the strictly smaller head-pair NativeTotal induction premise, with complete ownership, native queries/views/result/table, fresh payload/return storage and stable prefix machines. A repeated table-owned alias consumer discharges the premise using proved empty-input totality. Use PairHeadScope to construct selected head-failure cleanup/output and successful-head/tail recursion, then overflow, both contraction requests, choice, final insertion and cleanup/return. Discharge every smaller-request NativeTotal premise by complete pair/pair induction, composing actual routing, whole bodies and checked closure. Track fresh copied/concatenated witness loans separately from original query origins. Finish dynamic parsed regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other planning target. Full SRC-01/C3 and production resource closure remain open."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

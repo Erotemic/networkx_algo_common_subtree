@@ -317,3 +317,5 @@ public import SubtreeProofs.Rust.SourceCacheHitTotality
 public import SubtreeProofs.Rust.SourceCacheMissEntry
 
 public import SubtreeProofs.Rust.SourceEmptyTotality
+
+public import SubtreeProofs.Rust.SourcePairHeadScopeEntry

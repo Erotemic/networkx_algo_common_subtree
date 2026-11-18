@@ -2,6 +2,24 @@
 
 Branch: `Droschinsky-algos`.
 
+[Constructed pair/pair head recursion and result scope](lean-complexity-campaign/evidence/memo-evaluator-head-scope.md) now
+constructs parsed entry, common lookup, miss setup and all twenty-six actual
+head-prefix instructions, including the recursive call, result/table extraction,
+temporary retirement and head-result inspection. The explicit induction premise
+is universal totality for the strictly smaller head query pair; no global
+pair/pair instance or parent return is assumed. `Rust.SourceEval.Evaluator.entry_pair_head_scope_complete` retains native queries/Box-field views, fresh
+payload/return storage, complete ownership, original loan origins and stable
+prefix worlds at every larger helper bound pair. A repeated table-owned alias
+consumer discharges the smaller contract using proved empty-input totality.
+The 4,112-job build and six affected Lean suites pass, including all eight
+recursive runtime cases. All 1,686 audited endpoints retain only the accepted
+axiom baseline; ten statement seeds cover 1,322 unique declarations with no
+unknown references. Thirteen ordered Rust tests and nine Python checks pass.
+Selected head failure/tail recursion, overflow/contraction/choice/insertion,
+parent return/closure and full pair/pair induction remain. Dynamic regions/
+destructors, public maximum/cold-table teardown, wrappers/input policy/resources/
+G3 and every other planning obligation remain open. The full goal stays active.
+
 [Complete actual evaluator empty-query miss execution](lean-complexity-campaign/evidence/memo-evaluator-empty-totality.md) now
 constructs parsed entry, lookup, all eleven miss-setup and 47 empty-branch
 actions, native insertion, both empty routes, return and checked closure.
@@ -130,6 +148,15 @@ The full goal is active; no W06-C3/SRC-01 or production resource closure follows
 
 Latest public endpoints:
 
+- `Evaluator.entry_pair_head_scope_complete`: parsed entry/common/miss setup
+  and all twenty-six head-prefix actions, actual recursive call, native head
+  result/table extraction, temporary retirement and result inspection. Explicit
+  `NativeTotal lh rh` is the strictly smaller head request's induction premise;
+  parent branch/return and universal pair/pair totality remain open.
+- `Derived.evaluator_call_total` constructs actual arguments, scans, suspended
+  owner transfer and result storage from that smaller native contract, with
+  stable whole-call world/state/full cost. `BorrowFootprint.read_shared` and
+  `OriginalLoanMachine.advance_call` retain original loan origins and aliases.
 - `Evaluator.empty_miss_total`: complete actual empty-query cache-miss
   invocation from independent native readable inputs and complete ownership,
   with native insertion, both empty routes, checked closure, exact full source

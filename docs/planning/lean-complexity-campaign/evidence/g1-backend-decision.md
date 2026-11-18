@@ -490,6 +490,24 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
+[Constructed pair/pair head recursion and result scope](memo-evaluator-head-scope.md) now
+constructs parsed entry, common lookup, miss setup and all twenty-six actual
+head-prefix instructions, including the recursive call, result/table extraction,
+temporary retirement and head-result inspection. The explicit induction premise
+is universal totality for the strictly smaller head query pair; no global
+pair/pair instance or parent return is assumed. `Rust.SourceEval.Evaluator.entry_pair_head_scope_complete` retains native queries/Box-field views, fresh
+payload/return storage, complete ownership, original loan origins and stable
+prefix worlds at every larger helper bound pair. A repeated table-owned alias
+consumer discharges the smaller contract using proved empty-input totality.
+The 4,112-job build and six affected Lean suites pass, including all eight
+recursive runtime cases. All 1,686 audited endpoints retain only the accepted
+axiom baseline; ten statement seeds cover 1,322 unique declarations with no
+unknown references. Thirteen ordered Rust tests and nine Python checks pass.
+Selected head failure/tail recursion, overflow/contraction/choice/insertion,
+parent return/closure and full pair/pair induction remain. Dynamic regions/
+destructors, public maximum/cold-table teardown, wrappers/input policy/resources/
+G3 and every other planning obligation remain open. The full goal stays active.
+
 [Complete actual evaluator empty-query miss execution](memo-evaluator-empty-totality.md) now
 constructs parsed entry, lookup, all eleven miss-setup and 47 empty-branch
 actions, native insertion, both empty routes, return and checked closure.

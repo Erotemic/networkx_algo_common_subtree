@@ -1,4 +1,4 @@
-import SubtreeProofs.Rust.SourceEmptyTotality
+import SubtreeProofs.Rust.SourcePairHeadScopeEntry
 
 namespace SourceCacheMissSetupTests
 
@@ -119,5 +119,37 @@ example : ∃ minFuel minBudget final packet lookupCost insertCost,
       (.Pair .Empty .Empty) .Empty table pairCell queryCell tableCell pair_readable query_readable table_readable
       footprint owned.2.1 owned.2.2 (by simp) (Or.inr rfl) (by simp [table, MemoizedOrderedSolver.findResult])
   exact ⟨fuel, budget, final, packet, lookupCost, insertCost, value, readable, wf, by simpa [callerOwners] using owners, stable⟩
+
+-- Both parent queries select the same nonempty word in the table-owned entry.
+-- All four Box-field views overlap; the recursive head request is empty/empty.
+-- Its contract is proved, so no successful-child-run premise is supplied.
+example : ∃ entered active minFuel minBudget lookupWorld lookupActive missWorld missActive final after,
+    OriginalLoanMachine world [] {} [] [35, 34, 30, 29, 28, 27, 1, 2, 13] final after ∧
+    SourceEval.Evaluator.PairHeadScope missActive .Empty .Empty .Empty .Empty (some SourceEval.Evaluator.emptyWitness)
+      (.Entry ⟨.Empty, .Empty, SourceEval.Evaluator.emptyWitness⟩ table) final after ∧
+    after.roots 33 = none ∧
+    Derived.scrutinee final after [] (.discriminant (.local 31)) = some (.variant .optional 1, after) ∧
+    ∀ fuel budget, minFuel ≤ fuel → minBudget ≤ budget →
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.lookupSwitch SourceEval.Evaluator.commonPrefix
+        entered active lookupWorld lookupActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.missCases SourceEval.Evaluator.missSetupActions
+        lookupWorld lookupActive missWorld missActive ∧
+      Calling.Prefix (Recursive.original budget fuel) [] SourceEval.Evaluator.headCases SourceEval.Evaluator.headActions
+        missWorld missActive final after := by
+  have owned := resources
+  have footprint : FieldsFootprint world.memory [pairCell, pairCell, tableCell] [2, 3, 0, 1] :=
+    .cons (.shared _) (.cons (.shared _) (.cons
+      (.node (.cons (.owned rfl entry_footprint) (.cons (.owned rfl (.node .nil)) .nil))) .nil))
+  obtain ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, final, after, result, output,
+    _, _, machine, scope, native, inspection, stable⟩ :=
+    SourceEval.Evaluator.entry_pair_head_scope_complete (by simp [World.WellFormed, world]) (by simp) Callers.nil
+      .Empty .Empty .Empty .Empty table pairCell pairCell tableCell pair_readable pair_readable table_readable
+      footprint owned.2.1 owned.2.2 (by simp [table, MemoizedOrderedSolver.findResult])
+      (SourceEval.Evaluator.native_empty_total .Empty .Empty (Or.inl rfl))
+  have expected := SourceEval.Evaluator.empty_native table .Empty .Empty (Or.inl rfl)
+    (by simp [table, MemoizedOrderedSolver.findResult])
+  obtain ⟨rfl, rfl⟩ := Prod.mk.inj (Aeneas.Std.Result.ok_injective (native.symm.trans expected))
+  exact ⟨entered, active, minFuel, minBudget, lookupWorld, lookupActive, missWorld, missActive, final, after,
+    machine, scope, scope.retired 33 (by simp), inspection, stable⟩
 
 end SourceCacheMissSetupTests
