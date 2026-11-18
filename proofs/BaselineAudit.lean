@@ -2189,3 +2189,16 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.evaluator_body_close_total_fresh
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_native
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_successful_total_fresh
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.none_result_owners_above
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.rootPresence.absent
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.retirement_boxes
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tailsFailure_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cleanupHeads_actions
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_root_presence
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_cleanup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_continuation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_tail_failure_body_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_native
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_total_fresh

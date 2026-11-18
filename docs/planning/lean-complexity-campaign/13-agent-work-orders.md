@@ -86,35 +86,36 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
-[Whole successful pair/pair body and dispatcher](evidence/memo-evaluator-parent-success.md) now
-constructs the entire original parent body from parsed entry and lifts it through
-checked recursive dispatch and frame closure. Four smaller NativeTotalFresh
-contracts and independent head/tail, checked-add and left/right success equations
-select this case. Successful payload reads derive earlier optional inspections;
-actual prefixes and all retained switches compose with the complete finish.
-The native parent equation is proved from the smaller equations. The endpoint
-exports source/native agreement, readable output, complete ownership/coverage,
-protected caller reads, returned witness provenance and exact world/packet/full
-cost at larger sufficient bounds. Old table/query aliases remain legal; only
-the witness field receives the fresh owner bound. Earlier endpoint statements,
-induction contracts, independent specifications and source semantics are unchanged.
-The 4,311-job library build and all six affected Lean suites pass, including
-eight runtime cases and the new whole-parent dispatcher consumer. Its four
-smaller contracts are proved instances; twenty old table owners/table-owned
-query aliases lead to thirty-eight output owners after closure, comprising a
-six-owner matched witness and thirty-two-owner inserted table. No parent run,
-later mask/root/storage invariant or expected final frame is supplied.
-All 2,066 audited endpoints retain the accepted axioms; thirteen new theorems
-across nine modules are included. Eight statement seeds export 1,346 unique
-records without unknown references. Thirteen Rust tests and nine Python checks
-pass. See the evidence report for exact scope and reproduction commands.
-Next complete the other optional-result joins, overflow/failure exits and parent
-returns, including stronger None-result provenance at existing failure bases,
+[Fresh head failure and complete tail-failure dispatch](evidence/memo-evaluator-tail-failure.md) now
+adds witness provenance to the existing head-failure dispatcher and constructs
+the whole tail-failure parent body, guarded return and checked dispatch/closure.
+The head-failure smaller NativeTotal premise is unchanged. Tail failure uses two
+explicit smaller NativeTotalFresh contracts, independent head success and tail
+None equations. Actual entry/prefixes derive all roots, masks and inspections.
+The updated table moves into the None output; the retained owned head witness
+is dropped through its owner bound before both cleanup joins and parameter
+retirement. Complete ownership/coverage, old query/table aliases, protected reads,
+source/native agreement and exact world/packet/full cost at larger bounds survive.
+Earlier statements/contracts, independent specifications and source semantics
+are unchanged. Subtotal/root overflow, both contraction-failure returns and
+universal pair/pair induction remain open.
+The 4,318-job library build and all seven affected Lean suites pass. The new
+None consumer permits arbitrary witness bounds while the table owns older cells
+and rejects a bound on the whole packet. Nine runtime cases pass, including a
+new tail failure retaining a two-owner head witness before tail overflow; it
+checks 1,739 source steps/five solver calls, full source/addressed cost agreement,
+caller bytes/liveness and the complete final owner ledger. This concrete run
+complements the conditional theorem; universal smaller contracts stay explicit.
+All 2,078 audited endpoints retain the accepted axioms; twelve new theorems
+across seven proof modules are included. Eight statement seeds export 1,321
+unique records without unknown references. Thirteen Rust tests and nine Python
+checks pass. See the evidence report for exact scope and reproduction commands.
+Next construct subtotal/root overflow and both contraction-failure returns,
 then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors,
 public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every
 other planning requirement remain open. No full SRC-01/C3 or production resource
-closure is claimed; the full goal stays active. Earlier finish/return-storage/
-output/insertion/choice checkpoints remain checked prerequisites.
+closure is claimed; the full goal stays active. Earlier successful-parent/
+finish/return-storage/output/insertion/choice checkpoints remain checked prerequisites.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.

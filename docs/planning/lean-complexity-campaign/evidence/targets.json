@@ -2444,6 +2444,59 @@
           "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited, not a fresh full-suite run."
         },
         "next": "Complete the other optional-result joins, overflow/failure exits and parent returns, including stronger None-result provenance at existing failure bases, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      },
+      "evaluator_tail_failure_followup": {
+        "baseline_commit": "a08a7ab",
+        "evidence": "memo-evaluator-tail-failure.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.entry_tail_failure_body_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_continuation_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.tail_failure_cleanup_complete",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_tail_root_presence",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Calling.Prefix.retirement_boxes",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.head_failure_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.none_result_owners_above"
+        ],
+        "status": "None witness provenance follows from the actual readable output while updated table owners remain unrestricted. Existing head-failure dispatch gains the stronger bound without strengthening its smaller NativeTotal premise. Exact fifteen-root tail storage is derived from parsed entry/four actual prefixes. Tail-failure packing transfers the updated table; generic fresh retirement drops the retained owned head, exact actual mask counts justify its later storage-dead, and both cleanup joins/parameter return are constructed. The whole original tail-failure body and actual recursive dispatch/closure follow from two explicit smaller NativeTotalFresh contracts and independent head success/tail failure, retaining source/native agreement, complete ownership/coverage, protected reads and stable sufficient bounds. Earlier statements/contracts, independent specifications, source semantics, generated artifacts, maintained Rust and pins are unchanged. Subtotal/root overflow, both contraction failures and universal induction remain open.",
+        "validation": {
+          "library_jobs": 4318,
+          "new_proof_modules": 7,
+          "new_theorems": 12,
+          "affected_lean_suites": [
+            "SourceNoneResultProvenance",
+            "SourceCacheMissSetup",
+            "SourceParentOutput",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "fresh_lean_suites": "All seven listed suites pass, including nine runtime cases and all prior whole-parent/output/choice/cleanup consumers.",
+          "none_consumer": "passed: None witness bound for every threshold while returned table owns old cells0/1; whole-packet owner bound2 is refuted",
+          "owned_head_runtime": "passed: two-owner nonempty cached head retained by parent before recursive tail overflow; exact1739 source steps/five solver calls, complete source/addressed cost equality, protected caller bytes/liveness, owner uniqueness/live-Box classification/full coverage and retirement of other new storage. Concrete actual execution complements conditional theorem; universal smaller contracts remain explicit.",
+          "recursive_runtime_cases": 9,
+          "audited_endpoints": 2078,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1321,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited. CI now lists51 Lean suites; this checkpoint freshly ran the seven affected suites, not the full51.",
+          "ci_lean_suites": 51,
+          "ci_added_suites": [
+            "SourceNoneResultProvenance",
+            "SourceParentOutput",
+            "SourceParentChoices"
+          ],
+          "ci_added_commands_passed": true
+        },
+        "next": "Construct subtotal/root overflow and both contraction-failure returns, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -2632,7 +2685,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now constructs the entire successful pair/pair parent body from parsed entry and actual recursive dispatch/closure, with source/native agreement, complete ownership/coverage, protected reads, returned witness provenance and stable sufficient bounds from four explicit smaller fresh contracts. Complete the other optional-result joins, overflow/failure exits and parent returns, including stronger None-result provenance at existing failure bases, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      "W06-C3 now has witness provenance for complete head failure and a constructed whole tail-failure body/dispatcher with two explicit smaller fresh contracts, owned-head cleanup, source/native agreement, complete resources, protected reads and stable sufficient bounds. Construct subtotal/root overflow and both contraction-failure returns, then universal pair/pair NativeTotalFresh induction. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

@@ -112,8 +112,9 @@ private def warmFixture (left right : BalancedWord) (table : MemoTable) : World 
 
 private def overflowTable : MemoTable := .Entry ⟨.Empty, .Empty, ⟨.Empty, 4294967295#u32⟩⟩ .Empty
 
-private def checkWarm (label : String) (left right : BalancedWord) (expectNone : Bool) (steps calls : Nat) : IO Unit := do
-  let (world, caller, args, guards) := warmFixture left right overflowTable
+private def checkWarm (label : String) (left right : BalancedWord) (expectNone : Bool) (steps calls : Nat)
+    (table : MemoTable := overflowTable) : IO Unit := do
+  let (world, caller, args, guards) := warmFixture left right table
   match SourceEval.run SourceEval.Certificate.original.body 48 .evaluate (args.map Prod.snd) with
   | none => throw (IO.userError s!"warm source failed: {label}")
   | some (value, work) =>
@@ -148,5 +149,10 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
   checkWarm "root-overflow" (.Pair .Empty pairWord) pairWord true 1115 3
   checkWarm "heads-failure" (.Pair pairWord .Empty) (.Pair pairWord .Empty) true 1189 4
   checkWarm "tails-failure" (.Pair .Empty pairWord) (.Pair .Empty pairWord) true 1517 5
+  -- The parent retains a two-owner head witness while its tail fails through
+  -- checked-add overflow. All fresh copied witnesses must retire; the old
+  -- table-owned witness and the suspended caller's words remain live.
+  checkWarm "tails-failure-owned-head" (.Pair .Empty pairWord) (.Pair .Empty pairWord) true 1739 5
+    (.Entry ⟨.Empty, .Empty, ⟨pairWord, 4294967295#u32⟩⟩ .Empty)
 
 end SourceRecursiveExecutionTests
