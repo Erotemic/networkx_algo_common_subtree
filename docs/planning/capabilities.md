@@ -1,5 +1,10 @@
 # Current implementation capabilities
 
+CI follow-up: workflows are regenerated from xcookie configuration/hooks;
+release remains `main:release` → PyPI → automatic version tag/GitHub release.
+The Intel macOS target mismatch is corrected to 10.12 in project configuration;
+remote macOS validation is pending. See [correction evidence](../../dev/packaging/2026-11-19-xcookie-ci.json).
+
 Release priority, 2026-11-19: prepare **0.3.0**, selected by the user. Both
 unordered families already have public Python and native Rust endpoints.
 The README now documents their installation, weights, roots, witnesses and

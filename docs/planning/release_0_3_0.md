@@ -89,16 +89,37 @@ The local source snapshot precedes final evidence/docs/workflow edits; the
 ledger verifies maintained runtime, Rust, build metadata and README identity.
 Remote CI builds distributions from the final committed release.
 
+## CI ownership correction
+
+The user's follow-up identified the handwritten workflow replacement as a
+mistake. `tests.yml`, `checks.yml` and `release.yml` are now regenerated from
+xcookie, with source configuration/hooks in `pyproject.toml`. The custom
+`publish.yml` and mandatory artifact-promotion/tag-before-publication policy
+are removed. The separate project-owned `verification.yml` is unchanged.
+
+Generator fixes in adjacent `../xcookie` commit **0de04bc** address malformed
+Windows conditions, empty environment blocks and the obsolete GitHub release
+action reference. Its affected regression suites pass 116 tests. Package source
+type checking is restored with optional native stubs and small Python typing/
+reference-witness checks; no Lean/Rust algorithm source changed.
+
+The user reported an Intel macOS repair error (wheel claims 10.9; Rust requires
+10.12). Project cibuildwheel configuration now requests **10.12**; newer Python
+and ARM floors are enforced by cibuildwheel. This is a configuration fix,
+not a claim of local macOS execution. Fresh source/wheel/hook and installed
+checks are recorded in [the correction evidence](../../dev/packaging/2026-11-19-xcookie-ci.json).
+Updated review artifacts are in `dist/0.3.0-xcookie-fix/`.
+
 ## Remaining release steps
 
-Run `Package CI` on the final commit, including the complete Linux matrix,
-Intel/Apple Silicon macOS and Windows. Those remote platforms are not claimed
-as locally tested. The workflow's `release-ready` job collects its tested
-artifacts and checksums without depending on unfinished proof research.
+Run generated `BinPyCI`/`SourceChecks` and the relevant project checks on the
+reviewed commit, including a remote Intel macOS rerun. The earlier local
+Linux evidence does not substitute for macOS/Windows execution.
 
-After that gate succeeds, create the matching `v0.3.0` tag and manually run
-`Publish tested release` with its CI run ID. The workflow verifies run/tag/SHA,
-versions and saved hashes and uses the existing `TWINE_PASSWORD` secret.
-**No tag, push or publication has been performed.** Follow
-[the maintainer instructions](../releasing.md). Further proof optimization,
-optimized Rust refinement and the broader research program stay deferred.
+After merge/review and green CI on `main`, push `main:release`. The generated
+release workflow rebuilds and publishes to PyPI, then creates/verifies the
+version tag and GitHub release. It retains the existing token/encrypted-GPG
+configuration. Local checksums remain optional review aids. Follow
+[the maintainer instructions](../releasing.md).
+**No push, tag or publication has been performed locally.** Further proof and
+performance research remain deferred.

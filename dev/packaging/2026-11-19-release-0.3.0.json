@@ -2,10 +2,10 @@
   "schema_version": 1,
   "date": "2026-11-19",
   "version": "0.3.0",
-  "status": "Local Linux release candidate validated; remote platform CI, tagging and publication remain outstanding.",
+  "status": "Historical local Linux candidate validated before the xcookie CI ownership correction; see 2026-11-19-xcookie-ci.json for current CI/release policy and later artifacts.",
   "baseline_commit": "c7f4a6c9186d16550effe9876830f89d3a1667a6",
   "source_identity": {
-    "description": "Builds use the recorded sdist with pending release changes over the baseline. Maintained runtime, Rust, build metadata and README below are byte-identical to the working tree. Final release docs, evidence and workflow/checker edits may postdate the archive. Remote Package CI will rebuild the final committed release.",
+    "description": "Build snapshot over the recorded baseline, checked against maintained runtime/Rust/build metadata/README at the 4e77221 checkpoint. Later CI and Python typing corrections are recorded separately; these hashes do not describe that later working tree.",
     "sha256_by_path": {
       "CMakeLists.txt": "5062fd91c8f2d591983412927e15c657b97ac159f13748f01dcb98621444fbd2",
       "README.rst": "3770a9a5856f2fcda1f1354ba36c0d7c3060afa606d43fe7bddef030df488cd9",
@@ -407,9 +407,7 @@
     }
   },
   "remaining": [
-    "Run final committed Package CI remotely, including Intel/ARM macOS, Windows and complete Linux wheel matrix. Only the listed Linux artifacts/runtimes have been executed locally.",
-    "Review candidate and create matching v0.3.0 tag on the tested commit.",
-    "Manually dispatch Publish tested release with successful Package CI run ID and tag; requires existing TWINE_PASSWORD secret. No tag, push, external message or publication was performed."
+    "Historical manual publisher/tag-before-upload instructions were superseded by the xcookie correction. Follow docs/releasing.md: reviewed green main, then main:release; PyPI publication precedes automatic tagging. Remote platform validation remains outstanding."
   ],
   "deferred": [
     "Further verified-backend optimization",

@@ -13,6 +13,7 @@ import os
 import subprocess
 import atexit
 import threading
+from typing import TextIO, cast
 
 
 _worker = None
@@ -26,14 +27,14 @@ def _stop_worker():
     if _worker is not None and _worker_owner == os.getpid():
         process, _worker = _worker, None
         try:
-            process.stdin.close()
+            cast(TextIO, process.stdin).close()
             process.wait(timeout=1)
         except (OSError, subprocess.TimeoutExpired):
             process.kill()
             process.wait()
         finally:
-            process.stdout.close()
-            process.stderr.close()
+            cast(TextIO, process.stdout).close()
+            cast(TextIO, process.stderr).close()
 
 
 def _after_fork():
@@ -41,7 +42,7 @@ def _after_fork():
     if _worker is not None:
         # Close only this child's duplicate descriptors, never signal its parent.
         for stream in (_worker.stdin, _worker.stdout, _worker.stderr):
-            stream.close()
+            cast(TextIO, stream).close()
     _worker = None
     _worker_path = None
     _worker_owner = os.getpid()
@@ -66,11 +67,13 @@ def _request(executable, request):
                                        text=True, bufsize=1)
             _worker_owner, _worker_path = os.getpid(), executable
         try:
-            _worker.stdin.write(json.dumps(request) + "\n")
-            _worker.stdin.flush()
-            response = _worker.stdout.readline()
+            # Every worker is constructed above with all three streams piped.
+            stdin = cast(TextIO, _worker.stdin)
+            stdin.write(json.dumps(request) + "\n")
+            stdin.flush()
+            response = cast(TextIO, _worker.stdout).readline()
             if not response:
-                error = _worker.stderr.read()
+                error = cast(TextIO, _worker.stderr).read()
                 raise RuntimeError(f"verified Lean solver stopped: {error.strip()}")
             return json.loads(response)
         except (OSError, json.JSONDecodeError):

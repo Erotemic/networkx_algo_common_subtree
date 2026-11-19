@@ -65,6 +65,7 @@ sdist.exclude = ["submodules/**", "dev/*.enc", "**/.lake/**", "**/target/**", ".
 
 [tool.cibuildwheel]
 build = "cp310-* cp311-* cp312-* cp313-*"
+skip = "*-win32"
 build-frontend = "build"
 build-verbosity = 1
 test-command = "python {project}/dev/check_release.py --require-rust --require-cython && python -m pytest -q {project}/tests"
@@ -81,12 +82,41 @@ rel_mod_parent_dpath = "."
 os = [ "all", "win", "osx", "linux",]
 url = 'https://github.com/Erotemic/networkx_algo_common_subtree'
 min_python = '3.10'
+max_python = '3.14'
+main_python = '3.13'
+ci_cpython_versions = ['3.10', '3.11', '3.12', '3.13']
+ci_pypy_versions = []
+typecheck_install_extras = ['tests', 'benchmarks']
+use_setup_py = false
+# This project has PEP 621 extras but no exported uv lock constraints.
+use_uv = false
+# Preserve the existing token and encrypted-repository signing configuration.
+ci_pypi_trusted_publishing = false
+ci_gpg_secret_transport = 'encrypted_repo'
+ci_wheel_build_post_commands = ['bash dev/ci_wheel_post_build.sh']
+test_env = { COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS = '1' }
+test_command = '''
+if python -c 'import sys; sys.exit(sys.version_info[:2] != (3, 10))'; then
+    python -m pip install networkx==2.8.8
+fi
+python ../dev/check_release.py --require-rust --require-cython
+python -m pytest -q --cov=networkx_algo_common_subtree ../tests
+'''
 author = "Jon Crall"
 author_email = "erotemic@gmail.com"
 description = "Fast ordered and weighted unordered common subtree algorithms for NetworkX"
 license = "Apache 2"
 dev_status = "alpha"
 xdoctest_style="freeform"
+
+[tool.xcookie.ci_source_checks.release-tooling]
+name = 'Release tooling and workflow lint'
+python_version = '3.13'
+setup_commands = ['python -m pip install flake8']
+commands = [
+  'flake8 dev/check_release.py dev/check_distributions.py --select=E9,F63,F7,F82 --show-source',
+  'docker run --rm -v "$PWD:/repo:ro" -w /repo rhysd/actionlint:1.7.12 -shellcheck= .github/workflows/tests.yml .github/workflows/checks.yml .github/workflows/release.yml',
+]
 
 [tool.pytest.ini_options]
 addopts = "-p no:doctest --xdoctest --xdoctest-style=google --ignore-glob=setup.py --ignore-glob=dev --ignore-glob=docs"
@@ -111,7 +141,8 @@ before-all = "curl --proto '=https' --tlsv1.2 --fail --silent --show-error https
 environment = { PATH = "/root/.cargo/bin:$PATH", CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
 
 [tool.cibuildwheel.macos]
-environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
+# Rust x86_64 requires macOS 10.12. cibuildwheel enforces newer interpreter/ARM floors.
+environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON", MACOSX_DEPLOYMENT_TARGET = "10.12" }
 
 [tool.cibuildwheel.windows]
 environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }

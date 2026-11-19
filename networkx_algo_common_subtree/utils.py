@@ -1,6 +1,7 @@
 import sys
 import networkx as nx
 from collections import defaultdict
+from typing import Any
 from networkx.utils import open_file
 from networkx.utils import py_random_state
 from ._types import OrderedGraph, OrderedDiGraph
@@ -11,7 +12,7 @@ __all__ = [
 
 
 @py_random_state(1)
-def random_tree(n, seed=None, create_using=None):
+def random_tree(n, seed: Any = None, create_using=None):
     """Returns a uniformly random tree on `n` nodes.
 
     Parameters

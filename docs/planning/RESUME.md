@@ -14,30 +14,34 @@ distributed endpoints rather than duplicating implementations.
 Release work: public examples/API guidance, honest proof coverage, version and
 changelog, clean source-archive/native wheel builds, installed tests and native
 endpoint smoke checks, portable ABI3 validation, and repaired release CI.
-The legacy duplicate jobs and removed `setup.py` publication references are
-replaced by one package build/test gate and manual publication of its tested
-artifacts. Standard release wheels keep fast Rust/Cython;
-optional Lean tooling/executables are not a normal installation dependency.
-See [the 0.3.0 release plan](release_0_3_0.md). No further proof work is a release
-blocker. Publication/tagging has not been performed.
+The initial manual workflow replacement in `4e77221` was corrected after the
+user pointed out xcookie ownership. `tests.yml`, `checks.yml` and `release.yml`
+are now generated from `pyproject.toml` using `../xcookie` at **0de04bc**.
+`publish.yml` is removed. Restore no handwritten replacement: use the scoped
+regeneration command in [releasing.md](../releasing.md).
 
-Local candidate checks are complete: native Rust/Cython, portable ABI3 glibc
-2.28 and musllinux 1.2 wheels rebuilt from the filtered source archive. All
-nine Rust endpoints are required; the normal wheel also requires both Cython
-modules. The installed suite passes **234 tests, with 10 optional Lean skips**
-on each CPython 3.10–3.14 and in both floor containers. All **82 Rust tests**,
-four README examples, strict artifact/ABI audits and workflow lint pass.
-NetworkX minimum is now 2.8.8 after a clean-import failure on 2.7; the minimum
-is exercised on Python 3.10. The musllinux shared-library build issue is fixed.
+The release action remains **`git push origin main:release`** after review/CI on
+main. PyPI publication precedes automatic version tagging and the GitHub
+release. Existing token/encrypted-GPG settings are preserved explicitly.
+Package-specific installed tests and the portable wheel use xcookie hooks;
+`verification.yml` remains separate and unchanged.
 
-The VM-local artifacts and `SHA256SUMS` are in
-`/var/tmp/subtree-release-0.3.0-candidate/`, copied to ignored `dist/0.3.0/`
-for host/user review. Exact source/artifact identities,
-benchmark results and commands are in
-[the release evidence](../../dev/packaging/2026-11-19-release-0.3.0.json).
-Next: run final committed Package CI remotely, including Intel/ARM macOS,
-Windows and the complete Linux matrix, then matching tag/manual publication.
-Do not restart proof/performance research as a release gate.
+The user reported Intel macOS delocate rejection: wheel target 10.9 versus
+Rust library minimum 10.12. `[tool.cibuildwheel.macos].environment` now requests
+`MACOSX_DEPLOYMENT_TARGET=10.12`; cibuildwheel enforces newer Python/ARM floors.
+Configuration consumption is checked locally; **macOS CI still needs a rerun**.
+
+Fresh correction checks: 116 xcookie regression tests, generated-workflow
+structural actionlint, hook shellcheck, source type checking, native source
+archive rebuild, actual portable-wheel hook and installed Python tests with
+Lean required. See [CI correction evidence](../../dev/packaging/2026-11-19-xcookie-ci.json).
+The earlier 234-pass/10-skip five-runtime matrix and 82 Rust tests remain dated
+evidence; no Lean or Rust algorithm source changed in the CI correction.
+
+Original artifacts remain in ignored `dist/0.3.0/`. Updated native/portable
+artifacts and a source archive are in ignored `dist/0.3.0-xcookie-fix/`.
+Next: run generated CI remotely, particularly Intel macOS. No push, tagging or
+publication has been performed locally. Further proof research stays deferred.
 
 ## Historical priority after the user's 2026-11-18 clarification
 

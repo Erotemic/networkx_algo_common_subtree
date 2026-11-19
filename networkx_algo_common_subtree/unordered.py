@@ -96,9 +96,9 @@ class _Scoring(reference.ExactLabelScoring):
             return self.node_table[u][v]
         return super().node_weight(left, u, right, v)
 
-    def edge_weight(self, left, u, uc, right, v, vc):
-        a = self.left_edges.get(frozenset((u, uc)))
-        b = self.right_edges.get(frozenset((v, vc)))
+    def edge_weight(self, left, u, u_child, right, v, v_child):
+        a = self.left_edges.get(frozenset((u, u_child)))
+        b = self.right_edges.get(frozenset((v, v_child)))
         if a is None or b is None:
             return None
         if self.edge_table is not None:
@@ -187,7 +187,10 @@ def _solve(problem, impl, allow_empty, penalty):
     mapping = dict(raw.node_pairs)
     paths = []
     if len(mapping) > 1:
-        for u, v in reference._embedding_skeleton_edges(left, tuple(sorted(mapping))):
+        skeleton = reference._embedding_skeleton_edges(left, tuple(sorted(mapping)))
+        if skeleton is None:
+            raise RuntimeError("reference solver returned an invalid embedding skeleton")
+        for u, v in skeleton:
             paths.append((left.path(u, v), right.path(mapping[u], mapping[v])))
     return problem.result(raw.weight, raw.node_pairs, paths)
 

@@ -28,8 +28,10 @@
   references and the installed backend discovery helpers remain available.
 - Require NetworkX 2.8.8 or newer; NetworkX 2.7 can fail to import in a fresh
   Python 3.10 process without optional scientific packages installed.
-- Replace duplicated/outdated release CI with distribution builds, installed
-  endpoint checks, source-archive rebuilds and an explicit publication workflow.
+- Regenerate test/release CI through xcookie, retaining release-branch
+  publication and signing. Configure installed endpoint checks and portable
+  wheel builds through project hooks, and align macOS deployment targets with
+  Rust (10.12 minimum on Intel).
 
 Formal verification work remains ongoing. The optimized floating graph and
 ordered kernels are independently tested; this release does not claim that

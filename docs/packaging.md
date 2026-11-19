@@ -19,9 +19,11 @@ NetworkX 2.8.8. Strict ABI auditing and Linux symbol-policy checks pass.
 All four README Python examples and 82 standalone Rust tests pass.
 
 The source archive excludes build caches, the optional development submodule
-and legacy encrypted CI credentials. Package CI validates installed behavior
-and collects tested distributions with checksums; publication is a separate
-manual workflow using those same artifacts. Local Linux evidence does not
+and legacy encrypted CI credentials. xcookie generates test/release workflows from `[tool.xcookie]`; its post-build
+hook adds the portable wheel to the normal wheelhouse. Publication uses
+`git push origin main:release`, then PyPI succeeds before tagging. Local
+checksums are review aids, not a mandatory promotion system. macOS builds
+request target 10.12, with cibuildwheel enforcing newer interpreter/ARM floors. Local Linux evidence does not
 stand in for the remote macOS/Windows matrix. See
 [exact artifact/check evidence](../dev/packaging/2026-11-19-release-0.3.0.json),
 [release checklist](planning/release_0_3_0.md) and

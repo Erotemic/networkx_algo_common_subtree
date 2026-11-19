@@ -18,6 +18,8 @@ def main():
     parser.add_argument("directory", type=Path)
     parser.add_argument("--tag", default="")
     parser.add_argument("--verify-manifest", action="store_true")
+    parser.add_argument("--wheels-only", action="store_true",
+                        help="Validate a wheel build job before its separately built sdist is available")
     args = parser.parse_args()
     project = tomllib.loads((Path(__file__).resolve().parents[1] / "pyproject.toml").read_text())["project"]
     expected_name, expected_version = canonicalize_name(project["name"]), Version(project["version"])
@@ -25,7 +27,10 @@ def main():
         assert args.tag == f"v{expected_version}", (args.tag, expected_version)
     files = sorted(p for p in args.directory.iterdir() if p.name.endswith((".whl", ".tar.gz")))
     assert any(p.suffix == ".whl" for p in files), "no wheels"
-    assert sum(p.name.endswith(".tar.gz") for p in files) == 1, "expected exactly one sdist"
+    if args.wheels_only:
+        assert all(p.suffix == ".whl" for p in files), "expected only wheels"
+    else:
+        assert sum(p.name.endswith(".tar.gz") for p in files) == 1, "expected exactly one sdist"
     checksums = []
     for path in files:
         if path.suffix == ".whl":

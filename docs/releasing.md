@@ -1,16 +1,48 @@
 # Releasing the package
 
 Version 0.3.0 ships fast ordered and weighted unordered algorithms, with
-documented partial verification. Further production proof closure and verified
-backend optimization are separate research work, not release gates.
+explicitly documented partial verification. Further proof closure and verified
+backend optimization are separate research work.
 
-## Prepare and validate
+## Generated CI and project hooks
 
-Update `pyproject.toml`, `networkx_algo_common_subtree/__init__.py` and
-`CHANGELOG.md` together. From the repository root, prepare the local VM caches
-with `dev/setup-build-caches.sh` and `dev/setup-build-caches.sh --status`.
-Keep the complete CMake build directory on local disk:
-Use Python 3.13 for release tooling (the archive checker requires Python 3.11+).
+xcookie owns `.github/workflows/tests.yml`, `checks.yml` and `release.yml`.
+Configure `[tool.xcookie]` in `pyproject.toml`; keep project build/test behavior
+in its hooks. Do not replace the generated workflows. `verification.yml` is
+project-owned and retains the proof, native parity and ABI3 runtime checks.
+
+Use the adjacent `../xcookie` checkout, including generator fixes in commit
+`0de04bc` (Windows conditions, optional environment blocks and release action
+version). In a development environment with that checkout installed:
+
+```bash
+python -m pip install -e ../xcookie xdoctest
+xcookie generate . --only_generate='.github/workflows/*.yml' \
+  --regen='.github/workflows/*.yml' --yes=true --interactive=false --use_vcs=false
+```
+
+This deliberately regenerates only the three xcookie workflows; it preserves
+packaging, README and the separate verification workflow. The release policy
+is documented in `../xcookie/docs/source/manual/release_workflow_design.rst`.
+
+The configured installed-test command requires Rust/Cython, checks public APIs,
+tests minimum NetworkX 2.8.8 on Python 3.10 and runs the Python suite. Native
+extension stubs allow type checking from source without first compiling those
+optional modules. They declare an opaque native boundary, not a new typed or
+formal guarantee.
+
+`ci_wheel_build_post_commands` invokes `dev/ci_wheel_post_build.sh` in both test
+and release builds. On Linux x86_64 it builds/audits the additional Rust-only
+CP310 ABI3 wheel from a filtered source archive and puts it in the ordinary
+wheelhouse for publication. The independent ABI3 runtime matrix remains in
+`verification.yml`; the hook does not add a release-time runtime matrix.
+
+## Local distribution validation
+
+Update `pyproject.toml`, package `__version__` and `CHANGELOG.md` together.
+Use Python 3.13 for release tooling. Prepare VM caches with
+`dev/setup-build-caches.sh` and `dev/setup-build-caches.sh --status`, and put
+complete CMake build trees on local disk:
 
 ```bash
 python -m pip install build twine packaging
@@ -19,38 +51,43 @@ python -m pip wheel /var/tmp/subtree-release-dist/*.tar.gz --no-deps \
   --wheel-dir /var/tmp/subtree-release-dist \
   -Cbuild-dir=/var/tmp/subtree-release-build -Ccmake.define.REQUIRE_RUST_EXTENSIONS=ON
 python -m twine check --strict /var/tmp/subtree-release-dist/*.whl /var/tmp/subtree-release-dist/*.tar.gz
-python dev/check_distributions.py /var/tmp/subtree-release-dist --tag v0.3.0
+python dev/check_distributions.py /var/tmp/subtree-release-dist
 ```
 
-Install the wheel into a clean environment with test dependencies. From outside
-the checkout, run `dev/check_release.py --require-rust --require-cython` and
-the full test directory with `COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1`.
-The checker rejects imports from the source tree, compares installed metadata
-and runtime version, requires native APIs and executes public examples.
+Install the wheel into a clean environment. Outside the checkout, run
+`dev/check_release.py --require-rust --require-cython` and the test directory
+with `COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1`. Ordinary wheels intentionally
+omit the compiled Lean executable, so ten optional Lean tests may skip. To test
+that backend, provide it and set `COMMON_SUBTREE_REQUIRE_LEAN=1`.
 
-The ordinary wheel includes Rust and Cython. The portable Linux Rust-only
-CP310 ABI3 profile is `dev/abi3-cibuildwheel.toml`; run its strict ABI audit and
-test the same artifact on CPython 3.10–3.14. Optional verified Lean tests may
-skip in ordinary wheels because its executable is intentionally not included.
-The separate rational CI job requires that executable when testing that mode.
+`dev/abi3-cibuildwheel.toml` describes the portable glibc 2.28 Rust-only wheel;
+audit it and exercise CPython 3.10–3.14. The default wheel includes Rust/Cython
+for CPython 3.10–3.13. On macOS, project build configuration requests deployment
+target **10.12**, matching the Rust Intel requirement. cibuildwheel raises this
+for newer interpreters and ARM (at least 11.0). The reported Intel 10.9/10.12
+mismatch is corrected in configuration; a remote macOS rerun remains required.
+See [Rust's platform requirements](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html).
 
-## Build/test gate and publication
+## Publish using xcookie's release flow
 
-`Package CI` (`tests.yml`) builds the source archive, rebuilds and tests its
-wheel, builds platform wheels, audits the portable ABI3 wheel and exercises its
-runtime matrix. Successful `release-ready` collects **only those tested
-distributions** into the `release-dist` artifact with `SHA256SUMS`.
-Mathematical/proof research CI is independent of this package release gate.
+After review and green CI on `main`, the maintainer release command is:
 
-Once the candidate is reviewed, create a `v0.3.0` tag on that exact
-tested commit. Manually dispatch `Publish tested release` (`publish.yml`) with
-the successful Package CI run ID and tag. It checks the run, commit/tag identity,
-distribution versions, README and saved checksums, then uploads those same
-artifacts to PyPI. It reuses the repository's `TWINE_PASSWORD` PyPI API-token
-secret; no removed setup.py, automatic branch publishing or signing-key
-decryption is involved. See [Twine's publishing documentation](https://twine.readthedocs.io/en/stable/).
+```bash
+git push origin main:release
+```
 
-Do not tag, push or publish merely to test packaging. Local release evidence
-must distinguish the platforms/runtimes actually exercised from jobs still
-awaiting remote CI. GitHub release notes can use the corresponding changelog
-section after successful publication.
+`release.yml` rebuilds distributions and publishes them to PyPI. After live
+publication succeeds, it creates or verifies `v$VERSION` at that commit and
+creates the GitHub release for that exact tag. Maintainers do not pre-create a
+version tag or dispatch the removed manual publisher. An existing tag is reused
+only if it points to the same commit.
+
+The generated workflow also exercises release packaging/publication to TestPyPI
+on `main`. This project preserves the previous credential/signing policy via
+explicit xcookie settings: token publication (`TWINE_PASSWORD` and
+`TEST_TWINE_PASSWORD`) and encrypted-repository GPG material (`CI_SECRET`).
+No authentication migration is imposed by this repair.
+
+Local checksums are useful review aids. They are not a cross-workflow artifact
+promotion requirement. Proof research is separate from the package release
+policy. No push, tag or publication was performed during local preparation.
