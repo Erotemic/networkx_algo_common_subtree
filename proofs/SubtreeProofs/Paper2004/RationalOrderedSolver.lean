@@ -13,31 +13,75 @@ original-identity forests, so hash collisions cannot alias distinct queries. -/
 
 namespace SubtreeProofs.Paper2004.AnnotatedIso.RationalSolver
 
-deriving instance Hashable for BinaryTree
-
 abbrev Input := Word Nat
 abbrev Witness := Word (Nat × Nat)
 abbrev Key := Bool × Input × Input
 
-instance : BEq Input := ⟨fun a b => decide (a = b)⟩
+/-- Use Lean's standard pointer shortcut at every shared subtree, retaining
+the complete structural equality check when pointers differ. -/
+def inputDecEq (first second : Input) : Decidable (first = second) :=
+  withPtrEqDecEq first second fun _ =>
+    match first, second with
+    | .nil, .nil => .isTrue rfl
+    | .nil, .node .. => .isFalse (by intro h; cases h)
+    | .node .., .nil => .isFalse (by intro h; cases h)
+    | .node a ah aTail, .node b bh bTail =>
+      if hLabel : a = b then
+        match inputDecEq ah bh with
+        | .isFalse hHead => .isFalse (by intro h; cases h; exact hHead rfl)
+        | .isTrue hHead =>
+          match inputDecEq aTail bTail with
+          | .isFalse hTail => .isFalse (by intro h; cases h; exact hTail rfl)
+          | .isTrue hTail => .isTrue (by cases hLabel; cases hHead; cases hTail; rfl)
+      else .isFalse (by intro h; cases h; exact hLabel rfl)
+termination_by first
+
+instance : BEq Input := ⟨fun a b => @decide (a = b) (inputDecEq a b)⟩
 instance : LawfulBEq Input where
-  eq_of_beq h := of_decide_eq_true h
-  rfl := by intro a; exact decide_eq_true rfl
+  eq_of_beq {a b} h := @of_decide_eq_true (a = b) (inputDecEq a b) h
+  rfl := by intro a; exact @decide_eq_true (a = a) (inputDecEq a a) rfl
+
+/-- Original identities give a cheap hash. The full forest is still compared
+for equality: repeated identities and hash collisions remain correct. -/
+instance : Hashable Input where
+  hash
+    | .nil => 0
+    | .node identity _ _ => mixHash (hash identity) 17
 
 def reference (affinity : Nat → Nat → ℚ) (any : Bool) (left right : Input) : Witness :=
   if any then AffinityDP.anywhere affinity left right else AffinityDP.level affinity left right
 
+/-- Materialize the score once. The proof is erased; both data fields are cached. -/
+structure Scored (affinity : Nat → Nat → ℚ) where
+  witness : Witness
+  value : ℚ
+  correct : value = score affinity witness
+
+def Scored.empty (affinity : Nat → Nat → ℚ) : Scored affinity := ⟨.nil,0,rfl⟩
+
+def Scored.choose {affinity : Nat → Nat → ℚ} (first second : Scored affinity) : Scored affinity :=
+  if first.value < second.value then second else first
+
+theorem Scored.choose_witness {affinity : Nat → Nat → ℚ} (first second : Scored affinity) :
+    (Scored.choose first second).witness = AffinityDP.choose affinity first.witness second.witness := by
+  simp only [Scored.choose, first.correct, second.correct, AffinityDP.choose]
+  split <;> rfl
+
+def Scored.node {affinity : Nat → Nat → ℚ} (a b : Nat) (head tail : Scored affinity) : Scored affinity :=
+  ⟨.node (a,b) head.witness tail.witness, head.value + tail.value + affinity a b,
+    by simp only [head.correct, tail.correct, score]⟩
+
 structure Cache (affinity : Nat → Nat → ℚ) where
-  entries : Std.HashMap Key Witness
+  entries : Std.HashMap Key (Scored affinity)
   sound : ∀ any left right output, entries[(any,left,right)]? = some output →
-    output = reference affinity any left right
+    output.witness = reference affinity any left right
 
 def Cache.empty (affinity : Nat → Nat → ℚ) : Cache affinity :=
   ⟨∅, by intros; simp_all⟩
 
 def Cache.store {affinity : Nat → Nat → ℚ} (cache : Cache affinity)
-    (any : Bool) (left right : Input) (output : Witness)
-    (h : output = reference affinity any left right) : Cache affinity :=
+    (any : Bool) (left right : Input) (output : Scored affinity)
+    (h : output.witness = reference affinity any left right) : Cache affinity :=
   ⟨cache.entries.insert (any,left,right) output, by
     intro mode l r value hLookup
     rw [Std.HashMap.getElem?_insert] at hLookup
@@ -50,7 +94,7 @@ def Cache.store {affinity : Nat → Nat → ℚ} (cache : Cache affinity)
     · exact cache.sound mode l r value hLookup⟩
 
 abbrev Certified (affinity : Nat → Nat → ℚ) (any : Bool) (left right : Input) :=
-  { output : Witness // output = reference affinity any left right }
+  { output : Scored affinity // output.witness = reference affinity any left right }
 
 /-- The executable memoized algorithm carries only erased correctness evidence.
 There is no assumed input cache or supplied optimum certificate at the public API. -/
@@ -61,8 +105,8 @@ def run (affinity : Nat → Nat → ℚ) (any : Bool) (left right : Input)
   | none =>
     let computed : Certified affinity any left right × Cache affinity :=
       match left, right with
-      | .nil, _ => (⟨.nil, by cases any <;> simp [reference, AffinityDP.level, AffinityDP.anywhere]⟩,cache)
-      | .node _ _ _, .nil => (⟨.nil, by cases any <;> simp [reference, AffinityDP.level, AffinityDP.anywhere]⟩,cache)
+      | .nil, _ => (⟨Scored.empty affinity, by cases any <;> simp [Scored.empty, reference, AffinityDP.level, AffinityDP.anywhere]⟩,cache)
+      | .node _ _ _, .nil => (⟨Scored.empty affinity, by cases any <;> simp [Scored.empty, reference, AffinityDP.level, AffinityDP.anywhere]⟩,cache)
       | .node a lh lt, .node b rh rt =>
         if hAny : any then
           let (x,c1) := run affinity true lh (.node b rh rt) cache
@@ -70,33 +114,32 @@ def run (affinity : Nat → Nat → ℚ) (any : Bool) (left right : Input)
           let (z,c3) := run affinity true (.node a lh lt) rh c2
           let (w,c4) := run affinity true (.node a lh lt) rt c3
           let (lvl,c5) := run affinity false (.node a lh lt) (.node b rh rt) c4
-          let output := AffinityDP.choose affinity lvl.val
-            (AffinityDP.choose affinity (AffinityDP.choose affinity x.val y.val)
-              (AffinityDP.choose affinity z.val w.val))
+          let output := Scored.choose lvl.val
+            (Scored.choose (Scored.choose x.val y.val) (Scored.choose z.val w.val))
           (⟨output, by
-            simp only [output, x.property, y.property, z.property, w.property, lvl.property,
+            simp only [output, Scored.choose_witness, x.property, y.property, z.property, w.property, lvl.property,
               reference, hAny, Bool.false_eq_true, ↓reduceIte, AffinityDP.anywhere]⟩,c5)
         else
           let (x,c1) := run affinity false (.node a lh lt) rt cache
           let (y,c2) := run affinity false lt (.node b rh rt) c1
-          let base := AffinityDP.choose affinity x.val y.val
+          let base := Scored.choose x.val y.val
           if hPositive : 0 < affinity a b then
             let (head,c3) := run affinity false lh rh c2
             let (tail,c4) := run affinity false lt rt c3
-            let output := AffinityDP.choose affinity base (.node (a,b) head.val tail.val)
+            let output := Scored.choose base (Scored.node a b head.val tail.val)
             (⟨output, by
-              simp only [output, base, x.property, y.property, head.property, tail.property,
+              simp only [output, base, Scored.choose_witness, Scored.node, x.property, y.property, head.property, tail.property,
                 reference, hAny, Bool.false_eq_true, ↓reduceIte, AffinityDP.level, hPositive]⟩,c4)
           else
             (⟨base, by
-              simp only [base, x.property, y.property, reference, hAny, Bool.false_eq_true,
+              simp only [base, Scored.choose_witness, x.property, y.property, reference, hAny, Bool.false_eq_true,
                 ↓reduceIte, AffinityDP.level, hPositive]⟩,c2)
     (computed.1, computed.2.store any left right computed.1.val computed.1.property)
 termination_by (left.numNodes + right.numNodes, if any then 1 else 0)
 decreasing_by all_goals simp_all [BinaryTree.numNodes]; omega
 
 def solve (affinity : Nat → Nat → ℚ) (rooted : Bool) (left right : Input) : Witness :=
-  (run affinity (!rooted) left right (Cache.empty affinity)).1.val
+  (run affinity (!rooted) left right (Cache.empty affinity)).1.val.witness
 
 theorem solve_eq (affinity : Nat → Nat → ℚ) (rooted : Bool) (left right : Input) :
     solve affinity rooted left right =
@@ -115,8 +158,13 @@ theorem solve_correct (affinity : Nat → Nat → ℚ) (rooted : Bool) (left rig
   · exact AffinityDP.level_correct affinity left right
 
 def solveResult (affinity : Nat → Nat → ℚ) (rooted : Bool) (left right : Input) : Witness × ℚ :=
-  let witness := solve affinity rooted left right
-  (witness, score affinity witness)
+  let output := (run affinity (!rooted) left right (Cache.empty affinity)).1.val
+  (output.witness, output.value)
+
+theorem solveResult_eq (affinity : Nat → Nat → ℚ) (rooted : Bool) (left right : Input) :
+    solveResult affinity rooted left right =
+      (solve affinity rooted left right, score affinity (solve affinity rooted left right)) := by
+  exact Prod.ext rfl (run affinity (!rooted) left right (Cache.empty affinity)).1.val.correct
 
 /-- Complete exact score, original-order and independent optimum contract of
 the function called by the native executable. No cache invariant is a premise. -/
@@ -127,6 +175,7 @@ theorem solveResult_correct (affinity : Nat → Nat → ℚ) (rooted : Bool) (le
     result.2 = score affinity result.1 ∧
     ((vertices result.1).map Prod.fst).Sublist (vertices left) ∧
     ((vertices result.1).map Prod.snd).Sublist (vertices right) := by
+  rw [solveResult_eq]
   have h := solve_correct affinity rooted left right
   have hAny : AnyWitness affinity (solve affinity rooted left right) left right := by
     cases rooted

@@ -13,8 +13,11 @@ integer execution without identifying that float path with exact arithmetic.
 Current delivery, 2026-11-18: `verified-lean` exposes a compiled, proved
 hash-memoized ordered isomorphism algorithm, both root policies, exact
 `int`/`Fraction` weights, exact `Fraction` scores and original-input witnesses.
-The 4,366-job library, six Lean cases and 243 installed tests pass. A measured
-7.60× median slowdown versus float Rust is explicit; both remain selectable.
+The 4,366-job library, seven Lean cases and 244 installed tests pass after score/
+hash/equality/conversion optimization. Median paired-case speedup is 2.79×;
+the current small dyadic Lean/Rust latency ratio is 4.23× (1.87--8.56× range).
+Both remain selectable; larger rooted chains still expose dense-input overhead.
+[Optimization measurements](../../dev/benchmarks/2026-11-18-rational-optimization.md).
 [Proof, installed-wheel and benchmark evidence](../../dev/benchmarks/2026-11-18-verified-rational-ordered.md).
 
 Delivery policy: keep verified and optimized/empirically tested implementations
@@ -37,7 +40,7 @@ milestones; full verification remains a final verified-release requirement.
 
 | Algorithm / mode | Usable Python API / default | Implementations and independent checks | Performance and verification boundary |
 | --- | --- | --- | --- |
-| Ordered isomorphism, exact rational, both root policies | Both public ordered isomorphism APIs, explicit `impl="verified-lean"`; optional native executable bundled with `BUILD_LEAN_BACKEND=ON` | Directly compiled Lean hash-memoized solver; independent full witness optimality, exact score and original identity/order/uniqueness theorems; 98 weighted input/policy oracle combinations and full 243-test installed suite | Exact unbounded integer/rational arithmetic; Python/NetworkX/JSON conversion tested. Median 7.60× slower than optimized float Rust, 4.16×/3.86× versus Cython/Python on a short 18-case installed comparison. Optimized Rust proof remains separate; `auto` unchanged |
+| Ordered isomorphism, exact rational, both root policies | Both public ordered isomorphism APIs, explicit `impl="verified-lean"`; optional native executable bundled with `BUILD_LEAN_BACKEND=ON` | Directly compiled Lean hash-memoized solver with cached exact scores and collision-safe fast hashing/equality; unchanged full witness/score/identity theorem statements; 98 weighted input/policy oracle combinations and full 244-test installed suite | Exact unbounded integer/rational arithmetic; conversion/transport tested. Small dyadic median latency ratios: 4.23× Rust, 2.05× Cython, 1.77× Python after 2.79× paired-case speedup. Expanded median 3.77× Rust, but large rooted chain 32.45×; sparse affinity delivery is a clear frontier. Optimized Rust proof remains separate; `auto` unchanged |
 | Ordered embedding, equality/custom affinity | `maximum_common_ordered_subtree_embedding`, `balanced_embedding.longest_common_balanced_embedding`; `auto` prefers legacy Rust, then Cython, then Python | Python iterative/recursive, Cython, memoized/interned PyO3 Rust; exhaustive pair-deletion oracle and differential tests | Installed balanced API: legacy Rust median 4.43x/3.25x over Python/Cython for equality, 3.87x/3.12x for fractional affinities. Production affinity implementation not source verified |
 | Ordered embedding, unweighted | Same APIs with `node_affinity=None`; opt-in `impl="verified-rust"` | Also actual verified flat-token Rust core, original-index token readback and graph adapter tests | Lean proves core optimum, witnesses, parser, memo bounds and guided reconstruction. Installed API verified backend is 6.99x slower than legacy Rust at median (1.28–137x range); it remains opt-in. Full production runtime proof open |
 | Ordered isomorphism, equality/custom/unweighted | `maximum_common_ordered_subtree_isomorphism`, `balanced_isomorphism.longest_common_balanced_isomorphism`; same `auto` policy | Python iterative/recursive, Cython, legacy PyO3 Rust; independent original-parent subset enumeration checks adjacency-preserving forest feasibility and optima | Production Rust memoizes scores/choices and reconstructs once: general cases improved 2.42–2.44× in a short installed check. Original-identity affinity mathematical optima are proved for both policies. Local source append/readback bridges are proved conditionally; full production DP/memo/state/score refinement remains open. The source-proved structural core stays opt-in as unweighted `reference-rust`; its complete indexed/token reference path is source proved and it is exponential |

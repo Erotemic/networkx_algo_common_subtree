@@ -1,5 +1,13 @@
 # Reproducing verification
 
+The scored-cache/hash/equality optimization retains the exact public theorem
+statements and uses the same build/test commands below. Current evidence is
+244 strict installed tests, seven Lean examples, 72 audited declarations and
+a 2.79× median paired-case speedup. The benchmark script additionally accepts
+`--integer-weights`, `--sizes 64,128` and `--repeat N` for focused comparisons.
+See [the optimization report](../dev/benchmarks/2026-11-18-rational-optimization.md)
+for old/new wheel identities, raw data and the remaining dense-input frontier.
+
 The complete exact rational ordered-isomorphism backend is `verified-lean`.
 It directly compiles the proved memoized Lean algorithm; optimized Rust source
 refinement is a separate path. It supports both root policies, exact integer/

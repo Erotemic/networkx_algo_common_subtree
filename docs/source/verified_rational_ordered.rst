@@ -87,15 +87,22 @@ Performance and backend choice
 The optimized floating Rust/Cython/Python implementations remain selectable;
 ``auto`` retains its existing policy. A local installed-wheel comparison on
 8/16/32-node stars, chains and balanced trees, for both policies and exactly
-representable dyadic weights, measured a median Lean/Rust latency ratio of
-7.60 (range 4.56--26.02). Median ratios against Cython and Python iterative
-references were 4.16 and 3.86. These timings include conversion, IPC, solving
+representable dyadic weights, measures a median Lean/Rust latency ratio of
+4.23 (range 1.87--8.56) after score-cache, hash/equality and conversion
+optimization. Median ratios against Cython and Python iterative references
+are 2.05 and 1.77. Paired verified-backend case speedup is 2.79 at the median.
+These timings include conversion, IPC, solving
 and reconstruction. The first Lean call additionally costs about 125 ms on
 this VM; warmed requests reuse the worker. These are small development
 measurements, not universal performance claims.
 
 Use ``verified-lean`` for the exact rational guarantee and ``iter-rust`` for the
 existing empirically tested floating implementation when that tradeoff fits.
-Further score caching and representation improvements can reduce the verified
-backend's cost. Full source refinement of the optimized Rust algorithm remains
-a separate research/engineering task.
+Cached scores retain a Lean equality proof, and cheap hashes still use complete
+forest equality with collision checks. The public correctness statements are
+unchanged. Performance parity is workload dependent: an expanded 64/128-node
+suite measures 3.77 times Rust's median latency, but 32.45 times on the largest
+rooted chain. The verified adapter still prepares the full affinity matrix,
+including pairs a rooted solver may never need. Sparse affinity delivery and
+a native in-process interface are further optimization candidates. Full source
+refinement of the optimized Rust algorithm remains a separate task.

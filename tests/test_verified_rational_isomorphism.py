@@ -162,3 +162,17 @@ def test_worker_threads_restart_and_fork():
         with multiprocessing.get_context("fork").Pool(1) as pool:
             assert pool.apply(_concurrent_solve, (Fraction(2, 5),)) == Fraction(4, 5)
         assert _concurrent_solve(1) == 2
+
+
+def test_native_hash_collisions_retain_distinct_forest_shapes():
+    from networkx_algo_common_subtree import balanced_isomorphism_lean as backend
+    # This native model supports repeated labels (uniqueness is a separate
+    # theorem premise). Different forests deliberately share first-label hashes.
+    leaf = [0, [], []]
+    left = [0, leaf, leaf]
+    right = [0, [0, leaf, []], []]
+    request = dict(protocol=1, left=left, right=right, rooted=True,
+                   weights=[[["1", "1"] for _ in range(3)] for _ in range(3)])
+    result = backend._request(backend._lean_executable(), request)
+    assert Fraction(int(result["numerator"]), int(result["denominator"])) == 2
+    assert len(result["pairs"]) == 2

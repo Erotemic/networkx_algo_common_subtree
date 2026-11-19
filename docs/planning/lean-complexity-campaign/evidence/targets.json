@@ -3100,7 +3100,7 @@
     "numeric_model": "verified-lean executes exact Lean rational arithmetic and accepts int/Fraction affinities with Fraction results. The optimized float API remains separate and still converts Python integer affinities to f64. Python/graph/JSON conversion is a tested boundary; no IEEE-754 proof is required or claimed.",
     "budget_policy": "User chooses each time/token budget. Present task-level token and elapsed ranges with confidence, report actual consumption and remaining frontier; do not assume a fixed tranche or autonomously exhaust the full research program.",
     "backlog": "../../README.md#budgetable-ordered-work-recommended-order",
-    "recommended_next": "No required algorithm proof or Python release gate remains for the supported exact Lean isomorphism mode. Future choices: cache scores/profile representations to reduce measured slowdown, or fund O01–O03 optimized Rust source refinement. Weighted ordered embedding remains a separate task.",
+    "recommended_next": "The first verified-backend optimization is complete. Next budget choices: prove sparse/depth-aware or demand-driven rooted affinity delivery to avoid the dense input bottleneck, or integrate an in-process native Lean interface. The optimized Rust proof and weighted embedding remain separate tasks; no further tranche is started.",
     "deferred": [
       "Running-time/space/asymptotic proofs",
       "New resource/region/destructor interpretation unless needed to unblock functional refinement",
@@ -3192,6 +3192,59 @@
         "policy": "Keep optimized/tested backends selectable; auto unchanged."
       },
       "delivery_route_decision": "Direct compilation delivers the user-requested full rational Python algorithm alongside the earlier Rust-first plan; O01–O03 optimized Rust refinement is not falsely marked complete.",
+      "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
+    },
+    "completed_optimization": {
+      "date": "2026-11-18",
+      "status": "Cached exact scores, cheap original-identity hashing with full collision-safe equality, standard shared-pointer equality shortcut and reduced Python conversion/mapping work are compiled/proved/tested.",
+      "evidence": "../../../../dev/benchmarks/2026-11-18-rational-optimization.md",
+      "public_theorem_type_hashes": "solveResult_correct and solve_unique_endpoints unchanged relative to the first release.",
+      "arithmetic": "Exact rational arithmetic retained; no score width/precision restriction added.",
+      "checks": {
+        "library_jobs": 4366,
+        "native_build_jobs": 6272,
+        "lean_examples": 7,
+        "audited_declarations": 72,
+        "audited_theorems": 24,
+        "statement_records": 119,
+        "statement_edges": 458,
+        "unknown_statements": 0,
+        "installed_tests": 244,
+        "skips": 0
+      },
+      "performance": {
+        "paired_case_speedup_median": 2.79,
+        "paired_case_speedup_range": [
+          1.31,
+          9.6
+        ],
+        "fresh_baseline_lean_rust_median_ratio": 7.96,
+        "small_dyadic_lean_rust_median_ratio": 4.23,
+        "small_dyadic_ratio_range": [
+          1.87,
+          8.56
+        ],
+        "small_dyadic_lean_cython_median_ratio": 2.05,
+        "small_dyadic_lean_python_median_ratio": 1.77,
+        "integer_lean_rust_median_ratio": 5.31,
+        "large_dyadic_lean_rust_median_ratio": 3.77,
+        "largest_rooted_chain_ratio": 32.45,
+        "policy": "No uniform parity claim; all backends retained and auto unchanged."
+      },
+      "frontier": [
+        {
+          "task": "Proved sparse/depth-aware or demand-driven rooted affinity delivery plus compact transport",
+          "tokens": "80–250k",
+          "elapsed": "1–4 hours",
+          "confidence": "Low before interface/proof spike"
+        },
+        {
+          "task": "Linux-first in-process native Lean interface with exact BigInt marshaling, initialization, ownership, packaging and concurrency tests",
+          "tokens": "100–300k",
+          "elapsed": "2–6 hours",
+          "confidence": "Low"
+        }
+      ],
       "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
     }
   }

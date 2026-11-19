@@ -1,5 +1,19 @@
 # Common-subtree proof status
 
+Optimization follow-up: `RationalSolver.Scored` caches each exact rational value
+with an erased equality proof; `Scored.choose_witness` and `solveResult_eq`
+connect the new computation to the original witness/score expression. Fast
+first-identity hashing still uses full structural equality, with a checked
+`inputDecEq` and standard Lean `withPtrEqDecEq` shared-subtree shortcut.
+`solveResult_correct` and `solve_unique_endpoints` have unchanged elaborated
+type hashes. The 4,366-job library/native build, seven Lean examples and 244
+strict installed tests pass, including deliberately colliding repeated-label
+forest shapes. Focused audit: 72 declarations/24 theorems, only the accepted
+three axioms. Statement closure: 119 records/458 edges, no unknowns.
+Median paired-case speedup is 2.79×; current small-suite Lean/Rust latency ratio
+is 4.23×, without a uniform parity claim. See the
+[optimization report](../dev/benchmarks/2026-11-18-rational-optimization.md).
+
 Exact rational Python delivery, 2026-11-18: `impl="verified-lean"` compiles and
 calls `Paper2004.AnnotatedIso.RationalSolver.solveResult` directly for both
 ordered isomorphism root policies. Its checked `solveResult_correct` theorem

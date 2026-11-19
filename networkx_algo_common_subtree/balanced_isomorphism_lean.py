@@ -94,7 +94,8 @@ def _encode(sequence, open_to_close):
     from .balanced_sequence import generate_balance
 
     # Validate typed nesting completely, including when the other side is empty.
-    list(generate_balance(sequence, open_to_close))
+    for _ in generate_balance(sequence, open_to_close):
+        pass
     positions, children, parents, stack = [], [], [], []
     roots = []
     for position, token in enumerate(sequence):
@@ -142,19 +143,27 @@ def _lcsi_verified_lean(seq1, seq2, open_to_close, open_to_node, node_affinity, 
         token = sequence[position]
         return token if open_to_node is None else open_to_node[token]
 
+    # Mapping values are fixed input data. Resolve once, as the Rust encoder does.
+    left_nodes = [node(seq1, opening) for opening, _ in lp] if rp else []
+    right_nodes = [node(seq2, opening) for opening, _ in rp] if lp else []
     weights = []
-    for li, _ in lp:
+    for left_node in left_nodes:
         row = []
-        for ri, _ in rp:
-            value = affinity(node(seq1, li), node(seq2, ri))
-            if not isinstance(value, Rational):
-                raise TypeError("verified-lean affinities must be exact Rational values "
-                                "(int or fractions.Fraction); floats require explicit conversion")
-            value = Fraction(value)
-            if value < 0:
+        for right_node in right_nodes:
+            value = affinity(left_node, right_node)
+            # Canonical built-ins already have an exact numerator and denominator.
+            # Avoid an ABC lookup, copy and rational comparison for every cell.
+            if type(value) is not int and type(value) is not Fraction:
+                if not isinstance(value, Rational):
+                    raise TypeError("verified-lean affinities must be exact Rational values "
+                                    "(int or fractions.Fraction); floats require explicit conversion")
+                value = Fraction(value)
+            if value.numerator < 0:
                 raise ValueError("node affinities must be nonnegative")
             row.append(value)
         weights.append(row)
+    if not rp:
+        weights = [[] for _ in lp]
     request = dict(protocol=1, left=left, right=right, rooted=rooted,
                    weights=[[[str(v.numerator), str(v.denominator)] for v in row] for row in weights])
     try:
@@ -172,7 +181,7 @@ def _lcsi_verified_lean(seq1, seq2, open_to_close, open_to_node, node_affinity, 
         score = Fraction(int(result["numerator"]), int(result["denominator"]))
         if score != sum((weights[i][j] for i, j in pairs), Fraction()):
             raise RuntimeError("verified Lean witness score disagrees with original affinities")
-        if any(weights[i][j] <= 0 for i, j in pairs):
+        if any(weights[i][j].numerator <= 0 for i, j in pairs):
             raise RuntimeError("verified Lean witness includes a forbidden pair")
     except (KeyError, IndexError, json.JSONDecodeError) as exc:
         raise RuntimeError("invalid response from verified Lean solver") from exc

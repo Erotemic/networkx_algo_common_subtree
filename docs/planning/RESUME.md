@@ -4,6 +4,24 @@ Branch: `Droschinsky-algos`.
 
 ## Active priority after the user's 2026-11-18 clarification
 
+Latest optimization of the exact backend: cached scores with erased exactness
+proofs, cheap original-ID hashing with full collision-safe structural equality,
+standard Lean shared-pointer equality shortcuts, and reduced Python validation/
+mapping work. The public theorem type hashes are unchanged. All 4,366 library
+jobs, the native build, seven Lean examples and **244 strict installed tests**
+pass. Focused audit: 72 declarations/24 theorem declarations, accepted axioms
+only; two-seed statement closure: 119 records/458 edges, no unknowns.
+
+Fresh installed measurements show **2.79× median paired-case speedup**. On the
+original dyadic suite, median Lean/Rust latency ratio falls from a remeasured
+7.96× to **4.23×** (range 1.87--8.56×); versus Cython/Python, 2.05×/1.77×.
+Integer suite: 5.31× Rust. Expanded 64/128-node dyadic suite: 3.77× median,
+but 32.45× on the largest rooted chain due to full-matrix affinity preparation.
+Do not claim uniform parity. See
+[optimization evidence and future budget options](../../dev/benchmarks/2026-11-18-rational-optimization.md).
+The next useful frontier is sparse/reachable rooted affinities with a proof
+bridge, or an in-process native interface. No further tranche is started.
+
 Latest delivery: the user requested the full verified rational ordered matching
 algorithm from Python. **Complete for ordered subtree isomorphism, both root
 policies**, as explicit `impl="verified-lean"`, through direct native compilation
@@ -26,7 +44,7 @@ and [usage/build instructions](../source/verified_rational_ordered.rst).
 
 This direct Lean route delivers the requested rational Python milestone without
 claiming O01--O03's optimized Rust source proof. Future choices are reducing the
-verified backend's measured cost (e.g. cached scores), proving the optimized
+verified backend's measured cost (e.g. sparse affinities/native interop), proving the optimized
 Rust kernel, or weighted ordered embedding. Do not resume the unbounded resource/
 complexity campaign automatically. The historical Rust-first estimates below
 remain estimates for that separate path, not blockers to using `verified-lean`.

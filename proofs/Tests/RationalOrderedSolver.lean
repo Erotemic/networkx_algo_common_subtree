@@ -8,10 +8,10 @@ def second : Input := .node 10 .nil .nil
 def affinity (a b : Nat) : ℚ := if a = 1 ∧ b = 10 then 7/3 else 0
 
 example : solveResult affinity true first second = (.nil,0) := by
-  rw [solveResult, solve_eq]
+  rw [solveResult_eq, solve_eq]
   decide +kernel
 example : solveResult affinity false first second = (.node (1,10) .nil .nil,7/3) := by
-  rw [solveResult, solve_eq]
+  rw [solveResult_eq, solve_eq]
   decide +kernel
 
 example : IsMaximumAny affinity (solve affinity false first second) first second :=
@@ -26,8 +26,17 @@ example : solve (fun _ _ => (0 : ℚ)) false first second = .nil := by
   decide +kernel
 
 example : (solveResult (fun _ _ => (2^200 + 1 : ℚ)) true second second).2 = 2^200+1 := by
-  rw [solveResult, solve_eq]
+  rw [solveResult_eq, solve_eq]
   decide +kernel
 
 #print axioms solveResult_correct
 #print axioms solve_unique_endpoints
+
+-- Repeated labels deliberately collide in the cheap hash. Distinct forest
+-- shapes still have different cache keys and the correct scalar optimum.
+def collisionLeft : Input := .node 0 (.node 0 .nil .nil) (.node 0 .nil .nil)
+def collisionRight : Input := .node 0 (.node 0 (.node 0 .nil .nil) .nil) .nil
+
+example : (solveResult (fun _ _ => (1 : ℚ)) true collisionLeft collisionRight).2 = 2 := by
+  rw [solveResult_eq, solve_eq]
+  decide +kernel

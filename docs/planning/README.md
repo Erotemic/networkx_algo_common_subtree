@@ -57,11 +57,14 @@ or supplied sound cache are public hypotheses. This delivers the requested
 full rational matching milestone through direct Lean compilation. Python/
 NetworkX conversion and JSON/process transport are tested boundaries.
 
-The complete library, native executable, six Lean examples and 243 installed
-Python tests pass. A short installed-API benchmark measures a median 7.60×
-slowdown against optimized float Rust (4.56--26.02× range), and 4.16×/3.86×
-against Cython/Python references on matching dyadic workloads. Keep all of
-those backends selectable; `auto` is unchanged. See the
+After optimization, the complete library, native executable, seven Lean
+examples and 244 installed Python tests pass. Cached exact scores, cheap hashes
+with full equality and reduced conversion work give a median 2.79× paired-case
+speedup. The median latency ratio against optimized float Rust is now 4.23×
+(1.87--8.56× range) on the original small dyadic workloads, and 2.05×/1.77×
+against Cython/Python. Larger rooted paths expose a remaining full-matrix input
+cost; uniform parity is not claimed. Keep all backends selectable; `auto` is
+unchanged. See [optimization measurements and frontier](../../dev/benchmarks/2026-11-18-rational-optimization.md), the
 [delivery/proof/benchmark evidence](../../dev/benchmarks/2026-11-18-verified-rational-ordered.md)
 and [user instructions](../source/verified_rational_ordered.rst).
 
@@ -69,7 +72,7 @@ Direct Lean compilation is an additional delivery route alongside the original
 Rust-first O01--O04 sequence. O01--O03's full optimized Rust refinement remains
 open; it is not claimed by the compiled Lean endpoint. O04's Python delivery and
 comparison gates are satisfied for this exact Lean isomorphism mode. Further
-score caching/representation optimization, optimized Rust source proofs and
+sparse affinity/representation optimization, optimized Rust source proofs and
 weighted ordered embedding remain separately prioritizable work.
 
 ### Python delivery and backend choice
