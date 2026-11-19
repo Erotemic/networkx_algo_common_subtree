@@ -1,5 +1,46 @@
 # Reproducing verification
 
+The complete exact rational ordered-isomorphism backend is `verified-lean`.
+It directly compiles the proved memoized Lean algorithm; optimized Rust source
+refinement is a separate path. It supports both root policies, exact integer/
+Fraction affinities, original-input witnesses and Fraction scores. Python/graph/
+JSON conversion remains a tested boundary. See
+[user/build instructions](../docs/source/verified_rational_ordered.rst) and
+[the 243-test installed-wheel/benchmark evidence](../dev/benchmarks/2026-11-18-verified-rational-ordered.md).
+
+From the repository root, prepare caches with `dev/setup-build-caches.sh` and
+`dev/setup-build-caches.sh --status`. Then, from `proofs/`:
+
+```bash
+lake exe cache get
+lake build
+lake build verified_ordered
+lake env lean Tests/RationalOrderedSolver.lean
+```
+
+Build a wheel containing the executable from the repository root, using local
+disk for the complete CMake build directory (including its actual Cargo output):
+
+```bash
+python -m pip wheel . --no-deps --wheel-dir /var/tmp/subtree-wheels \
+  --config-settings=build-dir=/var/tmp/subtree-wheel-build \
+  --config-settings=cmake.define.BUILD_LEAN_BACKEND=ON \
+  --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
+```
+
+After installing that wheel and test dependencies, run **outside the checkout**:
+
+```bash
+COMMON_SUBTREE_REQUIRE_LEAN=1 COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 \
+  python -m pytest -q /path/to/checkout/tests
+python /path/to/checkout/dev/bench_verified_rational.py --output result.json
+```
+
+No Lean toolchain/development submodule is needed at runtime: the wheel bundles
+`networkx_algo_common_subtree/_bin/verified_ordered`. Standard wheels without
+`BUILD_LEAN_BACKEND=ON` may omit it; explicit requests then fail, without fallback.
+CI has a separate installed-wheel job requiring the rational backend.
+
 The active delivery priority is efficient ordered Python APIs with functional
 correctness; running-time proofs are deferred. See the current budgetable
 backlog in [the planning README](../docs/planning/README.md#active-priority-efficient-python-apis-with-functional-correctness).

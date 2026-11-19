@@ -4,6 +4,33 @@ Branch: `Droschinsky-algos`.
 
 ## Active priority after the user's 2026-11-18 clarification
 
+Latest delivery: the user requested the full verified rational ordered matching
+algorithm from Python. **Complete for ordered subtree isomorphism, both root
+policies**, as explicit `impl="verified-lean"`, through direct native compilation
+of a newly proved hash-memoized Lean solver. Exact integers/Fractions return a
+Fraction score and original-input witnesses. `RationalSolver.solveResult_correct`
+and `solve_unique_endpoints` have no supplied cache/child-optimum hypotheses.
+Python/NetworkX conversion and process/JSON transport remain tested boundaries.
+The optimized Rust/Cython/Python float backends and `auto` policy are retained.
+
+The 4,366-job library, 6,272-job initial native build, six Lean examples,
+43-declaration/12-theorem focused audit (accepted three axioms only), two-seed
+109-record/400-edge statement closure (no unknowns), and **243 installed tests,
+zero skips** pass. The wheel includes Rust, Cython and the Lean executable;
+strict tests ran outside the checkout. Installed public-graph benchmarks on
+8/16/32-node stars/chains/balanced trees measure median Lean/Rust slowdown 7.60×
+(range 4.56--26.02×), versus Cython/Python 4.16×/3.86×. Cold first call is about
+125 ms; warmed calls reuse a serialized worker but a fresh solver cache.
+See [the complete delivery evidence](../../dev/benchmarks/2026-11-18-verified-rational-ordered.md)
+and [usage/build instructions](../source/verified_rational_ordered.rst).
+
+This direct Lean route delivers the requested rational Python milestone without
+claiming O01--O03's optimized Rust source proof. Future choices are reducing the
+verified backend's measured cost (e.g. cached scores), proving the optimized
+Rust kernel, or weighted ordered embedding. Do not resume the unbounded resource/
+complexity campaign automatically. The historical Rust-first estimates below
+remain estimates for that separate path, not blockers to using `verified-lean`.
+
 Prioritize efficient ordered embedding/isomorphism Python APIs with
 source-connected Lean functional correctness and exact integer affinities.
 Use `ℚ`/`ℤ` as the exact arithmetic model; floats can retain a separate
@@ -28,8 +55,8 @@ and `level_step_recurrence_score` (correct child scores remain premises).
 The 4,365-job library, six Lean examples, existing isomorphism suite, two Rust
 tests and byte-for-byte regeneration pass. See the
 [spike report](../../proofs/experiments/ordered_score_model/README.md).
-No production kernel, Python dispatch, integer-execution guarantee or installed
-performance claim changed. O01 is next (roughly 100–300k tokens / 1–4 hours):
+That O00 checkpoint did not change production behavior. O01 remains a future
+Rust-specific task (roughly 100–300k tokens / 1–4 hours):
 separate/extract the actual fast ordered kernel, preserving original IDs,
 callback/error behavior and installed-path measurements. Its exact-affinity
 mathematics and reconstruction proofs already exist; state/dictionary/callback

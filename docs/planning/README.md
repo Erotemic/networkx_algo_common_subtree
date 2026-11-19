@@ -34,18 +34,43 @@ part of this milestone. Keep the wider research program available as deferred
 work. The user chooses each work budget; do not start an unbounded campaign or
 assume a fixed tranche budget.
 
-The product acceptance target includes Python exposure of the formally verified
-Rust algorithm, with a source-connected Lean theorem proving feasible, optimal
+The product acceptance target includes Python exposure of a compiled formally
+verified algorithm, with a source-connected Lean theorem proving feasible, optimal
 original-input witnesses and the correct score on its stated domain. Retain
 the optimized, empirically tested implementation as a separately selectable
 Python backend. A verified mode may ship with a documented speed penalty;
 competitive performance is a measured optimization target, rather than a reason
 to hide a useful verified implementation or remove the faster tested one.
 A mathematical recurrence without an implementation connection does not close
-the source-proof milestone. Python/PyO3 conversion and any external primitive
+the implementation-proof milestone. Python/PyO3 conversion and any external primitive
 model must have a named assurance boundary and direct integration tests.
 Efficiency is assessed with installed-API benchmarks, without a running-time
 theorem.
+
+### Complete exact rational Python mode: 2026-11-18
+
+`impl="verified-lean"` now runs the compiled, formally proved hash-memoized
+ordered isomorphism solver for both root policies, with exact `int`/`Fraction`
+affinities and a `Fraction` result. It preserves original identities and has
+unconditional public optimality/score/order theorems; no correct child scores
+or supplied sound cache are public hypotheses. This delivers the requested
+full rational matching milestone through direct Lean compilation. Python/
+NetworkX conversion and JSON/process transport are tested boundaries.
+
+The complete library, native executable, six Lean examples and 243 installed
+Python tests pass. A short installed-API benchmark measures a median 7.60×
+slowdown against optimized float Rust (4.56--26.02× range), and 4.16×/3.86×
+against Cython/Python references on matching dyadic workloads. Keep all of
+those backends selectable; `auto` is unchanged. See the
+[delivery/proof/benchmark evidence](../../dev/benchmarks/2026-11-18-verified-rational-ordered.md)
+and [user instructions](../source/verified_rational_ordered.rst).
+
+Direct Lean compilation is an additional delivery route alongside the original
+Rust-first O01--O04 sequence. O01--O03's full optimized Rust refinement remains
+open; it is not claimed by the compiled Lean endpoint. O04's Python delivery and
+comparison gates are satisfied for this exact Lean isomorphism mode. Further
+score caching/representation optimization, optimized Rust source proofs and
+weighted ordered embedding remain separately prioritizable work.
 
 ### Python delivery and backend choice
 
@@ -79,14 +104,16 @@ that functional delivery milestone while leaving its performance gap explicit.
 
 | Family | What is already available | Remaining functional correctness frontier |
 | --- | --- | --- |
-| Ordered isomorphism | Fast Python/Rust score-and-choice DP; independent exact-affinity optimality theorems for rooted and general policies; source proofs for choice construction/emission/readback | Connect the production DP, interned states, memoized scores and choices to those theorems; establish a supported exact arithmetic path and compose the public API |
+| Ordered isomorphism | Complete exact rational `verified-lean` Python backend with proved memoized algorithm, original witnesses, both root policies and installed-API comparisons; optimized float Rust remains available | Reduce the measured Lean slowdown; separately connect optimized Rust DP, state interning, memoized scores and choices to independent optima |
 | Ordered embedding | Fast Python/Rust affinity solver; source-proved unweighted token/indexed/guided solver exposed as `verified-rust` | An efficient source-proved affinity implementation; weighted original-identity embedding mathematics needs its own audit before implementation refinement is estimated tightly |
 | Unordered 2016 | Fast public graph solver, independent recurrence/optimum mathematics, source-proved exact matching components | Production graph state/orientation/matching/score refinement and its public witness boundary |
 | Unordered 2018 | Fast public path/penalty solver, independent path/skeleton mathematics and recurrences, exhaustive independent checks | Production path/skip/join/root-policy refinement, score composition and public witnesses; larger proof surface than 2016 |
 
 The current fast ordered API extracts affinity values as `f64`, including Python
 integers. Integer inputs alone therefore do not give an unrestricted exact
-integer guarantee. Choose an actual integer arithmetic path (with an explicit
+integer guarantee for that backend. `verified-lean` provides a separate exact
+rational/integer execution path. A future verified Rust path must choose actual
+integer arithmetic (with an explicit
 overflow/error contract if bounded), or validate a domain where every represented
 integer and intermediate sum is exact. Preserve the existing floating API while
 making the assurance distinction visible.
@@ -118,8 +145,10 @@ child scores. Native float extraction is separately rejected as expected;
 integer inputs alone demonstrably do not guarantee exact sums. The 4,365-job
 library, six Lean examples, existing isomorphism suite and two Rust tests pass.
 See the [O00 evidence and reproduction commands](../../proofs/experiments/ordered_score_model/README.md).
-O01 is next; production state/dictionary/callback extraction is still untested,
-so its estimate remains 100–300k tokens / 1–4 hours rather than a firm quote.
+O01 remains a future optimized Rust task; production state/dictionary/callback
+extraction is still untested, so its estimate remains 100–300k tokens / 1–4 hours
+rather than a firm quote. The complete rational Python mode above uses a
+different, directly compiled and proved memoized Lean implementation.
 
 O02 gives a useful rooted-mode milestone before O03 closes the general mode.
 O04 is required before calling a supported Python mode complete. Preserve the

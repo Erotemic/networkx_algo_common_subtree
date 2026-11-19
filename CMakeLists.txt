@@ -21,6 +21,22 @@ endif()
 option(BUILD_CYTHON_EXTENSIONS "Build Cython extension modules" ${_build_cython_default})
 option(BUILD_RUST_EXTENSIONS "Build Rust extension module" ${_build_rust_default})
 option(REQUIRE_RUST_EXTENSIONS "Fail configure if Rust extension cannot be built" OFF)
+option(BUILD_LEAN_BACKEND "Build and install the proved exact rational ordered backend" OFF)
+
+if(BUILD_LEAN_BACKEND)
+  find_program(LAKE_EXECUTABLE lake REQUIRED)
+  set(_lean_executable "${CMAKE_CURRENT_SOURCE_DIR}/proofs/.lake/build/bin/verified_ordered${CMAKE_EXECUTABLE_SUFFIX}")
+  file(GLOB_RECURSE _lean_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/proofs/SubtreeProofs/*.lean")
+  add_custom_command(OUTPUT "${_lean_executable}"
+    COMMAND "${LAKE_EXECUTABLE}" build verified_ordered
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/proofs"
+    DEPENDS ${_lean_sources} "${CMAKE_CURRENT_SOURCE_DIR}/proofs/VerifiedOrderedMain.lean"
+      "${CMAKE_CURRENT_SOURCE_DIR}/proofs/lakefile.toml" "${CMAKE_CURRENT_SOURCE_DIR}/proofs/lean-toolchain"
+      "${CMAKE_CURRENT_SOURCE_DIR}/proofs/lake-manifest.json"
+    VERBATIM)
+  add_custom_target(verified_lean_backend ALL DEPENDS "${_lean_executable}")
+  install(PROGRAMS "${_lean_executable}" DESTINATION "networkx_algo_common_subtree/_bin")
+endif()
 
 set(_cargo_abi_args "")
 if(SKBUILD_SABI_COMPONENT)

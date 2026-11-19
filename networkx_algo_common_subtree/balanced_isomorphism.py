@@ -18,9 +18,14 @@ def available_impls_longest_common_balanced_isomorphism(include_restricted=False
         the string code for each available implementation
 
     ``include_restricted=True`` also lists the small-input, unweighted
-    ``reference-rust`` backend when its native entry point is installed.
+    ``reference-rust`` and the exact-rational ``verified-lean`` backends when
+    their native entry points are installed.
     """
     impls = ["recurse", "iter"]
+    if include_restricted:
+        from .balanced_isomorphism_lean import _lean_executable
+        if _lean_executable() is not None:
+            impls.append("verified-lean")
     if _rust_lcsi_backend():
         impls += [
             "iter-rust",
@@ -75,6 +80,11 @@ def longest_common_balanced_isomorphism(
         the optimization objective. Nonfinite/negative affinities and total
         overflow raise ``ValueError``. Malformed typed sequences raise
         ``UnbalancedException``, even when the other input is empty.
+        With ``impl="verified-lean"``, affinities must instead be exact
+        ``numbers.Rational`` values (e.g. int or fractions.Fraction). The result
+        is always a Fraction. Floats require explicit conversion by the caller.
+        This backend evaluates the full matrix eagerly; callbacks must describe
+        fixed pair weights. Zero forbids a match in every backend.
 
     impl : str
         Determines the backend implementation. Available choices are given by
@@ -85,6 +95,10 @@ def longest_common_balanced_isomorphism(
         reference with ``node_affinity=None``. It is exponential and intended
         for small inputs. The indexed/token Rust path has source proofs; the
         Python/PyO3 conversion boundary remains independently tested.
+        ``"verified-lean"`` invokes the compiled, formally proved memoized
+        rational solver for either root policy. It requires a build with
+        ``BUILD_LEAN_BACKEND=ON`` and never silently falls back. Python/NetworkX
+        conversion and JSON transport are independently tested boundaries.
 
     rooted : bool
         Preserve the implicit parent of the balanced forest. Top-level output
@@ -141,6 +155,10 @@ def longest_common_balanced_isomorphism(
     """
     if not isinstance(rooted, bool):
         raise TypeError("rooted must be a bool")
+    if impl == "verified-lean":
+        from .balanced_isomorphism_lean import _lcsi_verified_lean
+        return _lcsi_verified_lean(seq1, seq2, open_to_close, open_to_node,
+                                   node_affinity, rooted=rooted)
     if impl == "reference-rust":
         if node_affinity is not None:
             raise ValueError("reference-rust requires node_affinity=None (unweighted matching)")

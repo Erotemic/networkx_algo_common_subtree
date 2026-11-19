@@ -18,6 +18,7 @@ Welcome to networkx_algo_common_subtree's documentation!
    common_subtree_algorithm_families
    common_subtree_algorithms_rust
    common_subtree_correctness
+   verified_rational_ordered
    common_subtree_benchmarks
 
 

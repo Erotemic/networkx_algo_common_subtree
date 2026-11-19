@@ -26,6 +26,7 @@ jobs:
           lake env lean Tests/RootedDynamicProgram.lean
           lake env lean Tests/OrderedIsomorphism.lean
           lake env lean Tests/ScoreModel.lean
+          lake env lean Tests/RationalOrderedSolver.lean
           lake env lean Tests/LookupEvents.lean
           lake env lean Tests/LookupSource.lean
           lake env lean Tests/LookupSourceFrontend.lean
@@ -85,6 +86,25 @@ jobs:
           lake env lean Tests/MemoWork.lean
           lake env lean experiments/resource_cost_audit/LookupSourceWP.lean
           python3 checks/test_lookup_source_reifier.py
+  rational-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned Lean build tooling
+        run: |
+          curl --fail --silent --show-error --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Restore mathematical dependencies
+        working-directory: proofs
+        run: lake exe cache get
+      - name: Install a wheel containing the proved rational executable
+        run: python -m pip install '.[tests]' --config-settings=cmake.define.BUILD_LEAN_BACKEND=ON --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF --config-settings=cmake.define.BUILD_RUST_EXTENSIONS=OFF
+      - name: Require the installed rational backend outside the checkout
+        working-directory: /tmp
+        run: COMMON_SUBTREE_REQUIRE_LEAN=1 python -m pytest -q "${{ github.workspace }}/tests/test_verified_rational_isomorphism.py"
   rust:
     runs-on: ubuntu-latest
     steps:

@@ -15,3 +15,7 @@ subDir = "backends/lean"
 
 [[lean_lib]]
 name = "SubtreeProofs"
+
+[[lean_exe]]
+name = "verified_ordered"
+root = "VerifiedOrderedMain"

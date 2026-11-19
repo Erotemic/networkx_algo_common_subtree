@@ -3096,11 +3096,11 @@
   "delivery_priority": {
     "date": "2026-11-18",
     "source": "Explicit user clarification in this session; prioritization supersedes the earlier unbounded execution order.",
-    "active": "Efficient ordered embedding/isomorphism exposed in Python with source-connected Lean functional correctness; exact integer affinities first.",
-    "numeric_model": "Exact rational/integer score arithmetic; no Lean IEEE-754 proof required. Floating execution has an explicit arithmetic boundary, informal error/stability analysis and rational-oracle tests. Unrestricted exact-integer execution still needs an integer arithmetic path or a validated exact-representability domain; current fast API converts Python integers to f64.",
+    "active": "Requested exact rational ordered-isomorphism Python milestone delivered as verified-lean, both root policies. Further performance/Rust/embedding work is separately prioritizable; running-time proofs remain deferred.",
+    "numeric_model": "verified-lean executes exact Lean rational arithmetic and accepts int/Fraction affinities with Fraction results. The optimized float API remains separate and still converts Python integer affinities to f64. Python/graph/JSON conversion is a tested boundary; no IEEE-754 proof is required or claimed.",
     "budget_policy": "User chooses each time/token budget. Present task-level token and elapsed ranges with confidence, report actual consumption and remaining frontier; do not assume a fixed tranche or autonomously exhaust the full research program.",
     "backlog": "../../README.md#budgetable-ordered-work-recommended-order",
-    "recommended_next": "O00 complete; next O01: separate and extract the actual fast ordered score/choice/state kernel from PyO3, preserve original IDs and callback/error behavior, and measure the installed path. State/dictionary/callback extraction remains untested; rough estimate 100–300k tokens / 1–4 hours. Weighted embedding requires a separate affinity-specification audit.",
+    "recommended_next": "No required algorithm proof or Python release gate remains for the supported exact Lean isomorphism mode. Future choices: cache scores/profile representations to reduce measured slowdown, or fund O01–O03 optimized Rust source refinement. Weighted ordered embedding remains a separate task.",
     "deferred": [
       "Running-time/space/asymptotic proofs",
       "New resource/region/destructor interpretation unless needed to unblock functional refinement",
@@ -3147,6 +3147,51 @@
         "regeneration": "byte-for-byte pass",
         "native_float_extraction": "expected rejection at unsupported float operations"
       },
+      "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
+    },
+    "completed_python_milestone": {
+      "date": "2026-11-18",
+      "status": "Complete exact rational ordered-isomorphism backend, both root policies; optimized Rust proof remains separate.",
+      "implementation": "Native compilation of SubtreeProofs.Paper2004.AnnotatedIso.RationalSolver.solveResult with a proved real hash cache; no supplied cache/child-result certificate.",
+      "backend": "verified-lean",
+      "input_domain": "Exact nonnegative numbers.Rational affinities (int/Fraction); zero forbids matching. Explicit float conversion required. Graph and balanced-sequence APIs supported.",
+      "outputs": "Original-input witnesses and exact Fraction score; no arithmetic width bound in the Lean theorem.",
+      "theorems": [
+        "SubtreeProofs.Paper2004.AnnotatedIso.RationalSolver.solve_eq",
+        "SubtreeProofs.Paper2004.AnnotatedIso.RationalSolver.solve_correct",
+        "SubtreeProofs.Paper2004.AnnotatedIso.RationalSolver.solveResult_correct",
+        "SubtreeProofs.Paper2004.AnnotatedIso.RationalSolver.solve_unique_endpoints"
+      ],
+      "execution_boundary": "Standard Lean compiler/runtime and rational/hash-map implementations. Python/NetworkX conversion and process/JSON transport independently tested.",
+      "evidence": "../../../../dev/benchmarks/2026-11-18-verified-rational-ordered.md",
+      "checks": {
+        "library_jobs": 4366,
+        "initial_native_build_jobs": 6272,
+        "lean_examples": 6,
+        "audited_declarations": 43,
+        "audited_theorems": 12,
+        "statement_records": 109,
+        "statement_edges": 400,
+        "unknown_statements": 0,
+        "installed_tests": 243,
+        "skips": 0,
+        "oracle_input_policy_combinations": 98
+      },
+      "benchmark": {
+        "public_api": "Installed NetworkX calls including conversion, IPC, solve and original witness reconstruction/rescoring",
+        "cases": 18,
+        "samples_per_backend_case": 3,
+        "lean_rust_median_ratio": 7.6,
+        "lean_rust_ratio_range": [
+          4.56,
+          26.02
+        ],
+        "lean_cython_median_ratio": 4.16,
+        "lean_python_median_ratio": 3.86,
+        "cold_worker_ms": 124.7,
+        "policy": "Keep optimized/tested backends selectable; auto unchanged."
+      },
+      "delivery_route_decision": "Direct compilation delivers the user-requested full rational Python algorithm alongside the earlier Rust-first plan; O01–O03 optimized Rust refinement is not falsely marked complete.",
       "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
     }
   }

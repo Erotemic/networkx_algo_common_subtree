@@ -34,12 +34,17 @@ def maximum_common_ordered_subtree_isomorphism(
         pair. If None then any
         node can match any other node and only the topology is important.
         The default is "eq", which is the same as ``operator.eq``.
+        With ``impl="verified-lean"``, return exact integers or
+        ``fractions.Fraction`` values; the result score is a Fraction.
 
     impl : str
         Determines the backend implementation. Defaults to "auto".
         See :func:`balanced_sequence.longest_common_balanced_sequence`
         for details. Other valid options are "iter", "recurse", and
         "iter-cython".
+        ``"verified-lean"`` selects the compiled Lean memoized solver with
+        proved optimality and original-identity witnesses over exact rationals,
+        for both root policies. Conversion/transport are tested boundaries.
 
     item_type : str
         Determines the backend data structure used to encode the tree as a

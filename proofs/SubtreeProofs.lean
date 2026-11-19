@@ -395,3 +395,5 @@ public import SubtreeProofs.Rust.SourceMaximumBody
 public import SubtreeProofs.Rust.SourceMaximumTotality
 
 public import SubtreeProofs.Rust.ScoreModel.Correctness
+
+public import SubtreeProofs.Paper2004.RationalOrderedSolver

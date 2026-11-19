@@ -1,5 +1,25 @@
 # Common-subtree proof status
 
+Exact rational Python delivery, 2026-11-18: `impl="verified-lean"` compiles and
+calls `Paper2004.AnnotatedIso.RationalSolver.solveResult` directly for both
+ordered isomorphism root policies. Its checked `solveResult_correct` theorem
+proves independent feasible/global optimum, exact score and original preorder;
+`solve_unique_endpoints` adds uniqueness under unique input identities. The
+actual hash-memoized algorithm constructs/preserves its own cache invariant;
+there is no public child/correct-cache premise. Direct rational execution needs
+no float primitive abstraction. Python/NetworkX conversion and JSON transport
+are independently tested integration boundaries; compiler/runtime and standard
+Lean rational/hash-map implementations are the execution trust boundary.
+
+The 4,366-job library and 6,272-job native executable build pass, as do six Lean
+examples and 243 strict installed Python tests with Rust/Cython/Lean required.
+A focused shared-tool audit exports 43 declarations/12 theorem declarations,
+all within the accepted three-axiom baseline; two endpoint statement seeds
+resolve 109 records/400 edges with no unknowns. Installed public-API comparisons
+record a median 7.60× slowdown versus optimized float Rust; that backend stays
+available and its complete source refinement remains open. See the
+[delivery evidence](../dev/benchmarks/2026-11-18-verified-rational-ordered.md).
+
 Active product priority (2026-11-18): efficient ordered Python APIs with Lean
 functional correctness and exact-affinity arithmetic models. Running-time
 proofs and additional resource interpretation are deferred; see the O00–O06
