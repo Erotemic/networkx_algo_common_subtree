@@ -1,5 +1,33 @@
 # Common-subtree proof status
 
+[Universal checked public maximum and table teardown](../docs/planning/lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
+now constructs the complete public core under the existing addressed native
+frame model: actual seven-local entry, all 17 parsed instructions, evaluator
+call, result-field transfer, table destruction, return and checked stack close.
+Cold whole-packet provenance survives guarded storage and the partial tuple
+move, deriving the actual table-drop permission while retaining legal aliases.
+No child contract, parent success, desired post-frame or successful table drop
+is a premise of the public endpoint. Arbitrary finite queries retain native
+optional/overflow behavior, matching pure source/full costs, readable output,
+complete caller/external resources, every caller read, fresh output owners and
+identical world/packet/cost at all larger sufficient fuel/readback bounds.
+The separate mathematical endpoint keeps both independent semilength bounds
+below 2^32 and proves an optimal ordered tree with the exact edge score.
+The 4,360-job library build and eleven affected Lean suites pass. A kernel
+consumer uses aliased three-edge queries beside an old dead Box/live scalar
+stack cell. A focused actual public maximum checks aliased caller-owned inputs,
+2,704 complete steps/five solver calls, full source/addressed cost equality and
+retirement of every discarded table owner/new stack cell. All 2,163 audited
+endpoints retain the accepted axioms; eight statement seeds export 1,311 unique
+records without unknown references. Thirteen Rust tests and nine Python checks
+pass. CI lists 59 suites. The separate fourteen-case runtime process remains
+live and pending, not counted as a pass. See the evidence report for commands.
+Next integrate actual dynamic parsed-region/destructor-instance interpretation,
+then indexed/token/reconstruction wrappers, input/error policy/G3 and remaining
+resource/representation/global time/space/APP and other planning requirements.
+No full SRC-01/C3 or production resource closure is claimed; the full goal stays
+active. Source-operation counts and logical retirement retain the D12 boundary.
+
 [Cold evaluator ownership provenance](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-cold-provenance.md)
 now derives freshness of the complete cold output packet, including its actual
 updated table. Backward live-Box provenance excludes old dead-cell resurrection

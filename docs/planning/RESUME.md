@@ -2,6 +2,34 @@
 
 Branch: `Droschinsky-algos`.
 
+[Universal checked public maximum and table teardown](lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
+now constructs the complete public core under the existing addressed native
+frame model: actual seven-local entry, all 17 parsed instructions, evaluator
+call, result-field transfer, table destruction, return and checked stack close.
+Cold whole-packet provenance survives guarded storage and the partial tuple
+move, deriving the actual table-drop permission while retaining legal aliases.
+No child contract, parent success, desired post-frame or successful table drop
+is a premise of the public endpoint. Arbitrary finite queries retain native
+optional/overflow behavior, matching pure source/full costs, readable output,
+complete caller/external resources, every caller read, fresh output owners and
+identical world/packet/cost at all larger sufficient fuel/readback bounds.
+The separate mathematical endpoint keeps both independent semilength bounds
+below 2^32 and proves an optimal ordered tree with the exact edge score.
+The 4,360-job library build and eleven affected Lean suites pass. A kernel
+consumer uses aliased three-edge queries beside an old dead Box/live scalar
+stack cell. A focused actual public maximum checks aliased caller-owned inputs,
+2,704 complete steps/five solver calls, full source/addressed cost equality and
+retirement of every discarded table owner/new stack cell. All 2,163 audited
+endpoints retain the accepted axioms; eight statement seeds export 1,311 unique
+records without unknown references. Thirteen Rust tests and nine Python checks
+pass. CI lists 59 suites. The separate fourteen-case runtime process remains
+live and pending, not counted as a pass. See the evidence report for commands.
+Next integrate actual dynamic parsed-region/destructor-instance interpretation,
+then indexed/token/reconstruction wrappers, input/error policy/G3 and remaining
+resource/representation/global time/space/APP and other planning requirements.
+No full SRC-01/C3 or production resource closure is claimed; the full goal stays
+active. Source-operation counts and logical retirement retain the D12 boundary.
+
 [Cold evaluator ownership provenance](lean-complexity-campaign/evidence/memo-evaluator-cold-provenance.md)
 now derives freshness of the complete cold output packet, including its actual
 updated table. Backward live-Box provenance excludes old dead-cell resurrection
@@ -1036,38 +1064,27 @@ referenced log, then poll the same process/session; do not start a duplicate
 while it is live. Update the evidence validation after its terminal result.
 The universal proof and eleven other affected Lean suites already pass.
 
-1. **Compose the universal evaluator with the public core.**
-   `native_total_fresh` and `native_evaluate_total_fresh` now construct every
-   finite evaluator request under the legal native/caller/external frame model,
-   including all arbitrary typed warm-cache failures. Exact joint thresholds,
-   pure-source/native/full-cost agreement, complete ownership/coverage, protected
-   caller reads, witness provenance and larger-bound stability are proved without
-   a successful parent-run premise. The consistent corollary separately retains
-   the independent sound-cache and input-width hypotheses. Reuse these endpoints
-   and all checked forward storage/move/call/drop/return facts.
-   Whole-packet cold provenance and the exact 17-instruction public body identity
-   are now proved. Next construct the public seven-local maximum execution and
-   table teardown, including its exact cleanup/cost traces. Reuse
-   `native_evaluate_cold_total` and
-   `original_fresh_output_of_no_input_owners` for full witness/table freshness.
-   Derive public table-drop permission through the actual result-field transfer;
-   do not assume a desired final table/frame. Preserve legal query/insertion/shared
-   aliases,
-   reference-local permissions and exact source destructor costs.
-2. **Dynamic loans, lifetimes and destructor interpretation.** Universal checked
-   evaluator execution now carries complete ownership through all 113 locals. Compose those
-   resources with the actual dynamic parsed-region and destructor-instance
-   interpretation and derive all legal source-path loan permissions. Parsed
-   region IDs remain binders, not statement times. Keep returned/caller escape
-   checks, scalar/nonowning stack-root protection, old owner multiplicities and
-   physical allocator/compiler/runtime boundaries explicit under D12. Logical
-   owner retirement is not a physical free-cost or peak-space theorem.
-3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
-   (the actual seven-local source body now has a reviewable 17-instruction
-   identity) with evaluator totality,
-   table teardown and the remaining safety/cost traces. Then indexed/token/
-   reconstruction wrappers, input/error policy and required G3 adversaries.
-4. **Remaining resources and research scope.** Keep W04 size/substitution,
+1. **Dynamic loans, lifetimes and destructor interpretation.** Universal
+   checked evaluator and public maximum existence/adequacy now include actual
+   public cold-table teardown under the existing addressed native frame model.
+   Reuse `native_evaluate_total_fresh`, `native_evaluate_cold_total`,
+   `native_maximum_total_fresh` and `native_maximum_total_correct`; no smaller
+   contract or desired successful parent execution remains. The mathematical
+   endpoints separately retain independent sound-cache/input-width hypotheses.
+   Compose these complete execution/resource traces with actual dynamic parsed
+   regions and destructor instances, and derive all legal source-path loan
+   permissions. Parsed region IDs are binders, not statement times. Preserve
+   allowed query/insertion/shared aliases, reference-local permissions, exact
+   source destruction costs, returned/caller escape checks, scalar/nonowning
+   stack-root protection and old owner multiplicities. Keep the D12 scope and
+   physical allocator/compiler/runtime boundaries explicit; logical retirement
+   is not physical free time or peak space.
+2. **Separate public wrappers and policy.** The actual seven-local public core,
+   including all 17 actions, table destruction, return and stack close, is now
+   constructed. Complete indexed/token/reconstruction wrapper adequacy,
+   input/error policy and required G3 adversaries. Do not infer wrapper coverage
+   or resource bounds from the core theorem.
+3. **Remaining resources and research scope.** Keep W04 size/substitution,
    MEM-03/W05 unpriced input/body/key/materialization/finalization work, MEM-04,
    representation/global time/space and APP targets explicit. Complete the other
    LV/Droschinsky mathematical/software/release/application obligations in the
@@ -1077,8 +1094,8 @@ D12 permits the explicit scoped source-operation interpretation. Do not invent a
 whole LLVM/compiler/physical-machine proof as a prerequisite for the initial
 source pilot. Charon/Aeneas import, primitive/runtime/provenance, mutable/unwind
 and physical-allocation boundaries stay explicit. Universal native evaluator source-path adequacy is now
-proved under this model. Full W06-C3 still requires public-entry execution/table
-teardown and the remaining dynamic loan/region/destructor interpretation above.
+proved under this model, including public maximum execution/table teardown.
+Full W06-C3 still requires the dynamic loan/region/destructor interpretation above.
 IEEE-754 correctness remains excluded from the initial proof scope.
 
 ## Completed foundations to reuse

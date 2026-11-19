@@ -2276,3 +2276,21 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_fresh_output_of_no_input_owners
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_evaluate_cold_total
 #print axioms SubtreeProofs.Rust.SourceEval.Maximum.actual_body
+
+#print axioms SubtreeProofs.Rust.SourceEval.CallingCertificate.maximum_fields
+#print axioms SubtreeProofs.Rust.SourceEval.CallingCertificate.originalMaximum_spec
+#print axioms SubtreeProofs.Rust.SourceEval.CallingCertificate.maximum_lookup
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.native_entry_machine
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.body_preparation
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.preparation_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.evaluate_call_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.result_transfer_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.cleanup_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.entry_body_complete
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.source_of_exec
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.body_close_total
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.native_maximum_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Maximum.native_maximum_total_correct
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.original_call_fresh_output_of_no_input_owners
+#print axioms SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_operand_remaining_owner_provenance
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.cold_packets_no_owners

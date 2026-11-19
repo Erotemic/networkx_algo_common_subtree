@@ -2828,6 +2828,71 @@
           "inherited_regression": "Thirteen runtime cases at c2b4349; full 47-suite/native-WP evidence at d49f638. This checkpoint freshly ran eight affected suites, not all 57 CI suites."
         },
         "next": "Construct actual public maximum preparation/call/result-field transfer/table drop/retirement/return with exact complete costs using proved whole-packet cold provenance. Integrate actual dynamic parsed-region/destructor interpretation; finish wrappers/input policy/G3, W04/MEM-03/W05/MEM-04 resources, representations/global time/space, APP and every remaining planning requirement. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      },
+      "public_maximum_totality_followup": {
+        "baseline_commit": "cce8f7f",
+        "evidence": "memo-public-maximum-totality.md",
+        "status": "Checked universal public maximum execution and actual cold-table teardown under the existing addressed native frame model and D12 source-operation interpretation. Actual dynamic region/destructor interpretation and full SRC-01/C3 remain open.",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Maximum.native_maximum_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Maximum.native_maximum_total_correct",
+          "SubtreeProofs.Rust.SourceEval.Maximum.body_close_total",
+          "SubtreeProofs.Rust.SourceEval.Maximum.entry_body_complete",
+          "SubtreeProofs.Rust.SourceEval.Maximum.cleanup_complete",
+          "SubtreeProofs.Rust.SourceEval.Maximum.result_transfer_complete",
+          "SubtreeProofs.Rust.SourceEval.Maximum.evaluate_call_complete",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.original_call_fresh_output_of_no_input_owners",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Derived.assign_operand_remaining_owner_provenance"
+        ],
+        "construction": "Kernel exact typed seven-local declaration and recursive lookup; actual argument entry; eight preparation actions; evaluator call from 4/5/6 to 3 using proved universal native_total; retirement of moved argument locals; option field transfer to existing return local 0; actual owned table drop from the remaining partial tuple; retirement of 3/2/1; return and checked stack close. Complete cold packet freshness survives guarded store and partial move, deriving table-drop loan permission while preserving legal aliases.",
+        "public_contract": "For arbitrary finite native queries, construct joint sufficient call/readback bounds, actual native optional result, matching pure source execution/full cost, readable output, well-formed memory, all caller reads, complete output/caller/external owner uniqueness/classification/liveness and live-Box coverage, fresh returned owners, and identical world/packet/cost plus matching pure source at every larger sufficient pair of bounds.",
+        "hypotheses": [
+          "Readable shared native query packets, well-formed actual world, legal caller stack and complete retained caller/external owner frame/live-Box coverage; requested guards belong to actual caller reads.",
+          "No smaller calling contract, desired parent success/post-frame, successful cleanup/drop/close, cache soundness or input-width premise in universal public execution. Mathematical correctness separately retains both independent query semilength bounds below 2^32."
+        ],
+        "mathematical_corollary": "Under the independent input-width bounds, returned Some witness decodes to an independently maximum common ordered tree and its Rust edge score equals the decoded tree edge count; all actual source/resource/full-cost/stability guarantees remain.",
+        "validation": {
+          "library_build_jobs": 4360,
+          "fresh_lean_suites": [
+            "SourceMaximumTotality",
+            "SourceMaximumExecution",
+            "SourceColdProvenance",
+            "SourceUniversalFresh",
+            "SourceOwnerLifecycle",
+            "SourceOwnerProvenance",
+            "SourceRecursiveCalls",
+            "SourceCallingProgram",
+            "SourceAddressedControl",
+            "SourceHelperCalls",
+            "SourceParentOutput"
+          ],
+          "fresh_lean_suites_status": "All eleven pass.",
+          "kernel_consumer": "Passed: aliased three-edge queries, seven retained old external owners, unrelated old dead Box and live scalar stack cell; independent optimum/exact edge score, complete actual output coverage, fresh owners beyond all nine old cells and larger-bound actual/pure-source agreement. No smaller contract or parent-success premise.",
+          "public_runtime": "Passed: one-edge public maximum with both inputs aliasing first caller-owned tree, while complete caller retains both trees. Exact2704 steps/five solver calls; full source/addressed value and complete cost equality, caller bytes/liveness, exactly two fresh witness Boxes, complete live-Box coverage and retirement of every discarded table owner/new stack cell.",
+          "new_theorems": 17,
+          "new_proof_modules": 11,
+          "audited_endpoints": 2163,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1311,
+          "unknown_statement_references": 0,
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "ci_lean_suites": 59,
+          "ci_added_suites": [
+            "SourceMaximumTotality",
+            "SourceMaximumExecution"
+          ],
+          "ci_added_commands_passed": true,
+          "pending_runtime": "The separate original fourteen-case SourceRecursiveExecution process remains live; pending is not a pass. Inspect /var/tmp/subtree-universal-fresh-runtime-state.json and poll the same process/session before restarting.",
+          "inherited_regression": "Original thirteen-case runtime at c2b4349 and full47-suite/native-WP at d49f638. This checkpoint freshly ran eleven affected suites, not all59 CI suites."
+        },
+        "interpretation_boundary": "D12 source-operation interpretation and logical owner retirement. No physical allocator/free-cost or peak-space result. Actual dynamic parsed-region/destructor-instance interpretation remains; Charon/Aeneas import, primitive/runtime/provenance, mutable/unwind and compiler/physical allocator boundaries stay explicit. Maintained Rust, generated output, independent specifications and pins unchanged. IEEE-754 remains excluded.",
+        "next": "Integrate actual dynamic parsed-region/destructor-instance interpretation, including source-path loan permissions, escape checks and scalar/nonowning stack-root protection. Then complete indexed/token/reconstruction wrappers, input/error policy/G3, W04/MEM-03/W05/MEM-04 resources, representations/global time/space, APP and every remaining planning requirement. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -3016,7 +3081,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now has universal addressed evaluator existence/adequacy and whole-packet cold provenance, including the actual returned table. Actual recursive execution excludes old dead-cell resurrection and stack-to-Box conversion and preserves all caller reads. The public maximum 17-instruction body has kernel source identity. Construct actual public maximum preparation/call/result-field transfer/table drop/retirement/return with exact complete costs using proved whole-packet cold provenance. Integrate actual dynamic parsed-region/destructor interpretation; finish wrappers/input policy/G3, W04/MEM-03/W05/MEM-04 resources, representations/global time/space, APP and every remaining planning requirement. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      "W06-C3 now has universal addressed evaluator and public maximum existence/adequacy, including all17 public instructions, actual cold-table teardown, return and stack close; complete resources/full-cost agreement/all caller reads/fresh output/larger-bound stability remain. Mathematical optimality/exact-score corollaries retain independent input-width bounds. Integrate actual dynamic parsed-region/destructor-instance interpretation, including source-path loan permissions, escape checks and scalar/nonowning stack-root protection. Then complete indexed/token/reconstruction wrappers, input/error policy/G3, W04/MEM-03/W05/MEM-04 resources, representations/global time/space, APP and every remaining planning requirement. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",
