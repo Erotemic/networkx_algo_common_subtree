@@ -1,5 +1,11 @@
 # 13. Bounded work orders
 
+Priority override, 2026-11-18: these complexity/research work orders are deferred
+unless specifically funded or needed for functional correctness. The active
+ordered Python/exact-affinity correctness backlog and preliminary token/time
+estimates are in [the planning README](../README.md#budgetable-ordered-work-recommended-order).
+The user chooses each budget; do not automatically pursue the whole campaign.
+
 ## Shared handoff rules
 
 These orders are implementation assignments for the campaign, not work already completed by this overlay. Every agent starts from a named Git/source baseline, reads the relevant existing declarations and reports exact changes. Preserve independent specifications and generated-code boundaries. Cython is evidence of intent, not a correctness oracle.

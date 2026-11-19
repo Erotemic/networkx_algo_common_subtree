@@ -1,5 +1,14 @@
 # Current implementation capabilities
 
+Priority update, 2026-11-18: the active product milestone is efficient ordered
+Python APIs with source-connected Lean functional correctness, prioritizing
+exact integer affinities and an exact rational/integer proof model. Performance
+will be measured; running-time proofs are deferred. See the task-level budgets
+and frontier in [README.md](README.md#active-priority-efficient-python-apis-with-functional-correctness).
+The implementation/performance matrix below remains historical evidence; the
+current fast ordered affinity path uses `f64`, including for Python integer
+weights, so an unrestricted exact-integer execution guarantee is still work.
+
 Proof-only follow-up, 2026-11-16: the [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
 now has checked instruction accounting and universal value/event contracts
 inside its declared read-only model. The 3,750-job library and four Lean

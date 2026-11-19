@@ -1,5 +1,11 @@
 # Lean complexity campaign: proto-roadmap
 
+Deferred research track after the user's 2026-11-18 clarification. The active
+priority is efficient ordered Python APIs with Lean functional correctness and
+exact rational/integer affinity models, without running-time proofs. Follow the
+[O00–O06 product backlog](../README.md#active-priority-efficient-python-apis-with-functional-correctness)
+before resuming these resource work orders. Existing results remain preserved.
+
 [Universal checked public maximum and table teardown](evidence/memo-public-maximum-totality.md)
 now constructs the complete public core under the existing addressed native
 frame model: actual seven-local entry, all 17 parsed instructions, evaluator

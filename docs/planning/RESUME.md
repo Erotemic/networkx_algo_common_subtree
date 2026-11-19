@@ -2,6 +2,34 @@
 
 Branch: `Droschinsky-algos`.
 
+## Active priority after the user's 2026-11-18 clarification
+
+Prioritize efficient ordered embedding/isomorphism Python APIs with
+source-connected Lean functional correctness and exact integer affinities.
+Use `ℚ`/`ℤ` as the exact arithmetic model; floats can retain a separate
+engineering argument and tests. Running-time proofs are outside this milestone.
+The user selects budgets; give task-level token/time estimates, then report
+actual consumption and the next frontier. See the O00–O06 backlog and confidence
+bands in [README.md](README.md#budgetable-ordered-work-recommended-order).
+
+Start with the bounded numeric-model/extraction spike, then the fast ordered
+isomorphism kernel, whose exact-affinity mathematics and reconstruction proofs
+already exist. The production DP/memo/state refinement is still open. Weighted
+embedding needs a separate affinity-specification audit. The current fast API
+converts even integer affinities to `f64`; do not claim an unrestricted exact
+integer guarantee from integral inputs alone.
+
+Defer further resource/region/destructor and complexity work unless it directly
+unblocks this functional milestone. Preserve the high-level paper/research
+plans for later budgets. The incomplete destructor-instance checker was saved
+as local Git stash `2b35dfa3298eb96ea406805f368c73ca76d525e5`; no new endpoint
+from that draft is claimed. The old fourteen-case addressed-runtime process was
+intentionally cancelled for reprioritization (exit 143); it is neither a pass
+nor a functional failure. Do not restart it automatically. Its VM state record
+is `/var/tmp/subtree-universal-fresh-runtime-state.json`.
+
+## Last completed research checkpoint
+
 [Universal checked public maximum and table teardown](lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
 now constructs the complete public core under the existing addressed native
 frame model: actual seven-local entry, all 17 parsed instructions, evaluator
@@ -1056,13 +1084,14 @@ complete owner uniqueness, live Box classification and full live-Box coverage.
 Rust/generated artifacts are unchanged; no fresh Rust run is claimed here.
 See the latest evidence report for reproduction and scope.
 
-## Next work toward the full goal
+## Deferred research frontier
 
-The larger fourteen-case runtime check is pending at this checkpoint. On the
-current VM, inspect `/var/tmp/subtree-universal-fresh-runtime-state.json` and the
-referenced log, then poll the same process/session; do not start a duplicate
-while it is live. Update the evidence validation after its terminal result.
-The universal proof and eleven other affected Lean suites already pass.
+The larger fourteen-case runtime check was pending at the research checkpoint
+below and was subsequently cancelled after user reprioritization. It supplies
+no additional passing evidence. The focused public-maximum check, universal
+proof and affected Lean suites pass. Resume the following research only when
+the user allocates a separate budget, or a specific obligation is needed for
+the active functional-correctness milestone.
 
 1. **Dynamic loans, lifetimes and destructor interpretation.** Universal
    checked evaluator and public maximum existence/adequacy now include actual

@@ -1,5 +1,14 @@
 # Reproducing verification
 
+The active delivery priority is efficient ordered Python APIs with functional
+correctness; running-time proofs are deferred. See the current budgetable
+backlog in [the planning README](../docs/planning/README.md#active-priority-efficient-python-apis-with-functional-correctness).
+The prior long fourteen-case `SourceRecursiveExecution` run was intentionally
+cancelled for reprioritization (exit 143), without a pass/fail claim. Historical
+pending observations below describe their checkpoints; do not automatically
+restart that optional addressed-resource run for the new milestone. Keep the
+existing CI and reproduction commands available for separately funded research.
+
 The maintained project uses Lean 4.35.0, Mathlib commit
 `56a005855ea17e0b0958f73ec801ae140b0a1679`, and Aeneas commit
 `5a392f4b80a4d0d05abc240eb2a7fa70622a9a35`. Lake fetches both Git

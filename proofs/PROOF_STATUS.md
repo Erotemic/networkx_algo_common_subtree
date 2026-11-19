@@ -1,5 +1,13 @@
 # Common-subtree proof status
 
+Active product priority (2026-11-18): efficient ordered Python APIs with Lean
+functional correctness and exact-affinity arithmetic models. Running-time
+proofs and additional resource interpretation are deferred; see the O00–O06
+frontier in [the planning README](../docs/planning/README.md#active-priority-efficient-python-apis-with-functional-correctness).
+The older fourteen-case addressed-runtime run was deliberately cancelled for
+reprioritization (exit 143); it provides no new pass/fail result. Previously
+accepted proofs and the focused public-maximum regression remain valid.
+
 [Universal checked public maximum and table teardown](../docs/planning/lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
 now constructs the complete public core under the existing addressed native
 frame model: actual seven-local entry, all 17 parsed instructions, evaluator

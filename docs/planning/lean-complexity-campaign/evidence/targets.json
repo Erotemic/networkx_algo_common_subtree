@@ -3092,5 +3092,33 @@
       "APP-02",
       "APP-03"
     ]
+  },
+  "delivery_priority": {
+    "date": "2026-11-18",
+    "source": "Explicit user clarification in this session; prioritization supersedes the earlier unbounded execution order.",
+    "active": "Efficient ordered embedding/isomorphism exposed in Python with source-connected Lean functional correctness; exact integer affinities first.",
+    "numeric_model": "Exact rational/integer score arithmetic; no Lean IEEE-754 proof required. Floating execution has an explicit arithmetic boundary, informal error/stability analysis and rational-oracle tests. Unrestricted exact-integer execution still needs an integer arithmetic path or a validated exact-representability domain; current fast API converts Python integers to f64.",
+    "budget_policy": "User chooses each time/token budget. Present task-level token and elapsed ranges with confidence, report actual consumption and remaining frontier; do not assume a fixed tranche or autonomously exhaust the full research program.",
+    "backlog": "../../README.md#budgetable-ordered-work-recommended-order",
+    "recommended_next": "O00 bounded numeric-model/extraction spike, then fast ordered isomorphism kernel and source refinement using existing exact-affinity mathematics and reconstruction proofs. Weighted embedding requires a separate affinity-specification audit.",
+    "deferred": [
+      "Running-time/space/asymptotic proofs",
+      "New resource/region/destructor interpretation unless needed to unblock functional refinement",
+      "Generic complexity frameworks and optimized-paper-bound proofs",
+      "Application/publication research",
+      "Unordered functional correctness after ordered product milestones"
+    ],
+    "cancelled_runtime": {
+      "command": "lake env lean Tests/SourceRecursiveExecution.lean",
+      "exit_code": 143,
+      "result": "Intentionally cancelled for reprioritization; neither pass nor functional failure; do not automatically restart.",
+      "state_on_current_vm": "/var/tmp/subtree-universal-fresh-runtime-state.json"
+    },
+    "deferred_draft": {
+      "git_stash": "2b35dfa3298eb96ea406805f368c73ca76d525e5",
+      "path": "proofs/SubtreeProofs/Rust/SourceDropInstanceTypes.lean",
+      "status": "Unfinished optional checker draft preserved in local Git; no accepted new endpoint claimed."
+    },
+    "existing_mathematics_checked": "AffinityDP.level_correct and AffinityDP.anywhere_correct instantiate at both Q and Z under the current pinned Lean project."
   }
 }

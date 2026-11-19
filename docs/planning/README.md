@@ -23,7 +23,113 @@ program. Read these in order:
 5. **[Mathematical presentations and application study](common_subtree_presentation_and_application_paper.md)**:
    rendered standalone talks and the prospective controlled application pilot.
 
-## Current execution order: usable software first
+## Active priority: efficient Python APIs with functional correctness
+
+User clarification, 2026-11-18: prioritize efficient ordered embedding and
+isomorphism exposed through Python, with Lean proofs of functional correctness.
+Exact integer affinities come first. Use exact rational/integer arithmetic in
+the mathematical model; floating-point behavior may be justified by engineering
+analysis and tests without a Lean IEEE-754 proof. Running-time proofs are not
+part of this milestone. Keep the wider research program available as deferred
+work. The user chooses each work budget; do not start an unbounded campaign or
+assume a fixed tranche budget.
+
+The product acceptance target is a fast Rust kernel actually called by Python,
+with a source-connected Lean theorem proving feasible, optimal original-input
+witnesses and the correct score on the stated domain. A mathematical recurrence
+alone, a slow verified reference, or a fast tested implementation alone does not
+complete that target. Python/PyO3 conversion and any external primitive model
+must have a named assurance boundary and direct integration tests. Efficiency
+is assessed with installed-API benchmarks, without a running-time theorem.
+
+### Current frontier
+
+| Family | What is already available | Remaining functional correctness frontier |
+| --- | --- | --- |
+| Ordered isomorphism | Fast Python/Rust score-and-choice DP; independent exact-affinity optimality theorems for rooted and general policies; source proofs for choice construction/emission/readback | Connect the production DP, interned states, memoized scores and choices to those theorems; establish a supported exact arithmetic path and compose the public API |
+| Ordered embedding | Fast Python/Rust affinity solver; source-proved unweighted token/indexed/guided solver exposed as `verified-rust` | An efficient source-proved affinity implementation; weighted original-identity embedding mathematics needs its own audit before implementation refinement is estimated tightly |
+| Unordered 2016 | Fast public graph solver, independent recurrence/optimum mathematics, source-proved exact matching components | Production graph state/orientation/matching/score refinement and its public witness boundary |
+| Unordered 2018 | Fast public path/penalty solver, independent path/skeleton mathematics and recurrences, exhaustive independent checks | Production path/skip/join/root-policy refinement, score composition and public witnesses; larger proof surface than 2016 |
+
+The current fast ordered API extracts affinity values as `f64`, including Python
+integers. Integer inputs alone therefore do not give an unrestricted exact
+integer guarantee. Choose an actual integer arithmetic path (with an explicit
+overflow/error contract if bounded), or validate a domain where every represented
+integer and intermediate sum is exact. Preserve the existing floating API while
+making the assurance distinction visible.
+
+### Budgetable ordered work, recommended order
+
+These are preliminary planning ranges for model tokens and elapsed agent work,
+not fixed-price quotes or promised completion times. The recent public-maximum
+checkpoint used roughly 175k session-counted tokens, but it reused a mature proof
+chain; new extraction/state-model problems can cost much more. Estimates are not
+additive when tasks share infrastructure. Re-estimate after O00 and each actual
+proof frontier; the user chooses how much of the next task to fund.
+
+| ID | Concrete deliverable / acceptance | Difficulty | Initial token range | Initial elapsed range / confidence |
+| --- | --- | --- | --- | --- |
+| O00 | Numeric-model/extraction spike: a small Rust score/branching example translated with the pinned tools, exact `ℚ`/`ℤ` Lean model, explicit native arithmetic boundary and no copied solver | Moderate, bounded investigation | 30–90k | 0.5–2 h; medium |
+| O01 | Separate a proof-friendly ordered score/choice kernel from Python callbacks and bindings; preserve current behavior, retain original IDs, demonstrate extraction and measure the installed path | Moderate–hard | 100–300k | 1–4 h; low–medium until O00 |
+| O02 | Source correctness of fast root-preserving affinity isomorphism: state decomposition/interning, memo invariant, score optimum and reconstruction composed with existing mathematics | Hard; highest-value first algorithm proof | 300k–1M | 3–12 h; low before O01 |
+| O03 | General isomorphism: descendant-root search and tie policy composed with the rooted proof; original-index witnesses and errors retained | Hard, but reuses O02 | 200–600k | 2–8 h; low |
+| O04 | Exact-integer execution/API contract and installed Python release gate for the proved modes: reject unsupported/overflow cases, require the intended backend, validate conversions and benchmark actual calls | Moderate; some work can accompany O01 | 80–250k | 1–4 h; medium after kernel/arithmetic choices |
+| O05 | Weighted ordered embedding: independent affinity/contraction optimum, fast DP/source refinement, witnesses and Python composition, reusing score/state infrastructure where valid | Hard; broader frontier | 500k–2M | 1–4 working days; low, split again after mathematics audit |
+| O06 | Floating-point engineering note and targeted rational-oracle regression: exact-integer range, finite-value policy, score-gap/error reasoning, near ties and large magnitudes | Moderate; independent practical win | 40–120k | 0.5–3 h; medium |
+
+O02 gives a useful rooted-mode milestone before O03 closes the general mode.
+O04 is required before calling a supported Python mode complete. Preserve the
+existing scalar/callback API; do not quietly reinterpret float output as an
+unconditional exact-rational theorem. For every funded task, report accepted
+endpoints, actual code path, tests/measurements, consumed budget, remaining
+obligation and a revised estimate. A discovery task may end with an explicit
+blocker/frontier report rather than an invented success claim.
+
+### Numeric model and practical float argument
+
+The existing `AffinityDP.level_correct` and `AffinityDP.anywhere_correct`
+instantiate at both `ℚ` and `ℤ` on the pinned Lean project (checked directly).
+For any finite collection of rational affinities, multiplication by a common
+positive denominator preserves score comparisons, feasibility's positive-weight
+test and all maximizing witnesses. Rational arithmetic is a sufficient exact
+model here; no analytic real-number machinery is needed.
+
+The [pinned Aeneas source](https://github.com/AeneasVerif/aeneas/blob/5a392f4b80a4d0d05abc240eb2a7fa70622a9a35/src/symbolic/SynthesizeSymbolic.ml#L78)
+rejects floats in symbolic expansion. Its [external/opaque model mechanism](https://github.com/AeneasVerif/aeneas/blob/5a392f4b80a4d0d05abc240eb2a7fa70622a9a35/README.md#adding-models-of-rust-definitions-to-the-lean-backend)
+offers a route through an abstract score type
+with exact operations in Lean. O00 must demonstrate the precise extraction
+route; there is no already-validated global switch making arbitrary `f64` code
+exact. Do not edit generated files or insert new axioms to simulate a proof.
+
+The informal float analysis should bound score aggregation error under stated
+finite-value/no-overflow assumptions and explain stability when competing
+scores are separated by more than the error budget. Near ties can change the
+chosen witness; quantify score degradation where possible. Compare against
+independent rational oracles on small, near-tie and large-magnitude cases.
+Do not give an unconditional probability of correctness without an input model.
+Integer-only inputs through a floating implementation require bounds on all
+intermediates for an exactness argument, not just integral final answers.
+
+### Deferred research
+
+Retain the existing paper and complexity plans, completed proofs and benchmark
+evidence. Defer new source-cost instrumentation, dynamic region/destructor
+interpretation beyond what functional refinement needs, running-time/space and
+asymptotic proofs, generic resource frameworks, optimized-paper-bound proofs,
+and application/publication studies. Unordered correctness remains a later
+product milestone. Its graph-source proofs are hard; 2018 adds path/skeleton
+and penalty obligations. Give those tasks a separate estimate after the ordered
+kernel/model decisions, rather than promising completion from a reference proof.
+
+The optional fourteen-case addressed resource runtime run was deliberately
+cancelled after the priority change (exit 143), with no pass/fail claim. Its
+previous thirteen-case evidence and the focused public-maximum correctness/
+cleanup check remain recorded. Do not automatically resume that expensive run.
+The unfinished destructor-instance checker was saved in local Git stash
+`2b35dfa3298eb96ea406805f368c73ca76d525e5`; it is not an accepted proof endpoint
+or part of the primary milestone.
+
+## Preserved source-operation research checkpoints
 
 [Universal checked public maximum and table teardown](lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
 now constructs the complete public core under the existing addressed native
