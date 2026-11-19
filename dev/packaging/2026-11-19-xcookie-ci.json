@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-19",
+  "baseline_commit": "4e77221",
+  "status": "xcookie CI ownership and release policy restored; Intel macOS deployment-target fix configured, remote rerun pending.",
+  "generator": {
+    "checkout": "../xcookie",
+    "commit": "0de04bc7813350b9e8f02cbee7ab026edda80357",
+    "changes": [
+      "Compose Windows action conditions as a single expression, including wrapped additional conditions.",
+      "Omit empty source-check environment mappings.",
+      "Use the registered pinned GitHub release action instead of obsolete v1."
+    ],
+    "tests": 116,
+    "generated_files": [
+      ".github/workflows/tests.yml",
+      ".github/workflows/checks.yml",
+      ".github/workflows/release.yml"
+    ],
+    "generation_check": "All three files are byte-identical to current generator output.",
+    "project_owned_verification": "Unchanged.",
+    "command": "xcookie generate . --only_generate='.github/workflows/*.yml' --regen='.github/workflows/*.yml' --yes=true --interactive=false --use_vcs=false"
+  },
+  "release_policy": {
+    "maintainer_action": "git push origin main:release after reviewed green CI on main",
+    "order": [
+      "build distributions",
+      "publish PyPI",
+      "create/verify version tag",
+      "create GitHub release for that exact tag"
+    ],
+    "test_publication": "Generated release workflow publishes TestPyPI on main, per xcookie policy.",
+    "authentication": "Preserve existing TWINE_PASSWORD/TEST_TWINE_PASSWORD plus encrypted-repository GPG/CI_SECRET configuration explicitly.",
+    "removed": [
+      "Handwritten publish.yml",
+      "Manual pre-created tag requirement",
+      "Mandatory byte-identical cross-workflow artifact promotion"
+    ],
+    "local_checksums": "Review aids only."
+  },
+  "macos": {
+    "reported_error": "Intel CP310 wheel tagged macosx_10_9_x86_64; delocate finds Rust library minimum 10.12.",
+    "fix": "Project [tool.cibuildwheel.macos].environment requests MACOSX_DEPLOYMENT_TARGET=10.12.",
+    "config_check": "Installed cibuildwheel 4.3.5 consumes the setting for cp310/cp313 x86_64 and cp310 arm64; its setup logic enforces newer interpreter and ARM floors.",
+    "source": "https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html",
+    "execution_limit": "Linux host only; no macOS binary build/rerun claimed."
+  },
+  "project_changes": [
+    "Installed-test command uses xcookie configuration, requires Rust/Cython, tests minimum NetworkX 2.8.8 on CPython 3.10.",
+    "Post-wheel hook builds and audits an additional portable ABI3 wheel into the ordinary xcookie wheelhouse for PyPI. Uses filtered sdist to avoid copying VM caches.",
+    "Restore source type checking with native import stubs, benchmark dependency installation, explicit piped-process types, decorator-normalized seed annotation, compatible scoring method parameter names and a checked reference embedding skeleton.",
+    "Native stubs declare opaque argument/result types at the tested conversion boundary; no new formal or fully typed native guarantee.",
+    "No maintained Rust/Lean algorithm source changes; no new theorem claim."
+  ],
+  "validation": {
+    "generated_workflow_actionlint": "Pass (1.7.12, structural/expression/action checks; pre-existing generated shellcheck warnings are outside this gate).",
+    "project_hook_shellcheck": "Pass.",
+    "fatal_flake8": "Pass.",
+    "ty": "All checks passed with runtime/tests/benchmark dependencies; gate remains enabled.",
+    "normal_wheel": "Built from sdist on local ext4, installed; configured CI test command passes 244 with required Lean executable and required Rust/Cython parity.",
+    "portable_hook": "Actual filtered-sdist manylinux_2_28 build, strict ABI3 audit, Twine and wheels-only payload/metadata checks pass. Independent runtime matrix remains separate.",
+    "portable_runtime_tests": [
+      {
+        "python": "3.10.20",
+        "networkx": "2.8.8",
+        "passed": 244,
+        "skipped": 0,
+        "compiled_lean": "Required external existing executable"
+      },
+      {
+        "python": "3.14.5",
+        "networkx": "3.7",
+        "passed": 244,
+        "skipped": 0,
+        "compiled_lean": "Required external existing executable"
+      }
+    ],
+    "candidate": "Three distributions pass source/runtime identity, metadata, strict Twine and SHA256SUMS checks. Source archive refreshed after final CI/docs edits; wheel runtime sources are byte-identical to that archive.",
+    "research": "No Lean rebuild or Rust test rerun needed for unchanged algorithm sources; previous proof/Rust evidence remains dated evidence."
+  },
+  "artifacts_directory": "dist/0.3.0-xcookie-fix",
+  "artifacts": [
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0-cp310-abi3-manylinux_2_28_x86_64.whl",
+      "sha256": "1a2da26f64f616ff1a7ddabe01de4f68896bff1936817d1d4ccd9f1d1e1e6cd3",
+      "size_bytes": 386707
+    },
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0-cp313-cp313-manylinux_2_34_x86_64.whl",
+      "sha256": "6a1d7f710c930a1e991a807c8b964f166ea7e96d4f3cd62e2d405f6ffd1230ed",
+      "size_bytes": 512132
+    },
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0.tar.gz",
+      "sha256": "c8e6836baca3d01e28ce4b6ab41c8f3bf6f3aae4a3da90c636e2957632caa602",
+      "size_bytes": 2869950
+    }
+  ],
+  "runtime_and_build_source_sha256": {
+    "CMakeLists.txt": "5062fd91c8f2d591983412927e15c657b97ac159f13748f01dcb98621444fbd2",
+    "dev/check_distributions.py": "024471d0d74b43d182a9b4b60d047b4068cf6041c7f35ffd2178a326445de036",
+    "dev/ci_wheel_post_build.sh": "f0f0f4aac60bb48f1a7f756bf4839ae8e107af082f0aced4d961e2d5588bea6c",
+    "networkx_algo_common_subtree/__init__.py": "557e28a6dd4a38dee6df105ed5a5124987db1b72d86550b262857db86a4207d6",
+    "networkx_algo_common_subtree/_rust.pyi": "674c4936addbbcf1a7ae1f3a417656a5893edd322d5e2eed11a7bea56ded7836",
+    "networkx_algo_common_subtree/_types.py": "1a120470b10c1cbadd8a24786c345378d897e6ebb212578d1b878bf4566b81bd",
+    "networkx_algo_common_subtree/balanced_embedding.py": "38cf68f8cfca2b462967f59919564843527448313fcb0721427f22320aa12409",
+    "networkx_algo_common_subtree/balanced_embedding_cython.pyi": "30e1b0518b456dadaf48e9879214c444cf3b7a7d4becd22a062f5750c1d98b1b",
+    "networkx_algo_common_subtree/balanced_embedding_rust.py": "e30bc75a8a11c11100dc46521692f370a207313cbfa621b90ee0b012170937ef",
+    "networkx_algo_common_subtree/balanced_isomorphism.py": "a37403b295bc20e62c1bbe78008373febc40eebe00d02aeac24e9e1cff202c89",
+    "networkx_algo_common_subtree/balanced_isomorphism_cython.pyi": "c200a6b2d04cc7da0f19e4741c76c89656a062cf31f12b769672123c20922a9f",
+    "networkx_algo_common_subtree/balanced_isomorphism_lean.py": "4e47b5a7bd862e2486b9f7157ac029816ac495e161c8297067560d07991710a6",
+    "networkx_algo_common_subtree/balanced_isomorphism_rust.py": "96256b623c223f13057df5f347761fb9147a31d9e6d5dcb33e51c068ebb812d4",
+    "networkx_algo_common_subtree/balanced_sequence.py": "73fc7ca79b78f4d91b86168674722e5b7a68a89db420d3422bf6c115d7a3fdc2",
+    "networkx_algo_common_subtree/benchmark_reports.py": "40b47ce5d4d849d5e2a58c469656cb4f859f04301086991ba2180f27c1b0de70",
+    "networkx_algo_common_subtree/common_subtree_reference.py": "e7ce18718be53059b03bb8f7c796a1958df557f593a56b61cbd5836a2db7db11",
+    "networkx_algo_common_subtree/matching.py": "885220d02edc7bfd46f561c041ffb89fb9b85dceda01209403169573d9b3abfc",
+    "networkx_algo_common_subtree/pytorch_sized_trees.py": "b159f52717746b0fda1dd7e6b025bf969cf0154c4a75b962fbf412b9c9b957c8",
+    "networkx_algo_common_subtree/tree_embedding.py": "ef1a47b221a6be3443210eb2fe91962173b6048f6fc7fcad379a36354f367dc1",
+    "networkx_algo_common_subtree/tree_isomorphism.py": "6426b368c7950e0629035dfc5399ba73ec00a95ced578deb2aeb9f12a3658b4f",
+    "networkx_algo_common_subtree/unordered.py": "37016f2611a11071efdab63371037249bfa29ed9ed86f397542e088bc01e7a95",
+    "networkx_algo_common_subtree/utils.py": "d8ebbf65609aa87da561e90d98ef954f0b0cd9ecc48bb654cefc6a800c8cf9f1",
+    "pyproject.toml": "241879c0e5a83264bec058bb97332997ea503385858e8beea63f22867a0b397c"
+  },
+  "logs": {
+    "tests": {
+      "path": "/var/tmp/subtree-xcookie-tests.log",
+      "sha256": "d0232ab6d379356c6e578f42bd75434b2dedd3ac950ef09528f7652a49e90168"
+    },
+    "actionlint": {
+      "path": "/var/tmp/subtree-xcookie-actionlint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "typecheck": {
+      "path": "/var/tmp/subtree-xcookie-typecheck.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "post-build": {
+      "path": "/var/tmp/subtree-xcookie-post-build.log",
+      "sha256": "f0986e9acc60f3f33739a1ef32684238a9d3df19c8a80c7ccbba975355ea95c8"
+    },
+    "installed-tests": {
+      "path": "/var/tmp/subtree-xcookie-installed-tests.log",
+      "sha256": "9efe10b88bc176821202bd1a34daaf6bdbc165d6ad2c9e7a307a3d1ca758dade"
+    },
+    "minimum-tests": {
+      "path": "/var/tmp/subtree-xcookie-minimum-tests.log",
+      "sha256": "14a5a3e888088dcd752a2f6cae23f3d02c94732a2146dc52eb3bba726b696f82"
+    },
+    "latest-tests": {
+      "path": "/var/tmp/subtree-xcookie-latest-tests.log",
+      "sha256": "5c7d89458db4eab38827e0d83696ec3359ec1decd63e68172e2e4de335b42bf9"
+    },
+    "sdist": {
+      "path": "/var/tmp/subtree-xcookie-sdist.log",
+      "sha256": "9b0362e7fa86a2f7ca28eb4e1bcffe097c3bf16fb84ec971dcc3f21d024355e9"
+    },
+    "native-build": {
+      "path": "/var/tmp/subtree-xcookie-native-build.log",
+      "sha256": "e8bbfc38a33ad7800387b3cb480598dbe22f5644d36cdc2f697006e2196a9b2b"
+    },
+    "twine": {
+      "path": "/var/tmp/subtree-xcookie-twine.log",
+      "sha256": "19d4cd6866f047634f53b44be1647aa9199dd6ed6c41f2989238708b3afce621"
+    }
+  },
+  "remaining": [
+    "Remote generated CI, including an Intel macOS rerun to confirm binary repair and tests.",
+    "Review/merge to main, then maintainer main:release action. No push, tag, PyPI/GitHub publication or external messages performed locally."
+  ],
+  "previous_release_evidence": "dev/packaging/2026-11-19-release-0.3.0.json (historical pre-correction artifacts and checks)"
+}

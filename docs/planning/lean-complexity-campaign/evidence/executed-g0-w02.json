@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "0cdd643",
+  "status": "G0 partial; W02 inventory delivered, timed source pilot open; G1/SRC-01 not complete",
+  "main_pins_unchanged": true,
+  "upstreams": [
+    {
+      "id": "L02",
+      "revision": "8d08f89a6d05c5e8368e91659bd6e117fbb74c4e",
+      "directory": "common-subtree-arlib-spike-20261114/arlib",
+      "file": "Arlib/Computation/ExactRealization.lean",
+      "license": "Apache-2.0",
+      "declarations": [
+        "Arlib.Computation.ExactRealizes",
+        "Arlib.Computation.ExactRealizes.bind",
+        "Arlib.Computation.ExactRealizes.steps_eq",
+        "Arlib.Computation.ScanRealization.realizes"
+      ],
+      "build": "ExactRealization and Realization.Scan passed, 1055 Lake jobs",
+      "command": "cd proofs/experiments/arlib_cost && lake build Arlib.Computation.ExactRealization Arlib.Computation.Realization.Scan",
+      "model": "Charged value/tally correspondence to the library RAM, not Rust runtime",
+      "file_sha256": "4bcbcd5da8c54440f875a5ee7b43984d38efb3e7cac12273b1049da947f7bbc7",
+      "import_status": "Explicit umbrella import verified"
+    },
+    {
+      "id": "L05",
+      "revision": "0503df0eaf4e41104b9a3aa31e3e028b5adf7a0e",
+      "directory": "common-subtree-lax62-audit-20261114",
+      "file": "refinement-tower/proofs/Lax62Proofs/Refine/NREST/Basic.lean",
+      "license": "Apache-2.0",
+      "declarations": [
+        "Lax62Proofs.Refine.NRest",
+        "Lax62Proofs.Refine.NRest.bindT"
+      ],
+      "build": "ACost, NREST.Basic, NREST.Pw compile unchanged under main Lean/Mathlib 4.35; original 4.33/full pipeline not run",
+      "command": "From main lake env, cd upstream refinement-tower/proofs; prepend .lake/build/lib/lean to LEAN_PATH; lean -o matching .olean each of ACost.lean, NREST/Basic.lean, NREST/Pw.lean in that order",
+      "model": "Denotational nondeterministic timed refinement; source/IR realization remains an additional obligation",
+      "file_sha256": "8a70b4f422dcda597d156d8ef74a4e86a03a0d501d49172db2e619c54061f6eb",
+      "import_status": "Explicit umbrella import verified"
+    },
+    {
+      "id": "L14",
+      "revision": "312b7b7d0686550ce7106fff1f6a47acb3e72866",
+      "directory": "common-subtree-order-maintenance-audit-20261114",
+      "file": "lean/OM/Machine/Flat.lean",
+      "license": "Apache-2.0",
+      "declarations": [
+        "OM.Machine.exec",
+        "OM.Machine.Examples.sumProg_spec",
+        "OM.Machine.flatten_sim"
+      ],
+      "build": "Machine.Examples passes under upstream declared Lean 4.35 with exact main Mathlib dependency commits; Flat interrupted, not claimed built",
+      "command": "cd upstream lean && lake build OM.Machine.Examples",
+      "model": "Costed deep machine syntax; flatten_sim bounds this machine translation, not existing Rust execution",
+      "file_sha256": "de9331c24219b51ebc3363c42376df15ac2f25214f033fff4540d879da68d966",
+      "import_status": "Explicit umbrella import verified"
+    },
+    {
+      "id": "R14",
+      "revision": "248fb52fd0a9d38532727ea95256fec07eafa372",
+      "directory": "common-subtree-certifying-extraction-audit-20261114",
+      "file": "Tactics/ComputableTime.v",
+      "license": "MIT",
+      "declarations": [
+        "computesTime",
+        "computableTime",
+        "extTCorrect"
+      ],
+      "build": "Source only; static Coq 8.8.2 artifact, no coqc installed",
+      "command": null,
+      "model": "Logical relation between Coq values, extracted lambda terms and bounded reduction",
+      "file_sha256": "8c2ffc8c9e3426d15c759d45deb73aefc48d5eb329d77383c7faa692cf3351bd",
+      "import_status": "Selected source file inspected"
+    }
+  ],
+  "other_sources": [
+    {
+      "id": "L04",
+      "revision": "leanprover/lean4:v4.35.0",
+      "declarations": [
+        "Std.WP.EStateM.wpInst",
+        "Std.WP.EStateM.of_run_eq_wp"
+      ],
+      "build": "StdWPWorksheet.lean compiled with actual independent memo result specification",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "L03",
+      "revision": "53f79758aba7bc47ed96db5f167dabe6080e57f6",
+      "file": "Cslib/Algorithms/Lean/TimeM.lean",
+      "declarations": [
+        "Cslib.Algorithms.Lean.TimeM",
+        "TimeM.time_bind",
+        "TimeM.ret_bind"
+      ],
+      "build": "Official API and exact linked source inspected; no integration build",
+      "license": "Apache-2.0"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "rust/crates/verified_ordered_core/src/lib.rs",
+      "sha256": "7fed9dd1de4ac6e4a3b221ec8c764fe8579f1d5784ca2f1e38691c4b4eb2e64d"
+    },
+    {
+      "path": "proofs/SubtreeProofs/Rust/Generated/VerifiedOrderedCore.lean",
+      "sha256": "75c40818d2ed1b35d40b154437cc5da543eda5a37ca7440dd2142ed7a4af3e77"
+    }
+  ],
+  "independent_postcondition": "Rust.MemoizedOrderedSolver.findResult: first structural key hit; duplicates supported; no TableSound precondition for lookup value",
+  "existing_value_theorem": "Rust.MemoizedOrderedSolver.memo_lookup_correct",
+  "proposed_unproved_event_envelope": {
+    "lookup_node_packets": "t+1",
+    "word_comparison_node_packets": "t*((2*L+1)+(2*R+1))",
+    "copy_word_node_packets": "h*(2*W+1)",
+    "copy_allocations": "h*2*W",
+    "note": "Not a proved source resource bound; packet primitive pricing/adequacy remains required"
+  },
+  "negative_experiment": {
+    "declarations": [
+      "ArlibSpike.extra_scan_cost",
+      "ArlibSpike.extra_scan_exceeds_singleton_budget"
+    ],
+    "result": "Value-preserving repeated charged scan doubles exact key-comparison count and violates old singleton budget",
+    "model": "Charged twin only, not actual Rust mutation adequacy",
+    "targeted_lake_jobs": 3170
+  },
+  "aeneas_fuel_probe": {
+    "revision": "5a392f4b80a4d0d05abc240eb2a7fa70622a9a35",
+    "arguments": "-backend lean -use-fuel on actual verified_ordered_core.llbc",
+    "exit_code": 1,
+    "diagnostic": "The Lean backend doesn't support the -use-fuel option",
+    "source_locator": "src/Main.ml:534-535",
+    "generated_files_modified": false
+  },
+  "search_scope": {
+    "method": "Bounded public web searches for arlib, Lean vcgen, Tau Ceti memoization, Aeneas cost/runtime issues; direct pinned source reads",
+    "finding": "Older vcgen import issue #14762 found; no conclusion that candidates cover actual Rust cost adequacy",
+    "not_a_comprehensive_search": true
+  },
+  "remaining": [
+    "Complete original-pin Lax pipeline reproduction and same actual lookup pilot",
+    "Source/event adequacy covering structural equality, witness copy and control flow",
+    "Actual-source omitted-operation mutation",
+    "Choose backend only after common model comparison; no generic memo library expansion yet"
+  ]
+}

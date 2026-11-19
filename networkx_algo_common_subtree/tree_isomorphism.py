@@ -6,7 +6,7 @@ from ._types import OrderedDiGraph
 
 
 def maximum_common_ordered_subtree_isomorphism(
-    tree1, tree2, node_affinity="auto", impl="auto", item_type="auto"
+    tree1, tree2, node_affinity="auto", impl="auto", item_type="auto", *, rooted=False
 ):
     """
     Finds the maximum common subtree-isomorphism between two ordered trees.
@@ -25,24 +25,36 @@ def maximum_common_ordered_subtree_isomorphism(
     Parameters
     ----------
     tree1, tree2 : OrderedDiGraph
-        Trees to find the maximum subtree isomorphism between
+        Nonempty directed simple forests; children follow input iteration
+        order. Cycles and vertices with multiple parents are rejected.
 
     node_affinity : None | str | callable
         Function for to determine if two nodes can be matched. The return is
-        interpreted as a weight that is used to break ties. If None then any
+        a finite nonnegative weight, summed as the objective; zero forbids a
+        pair. If None then any
         node can match any other node and only the topology is important.
         The default is "eq", which is the same as ``operator.eq``.
+        With ``impl="verified-lean"``, return exact integers or
+        ``fractions.Fraction`` values; the result score is a Fraction.
 
     impl : str
         Determines the backend implementation. Defaults to "auto".
         See :func:`balanced_sequence.longest_common_balanced_sequence`
         for details. Other valid options are "iter", "recurse", and
         "iter-cython".
+        ``"verified-lean"`` selects the compiled Lean memoized solver with
+        proved optimality and original-identity witnesses over exact rationals,
+        for both root policies. Conversion/transport are tested boundaries.
 
     item_type : str
         Determines the backend data structure used to encode the tree as a
         balanced sequence. Defaults to "auto", other valid options are "chr"
         and "number".
+
+    rooted : bool
+        Preserve the input forest's root level. For connected input trees,
+        every nonempty output must retain both original roots. The default
+        general mode may select descendant roots.
 
     Returns
     -------
@@ -101,6 +113,7 @@ def maximum_common_ordered_subtree_isomorphism(
         open_to_node=open_to_node,
         node_affinity=node_affinity,
         impl=impl,
+        rooted=rooted,
     )
     subseq1, subseq2 = best
 

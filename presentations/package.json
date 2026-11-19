@@ -1,0 +1,11 @@
+{
+  "name": "common-subtree-presentation-preview",
+  "private": true,
+  "description": "Optional PPTX storyboard; the canonical presentation is in Manim.",
+  "scripts": {
+    "preview": "node storyboard_preview.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}

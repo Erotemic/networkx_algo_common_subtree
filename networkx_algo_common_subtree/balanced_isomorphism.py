@@ -1,11 +1,13 @@
-import operator
+from math import isfinite
 from .balanced_sequence import (
     generate_balance_unsafe,
     IdentityDict,
+    generate_balance,
+    _normalize_node_affinity,
 )
 
 
-def available_impls_longest_common_balanced_isomorphism():
+def available_impls_longest_common_balanced_isomorphism(include_restricted=False):
     """
     Returns all available implementations for
     :func:`longest_common_balanced_isomorphism`.
@@ -14,8 +16,22 @@ def available_impls_longest_common_balanced_isomorphism():
     -------
     List[str]
         the string code for each available implementation
+
+    ``include_restricted=True`` also lists the small-input, unweighted
+    ``reference-rust`` and the exact-rational ``verified-lean`` backends when
+    their native entry points are installed.
     """
     impls = ["recurse", "iter"]
+    if include_restricted:
+        from .balanced_isomorphism_lean import _lean_executable
+        if _lean_executable() is not None:
+            impls.append("verified-lean")
+    if _rust_lcsi_backend():
+        impls += [
+            "iter-rust",
+        ]
+        if include_restricted and hasattr(_rust_lcsi_backend(), "maximum_common_token_isomorphism"):
+            impls.append("reference-rust")
     if _cython_lcsi_backend():
         impls += [
             "iter-cython",
@@ -24,7 +40,7 @@ def available_impls_longest_common_balanced_isomorphism():
 
 
 def longest_common_balanced_isomorphism(
-    seq1, seq2, open_to_close, open_to_node=None, node_affinity="auto", impl="auto"
+    seq1, seq2, open_to_close, open_to_node=None, node_affinity="auto", impl="auto", *, rooted=False
 ):
     r"""
     Finds the longest common balanced sequence isomorphism between two
@@ -33,7 +49,10 @@ def longest_common_balanced_isomorphism(
     Parameters
     ----------
     seq1, seq2: Sequence[TokT]
-        two input balanced sequences
+        Two balanced strings or tuples of hashable tokens. Tokens do not need
+        to define an ordering. String witnesses preserve Python Unicode,
+        including lone surrogates. Ties are deterministic within a backend;
+        different backends may return different optimal witnesses.
 
     open_to_close : Dict[TokT, TokT]
         a mapping from opening to closing tokens in the balanced sequence
@@ -50,19 +69,43 @@ def longest_common_balanced_isomorphism(
 
     node_affinity : None | str | callable
         Function for to determine if two nodes can be matched. The function
-        should take two arguments `node1` and `node2` and return a non-negative
+        should take two arguments `node1` and `node2` and return a finite non-negative
         affinity score that is zero if the nodes are not allowed to match and
         some positive value indicating the strength of the match.  The return
-        is interpreted as a weight that is used to break ties. If
+        is a weight added for each matched node pair. If
         ``node_affinity=None`` then any node can match any other node and only
         the topology is important.  The default is "auto", which will use
         ``operator.eq`` to do a simple equality test on the nodes.
+        Custom affinities use f64 precision across backends and are summed as
+        the optimization objective. Nonfinite/negative affinities and total
+        overflow raise ``ValueError``. Malformed typed sequences raise
+        ``UnbalancedException``, even when the other input is empty.
+        With ``impl="verified-lean"``, affinities must instead be exact
+        ``numbers.Rational`` values (e.g. int or fractions.Fraction). The result
+        is always a Fraction. Floats require explicit conversion by the caller.
+        This backend evaluates the full matrix eagerly; callbacks must describe
+        fixed pair weights. Zero forbids a match in every backend.
 
     impl : str
         Determines the backend implementation. Available choices are given by
         :func:`available_impls_longest_common_balanced_isomorphism`.
-        The default is "auto", which chooses "iter-cython" if available,
-        otherwise "iter".
+        The default is "auto", which chooses "iter-rust" if available,
+        then "iter-cython", otherwise "iter".
+        ``"reference-rust"`` explicitly invokes the source-proved structural
+        reference with ``node_affinity=None``. It is exponential and intended
+        for small inputs. The indexed/token Rust path has source proofs; the
+        Python/PyO3 conversion boundary remains independently tested.
+        ``"verified-lean"`` invokes the compiled, formally proved memoized
+        rational solver for either root policy. It requires a build with
+        ``BUILD_LEAN_BACKEND=ON`` and never silently falls back. Python/NetworkX
+        conversion and JSON transport are independently tested boundaries.
+
+    rooted : bool
+        Preserve the implicit parent of the balanced forest. Top-level output
+        vertices must be top-level input vertices, and skipped subtrees never
+        promote descendants. The default general mode may choose a forest
+        below any original parent. Weights, mapping and witness formats are
+        identical in both modes.
 
     Returns
     -------
@@ -110,23 +153,34 @@ def longest_common_balanced_isomorphism(
     subseq1 = '{([(){()}])}'
     >>> assert value == 6
     """
-    if node_affinity == "auto" or node_affinity == "eq":
-        node_affinity = operator.eq
-    if node_affinity is None:
+    if not isinstance(rooted, bool):
+        raise TypeError("rooted must be a bool")
+    if impl == "verified-lean":
+        from .balanced_isomorphism_lean import _lcsi_verified_lean
+        return _lcsi_verified_lean(seq1, seq2, open_to_close, open_to_node,
+                                   node_affinity, rooted=rooted)
+    if impl == "reference-rust":
+        if node_affinity is not None:
+            raise ValueError("reference-rust requires node_affinity=None (unweighted matching)")
+        from .balanced_isomorphism_rust import _lcsi_reference_rust
+        return _lcsi_reference_rust(seq1, seq2, open_to_close, rooted=rooted)
+    if impl == "auto":
+        if _rust_lcsi_backend(error="ignore"):
+            impl = "iter-rust"
+        elif _cython_lcsi_backend(error="ignore"):
+            impl = "iter-cython"
+        else:
+            impl = "iter"
 
-        def _matchany(a, b):
-            return True
-
-        node_affinity = _matchany
+    if impl != "iter-rust":
+        for sequence in (seq1, seq2):
+            for _ in generate_balance(sequence, open_to_close):
+                pass
+    node_affinity = _normalize_node_affinity(node_affinity, check_weights=impl not in {"iter-rust", "iter-cython"})
     if open_to_node is None:
         open_to_node = IdentityDict()
     full_seq1 = seq1
     full_seq2 = seq2
-    if impl == "auto":
-        if _cython_lcsi_backend(error="ignore"):
-            impl = "iter-cython"
-        else:
-            impl = "iter"
 
     if impl == "iter":
         val_any, best_any, val_lvl, best_lvl = _lcsi_iter(
@@ -146,6 +200,10 @@ def longest_common_balanced_isomorphism(
         ) = balanced_isomorphism_cython._lcsi_iter_cython(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
         )
+    elif impl == "iter-rust":
+        val_any, best_any, val_lvl, best_lvl = _lcsi_iter_rust(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, rooted=rooted
+        )
     elif impl == "recurse":
         _memo = {}
         _seq_memo = {}
@@ -161,10 +219,33 @@ def longest_common_balanced_isomorphism(
     else:
         raise KeyError(impl)
 
-    best = best_any
-    value = val_any
-
+    best = best_lvl if rooted else best_any
+    value = val_lvl if rooted else val_any
+    if not isfinite(value):
+        raise ValueError("ordered affinity total overflow: score must be finite")
     return best, value
+
+
+def _rust_lcsi_backend(error="ignore"):
+    """Returns the rust backend if available, otherwise None."""
+    try:
+        from .balanced_isomorphism_rust import _rust_lcsi_backend as _backend
+    except Exception:
+        if error == "ignore":
+            return None
+        if error == "raise":
+            raise
+        raise KeyError(error)
+    return _backend(error=error)
+
+
+def _lcsi_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, *, rooted=False):
+    from .balanced_isomorphism_rust import _lcsi_iter_rust as _backend
+
+    best, value = _backend(
+        full_seq1, full_seq2, open_to_close, node_affinity, open_to_node, rooted=rooted
+    )
+    return value, best, value, best
 
 
 def _lcsi_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
@@ -187,6 +268,10 @@ def _lcsi_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
     >>> print('value = {!r}, best = {!r}'.format(value, best[0]))
     value = 2, best = '[][]'
     """
+    if not full_seq1 or not full_seq2:
+        empty = (full_seq1[:0], full_seq2[:0])
+        return 0, empty, 0, empty
+
     all_decomp1 = generate_all_decomp_nocat(full_seq1, open_to_close, open_to_node)
     all_decomp2 = generate_all_decomp_nocat(full_seq2, open_to_close, open_to_node)
     key0 = (full_seq1, full_seq2)

@@ -1,0 +1,206 @@
+# Package builds and optional stable-ABI wheels
+
+## 0.3.0 release candidate (2026-11-19)
+
+Ordinary source builds require Cargo/Rust and include both Rust and Cython.
+Missing Cargo fails explicitly; `DISABLE_RUST_EXTENSIONS=1` remains available
+for deliberate reference-only builds. Python **3.10+** and NetworkX **2.8.8+**
+are required. The normal wheel matrix covers CPython 3.10–3.13 on Linux,
+macOS and Windows; the Linux Rust-only stable-ABI wheel supports 3.10–3.14.
+Musllinux builds disable Rust's default static CRT mode to build the shared
+extension. The package's normal wheel contains no Lean runtime/executable.
+
+Fresh native and portable Linux distributions are rebuilt from the filtered
+0.3.0 source archive. Installed tests require all nine Rust endpoints; normal
+wheels also require both Cython modules. **234 tests pass, with 10 skips** for
+the opt-in compiled Lean backend absent from standard wheels. The same ABI3
+artifact is exercised on each CPython 3.10–3.14, and the 3.10 run uses minimum
+NetworkX 2.8.8. Strict ABI auditing and Linux symbol-policy checks pass.
+All four README Python examples and 82 standalone Rust tests pass.
+
+The source archive excludes build caches, the optional development submodule
+and legacy encrypted CI credentials. xcookie generates test/release workflows from `[tool.xcookie]`; its post-build
+hook adds the portable wheel to the normal wheelhouse. Publication uses
+`git push origin main:release`, then PyPI succeeds before tagging. Local
+checksums are review aids, not a mandatory promotion system. macOS builds
+request target 10.12, with cibuildwheel enforcing newer interpreter/ARM floors. Local Linux evidence does not
+stand in for the remote macOS/Windows matrix. See
+[exact artifact/check evidence](../dev/packaging/2026-11-19-release-0.3.0.json),
+[release checklist](planning/release_0_3_0.md) and
+[maintainer instructions](releasing.md).
+
+The older experiments below establish their own dated baselines and hashes.
+
+The default source build includes Rust/PyO3 and both Cython extensions:
+
+```bash
+python -m pip wheel . --no-deps -w dist \
+  -Ccmake.define.BUILD_CYTHON_EXTENSIONS=ON \
+  -Ccmake.define.REQUIRE_RUST_EXTENSIONS=ON
+```
+
+An opt-in Rust-only `cp310-abi3` wheel supports the same public Rust algorithm
+families and scoring modes. It requires scikit-build-core >=1.0 and a CPython
+build interpreter >=3.10:
+
+```bash
+python -m pip wheel . --no-deps -w dist \
+  -Cwheel.py-api=cp310 \
+  -Ccmake.define.BUILD_CYTHON_EXTENSIONS=OFF \
+  -Ccmake.define.REQUIRE_RUST_EXTENSIONS=ON
+python -m pip install abi3audit
+abi3audit --strict --summary dist/*-cp310-abi3-*.whl
+```
+
+CMake consumes scikit-build-core's stable-ABI settings, enables the actual
+PyO3 `abi3-py310` Cargo feature and installs `_rust.abi3.so` (`_rust.pyd` on
+Windows). Rust-only builds require the Python interpreter, with no CMake C/C++
+development-module target; PyO3 configures Rust's Python ABI and linking.
+The stable wheel setting does not merely rename the artifact. Configuration
+rejects other stable floors, missing Rust, or enabled version-specific Cython
+targets. Normal builds continue to include Cython for parity and regression
+testing. The historical ABI3 branch was not merged.
+
+References: [PyO3 0.22.6 stable-ABI build requirements](https://pyo3.rs/v0.22.6/building-and-distribution.html#py_limited_apiabi3),
+[scikit-build-core stable-ABI settings](https://scikit-build-core.readthedocs.io/en/latest/guide/cmakelists.html#limited-api-stable-abi),
+and [Cython's separate Limited API mode](https://docs.cython.org/en/latest/src/userguide/limited_api.html).
+The existing Cython targets use the full version-specific API; their Limited
+API mode has not been validated for this project. No Cython native library is
+included in the stable-ABI artifact.
+
+## Portable Linux stable-ABI wheel
+
+The separate [cibuildwheel profile](../dev/abi3-cibuildwheel.toml) builds one
+Rust-only **CP310 ABI3 manylinux_2_28 x86_64** artifact. Docker is required:
+
+```bash
+python -m pip install cibuildwheel==4.3.5
+export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+python -m cibuildwheel --platform linux \
+  --config-file dev/abi3-cibuildwheel.toml --output-dir dist/abi3
+```
+
+The profile pins the official PyPA image by digest and Rust 1.95.0. It enables
+the actual PyO3 limited API, repairs/checks the Linux symbol policy, audits the
+stable ABI, requires all nine Rust entry points and Cython absence, and runs
+the full test directory inside the manylinux container. CI uses this profile,
+then tests the identical artifact on CPython 3.10–3.14. The normal Cython matrix
+stays available for strict compiled parity.
+
+Executed source-only evidence at `5e42f17`: 470 tracked files, no prebuilt
+libraries, **176 tests on glibc 2.28 / CPython 3.10.22**, plus **176 tests,
+zero skips on each CPython 3.10–3.14** using the same artifact. `auditwheel`
+confirms the actual required floor is glibc 2.28; `abi3audit --strict` reports
+zero violations/mismatches and a Python 3.10 baseline. Exactly one native
+library is included. Two fresh container builds with the same source timestamp
+produce a byte-identical complete wheel, SHA256:
+
+`1e9c859e8063a16e5146d6a09f43592cd2fc421485ba13ff94201f81f1465362`
+
+[Machine-readable source, tool, audit and runtime evidence](../dev/packaging/2026-11-14-manylinux.json).
+Observed build dependencies are recorded there; this establishes repeatability
+for that source/tool environment, not arbitrary future dependency versions or
+other platforms. The timestamp is automatically forwarded by cibuildwheel.
+[Official image/platform policy](https://github.com/pypa/manylinux),
+[ABI3 auditing](https://cibuildwheel.pypa.io/en/stable/faq/#building-cpython-abi3-wheels-limited-api),
+[timestamp forwarding](https://cibuildwheel.pypa.io/en/stable/options/#environment-pass).
+
+Five-repeat installed graph measurements compare
+[the native CPython wheel](../dev/benchmarks/2026-11-14-native-wheel-graph.json)
+with [the portable wheel](../dev/benchmarks/2026-11-14-manylinux-wheel-graph.json),
+228 rows each. All objectives agree and public witnesses are independently
+rescored. Median portable/native public runtime ratios are **1.029** (2016)
+and **1.012** (2018); raw binding ratios are **1.013** and **1.009**. Shared-VM
+noise affects individual rows. The artifact's native code is partially verified;
+portable packaging adds no mathematical or Rust refinement claim.
+
+The rooted graph API update is also validated from a source-only archive of
+`e272d36`: **199 tests, zero skips**, on the glibc floor and each CPython
+3.10–3.14, with Linux repair and strict ABI auditing clean. Its wheel SHA256 is
+`77c449c1c6683b54c8db0bf8ad4f28cac0c135293e01b509971d624000b2d18f`.
+The `rooted_graph_api_update` ledger entry records this later source/artifact;
+the byte-reproducibility experiment above remains its separate 176-test baseline.
+
+## Executed Linux validation, 2026-11-14
+
+The genuine stable wheel contains exactly one native library. `abi3audit
+--strict` reports a computed/minimum ABI of **3.10**, **zero violations** and
+**zero version mismatches**. The same package/binary payload passes **149 tests,
+zero skips on each CPython 3.10, 3.11, 3.12, 3.13 and 3.14**, with all seven
+Rust entry points required and Cython explicitly absent. These runs execute
+the independent objective/witness oracles, integer boundaries and error cases.
+[Machine-readable evidence](../dev/packaging/2026-11-14-abi3.json) includes wheel
+and extension hashes, runtime/library versions, required entry points and the
+raw ABI audit. CI now builds/audits one wheel and tests it across the same
+runtime matrix; the existing separate job requires Rust **and Cython** parity.
+The earlier remote run has now been inspected; see the current checkpoint below.
+
+Subsequent root-preserving isomorphism and token/Unicode updates pass **161
+tests, zero skips** in the normal wheel and on each ABI3 runtime. Their wheel,
+binary and audit records are appended under `rooted_api_update` and
+`token_api_update` in the evidence file; the initial measurements above remain
+recorded as the original packaging baseline.
+
+A source-only archive of `3d68c00` matches all 423 tracked paths and contains
+no shared libraries. Building an sdist from it, then building both wheel modes
+from the unpacked sdist, succeeds without checkout build artifacts. The normal
+wheel passes 149 tests with Rust/Cython mandatory; the stable wheel passes 149
+on Python 3.10 and strict ABI auditing. Its Rust binary is byte-identical to
+the checkout build. Source/wheel hashes are in the same evidence file. This
+establishes a source-build path; bit-for-bit reproducibility of complete wheel
+archives across build environments remains a separate release requirement.
+
+Installed Python 3.13 API timings use the existing repeated workload suites:
+[ordered fractional affinities](../dev/benchmarks/2026-11-14-abi3-ordered-weighted.json)
+and [unordered graph APIs](../dev/benchmarks/2026-11-14-abi3-unordered.json).
+Median ABI3/version-specific runtime ratios are 1.006/1.049 for ordered
+embedding/isomorphism, and 1.035/1.058 for 2018/2016 graph algorithms. These
+shared-VM, small-workload ratios characterize this run; individual cases vary.
+All scores agree and graph witnesses are independently rescored.
+
+The earlier local builds used `linux_x86_64`; the portable Linux path is now
+validated above. macOS/Windows stable-ABI artifacts, wider architectures and
+their runtime tests remain packaging work. Current-revision remote CI remains pending;
+the earlier run and its actual oracle-job failure are recorded below.
+The default Cython-inclusive distribution is unchanged. These development artifacts are
+partially verified; complete production-source and applicable complexity
+proofs still block the final verified release.
+
+The positive-infinity scoring update at `5d7fabd` has also been rebuilt from a
+source-only archive through the pinned portable profile. Its wheel passes all
+209 tests on glibc 2.28 and each host CPython 3.10–3.14, with strict ABI
+auditing clean. This is a separate artifact from the rooted 199-test milestone;
+its exact source, wheel and native hashes are recorded in the packaging ledger.
+
+The later source-only `d858a55` artifact includes the structural isomorphism
+reference API and uniform child-matching optimization. All 228 tests pass on
+glibc 2.28 and each CPython 3.10–3.14; all eight native entry points are
+mandatory, Cython is absent, and strict ABI auditing passes. The implementation
+was committed before this validation. See the portable ledger for exact hashes.
+
+## Current source checkpoint, 2026-11-14
+
+Fresh source-only archives of `1555b645d9196f5497c9c1c50b4da22f9d5da098`
+include all ordered-isomorphism production changes and the completed reference
+source proofs. The normal Rust+Cython wheel passes **234 installed tests with
+compiled parity mandatory**. The portable Rust-only wheel passes **234 tests
+on glibc 2.28 / Python 3.10.22**, then the same wheel passes **234 tests, zero
+skips on each host CPython 3.10–3.14**. All nine native entry points are checked.
+Strict ABI auditing reports a Python 3.10 baseline and zero violations/mismatches.
+The archive contains no native library; the portable wheel contains only
+`networkx_algo_common_subtree/_rust.abi3.so`.
+
+Normal wheel SHA256: `ab506654a207c25a9f2af0a7960479af881fcd7c44c9df0033e6db6bac5226b9`.
+Portable wheel SHA256: `d297d9f9fd0fb2db88dc8f9b60f5accfe6c5b1805a21836d1a9099d1575961b2`.
+The existing portable ledger's `indexed_isomorphism_stopping_point` entry records
+source/archive hashes, native payload hashes, runtime versions, audit and tests.
+This run did not repeat the historical byte-reproducibility experiment or timings.
+
+[Earlier remote run 43651015446](https://github.com/Erotemic/networkx_algo_common_subtree/actions/runs/43651015446)
+on PR head `f9b4afe` / merge `382e29c` passed Lean/extraction, Rust, normal wheels,
+ABI3 build and all five runtime jobs. Its independent-oracle job failed before
+collection: it installed pytest without the configured xdoctest plugin.
+`a4280b270075ae8aaf2cb5987a56606e56e5f0df` fixes dependency installation using the
+existing requirements files; all 44 tests pass in a fresh local environment.
+That commit changes only CI configuration. The subsequent checkpoint changes
+only documentation/evidence. A fresh remote run remains outstanding.

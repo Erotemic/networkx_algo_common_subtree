@@ -1,0 +1,32 @@
+✖ [1006/1006] Building SubtreeProofs.LozanoValiente2004 (1.2s)
+trace: .> LEAN_PATH=/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/Cli/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/batteries/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/Qq/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/aesop/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/importGraph/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/plausible/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/packages/mathlib/.lake/build/lib/lean:/home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/build/lib/lean /home/joncrall/.elan/toolchains/leanprover--lean4---v4.29.0-rc2/bin/lean /home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/SubtreeProofs/LozanoValiente2004.lean -o /home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/build/lib/lean/SubtreeProofs/LozanoValiente2004.olean -i /home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/build/lib/lean/SubtreeProofs/LozanoValiente2004.ilean -c /home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/build/ir/SubtreeProofs/LozanoValiente2004.c --setup /home/joncrall/code/networkx_algo_common_subtree/subtree_proofs/.lake/build/ir/SubtreeProofs/LozanoValiente2004.setup.json --json
+error: SubtreeProofs/LozanoValiente2004.lean:119:86: unsolved goals
+case tail
+r p b✝ c✝ : BSeq
+a✝¹ : Relation.ReflTransGen DelAnyAnnot p b✝
+a✝ : b✝.DelAnyAnnot c✝
+a_ih✝ : b✝.semilen ≤ p.semilen
+⊢ c✝.semilen ≤ p.semilen
+error: SubtreeProofs/LozanoValiente2004.lean:124:9: unexpected token '('; expected command
+warning: SubtreeProofs/LozanoValiente2004.lean:152:8: declaration uses `sorry`
+warning: SubtreeProofs/LozanoValiente2004.lean:195:7: unused variable `before`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: SubtreeProofs/LozanoValiente2004.lean:226:8: declaration uses `sorry`
+error: SubtreeProofs/LozanoValiente2004.lean:277:10: failed to elaborate eliminator, unused named arguments: [motive]
+error: SubtreeProofs/LozanoValiente2004.lean:278:8: No goals to be solved
+warning: SubtreeProofs/LozanoValiente2004.lean:302:8: declaration uses `sorry`
+warning: SubtreeProofs/LozanoValiente2004.lean:324:8: declaration uses `sorry`
+warning: SubtreeProofs/LozanoValiente2004.lean:342:8: declaration uses `sorry`
+warning: SubtreeProofs/LozanoValiente2004.lean:352:8: declaration uses `sorry`
+warning: SubtreeProofs/LozanoValiente2004.lean:362:8: declaration uses `sorry`
+warning: SubtreeProofs/LozanoValiente2004.lean:388:2: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: SubtreeProofs/LozanoValiente2004.lean:399:2: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: SubtreeProofs/LozanoValiente2004.lean:416:8: declaration uses `sorry`
+error: Lean exited with code 1
+Some required targets logged failures:
+- SubtreeProofs.LozanoValiente2004

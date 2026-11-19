@@ -28,9 +28,10 @@ def maximum_common_ordered_subtree_embedding(
     between two trees T1 and T2. S1 and S2 are minors of T1 and T2 with maximal
     size such that S1 is isomorphic to S2.
 
-    The computational complexity is: ``O(n1 * n2 * min(d1, l1) * min(d2, l2))``
+    The paper's DP complexity target is ``O(n1 * n2 * min(d1, l1) * min(d2, l2))``
     on ordered trees with n1 and n2 nodes, of depth d1 and d2 and with l1 and
-    l2 leaves, respectively.
+    l2 leaves, respectively. The full production bound including state storage,
+    affinity callbacks and witness reconstruction remains to be established.
 
     This implementation follows the algorithm described in [1]_, which
     introduces the problem as follows:
@@ -49,11 +50,13 @@ def maximum_common_ordered_subtree_embedding(
     Parameters
     ----------
     tree1, tree2 : OrderedDiGraph
-        Trees to find the maximum embedding between
+        Nonempty directed simple forests; children follow input iteration
+        order. Cycles and vertices with multiple parents are rejected.
 
     node_affinity : None | str | callable
         Function for to determine if two nodes can be matched. The return is
-        interpreted as a weight that is used to break ties. If None then any
+        a finite nonnegative weight, summed as the objective; zero forbids a
+        pair. If None then any
         node can match any other node and only the topology is important.
         The default is "eq", which is the same as ``operator.eq``.
 
@@ -314,6 +317,10 @@ def tree_to_seq(
     """
     # Create a sequence and mapping from each index in the sequence to the
     # graph edge is corresponds to.
+    if (not tree.is_directed() or tree.is_multigraph()
+            or any(degree > 1 for _, degree in tree.in_degree())
+            or not nx.is_directed_acyclic_graph(tree)):
+        raise TypeError("Input must be a directed simple forest with at most one parent per vertex")
     sequence = []
 
     # mapping between opening and closing tokens

@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Regenerate the maintained Rust source's Lean semantics with pinned releases.
+set -euo pipefail
+repo_root=$(cd "$(dirname "$0")/.." && pwd)
+release=nightly-2026.11.09-5a392f4
+archive_sha256=54982f0f6bb8ec7080ef9d2a23932aebe6e3c032f32015963bbccc43103f723a
+cache_root=${XDG_CACHE_HOME:-$HOME/.cache}/common-subtree-verification
+binary_dir=${AENEAS_BIN_DIR:-$cache_root/$release}
+check=0
+score_model_only=0
+for arg in "$@"; do
+    case "$arg" in
+        --check) check=1 ;;
+        --score-model-only) score_model_only=1 ;;
+        *) echo 'usage: dev/regenerate_rust_lean.sh [--check] [--score-model-only]' >&2; exit 2 ;;
+    esac
+done
+if [[ ! -x $binary_dir/aeneas || ! -x $binary_dir/charon ]]; then
+    if [[ $(uname -s) != Linux || $(uname -m) != x86_64 ]]; then
+        echo 'Set AENEAS_BIN_DIR to the pinned release for this platform.' >&2
+        exit 1
+    fi
+    mkdir -p "$binary_dir"
+    archive=$(mktemp)
+    curl --fail --location --silent --show-error \
+        "https://github.com/AeneasVerif/aeneas/releases/download/$release/aeneas-linux-x86_64.tar.gz" \
+        --output "$archive"
+    printf '%s  %s\n' "$archive_sha256" "$archive" | sha256sum --check --status
+    tar -xzf "$archive" -C "$binary_dir"
+    rm "$archive"
+fi
+"$binary_dir/aeneas" -version | grep -Fx "aeneas $release" > /dev/null
+rustup toolchain install nightly-2026-09-17 --profile minimal --component rustc-dev --component rust-src --component miri
+score_args=(--charon "$binary_dir/charon" --aeneas "$binary_dir/aeneas")
+if [[ $check == 1 ]]; then score_args+=(--check); fi
+python3 "$repo_root/dev/regenerate_score_model.py" "${score_args[@]}"
+if [[ $score_model_only == 1 ]]; then exit 0; fi
+output_dir=$(mktemp -d)
+trap 'rm -rf "$output_dir"' EXIT
+for entry in verified_ordered_core:VerifiedOrderedCore verified_assignment_core:VerifiedAssignmentCore; do
+    crate_name=${entry%%:*}
+    module_name=${entry#*:}
+    cd "$repo_root/rust/crates/$crate_name"
+    RUSTUP_TOOLCHAIN=nightly-2026-09-17 "$binary_dir/charon" cargo --preset=aeneas
+    "$binary_dir/aeneas" -backend lean -abort-on-error -warnings-as-errors -no-progress-bar \
+        -dest "$output_dir" -namespace "$crate_name" "$crate_name.llbc"
+    maintained="$repo_root/proofs/SubtreeProofs/Rust/Generated/$module_name.lean"
+    if [[ $check == 1 ]]; then
+        diff -u "$maintained" "$output_dir/$module_name.lean"
+    else
+        cp "$output_dir/$module_name.lean" "$maintained"
+    fi
+done
+# Reify the normal lookup path and a compiled extra-comparison mutation. These
+# retain operation/control-flow information erased by the value translation.
+lookup_args=(--charon "$binary_dir/charon")
+if [[ $check == 1 ]]; then lookup_args+=(--check); fi
+python3 "$repo_root/dev/regenerate_lookup_source.py" "${lookup_args[@]}"
+
+# Retain and independently certify the actual memo insertion/concatenation helpers.
+python3 "$repo_root/dev/regenerate_memo_source.py" "${lookup_args[@]}"
+
+# Retain the complete evaluator and public-core source for the expanded Lean reader.
+python3 "$repo_root/dev/regenerate_eval_source.py" "${lookup_args[@]}"

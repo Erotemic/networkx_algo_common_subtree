@@ -1,0 +1,733 @@
+use pyo3::prelude::*;
+use pyo3::types::{PyAny, PyDict, PyList, PyString, PyTuple, PyType};
+use rustc_hash::FxHashMap as HashMap;
+use std::sync::Arc;
+use verified_ordered_core::isomorphism_choices::{
+    append_isomorphism_choice, reconstruct_isomorphism_choices, IsomorphismChoice,
+};
+
+mod graph_bindings;
+
+#[derive(Clone, Debug, Default)]
+struct MatchResult {
+    val: f64,
+    s1: Vec<u32>,
+    s2: Vec<u32>,
+}
+
+#[derive(Clone, Copy, Debug, Default)]
+struct IsoMatch {
+    val: f64,
+    choice: Option<usize>,
+}
+
+#[derive(Clone, Copy, Debug, Default)]
+struct IsoResult {
+    any: Option<IsoMatch>,
+    lvl: Option<IsoMatch>,
+}
+
+#[derive(Clone, Debug)]
+struct Decomp {
+    a: u32,
+    b: u32,
+    head: u32,
+    tail: u32,
+    head_tail: u32,
+}
+
+struct StatePool {
+    states: Vec<Vec<u32>>,
+    index: HashMap<Vec<u32>, u32>,
+}
+
+impl StatePool {
+    fn with_capacity(cap: usize) -> Self {
+        Self {
+            states: Vec::with_capacity(cap),
+            index: HashMap::with_capacity_and_hasher(cap, Default::default()),
+        }
+    }
+
+    fn intern(&mut self, state: Vec<u32>) -> u32 {
+        if let Some(&sid) = self.index.get(state.as_slice()) {
+            return sid;
+        }
+        let sid = self.states.len() as u32;
+        self.index.insert(state.clone(), sid);
+        self.states.push(state);
+        sid
+    }
+
+    fn get(&self, sid: u32) -> &[u32] {
+        &self.states[sid as usize]
+    }
+}
+
+struct Interner<'py> {
+    py: Python<'py>,
+    next_id: u32,
+    by_hash: HashMap<isize, Vec<(Py<PyAny>, u32)>>,
+}
+
+impl<'py> Interner<'py> {
+    fn new(py: Python<'py>) -> Self {
+        Self {
+            py,
+            next_id: 0,
+            by_hash: HashMap::default(),
+        }
+    }
+
+    fn id_for(&mut self, obj: &Bound<'py, PyAny>) -> PyResult<u32> {
+        let h = obj.hash()?;
+        if let Some(bucket) = self.by_hash.get(&h) {
+            for (existing, eid) in bucket {
+                if existing.bind(self.py).eq(obj.clone())? {
+                    return Ok(*eid);
+                }
+            }
+        }
+        let new_id = self.next_id;
+        self.next_id += 1;
+        self.by_hash
+            .entry(h)
+            .or_default()
+            .push((obj.clone().unbind(), new_id));
+        Ok(new_id)
+    }
+}
+
+struct Solver<'py> {
+    py: Python<'py>,
+    seq1_obj: Bound<'py, PyAny>,
+    seq2_obj: Bound<'py, PyAny>,
+    seq1_py: Vec<Py<PyAny>>,
+    seq2_py: Vec<Py<PyAny>>,
+    seq1_aff_py: Vec<Py<PyAny>>,
+    seq2_aff_py: Vec<Py<PyAny>>,
+    seq1_tok_id: Vec<u32>,
+    seq2_tok_id: Vec<u32>,
+    seq1_is_open: Vec<bool>,
+    seq2_is_open: Vec<bool>,
+    open_to_close_id: HashMap<u32, u32>,
+    node_affinity: Option<Py<PyAny>>,
+
+    pool1: StatePool,
+    pool2: StatePool,
+    decomp1: HashMap<u32, Decomp>,
+    decomp2: HashMap<u32, Decomp>,
+
+    memo_emb: HashMap<u64, Arc<MatchResult>>,
+    memo_iso: HashMap<u64, IsoResult>,
+    iso_choices: Vec<IsomorphismChoice>,
+    affinity_cache: HashMap<u64, f64>,
+    empty_match: Arc<MatchResult>,
+}
+
+impl<'py> Solver<'py> {
+    fn balanced_tokens(tokens: &[u32], brackets: &HashMap<u32, u32>) -> bool {
+        let mut closes = Vec::new();
+        for token in tokens {
+            if let Some(close) = brackets.get(token) {
+                closes.push(*close);
+            } else if closes.pop() != Some(*token) {
+                return false;
+            }
+        }
+        closes.is_empty()
+    }
+
+    fn new(
+        py: Python<'py>,
+        seq1_obj: Bound<'py, PyAny>,
+        seq2_obj: Bound<'py, PyAny>,
+        open_to_close_obj: Bound<'py, PyAny>,
+        open_to_node_obj: Option<Bound<'py, PyAny>>,
+        node_affinity: Option<Py<PyAny>>,
+    ) -> PyResult<Self> {
+        let open_to_close = open_to_close_obj.downcast_into::<PyDict>()?;
+        let open_to_node = match open_to_node_obj {
+            Some(mapping) if !mapping.is_none() => Some(mapping.unbind()),
+            _ => None,
+        };
+
+        let seq1_py = seq1_obj
+            .iter()?
+            .map(|item| item.map(|x| x.unbind()))
+            .collect::<PyResult<Vec<_>>>()?;
+        let seq2_py = seq2_obj
+            .iter()?
+            .map(|item| item.map(|x| x.unbind()))
+            .collect::<PyResult<Vec<_>>>()?;
+
+        let mut interner = Interner::new(py);
+        let mut open_to_close_id = HashMap::default();
+        for (k, v) in open_to_close.iter() {
+            let ok = interner.id_for(&k)?;
+            let cv = interner.id_for(&v)?;
+            open_to_close_id.insert(ok, cv);
+        }
+
+        let (seq1_tok_id, seq1_aff_py) = Self::encode_sequence(
+            py,
+            &mut interner,
+            &seq1_py,
+            open_to_node.as_ref(),
+            &open_to_close_id,
+        )?;
+        let (seq2_tok_id, seq2_aff_py) = Self::encode_sequence(
+            py,
+            &mut interner,
+            &seq2_py,
+            open_to_node.as_ref(),
+            &open_to_close_id,
+        )?;
+
+        let seq1_is_open = seq1_tok_id
+            .iter()
+            .map(|tid| open_to_close_id.contains_key(tid))
+            .collect::<Vec<_>>();
+        if !Self::balanced_tokens(&seq1_tok_id, &open_to_close_id)
+            || !Self::balanced_tokens(&seq2_tok_id, &open_to_close_id)
+        {
+            let exception = py
+                .import_bound("networkx_algo_common_subtree.balanced_sequence")?
+                .getattr("UnbalancedException")?
+                .downcast_into::<PyType>()?;
+            return Err(PyErr::from_type_bound(
+                exception,
+                ("input sequence is not balanced",),
+            ));
+        }
+        let seq2_is_open = seq2_tok_id
+            .iter()
+            .map(|tid| open_to_close_id.contains_key(tid))
+            .collect::<Vec<_>>();
+
+        let len1 = seq1_py.len();
+        let len2 = seq2_py.len();
+        let state_cap1 = len1.saturating_mul(8).max(64);
+        let state_cap2 = len2.saturating_mul(8).max(64);
+        let memo_cap = ((len1.saturating_mul(len2)) / 2).clamp(1024, 2_000_000);
+
+        let mut pool1 = StatePool::with_capacity(state_cap1);
+        let mut pool2 = StatePool::with_capacity(state_cap2);
+        pool1.intern((0..len1 as u32).collect());
+        pool2.intern((0..len2 as u32).collect());
+        pool1.intern(Vec::new());
+        pool2.intern(Vec::new());
+
+        Ok(Self {
+            py,
+            seq1_obj,
+            seq2_obj,
+            seq1_py,
+            seq2_py,
+            seq1_aff_py,
+            seq2_aff_py,
+            seq1_tok_id,
+            seq2_tok_id,
+            seq1_is_open,
+            seq2_is_open,
+            open_to_close_id,
+            node_affinity,
+            pool1,
+            pool2,
+            decomp1: HashMap::with_capacity_and_hasher(state_cap1, Default::default()),
+            decomp2: HashMap::with_capacity_and_hasher(state_cap2, Default::default()),
+            memo_emb: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            memo_iso: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            iso_choices: Vec::new(),
+            affinity_cache: HashMap::with_capacity_and_hasher(memo_cap, Default::default()),
+            empty_match: Arc::new(MatchResult::default()),
+        })
+    }
+
+    fn encode_sequence(
+        py: Python<'py>,
+        interner: &mut Interner<'py>,
+        seq: &[Py<PyAny>],
+        open_to_node: Option<&Py<PyAny>>,
+        open_to_close_id: &HashMap<u32, u32>,
+    ) -> PyResult<(Vec<u32>, Vec<Py<PyAny>>)> {
+        let mut tok_ids = Vec::with_capacity(seq.len());
+        let mut aff_py = Vec::with_capacity(seq.len());
+        for tok in seq {
+            let tokb = tok.bind(py);
+            let token_id = interner.id_for(&tokb)?;
+            tok_ids.push(token_id);
+            let mapped = if let Some(map) = open_to_node {
+                if open_to_close_id.contains_key(&token_id) {
+                    map.bind(py).get_item(tokb)?
+                } else {
+                    tokb.clone()
+                }
+            } else {
+                tokb.clone()
+            };
+            aff_py.push(mapped.unbind());
+        }
+        Ok((tok_ids, aff_py))
+    }
+
+    #[inline]
+    fn memo_key(a: u32, b: u32) -> u64 {
+        ((a as u64) << 32) | (b as u64)
+    }
+
+    fn affinity(&mut self, tok1: u32, tok2: u32) -> PyResult<f64> {
+        let key = Self::memo_key(tok1, tok2);
+        if let Some(v) = self.affinity_cache.get(&key) {
+            return Ok(*v);
+        }
+
+        let i1 = tok1 as usize;
+        let i2 = tok2 as usize;
+        let val = if let Some(ref func) = self.node_affinity {
+            let n1 = self.seq1_aff_py[i1].bind(self.py);
+            let n2 = self.seq2_aff_py[i2].bind(self.py);
+            let out = func.bind(self.py).call1((n1, n2))?;
+            out.extract::<f64>().map_err(|_| {
+                pyo3::exceptions::PyValueError::new_err(
+                    "node affinities must be finite nonnegative numbers",
+                )
+            })?
+        } else {
+            if self.seq1_aff_py[i1]
+                .bind(self.py)
+                .eq(self.seq2_aff_py[i2].bind(self.py))?
+            {
+                1.0
+            } else {
+                0.0
+            }
+        };
+        if !val.is_finite() || val < 0.0 {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "node affinities must be finite nonnegative numbers",
+            ));
+        }
+        self.affinity_cache.insert(key, val);
+        Ok(val)
+    }
+
+    fn decompose1(&mut self, sid: u32) -> PyResult<Decomp> {
+        if let Some(d) = self.decomp1.get(&sid) {
+            return Ok(d.clone());
+        }
+        let state = self.pool1.get(sid);
+        if state.is_empty() {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Cannot decompose empty state",
+            ));
+        }
+
+        let mut depth = 0i32;
+        let mut match_pos = None;
+        for (pos, &idx) in state.iter().enumerate() {
+            let i = idx as usize;
+            if self.seq1_is_open[i] {
+                depth += 1;
+            } else {
+                depth -= 1;
+                if depth == 0 {
+                    match_pos = Some(pos);
+                    break;
+                }
+            }
+        }
+        let m = match_pos.ok_or_else(|| {
+            pyo3::exceptions::PyValueError::new_err("No matching close token found")
+        })?;
+
+        let a = state[0];
+        let b = state[m];
+        let open_id = self.seq1_tok_id[a as usize];
+        let close_id = self.seq1_tok_id[b as usize];
+        if self.open_to_close_id.get(&open_id) != Some(&close_id) {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Mismatched close token",
+            ));
+        }
+
+        let head = state[1..m].to_vec();
+        let tail = state[(m + 1)..].to_vec();
+        let mut head_tail = Vec::with_capacity(head.len() + tail.len());
+        head_tail.extend_from_slice(&head);
+        head_tail.extend_from_slice(&tail);
+
+        let d = Decomp {
+            a,
+            b,
+            head: self.pool1.intern(head),
+            tail: self.pool1.intern(tail),
+            head_tail: self.pool1.intern(head_tail),
+        };
+        self.decomp1.insert(sid, d.clone());
+        Ok(d)
+    }
+
+    fn decompose2(&mut self, sid: u32) -> PyResult<Decomp> {
+        if let Some(d) = self.decomp2.get(&sid) {
+            return Ok(d.clone());
+        }
+        let state = self.pool2.get(sid);
+        if state.is_empty() {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Cannot decompose empty state",
+            ));
+        }
+
+        let mut depth = 0i32;
+        let mut match_pos = None;
+        for (pos, &idx) in state.iter().enumerate() {
+            let i = idx as usize;
+            if self.seq2_is_open[i] {
+                depth += 1;
+            } else {
+                depth -= 1;
+                if depth == 0 {
+                    match_pos = Some(pos);
+                    break;
+                }
+            }
+        }
+        let m = match_pos.ok_or_else(|| {
+            pyo3::exceptions::PyValueError::new_err("No matching close token found")
+        })?;
+
+        let a = state[0];
+        let b = state[m];
+        let open_id = self.seq2_tok_id[a as usize];
+        let close_id = self.seq2_tok_id[b as usize];
+        if self.open_to_close_id.get(&open_id) != Some(&close_id) {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                "Mismatched close token",
+            ));
+        }
+
+        let head = state[1..m].to_vec();
+        let tail = state[(m + 1)..].to_vec();
+        let mut head_tail = Vec::with_capacity(head.len() + tail.len());
+        head_tail.extend_from_slice(&head);
+        head_tail.extend_from_slice(&tail);
+
+        let d = Decomp {
+            a,
+            b,
+            head: self.pool2.intern(head),
+            tail: self.pool2.intern(tail),
+            head_tail: self.pool2.intern(head_tail),
+        };
+        self.decomp2.insert(sid, d.clone());
+        Ok(d)
+    }
+
+    #[inline]
+    fn better_match(&self, cand: &MatchResult, best: &MatchResult) -> bool {
+        if cand.val > best.val {
+            return true;
+        }
+        if cand.val < best.val {
+            return false;
+        }
+        if cand.s1 > best.s1 {
+            return true;
+        }
+        if cand.s1 < best.s1 {
+            return false;
+        }
+        cand.s2 > best.s2
+    }
+
+    fn emb(&mut self, s1: u32, s2: u32) -> PyResult<Arc<MatchResult>> {
+        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
+            return Ok(self.empty_match.clone());
+        }
+        let key = Self::memo_key(s1, s2);
+        if let Some(found) = self.memo_emb.get(&key) {
+            return Ok(found.clone());
+        }
+
+        let d1 = self.decompose1(s1)?;
+        let d2 = self.decompose2(s2)?;
+
+        let mut best = self.emb(d1.head_tail, s2)?;
+        let cand2 = self.emb(s1, d2.head_tail)?;
+        if self.better_match(&cand2, &best) {
+            best = cand2;
+        }
+
+        let aff = self.affinity(d1.a, d2.a)?;
+        if aff > 0.0 {
+            let h = self.emb(d1.head, d2.head)?;
+            let t = self.emb(d1.tail, d2.tail)?;
+            let mut s1v = Vec::with_capacity(h.s1.len() + t.s1.len() + 2);
+            s1v.push(d1.a);
+            s1v.extend_from_slice(&h.s1);
+            s1v.push(d1.b);
+            s1v.extend_from_slice(&t.s1);
+
+            let mut s2v = Vec::with_capacity(h.s2.len() + t.s2.len() + 2);
+            s2v.push(d2.a);
+            s2v.extend_from_slice(&h.s2);
+            s2v.push(d2.b);
+            s2v.extend_from_slice(&t.s2);
+
+            let cand = Arc::new(MatchResult {
+                val: h.val + t.val + aff,
+                s1: s1v,
+                s2: s2v,
+            });
+            if self.better_match(&cand, &best) {
+                best = cand;
+            }
+        }
+
+        self.memo_emb.insert(key, best.clone());
+        Ok(best)
+    }
+
+    fn iso_level(&mut self, s1: u32, s2: u32) -> PyResult<IsoMatch> {
+        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
+            return Ok(IsoMatch::default());
+        }
+        let key = Self::memo_key(s1, s2);
+        if let Some(found) = self.memo_iso.get(&key).and_then(|result| result.lvl) {
+            return Ok(found);
+        }
+        let d1 = self.decompose1(s1)?;
+        let d2 = self.decompose2(s2)?;
+        // Keep the historical tie order: right-tail before left-tail, with
+        // a matched first pair replacing either only on strict improvement.
+        let drop_right = self.iso_level(s1, d2.tail)?;
+        let drop_left = self.iso_level(d1.tail, s2)?;
+        let mut lvl = IsoMatch::default();
+        for cand in [drop_right, drop_left] {
+            if cand.val > lvl.val {
+                lvl = cand;
+            }
+        }
+
+        let aff = self.affinity(d1.a, d2.a)?;
+        if aff > 0.0 {
+            let head = self.iso_level(d1.head, d2.head)?;
+            let tail = self.iso_level(d1.tail, d2.tail)?;
+            let val = head.val + tail.val + aff;
+            if val > lvl.val {
+                let choice = append_isomorphism_choice(&mut self.iso_choices, IsomorphismChoice {
+                    left_open: d1.a,
+                    left_close: d1.b,
+                    right_open: d2.a,
+                    right_close: d2.b,
+                    head: head.choice,
+                    tail: tail.choice,
+                });
+                lvl = IsoMatch { val, choice: Some(choice) };
+            }
+        }
+        self.memo_iso.entry(key).or_default().lvl = Some(lvl);
+        Ok(lvl)
+    }
+
+    fn iso_any(&mut self, s1: u32, s2: u32) -> PyResult<IsoMatch> {
+        if self.pool1.get(s1).is_empty() || self.pool2.get(s2).is_empty() {
+            return Ok(IsoMatch::default());
+        }
+        let key = Self::memo_key(s1, s2);
+        if let Some(found) = self.memo_iso.get(&key).and_then(|result| result.any) {
+            return Ok(found);
+        }
+        let d1 = self.decompose1(s1)?;
+        let d2 = self.decompose2(s2)?;
+        let left_head = self.iso_any(d1.head, s2)?;
+        let left_tail = self.iso_any(d1.tail, s2)?;
+        let right_head = self.iso_any(s1, d2.head)?;
+        let right_tail = self.iso_any(s1, d2.tail)?;
+        let mut any = IsoMatch::default();
+        for cand in [left_head, left_tail, right_head, right_tail] {
+            if cand.val > any.val {
+                any = cand;
+            }
+        }
+        let lvl = self.iso_level(s1, s2)?;
+        // A current-root witness wins ties against a descendant-root witness.
+        if lvl.val >= any.val {
+            any = lvl;
+        }
+        self.memo_iso.entry(key).or_default().any = Some(any);
+        Ok(any)
+    }
+
+    fn indices_to_seq(&self, which: u8, idxs: &[u32]) -> PyResult<PyObject> {
+        let (template, seq) = if which == 1 {
+            (&self.seq1_obj, &self.seq1_py)
+        } else {
+            (&self.seq2_obj, &self.seq2_py)
+        };
+
+        if template.is_instance_of::<PyString>() {
+            // Python Unicode permits lone surrogates, which Rust UTF-8 does
+            // not. Reconstruct original token objects after the Rust solve.
+            let items = idxs.iter().map(|&i| seq[i as usize].bind(self.py));
+            let tokens = PyList::new_bound(self.py, items);
+            Ok(PyString::new_bound(self.py, "")
+                .call_method1("join", (tokens,))?
+                .unbind())
+        } else if template.is_instance_of::<PyTuple>() {
+            let items = idxs.iter().map(|&i| seq[i as usize].bind(self.py));
+            Ok(PyTuple::new_bound(self.py, items).into_any().unbind())
+        } else if template.is_instance_of::<PyList>() {
+            let items = idxs.iter().map(|&i| seq[i as usize].bind(self.py));
+            Ok(PyList::new_bound(self.py, items).into_any().unbind())
+        } else {
+            let items = idxs.iter().map(|&i| seq[i as usize].bind(self.py));
+            Ok(PyTuple::new_bound(self.py, items).into_any().unbind())
+        }
+    }
+}
+
+#[pyfunction(signature = (seq1, seq2, open_to_close, open_to_node=None, node_affinity=None))]
+fn longest_common_balanced_embedding(
+    py: Python<'_>,
+    seq1: PyObject,
+    seq2: PyObject,
+    open_to_close: PyObject,
+    open_to_node: Option<PyObject>,
+    node_affinity: Option<PyObject>,
+) -> PyResult<PyObject> {
+    let mut solver = Solver::new(
+        py,
+        seq1.bind(py).clone(),
+        seq2.bind(py).clone(),
+        open_to_close.bind(py).clone(),
+        open_to_node.map(|x| x.bind(py).clone()),
+        node_affinity,
+    )?;
+
+    let s1 = 0u32;
+    let s2 = 0u32;
+    let out = solver.emb(s1, s2)?;
+    if !out.val.is_finite() {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "ordered affinity total overflow: score must be finite",
+        ));
+    }
+    let best1 = solver.indices_to_seq(1, &out.s1)?;
+    let best2 = solver.indices_to_seq(2, &out.s2)?;
+    Ok((best1, best2, out.val).into_py(py))
+}
+
+#[pyfunction(signature = (seq1, seq2, open_to_close, open_to_node=None, node_affinity=None, *, rooted=false))]
+fn longest_common_balanced_isomorphism(
+    py: Python<'_>,
+    seq1: PyObject,
+    seq2: PyObject,
+    open_to_close: PyObject,
+    open_to_node: Option<PyObject>,
+    node_affinity: Option<PyObject>,
+    rooted: bool,
+) -> PyResult<PyObject> {
+    let mut solver = Solver::new(
+        py,
+        seq1.bind(py).clone(),
+        seq2.bind(py).clone(),
+        open_to_close.bind(py).clone(),
+        open_to_node.map(|x| x.bind(py).clone()),
+        node_affinity,
+    )?;
+
+    let s1 = 0u32;
+    let s2 = 0u32;
+    let out = if rooted { solver.iso_level(s1, s2)? } else { solver.iso_any(s1, s2)? };
+    if !out.val.is_finite() {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "ordered affinity total overflow: score must be finite",
+        ));
+    }
+    let (left_indices, right_indices) = reconstruct_isomorphism_choices(
+        &solver.iso_choices, out.choice,
+    ).ok_or_else(|| pyo3::exceptions::PyValueError::new_err(
+        "invalid ordered isomorphism reconstruction choices",
+    ))?;
+    let best1 = solver.indices_to_seq(1, &left_indices)?;
+    let best2 = solver.indices_to_seq(2, &right_indices)?;
+    Ok((best1, best2, out.val).into_py(py))
+}
+
+/// Thin Python boundary around the extracted, proved unweighted Boolean API.
+#[pyfunction]
+fn maximum_common_token_embedding(
+    left: Vec<bool>,
+    right: Vec<bool>,
+) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
+    token_matching_result(
+        verified_ordered_core::token_matching::maximum_common_token_embedding(&left, &right),
+    )
+}
+
+/// Opt-in structural isomorphism reference with tested original-token readback.
+#[pyfunction(signature=(left,right,rooted=false))]
+fn maximum_common_token_isomorphism(
+    py: Python<'_>,
+    left: Vec<bool>,
+    right: Vec<bool>,
+    rooted: bool,
+) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
+    token_matching_result(py.allow_threads(|| {
+        verified_ordered_core::token_matching::maximum_common_token_isomorphism(
+            &left, &right, rooted,
+        )
+    }))
+}
+
+fn token_matching_result(
+    result: Result<
+        verified_ordered_core::token_matching::TokenCommonEmbedding,
+        verified_ordered_core::token_matching::TokenMatchingError,
+    >,
+) -> PyResult<(Vec<usize>, Vec<usize>, u32)> {
+    use pyo3::exceptions::{PyOverflowError, PyRuntimeError, PyValueError};
+    use verified_ordered_core::token_matching::TokenMatchingError;
+    use verified_ordered_core::tokens::TokenError;
+
+    fn input_error(side: &str, error: TokenError) -> PyErr {
+        match error {
+            TokenError::UnexpectedClose => {
+                PyValueError::new_err(format!("{side} input: unexpected closing token"))
+            }
+            TokenError::MissingClose => {
+                PyValueError::new_err(format!("{side} input: missing closing token"))
+            }
+            TokenError::TooLarge => {
+                PyOverflowError::new_err(format!("{side} input: pair count exceeds u32 capacity"))
+            }
+        }
+    }
+
+    match result {
+        Ok(result) => Ok((result.left, result.right, result.edges)),
+        Err(TokenMatchingError::LeftInput(error)) => Err(input_error("left", error)),
+        Err(TokenMatchingError::RightInput(error)) => Err(input_error("right", error)),
+        Err(TokenMatchingError::SolverFailure) => {
+            Err(PyRuntimeError::new_err("verified core solver failure"))
+        }
+        Err(TokenMatchingError::InvalidIndex) => {
+            Err(PyRuntimeError::new_err("verified core invalid token index"))
+        }
+    }
+}
+
+#[pymodule]
+fn _rust(_py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
+    graph_bindings::register(module)?;
+    module.add_function(wrap_pyfunction!(maximum_common_token_embedding, module)?)?;
+    module.add_function(wrap_pyfunction!(maximum_common_token_isomorphism, module)?)?;
+    module.add_function(wrap_pyfunction!(longest_common_balanced_embedding, module)?)?;
+    module.add_function(wrap_pyfunction!(
+        longest_common_balanced_isomorphism,
+        module
+    )?)?;
+    Ok(())
+}

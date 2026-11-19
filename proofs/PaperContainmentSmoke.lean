@@ -1,0 +1,11 @@
+module
+
+import SubtreeProofs
+
+#check SubtreeProofs.Paper2004.OrderedTree.PrintedContains
+#check SubtreeProofs.Paper2004.OrderedTree.PrintedContains.semilength_le
+#check SubtreeProofs.Paper2004.OrderedTree.PrintedContains.toDyckEmbeds
+#check SubtreeProofs.Paper2004.OrderedTree.PrintedContains.toTreeEmbedding
+#check SubtreeProofs.Paper2004.OrderedTree.dyckEmbeds_add
+#check SubtreeProofs.Paper2004.OrderedTree.dyckContractStep_semilength
+#check SubtreeProofs.Paper2004.OrderedTree.branching_example_contractStep

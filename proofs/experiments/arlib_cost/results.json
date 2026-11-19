@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-14",
+  "source_base_commit": "0c8582dba8a6ff97221a23ed6f0d88de9478854e",
+  "lean": "4.35.0",
+  "arlib_commit": "8d08f89a6d05c5e8368e91659bd6e117fbb74c4e",
+  "main_dependency_revisions_unchanged": true,
+  "dependency_revisions": {
+    "arlib": "8d08f89a6d05c5e8368e91659bd6e117fbb74c4e",
+    "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+    "aeneas": "5a392f4b80a4d0d05abc240eb2a7fa70622a9a35",
+    "plausible": "dfa4f38190d07c37e315953e08b90fe2d95b3c24",
+    "LeanSearchClient": "d6b4c7be5be75ec4917c873ac50c756dc1436372",
+    "importGraph": "a41f0e9a4dea23188ea9cc1c41ac9f8bbafe0b93",
+    "proofwidgets": "df72b022e558978a1c50264cfc4d7fec86fa8e04",
+    "aesop": "4a174c490d8707121c4a9290800489f105d85e07",
+    "Qq": "dce0ad79c486cb1fb504af04f953c3466b0c6db8",
+    "batteries": "66e469188fe07963e5cf666c7d4433f45b8131c5",
+    "Cli": "c24fe6078c630e89b489bffe59b3e20ac30d12c8"
+  },
+  "main_manifest_unchanged": true,
+  "main_lakefile_unchanged": true,
+  "storage": "ext4 bind mount; shared dependencies individually bind-mounted; no symlink",
+  "combined_build": {
+    "passed": true,
+    "jobs": 3744,
+    "includes_entire_main_proof_library": true
+  },
+  "smoke": {
+    "sealed_vector_value": 7,
+    "recorded_word_operations": 23,
+    "passed": true
+  },
+  "lookup_bridge": {
+    "passed": true,
+    "all_existing_memo_tables": true,
+    "exact_value": true,
+    "exact_existing_key_comparison_counter": true,
+    "comparison_bound": "table.length",
+    "pop_bound": "table.length + 1",
+    "total_recorded_operations_bound": "2 * table.length + 1",
+    "early_first_hit": {
+      "key_comparisons": 1,
+      "pops": 1
+    },
+    "duplicate_keys": "first match retained"
+  },
+  "negative_compilation": {
+    "passed": true,
+    "expected_errors": 3,
+    "rejected_views": [
+      "Queue.toList",
+      "Dict.lookup",
+      "Charged.val"
+    ]
+  },
+  "dictionary_model_exchange": {
+    "listBacked": "3 * card + setup + 1",
+    "constantTime": "setup + 1",
+    "constantTime_is_explicit_model_assumption": true,
+    "expected_hashing_proved": false
+  },
+  "lookup_proof_source_lines": 141,
+  "exchange_proof_source_lines": 31,
+  "program_audit": "manual inspection of the small Program.find and equalKey interface; no general automatic laundering-prevention claim",
+  "decision": "Keep optional experiment; do not add arlib to main dependencies. Reuse current counters for immediate memo obligations; revisit for a demonstrated production resource bridge.",
+  "not_claimed": [
+    "production Rust resource refinement",
+    "machine cost of structural key equality",
+    "input encoding cost",
+    "space ownership/ExactNet",
+    "expected constant-time hashing",
+    "published algorithm complexity",
+    "IEEE-754 correctness"
+  ]
+}

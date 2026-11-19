@@ -1,0 +1,379 @@
+#!/usr/bin/env python3
+"""
+Benchmark backend speedups for networkx_algo_common_subtree PR #30.
+
+Usage from a checkout of the PR branch:
+
+    python -m pip install -e '.[tests]'
+    python dev/bench_backend_speedups.py --sizes 4,8,12,16,20,24 --cases 8 --repeat 5
+
+For larger runs:
+
+    python dev/bench_backend_speedups.py --sizes 8,16,24,32,40 --cases 20 --repeat 7 --json bench.json
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import random
+import statistics as stats
+import sys
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Callable
+
+from networkx_algo_common_subtree import balanced_embedding
+from networkx_algo_common_subtree import balanced_isomorphism
+
+
+OPEN_TO_CLOSE = {"(": ")", "[": "]", "{": "}"}
+PAIRS = list(OPEN_TO_CLOSE.items())
+
+
+@dataclass(frozen=True)
+class Case:
+    name: str
+    seq1: str
+    seq2: str
+    open_to_close: dict[str, str]
+
+
+def random_balanced_sequence(rng: random.Random, pairs: int, labels: int = 3) -> str:
+    """
+    Generate a random balanced bracket sequence with exactly `pairs` pairs.
+
+    The generator recursively splits pairs across head/tail:
+        seq -> open + head + close + tail
+    """
+    if pairs <= 0:
+        return ""
+
+    pair_choices = PAIRS[:labels]
+    open_tok, close_tok = rng.choice(pair_choices)
+
+    head_pairs = rng.randint(0, pairs - 1)
+    tail_pairs = pairs - 1 - head_pairs
+
+    head = random_balanced_sequence(rng, head_pairs, labels=labels)
+    tail = random_balanced_sequence(rng, tail_pairs, labels=labels)
+    return open_tok + head + close_tok + tail
+
+
+def make_cases(
+    *,
+    sizes: list[int],
+    cases_per_size: int,
+    seed: int,
+    labels: int,
+    include_examples: bool = True,
+    shapes: tuple[str, ...] = ("random", "chain", "star", "balanced", "asymmetric", "chain-star"),
+) -> list[Case]:
+    rng = random.Random(seed)
+    cases: list[Case] = []
+
+    # Include the examples from the new Rust backend tests / doc examples.
+    cases.append(Case("small_brackets", "[][[]][]", "[[]][[]]", {"[": "]"}))
+    cases.append(
+        Case(
+            "paper_1label",
+            "0010010010111100001011011011",
+            "001000101101110001000100101110111011",
+            {"0": "1"},
+        )
+    )
+    if not include_examples:
+        cases.clear()
+
+    for n_pairs in sizes:
+        for idx in range(cases_per_size if "random" in shapes else 0):
+            seq1 = random_balanced_sequence(rng, n_pairs, labels=labels)
+            seq2 = random_balanced_sequence(rng, n_pairs, labels=labels)
+            cases.append(
+                Case(
+                    name=f"random_pairs={n_pairs:04d}_case={idx:03d}",
+                    seq1=seq1,
+                    seq2=seq2,
+                    open_to_close=dict(list(OPEN_TO_CLOSE.items())[:labels]),
+                )
+            )
+        def balanced(n):
+            if not n:
+                return ""
+            head = (n - 1) // 2
+            return "(" + balanced(head) + ")" + balanced(n - 1 - head)
+        chain, star = "(" * n_pairs + ")" * n_pairs, "()" * n_pairs
+        for shape in shapes:
+            if shape == "random":
+                continue
+            if shape == "chain":
+                seq1 = seq2 = chain
+            elif shape == "star":
+                seq1 = seq2 = star
+            elif shape == "balanced":
+                seq1 = seq2 = balanced(n_pairs)
+            elif shape == "chain-star":
+                seq1, seq2 = chain, star
+            elif shape == "asymmetric":
+                seq1 = random_balanced_sequence(rng, n_pairs, labels=labels)
+                seq2 = random_balanced_sequence(rng, n_pairs // 2, labels=labels)
+            else:
+                raise ValueError(f"unknown benchmark shape: {shape!r}")
+            cases.append(Case(f"{shape}_pairs={n_pairs:04d}", seq1, seq2, OPEN_TO_CLOSE))
+    return cases
+
+
+def time_calls(
+    func: Callable[[], object],
+    *,
+    repeat: int,
+    warmup: int,
+) -> tuple[list[float], object]:
+    result = None
+
+    for _ in range(warmup):
+        result = func()
+
+    times = []
+    for _ in range(repeat):
+        t0 = time.perf_counter_ns()
+        result = func()
+        t1 = time.perf_counter_ns()
+        times.append((t1 - t0) / 1e9)
+
+    return times, result
+
+
+def available_impls(kind: str, *, include_restricted: bool = False) -> list[str]:
+    if kind == "embedding":
+        return balanced_embedding.available_impls_longest_common_balanced_embedding(include_restricted=include_restricted)
+    if kind == "isomorphism":
+        return balanced_isomorphism.available_impls_longest_common_balanced_isomorphism(include_restricted=include_restricted)
+    raise KeyError(kind)
+
+
+def call_backend(kind: str, case: Case, impl: str, *, node_affinity, rooted=False):
+    if kind == "embedding":
+        return balanced_embedding.longest_common_balanced_embedding(
+            case.seq1,
+            case.seq2,
+            case.open_to_close,
+            node_affinity=node_affinity,
+            impl=impl,
+        )
+    if kind == "isomorphism":
+        return balanced_isomorphism.longest_common_balanced_isomorphism(
+            case.seq1,
+            case.seq2,
+            case.open_to_close,
+            node_affinity=node_affinity,
+            impl=impl,
+            rooted=rooted,
+        )
+    raise KeyError(kind)
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sizes", default="4,8,12,16,20")
+    parser.add_argument("--cases", type=int, default=5, help="random cases per size")
+    parser.add_argument("--repeat", type=int, default=3)
+    parser.add_argument("--warmup", type=int, default=1)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--skip-examples", action="store_true",
+                        help="Omit fixed documentation examples, useful for small exponential reference runs")
+    parser.add_argument("--labels", type=int, default=3, choices=[1, 2, 3])
+    parser.add_argument("--shapes", default="random,chain,star,balanced,asymmetric,chain-star")
+    parser.add_argument("--rooted-isomorphism", action="store_true", help="Measure the root-preserving level state for isomorphism")
+    parser.add_argument(
+        "--functions",
+        default="embedding,isomorphism",
+        help="comma-separated subset: embedding,isomorphism",
+    )
+    parser.add_argument(
+        "--impls",
+        default="auto",
+        help=(
+            "comma-separated impls, or 'auto'. "
+            "Recommended explicit value: iter-rust,iter-cython,iter"
+        ),
+    )
+    parser.add_argument(
+        "--node-affinity", choices=("eq", "none", "weighted"), default="eq",
+        help="Equality, topology-only (required for verified-rust/reference-rust), or fractional label affinity.",
+    )
+    parser.add_argument(
+        "--reference",
+        default="iter",
+        help="backend used as denominator for speedup, usually iter or iter-cython",
+    )
+    parser.add_argument(
+        "--require-impls", action="store_true",
+        help="Fail instead of omitting requested implementations that are unavailable.",
+    )
+    parser.add_argument(
+        "--strict-scores", action="store_true",
+        help="Exit with failure if successful backends disagree on an objective value.",
+    )
+    parser.add_argument("--csv", type=Path, default=None)
+    parser.add_argument("--json", type=Path, default=None)
+    args = parser.parse_args(argv)
+    if args.repeat < 1 or args.warmup < 0 or args.cases < 0:
+        parser.error("repeat must be positive; warmup and cases must be nonnegative")
+
+    sizes = [int(p) for p in args.sizes.split(",") if p]
+    kinds = [p.strip() for p in args.functions.split(",") if p.strip()]
+    if args.rooted_isomorphism and "isomorphism" not in kinds:
+        parser.error("--rooted-isomorphism requires --functions to include isomorphism")
+    cases = make_cases(
+        sizes=sizes,
+        cases_per_size=args.cases,
+        seed=args.seed,
+        labels=args.labels,
+        include_examples=not args.skip_examples,
+        shapes=tuple(args.shapes.split(",")),
+    )
+
+    rows = []
+    failures = []
+    affinity = args.node_affinity
+    if affinity == "none":
+        affinity = None
+    elif affinity == "weighted":
+        def affinity(a, b):
+            return .125 + (ord(a) % 5 + ord(b) % 3) / 8 if a == b else 0
+
+    for kind in kinds:
+        detected = available_impls(kind, include_restricted=args.node_affinity == "none")
+        if args.impls == "auto":
+            # Avoid recurse by default: it is useful as a correctness backend,
+            # but often unsuitable for larger benchmark inputs.
+            candidates = ["iter-rust", "iter-cython", "iter"]
+            if kind == "embedding" and args.node_affinity == "none":
+                candidates.insert(0, "verified-rust")
+            impls = [p for p in candidates if p in detected]
+        else:
+            requested = [p.strip() for p in args.impls.split(",") if p.strip()]
+            missing = [p for p in requested if p not in detected]
+            if missing:
+                message = f"{kind}: missing requested implementations: {missing!r}"
+                print(message, file=sys.stderr)
+                if args.require_impls:
+                    failures.append(message)
+            impls = [p for p in requested if p in detected]
+
+        print(f"\n# {kind}")
+        print(f"available_impls={detected!r}")
+        print(f"bench_impls={impls!r}")
+        if args.reference not in impls:
+            print(
+                f"warning: reference={args.reference!r} not measured for {kind}; "
+                "speedup_vs_reference will be null",
+                file=sys.stderr,
+            )
+
+        for case in cases:
+            by_impl = {}
+            value_by_impl = {}
+
+            for impl in impls:
+                def _run(impl=impl, case=case, kind=kind):
+                    return call_backend(
+                        kind, case, impl,
+                        node_affinity=affinity,
+                        rooted=args.rooted_isomorphism,
+                    )
+
+                try:
+                    samples, result = time_calls(
+                        _run,
+                        repeat=args.repeat,
+                        warmup=args.warmup,
+                    )
+                    seconds = stats.median(samples)
+                except Exception as ex:
+                    row = {
+                        "kind": kind,
+                        "rooted": kind == "isomorphism" and args.rooted_isomorphism,
+                        "node_affinity": args.node_affinity,
+                        "case": case.name,
+                        "pairs1": len(case.seq1) // 2,
+                        "pairs2": len(case.seq2) // 2,
+                        "impl": impl,
+                        "seconds": None,
+                        "samples_seconds": None,
+                        "speedup_vs_reference": None,
+                        "value": None,
+                        "error": repr(ex),
+                    }
+                    rows.append(row)
+                    print(f"{case.name:32s} {impl:12s} ERROR {ex!r}")
+                    failures.append(f"{kind} {case.name} {impl}: {ex!r}")
+                    continue
+
+                _best, value = result
+                by_impl[impl] = seconds
+                value_by_impl[impl] = value
+
+                row = {
+                    "kind": kind,
+                    "rooted": kind == "isomorphism" and args.rooted_isomorphism,
+                    "node_affinity": args.node_affinity,
+                    "case": case.name,
+                    "pairs1": len(case.seq1) // 2,
+                    "pairs2": len(case.seq2) // 2,
+                    "impl": impl,
+                    "seconds": seconds,
+                    "samples_seconds": samples,
+                    "speedup_vs_reference": None,
+                    "value": value,
+                    "error": None,
+                }
+                rows.append(row)
+
+            # Correctness sanity check: all measured impls should agree on value.
+            values = {impl: val for impl, val in value_by_impl.items()}
+            if len(set(values.values())) > 1:
+                message = f"VALUE MISMATCH: {kind} {case.name}: {values}"
+                print(message, file=sys.stderr)
+                if args.strict_scores:
+                    failures.append(message)
+
+            ref_time = by_impl.get(args.reference)
+            for row in rows:
+                if row["kind"] == kind and row["case"] == case.name:
+                    sec = row["seconds"]
+                    if ref_time and sec:
+                        row["speedup_vs_reference"] = ref_time / sec
+
+            for impl in impls:
+                sec = by_impl.get(impl)
+                if sec is None:
+                    continue
+                speed = ref_time / sec if ref_time else None
+                speed_text = "" if speed is None else f" speedup_vs_{args.reference}={speed:8.3f}x"
+                print(f"{case.name:32s} {impl:12s} {sec:10.6f}s{speed_text}")
+
+    if args.csv:
+        args.csv.parent.mkdir(parents=True, exist_ok=True)
+        with args.csv.open("w", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=list(rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(rows)
+        print(f"\nwrote {args.csv}")
+
+    if args.json:
+        args.json.parent.mkdir(parents=True, exist_ok=True)
+        args.json.write_text(json.dumps(rows, indent=2))
+        print(f"wrote {args.json}")
+
+    if failures:
+        print(f"\n{len(failures)} benchmark failures", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

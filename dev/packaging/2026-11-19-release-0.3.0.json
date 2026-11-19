@@ -1,0 +1,419 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-19",
+  "version": "0.3.0",
+  "status": "Historical local Linux candidate validated before the xcookie CI ownership correction; see 2026-11-19-xcookie-ci.json for current CI/release policy and later artifacts.",
+  "baseline_commit": "c7f4a6c9186d16550effe9876830f89d3a1667a6",
+  "source_identity": {
+    "description": "Build snapshot over the recorded baseline, checked against maintained runtime/Rust/build metadata/README at the 4e77221 checkpoint. Later CI and Python typing corrections are recorded separately; these hashes do not describe that later working tree.",
+    "sha256_by_path": {
+      "CMakeLists.txt": "5062fd91c8f2d591983412927e15c657b97ac159f13748f01dcb98621444fbd2",
+      "README.rst": "3770a9a5856f2fcda1f1354ba36c0d7c3060afa606d43fe7bddef030df488cd9",
+      "networkx_algo_common_subtree/__init__.py": "557e28a6dd4a38dee6df105ed5a5124987db1b72d86550b262857db86a4207d6",
+      "networkx_algo_common_subtree/_types.py": "1a120470b10c1cbadd8a24786c345378d897e6ebb212578d1b878bf4566b81bd",
+      "networkx_algo_common_subtree/balanced_embedding.py": "38cf68f8cfca2b462967f59919564843527448313fcb0721427f22320aa12409",
+      "networkx_algo_common_subtree/balanced_embedding_rust.py": "e30bc75a8a11c11100dc46521692f370a207313cbfa621b90ee0b012170937ef",
+      "networkx_algo_common_subtree/balanced_isomorphism.py": "a37403b295bc20e62c1bbe78008373febc40eebe00d02aeac24e9e1cff202c89",
+      "networkx_algo_common_subtree/balanced_isomorphism_lean.py": "df3a3bffae00e08d413e2c98573572e23d078733fd8325e008cf8625f41a1e42",
+      "networkx_algo_common_subtree/balanced_isomorphism_rust.py": "96256b623c223f13057df5f347761fb9147a31d9e6d5dcb33e51c068ebb812d4",
+      "networkx_algo_common_subtree/balanced_sequence.py": "73fc7ca79b78f4d91b86168674722e5b7a68a89db420d3422bf6c115d7a3fdc2",
+      "networkx_algo_common_subtree/benchmark_reports.py": "40b47ce5d4d849d5e2a58c469656cb4f859f04301086991ba2180f27c1b0de70",
+      "networkx_algo_common_subtree/common_subtree_reference.py": "e7ce18718be53059b03bb8f7c796a1958df557f593a56b61cbd5836a2db7db11",
+      "networkx_algo_common_subtree/matching.py": "885220d02edc7bfd46f561c041ffb89fb9b85dceda01209403169573d9b3abfc",
+      "networkx_algo_common_subtree/pytorch_sized_trees.py": "b159f52717746b0fda1dd7e6b025bf969cf0154c4a75b962fbf412b9c9b957c8",
+      "networkx_algo_common_subtree/tree_embedding.py": "ef1a47b221a6be3443210eb2fe91962173b6048f6fc7fcad379a36354f367dc1",
+      "networkx_algo_common_subtree/tree_isomorphism.py": "6426b368c7950e0629035dfc5399ba73ec00a95ced578deb2aeb9f12a3658b4f",
+      "networkx_algo_common_subtree/unordered.py": "0b3dbef7fea96552391c6cdc0938e2f4d967cd74ade7ca2414c7408672b2a9e7",
+      "networkx_algo_common_subtree/utils.py": "2ec078a8d4b1767f2f6fb1fd96ac5a20eb53c0e383fd16e67fbb6be8d5b6f0be",
+      "pyproject.toml": "30c72fbc9f576f6642c30be691a1969e4fac1ef79af8a79aedc0ca999fcd1295",
+      "requirements/runtime.txt": "9ce1e27bb538d8274bf85866dd126ca707658925266902b66a5ac0f7cab4d5d0",
+      "rust/Cargo.lock": "cfbffef167840f49fa724e0b777a38b4fd6b4908f80f716ae3f97fbf62747579",
+      "rust/Cargo.toml": "a831d78c48e52c3574baf6bb31dda9db931dc48126fffd9e98358aa9aa121151",
+      "rust/build.rs": "c609c2f1a8594abf959388e559d76241e51b0216faa7b37f529255eb1fc2c5eb",
+      "rust/crates/common_subtree_algorithms/Cargo.toml": "02efc7390169d5feb9ce8899f6949219227edca6cfa2ad9a8c71d73f875e4fe1",
+      "rust/crates/common_subtree_algorithms/benches/graph_allocations.rs": "7006beb5a3ce0e3af291e679c795d38460b6c560b6946d7c162030dbd239a2e3",
+      "rust/crates/common_subtree_algorithms/benches/matching_families.rs": "1e70ee31faeab5270fe1335bc9d0dd35b1781ecc4d708d791665db1430e09d6f",
+      "rust/crates/common_subtree_algorithms/benches/pytorch_sized_trees.rs": "f8b10e575a7c9af2a5e3ec3f906de644d9e7a72d2cb167efb4f8212bbe79bd2d",
+      "rust/crates/common_subtree_algorithms/src/lib.rs": "d82cdd6c621a9adb6341608c2360befa8356016808525057ab4f5b848fcde68a",
+      "rust/crates/common_subtree_algorithms/src/matching.rs": "2259dbe097b26f568b71e8d3608cf701a9b4b483e3b997e46805f3d84d7e547a",
+      "rust/crates/common_subtree_algorithms/src/model_trees.rs": "ed0ee3e73c5365eec5c9651438559059f5350aefb4de5f5f0e0d6685eebc2cba",
+      "rust/crates/common_subtree_algorithms/src/tree.rs": "6d3d996d59769a71d9be9f1c02205bf099ff9de513ca2f5ebd07f0b06ed7b6e7",
+      "rust/crates/common_subtree_algorithms/tests/common_subtree_smoke.rs": "4800d91f526fcee63a8bfedd597b80af6c1457d386058b48cc9324267c6b625c",
+      "rust/crates/common_subtree_algorithms/tests/embedding_reference_tests.rs": "ddc0328b373ad5504bd662d918bf18a5274dd870173b349661d26246a5dfe444",
+      "rust/crates/common_subtree_algorithms/tests/matching_reference_tests.rs": "3692d1b44b9ee5f4759f0542132bd455d66bf9e3250185e7153a5ebd7b08e993",
+      "rust/crates/common_subtree_algorithms/tests/nonempty_objectives.rs": "dcc86d709ee45f34c354bac1c8ece5c3f34e19493642f13bcb0df95779e6b87e",
+      "rust/crates/common_subtree_algorithms/tests/rooted_modes.rs": "21dea58553ea6faaec322a6f2cf89eb1546f7216e2cea04ba500d129633021e1",
+      "rust/crates/common_subtree_algorithms/tests/tree_isomorphism_reference_tests.rs": "f5947779c2cd916ce7fd5751ccf9c009bdf56c9c15ba49f381609b099d76ea6f",
+      "rust/crates/verified_assignment_core/Cargo.toml": "43dbdd70c0e54dbf8643d4798adc47cd992cdb8d5f58af7a9dd82a0b740333ba",
+      "rust/crates/verified_assignment_core/src/deletion/tests.rs": "3c656b047601828b7f4a1df79f7ac2a49b5852eba6809f57a464f18bf6836154",
+      "rust/crates/verified_assignment_core/src/deletion.rs": "4c7eed4d9ca02bd6cac7bed4bb94cfa2c73db4e91669e413222d86f680a4a1ba",
+      "rust/crates/verified_assignment_core/src/lib.rs": "3ed4103333ec06f69ca2fd9dd74ce12624299d70b744fb559560904c2ecd5d93",
+      "rust/crates/verified_assignment_core/src/matching/tests.rs": "a733065ca54f027cd99a71979ac2a307b6bb107e62b58ab58cc88e3b10dbd6d5",
+      "rust/crates/verified_assignment_core/src/matching.rs": "715d8ee3c3fb2edab92526880cf11362eadad64eaecf4478cd6dd8fadbe8e479",
+      "rust/crates/verified_assignment_core/src/sparse.rs": "2be9b33fb1dd9235f5ff6e28e86fb5b09b9968433f3a36496dd33b111e8f8161",
+      "rust/crates/verified_assignment_core/src/sparse_deletion.rs": "e468bfa405ff6eb038ec237d3835cafd6806133cf264cd9ee0ca524b7bf44f37",
+      "rust/crates/verified_assignment_core/src/sparse_search.rs": "9d4c501b0c181b92da31b7cdfc546c9baf433e44b936d15b7487088372161a51",
+      "rust/crates/verified_assignment_core/src/tests.rs": "fee0bd93d00bffb7e53432ba9bdcc8ce9bd4a5acdbd54b83766244f34d7108d9",
+      "rust/crates/verified_assignment_core/src/uniform_pairs.rs": "31a1b7e21c75f4125f5be2a0263a4d53a09f1fff22713ec231846f01bdc48012",
+      "rust/crates/verified_assignment_core/tests/sparse_cut.rs": "42d3d42f05f15d8cb5391554f6f6c825b4d0a67f5cb72ea8f1530bc2f160801e",
+      "rust/crates/verified_assignment_core/tests/sparse_deletion.rs": "2946f94454bea91b678f4a9f6cab06e345a28930c4f7989c5b16cd2ebf2e93ce",
+      "rust/crates/verified_assignment_core/tests/sparse_search.rs": "525260076a945ed727401c348b5ecd88058350fc7d8766946f499ffa40dbd01d",
+      "rust/crates/verified_assignment_core/tests/uniform_pairs.rs": "a2835a48ce4673d355c7832d46048e539a1568e147c3d3f7b071d28c1f36c8d1",
+      "rust/crates/verified_ordered_core/Cargo.toml": "7da3fdc4fa3e6096b409ce928f172abadb88caed844ed8f9a794bdc1c91119ab",
+      "rust/crates/verified_ordered_core/benches/indexed_witnesses.rs": "989e601c808f530b4cddaad0d08eede12971daaaaadd9214791ccd55205f93ab",
+      "rust/crates/verified_ordered_core/benches/ordered_shapes.rs": "72bbea086afbecf8f86125b3f1c893dfae77f75c9b47a35b66166a210307c634",
+      "rust/crates/verified_ordered_core/src/guided.rs": "a342356f1626c7c41db37d072608560ae05ac67619a19e586156959a48147235",
+      "rust/crates/verified_ordered_core/src/indexed.rs": "b4ce344cdc2675977339caa4c912aa8be92b75dbb6295b2ac9da87d5dfc2786a",
+      "rust/crates/verified_ordered_core/src/indexed_isomorphism.rs": "4d2f422eeee118b708fc0c0098b858754977bb61eb872f4c5654ef0beaa96a6b",
+      "rust/crates/verified_ordered_core/src/isomorphism.rs": "df47fac84a34eac2c343f4b37c65672f1f196a72119cec8868e70098b4a030dc",
+      "rust/crates/verified_ordered_core/src/isomorphism_choices.rs": "7a6f15fc4ca24c6bf8ff65e5dde39658c84acb2cfaabeed2c20d6381bdddf154",
+      "rust/crates/verified_ordered_core/src/lib.rs": "6bf420368c037348b65a3c20d14c2fe54aee2b55e6ac4b5b6eb3baef4b11eaf1",
+      "rust/crates/verified_ordered_core/src/token_matching.rs": "633ca84c3bbfab140bbfdc6e65e09f28480ca2f128a4c14e1a2492260192a8d4",
+      "rust/crates/verified_ordered_core/src/tokens.rs": "6a1989a72ed408b246972c02294a3d193e078f6530f0bb510982f8e9f3adecfe",
+      "rust/crates/verified_ordered_core/tests/contraction_oracle.rs": "7edadb9df998a30485f46d023dce776f7b1800915e57c14992f3556a406a3383",
+      "rust/crates/verified_ordered_core/tests/isomorphism_choices.rs": "5e337f1fb06a67ed3c13b5b7194a7f0123c3a6ed4bde9defa263befec3e78e2f",
+      "rust/crates/verified_ordered_core/tests/token_parser.rs": "b128193ac0cf21dc54344e48137a9fa887b731bdb72267051e519215fbb61e01",
+      "rust/src/graph_bindings.rs": "fa4f46adcc2329d7ddf3f04d05e31413a0a01a5a0b3489420dc8ad4b734ba84f",
+      "rust/src/lib.rs": "50080f155aa6a4f17aa80581555391d97c4bd0c485174934f2f6a6554918fdfa"
+    }
+  },
+  "candidate_directory": "/var/tmp/subtree-release-0.3.0-candidate",
+  "checksum_manifest_sha256": "92aa5bbfc4086ea86f69b4025e64b5c5b01efad6a5167d78e1a81614a7181b60",
+  "artifacts": [
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0-cp310-abi3-manylinux_2_28_x86_64.whl",
+      "size_bytes": 385414,
+      "sha256": "d7d327b8a5563a6765e5fe710ede56d1a7e4472a8898c4eca7960301901ccab3",
+      "native_libraries": [
+        {
+          "path": "networkx_algo_common_subtree/_rust.abi3.so",
+          "sha256": "df7efd9ae24dffcc96af059f20bbe5b6975a2edb56f9ce33215a9fd2a379fcc6"
+        }
+      ]
+    },
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0-cp313-cp313-manylinux_2_34_x86_64.whl",
+      "size_bytes": 510837,
+      "sha256": "7e7bdd3a07eaa5bc4e6299321f0c45f5359404070986c706849bc7631b3020b3",
+      "native_libraries": [
+        {
+          "path": "networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-gnu.so",
+          "sha256": "ccbeefc62b52f9bbe63d4eb4be81cd5343a288c93c0c0945564cf7ee304473c8"
+        },
+        {
+          "path": "networkx_algo_common_subtree/balanced_embedding_cython.cpython-313-x86_64-linux-gnu.so",
+          "sha256": "3cd83a511fc89612dcecddaf1ac40a8b2a5a7b8f6ec2ee1243a42de2cc654293"
+        },
+        {
+          "path": "networkx_algo_common_subtree/balanced_isomorphism_cython.cpython-313-x86_64-linux-gnu.so",
+          "sha256": "7ee82807e895164a0ace9773ad378ae71fabe49f526219e4a83432862cf90bce"
+        }
+      ]
+    },
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0-cp313-cp313-musllinux_1_2_x86_64.whl",
+      "size_bytes": 597733,
+      "sha256": "37fa5f340db87ad74a505d90e96ea667d7d82f726da5180f9fdf93bcbefa143e",
+      "native_libraries": [
+        {
+          "path": "networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-musl.so",
+          "sha256": "79f473d42a24caca4d874c03d0656c408a661ea8482e850a27e523ab8131c3fd"
+        },
+        {
+          "path": "networkx_algo_common_subtree/balanced_embedding_cython.cpython-313-x86_64-linux-musl.so",
+          "sha256": "02a1f767d03338fd5106e05d13caf2bc5b71c65fe1a250d2ba1216e51eb6a410"
+        },
+        {
+          "path": "networkx_algo_common_subtree/balanced_isomorphism_cython.cpython-313-x86_64-linux-musl.so",
+          "sha256": "169b59216ea344965a40cdce60f517ed379866cf43a87c8819fbd2c776285616"
+        }
+      ]
+    },
+    {
+      "filename": "networkx_algo_common_subtree-0.3.0.tar.gz",
+      "size_bytes": 2849409,
+      "sha256": "2f66f69606972bd714dccb9a38126dc2c4f861fc74bb27b45ca4437e7f0c3b40"
+    }
+  ],
+  "build_environment": {
+    "filesystem": "VM-local ext4 for complete /var/tmp CMake trees, Cargo homes and Docker storage; all seven configured repository caches bind-mounted on ext4.",
+    "cache_preflight": [
+      "dev/setup-build-caches.sh",
+      "dev/setup-build-caches.sh --status"
+    ],
+    "tools": {
+      "build": "1.6.1",
+      "scikit-build-core": "1.1.2",
+      "Cython": "3.3.1",
+      "cibuildwheel": "4.3.5",
+      "twine": "7.0.0",
+      "abi3audit": "0.0.26",
+      "auditwheel": "6.8.2"
+    },
+    "container_rust": "1.95.0",
+    "manylinux_image": "quay.io/pypa/manylinux_2_28_x86_64@sha256:d086f64cddcace250ef0f0073583c51b8298159303290a730c9f59bd91edfd2c",
+    "musllinux_image": "quay.io/pypa/musllinux_1_2_x86_64@sha256:04e877afa939007f6784f9076d2aa797d1156f31281cfe19f203945d7b624970"
+  },
+  "checks": {
+    "normal_installed_wheel": {
+      "python": "3.13.13",
+      "passed": 234,
+      "skipped": 10,
+      "rust_endpoints": 9,
+      "cython_modules": 2,
+      "strict_compiled_parity": true,
+      "readme_python_examples": 4
+    },
+    "abi3_runtime_matrix": [
+      {
+        "python": "3.10.20",
+        "networkx": "2.8.8",
+        "passed": 234,
+        "skipped": 10,
+        "required_rust_endpoints": 9,
+        "readme_python_examples": 4,
+        "log": "/var/tmp/subtree-release-runtime-3.10.log",
+        "log_sha256": "a3ba811f632b0c2b1281afd5a4fcddbd47f4d49bf31c262f8c8b67a5e657618f"
+      },
+      {
+        "python": "3.11.15",
+        "networkx": "3.6.1",
+        "passed": 234,
+        "skipped": 10,
+        "required_rust_endpoints": 9,
+        "readme_python_examples": 4,
+        "log": "/var/tmp/subtree-release-runtime-3.11.log",
+        "log_sha256": "5999303c3752770f741089bdede0fc77c5ba9f63c989f814048067b7ac937299"
+      },
+      {
+        "python": "3.12.13",
+        "networkx": "3.7",
+        "passed": 234,
+        "skipped": 10,
+        "required_rust_endpoints": 9,
+        "readme_python_examples": 4,
+        "log": "/var/tmp/subtree-release-runtime-3.12.log",
+        "log_sha256": "34fa638c9de96b64effd7d5f329e86369a701ab8cd6832d42b4e55c221c5cfe9"
+      },
+      {
+        "python": "3.13.13",
+        "networkx": "3.7",
+        "passed": 234,
+        "skipped": 10,
+        "required_rust_endpoints": 9,
+        "readme_python_examples": 4,
+        "log": "/var/tmp/subtree-release-runtime-3.13.log",
+        "log_sha256": "09fb4f2c84a19222756ab791e298330f57c1cf59bd6a43a57ab41a95c8e3c882"
+      },
+      {
+        "python": "3.14.5",
+        "networkx": "3.7",
+        "passed": 234,
+        "skipped": 10,
+        "required_rust_endpoints": 9,
+        "readme_python_examples": 4,
+        "log": "/var/tmp/subtree-release-runtime-3.14.log",
+        "log_sha256": "d985abbd21cf8df463412a34dcf6d1af159923e85a6fbffdc477f251a2d4b16b"
+      }
+    ],
+    "floor_container": {
+      "glibc": "2.28",
+      "python": "3.10.22",
+      "passed": 234,
+      "skipped": 10
+    },
+    "musllinux_container": {
+      "policy": "musllinux_1_2_x86_64",
+      "python_family": "3.13",
+      "passed": 234,
+      "skipped": 10,
+      "rust_and_cython_required": true,
+      "fix": "Append -C target-feature=-crt-static to RUSTFLAGS for musllinux wheel builds."
+    },
+    "skip_reason": "Ten tests require the optional compiled verified-lean executable, intentionally absent from standard wheels. Separate rational-backend CI requires it. No proof regression is inferred from these skips.",
+    "rust": {
+      "common_subtree_algorithms": 50,
+      "verified_ordered_core": 13,
+      "verified_assignment_core": 19,
+      "failed": 0
+    },
+    "twine_check_strict": "All four candidate distributions pass.",
+    "archive_metadata_and_manifest": "Name, version, Python/dependency requirements, native payload/source presence, excluded development files and saved SHA256SUMS pass.",
+    "abi3audit_strict": {
+      "extensions": 1,
+      "baseline": "3.10",
+      "mismatches": 0,
+      "violations": 0
+    },
+    "native_glibc_floor": "2.34; legitimately auditwheel-repaired, not relabeled to 2.28.",
+    "portable_glibc_floor": "2.28; confirmed by auditwheel.",
+    "workflows": {
+      "actionlint_version": "1.7.12",
+      "result": "Both new workflows pass; YAML mappings have unique keys.",
+      "macos_intel_label_source": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners"
+    },
+    "fatal_python_lint": "flake8 E9,F63,F7,F82 passes.",
+    "missing_cargo_default": "Fails configure explicitly.",
+    "explicit_no_rust_no_cython": "Configures successfully without Cargo.",
+    "minimum_dependency_import": "NetworkX 2.7 failed plain import without optional scientific packages on fresh Python 3.10. NetworkX 2.8.8 passes plain import, all four README examples and full suite; package floor updated."
+  },
+  "benchmarks": [
+    {
+      "path": "dev/benchmarks/2026-11-19-release-unordered-scalar.json",
+      "sha256": "f56e9536f4304356d0f26357f957320a0150a9e12565d599892ca9ad1d8cdbf1",
+      "rows": 112,
+      "rust_library_sha256": "ccbeefc62b52f9bbe63d4eb4be81cd5343a288c93c0c0945564cf7ee304473c8",
+      "summary_domain": "Public Rust calls with both trees at least 32 vertices; three samples after one warmup; rescore excluded from timings.",
+      "public_latency_summary": {
+        "largest_weight_common_subtree_embedding_with_distance_penalty": {
+          "cases": 12,
+          "min_ms": 0.574718,
+          "median_ms": 1.272992,
+          "max_ms": 4.5646949999999995
+        },
+        "maximum_common_subtree_isomorphism": {
+          "cases": 12,
+          "min_ms": 0.475605,
+          "median_ms": 1.1960085,
+          "max_ms": 3.883524
+        }
+      }
+    },
+    {
+      "path": "dev/benchmarks/2026-11-19-release-unordered-callbacks.json",
+      "sha256": "69c2c43ccde9eb91289d62dfd113bf4895f5c8cbb7fc64aa283d6d2081ca7a69",
+      "rows": 112,
+      "rust_library_sha256": "ccbeefc62b52f9bbe63d4eb4be81cd5343a288c93c0c0945564cf7ee304473c8",
+      "summary_domain": "Public Rust calls with both trees at least 32 vertices; three samples after one warmup; rescore excluded from timings.",
+      "public_latency_summary": {
+        "largest_weight_common_subtree_embedding_with_distance_penalty": {
+          "cases": 12,
+          "min_ms": 1.586559,
+          "median_ms": 4.055873500000001,
+          "max_ms": 11.27455
+        },
+        "maximum_common_subtree_isomorphism": {
+          "cases": 12,
+          "min_ms": 1.639386,
+          "median_ms": 3.9551995,
+          "max_ms": 9.437368
+        }
+      }
+    },
+    {
+      "path": "dev/benchmarks/2026-11-19-release-unordered-abi3.json",
+      "sha256": "54037d551ce8ab8434b997ad533286601163bb9b502b83df8844b7afdd3f7394",
+      "rows": 112,
+      "rust_library_sha256": "df7efd9ae24dffcc96af059f20bbe5b6975a2edb56f9ce33215a9fd2a379fcc6",
+      "summary_domain": "Public Rust calls with both trees at least 32 vertices; three samples after one warmup; rescore excluded from timings.",
+      "public_latency_summary": {
+        "largest_weight_common_subtree_embedding_with_distance_penalty": {
+          "cases": 12,
+          "min_ms": 1.63385,
+          "median_ms": 3.926519,
+          "max_ms": 9.486051
+        },
+        "maximum_common_subtree_isomorphism": {
+          "cases": 12,
+          "min_ms": 1.655335,
+          "median_ms": 3.8054580000000002,
+          "max_ms": 9.290631000000001
+        }
+      }
+    }
+  ],
+  "callback_portable_native_comparison": {
+    "largest_weight_common_subtree_embedding_with_distance_penalty": {
+      "cases": 24,
+      "median_paired_portable_over_native": 0.9944658032028579
+    },
+    "maximum_common_subtree_isomorphism": {
+      "cases": 24,
+      "median_paired_portable_over_native": 0.9879296830015993
+    }
+  },
+  "benchmark_limits": "Three warm samples on a shared Linux VM, scalar and callback weights, sizes 4/32/64, chain/star/balanced/chain-star and asymmetric pairs. Independent witness rescoring for public results; exhaustive Python oracle only when both trees have at most four vertices. Matching Rust library hashes show the benchmarked native/portable payloads are identical to the final candidate libraries. No universal performance or runtime-proof claim.",
+  "assurance_boundary": "Default optimized float ordered/unordered kernels remain empirically validated, not fully source verified. Exact integer assignment/matching cores and optional proved ordered backends retain their existing documented theorem scopes; Python/NetworkX/native transport remains tested. No Lean or Rust algorithm source changes and no new theorem claims in this release preparation.",
+  "reproduce": {
+    "sdist": "python -m build --sdist --outdir /var/tmp/subtree-release-dist",
+    "native": "python -m pip wheel /var/tmp/subtree-release-dist/*.tar.gz --no-deps --wheel-dir /var/tmp/subtree-release-dist -Cbuild-dir=/var/tmp/subtree-release-build -Ccmake.define.REQUIRE_RUST_EXTENSIONS=ON",
+    "portable": "python -m cibuildwheel /var/tmp/subtree-release-dist/networkx_algo_common_subtree-0.3.0.tar.gz --platform linux --config-file dev/abi3-cibuildwheel.toml --output-dir /var/tmp/subtree-release-abi3",
+    "musl": "python -m cibuildwheel /var/tmp/subtree-release-dist/networkx_algo_common_subtree-0.3.0.tar.gz --only cp313-musllinux_x86_64 --output-dir /var/tmp/subtree-release-musl",
+    "installed_tests": "From outside checkout: python /path/to/repo/dev/check_release.py --require-rust [--require-cython]; COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 python -m pytest -q /path/to/repo/tests (strict Cython parity on normal wheels only).",
+    "rust": "cargo test --locked --manifest-path rust/crates/<crate>/Cargo.toml, for each of the three crates.",
+    "benchmarks": "python dev/bench_unordered_apis.py --sizes 4,32,64 --shapes chain,star,balanced,chain-star --repeat 3 --warmup 1 --oracle-max-size 4 --weights scalar|callbacks --json <path>",
+    "manifest": "python dev/check_distributions.py <candidate-directory> --tag v0.3.0 --verify-manifest"
+  },
+  "logs": {
+    "sdist": {
+      "path": "/var/tmp/subtree-release-sdist.log",
+      "sha256": "9b0362e7fa86a2f7ca28eb4e1bcffe097c3bf16fb84ec971dcc3f21d024355e9"
+    },
+    "native-build": {
+      "path": "/var/tmp/subtree-release-native-build.log",
+      "sha256": "169006759ba4919684bcf5a71ba979d5b6b1adc83a435bcafde17026a2b0c400"
+    },
+    "native-repair": {
+      "path": "/var/tmp/subtree-release-native-repair.log",
+      "sha256": "eec68df3f7a5fbffd870c02793a566c8ded2a78934ec2c0953c117d779a54d64"
+    },
+    "final-native-tests": {
+      "path": "/var/tmp/subtree-release-final-native-tests.log",
+      "sha256": "76cde301926806a488950eca14bdf0b72f00c9c91198c8f5d69190249fe3884b"
+    },
+    "abi3-build": {
+      "path": "/var/tmp/subtree-release-abi3-build.log",
+      "sha256": "fdce63d5ace7603386330cc897cf2bba2a3294b76f9797b8b636a5e32799c962"
+    },
+    "abi3-audit": {
+      "path": "/var/tmp/subtree-release-abi3-audit.log",
+      "sha256": "8a5d52d9512540ebb71c5ee91c7aed9dc9917d186729b702e0f3bf7889b44386"
+    },
+    "abi3-platform": {
+      "path": "/var/tmp/subtree-release-abi3-platform.log",
+      "sha256": "481aaa6b298e8d8035bfdb4d96aeab63a6dc197fdf7420f428e7e94fd8481fd8"
+    },
+    "musl-build": {
+      "path": "/var/tmp/subtree-release-musl-build.log",
+      "sha256": "d2aa01ac1bc8995d281dccf25004dfc9e4c49385f9c8fa452905986cae563a78"
+    },
+    "workflow-lint": {
+      "path": "/var/tmp/subtree-release-workflow-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "no-cargo": {
+      "path": "/var/tmp/subtree-release-no-cargo.log",
+      "sha256": "63c8a0d37e882ef5a95da57dc336684654a6f185c82266b4787d1ff267e95337"
+    },
+    "pure-config": {
+      "path": "/var/tmp/subtree-release-pure-config.log",
+      "sha256": "b4ae8c47db5a6d5241d77f75ab409cf62967771c608e526deeae7edf625a4992"
+    },
+    "rust-graphs": {
+      "path": "/var/tmp/subtree-release-rust-graphs.log",
+      "sha256": "1fbbebc57772d1d8db652906dd4e1f64834749679d3df09b72d015964b163d25"
+    },
+    "rust-ordered": {
+      "path": "/var/tmp/subtree-release-rust-ordered.log",
+      "sha256": "a09b942ca75494a7d1914706affb9103abc1e6c1adce0640ccbb2ef873946043"
+    },
+    "rust-assignment": {
+      "path": "/var/tmp/subtree-release-rust-assignment.log",
+      "sha256": "1e0ace58760f49c589e1d489766949681127024d74c58f9e9c7eefa0d33cad8c"
+    },
+    "twine": {
+      "path": "/var/tmp/subtree-release-twine.log",
+      "sha256": "fd0c9aaf159262a7e128d617ec29dbd94786a017227036d591d7de5a16115c10"
+    }
+  },
+  "remaining": [
+    "Historical manual publisher/tag-before-upload instructions were superseded by the xcookie correction. Follow docs/releasing.md: reviewed green main, then main:release; PyPI publication precedes automatic tagging. Remote platform validation remains outstanding."
+  ],
+  "deferred": [
+    "Further verified-backend optimization",
+    "Production optimized Rust proof closure",
+    "Running-time/space/asymptotic proofs",
+    "Broader paper/application research"
+  ],
+  "workspace_artifacts": "dist/0.3.0 (ignored distribution outputs, copied with identical SHA256SUMS for host/user review)"
+}

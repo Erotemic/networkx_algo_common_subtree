@@ -1,14 +1,75 @@
 [build-system]
-requires = [ "setuptools>=41.0.1", "scikit-build>=0.11.1", "ninja>=1.10.2", "cmake>=3.21.2", "cython>=0.29.24",]
+requires = [
+  "scikit-build-core>=0.10",
+  "cython>=0.29.24",
+  "cmake>=3.21",
+  "ninja>=1.10",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "networkx_algo_common_subtree"
+version = "0.3.0"
+description = "Fast ordered and weighted unordered common subtree algorithms for NetworkX"
+readme = "README.rst"
+requires-python = ">=3.10"
+license = { text = "Apache 2" }
+authors = [
+  { name = "Jon Crall", email = "erotemic@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+  "networkx>=2.8.8",
+]
+
+[project.optional-dependencies]
+runtime = ["networkx>=2.8.8"]
+tests = [
+  "xdoctest>=1.1.3",
+  "pytest>=7.4.4",
+  "pytest-cov>=3.0.0",
+  "coverage[toml]>=6.5.0",
+  "ubelt>=1.3.4",
+]
+build = [
+  "scikit-build-core>=0.10",
+  "ninja>=1.10.2",
+  "cmake>=3.21.2",
+  "cython>=0.29.24",
+]
+benchmarks = [
+  "rich>=13.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Erotemic/networkx_algo_common_subtree"
+Documentation = "https://networkx-algo-common-subtree.readthedocs.io/"
+Issues = "https://github.com/Erotemic/networkx_algo_common_subtree/issues"
+Changelog = "https://github.com/Erotemic/networkx_algo_common_subtree/blob/main/CHANGELOG.md"
+
+[tool.scikit-build]
+cmake.version = ">=3.21"
+wheel.packages = ["networkx_algo_common_subtree"]
+sdist.exclude = ["submodules/**", "dev/*.enc", "**/.lake/**", "**/target/**", ".leanq/**"]
 
 [tool.cibuildwheel]
-build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
+build = "cp310-* cp311-* cp312-* cp313-*"
+skip = "*-win32"
 build-frontend = "build"
-# skip = "pp* *-musllinux_* *-win32"
 build-verbosity = 1
-#test-requires = [ "-r requirements/tests.txt",]
-test-command = "python {project}/run_tests.py"
-test-extras = ["tests-strict", "runtime-strict"]
+test-command = "python {project}/dev/check_release.py --require-rust --require-cython && python -m pytest -q {project}/tests"
+test-extras = ["tests", "runtime"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -20,17 +81,46 @@ repo_name = "networkx_algo_common_subtree"
 rel_mod_parent_dpath = "."
 os = [ "all", "win", "osx", "linux",]
 url = 'https://github.com/Erotemic/networkx_algo_common_subtree'
-min_python = '3.8'
+min_python = '3.10'
+max_python = '3.14'
+main_python = '3.13'
+ci_cpython_versions = ['3.10', '3.11', '3.12', '3.13']
+ci_pypy_versions = []
+typecheck_install_extras = ['tests', 'benchmarks']
+use_setup_py = false
+# This project has PEP 621 extras but no exported uv lock constraints.
+use_uv = false
+# Preserve the existing token and encrypted-repository signing configuration.
+ci_pypi_trusted_publishing = false
+ci_gpg_secret_transport = 'encrypted_repo'
+ci_wheel_build_post_commands = ['bash dev/ci_wheel_post_build.sh']
+test_env = { COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS = '1' }
+test_command = '''
+if python -c 'import sys; sys.exit(sys.version_info[:2] != (3, 10))'; then
+    python -m pip install networkx==2.8.8
+fi
+python ../dev/check_release.py --require-rust --require-cython
+python -m pytest -q --cov=networkx_algo_common_subtree ../tests
+'''
 author = "Jon Crall"
 author_email = "erotemic@gmail.com"
-description = "A networkx implementation of algorithms to find common ordered subtree minors and isomorphisms"
+description = "Fast ordered and weighted unordered common subtree algorithms for NetworkX"
 license = "Apache 2"
 dev_status = "alpha"
 xdoctest_style="freeform"
 
+[tool.xcookie.ci_source_checks.release-tooling]
+name = 'Release tooling and workflow lint'
+python_version = '3.13'
+setup_commands = ['python -m pip install flake8']
+commands = [
+  'flake8 dev/check_release.py dev/check_distributions.py --select=E9,F63,F7,F82 --show-source',
+  'docker run --rm -v "$PWD:/repo:ro" -w /repo rhysd/actionlint:1.7.12 -shellcheck= .github/workflows/tests.yml .github/workflows/checks.yml .github/workflows/release.yml',
+]
+
 [tool.pytest.ini_options]
-addopts = "-p no:doctest --xdoctest --xdoctest-style=auto --ignore-glob=setup.py --ignore-glob=dev --ignore-glob=docs"
-norecursedirs = ".git ignore build __pycache__ dev _skbuild"
+addopts = "-p no:doctest --xdoctest --xdoctest-style=google --ignore-glob=setup.py --ignore-glob=dev --ignore-glob=docs"
+norecursedirs = [".git", "ignore", "build", "__pycache__", "dev", "_skbuild", "Documents and Settings", "System Volume Information", "$Recycle.Bin"]
 filterwarnings = [ "default", "ignore:.*No cfgstr given in Cacher constructor or call.*:Warning", "ignore:.*Define the __nice__ method for.*:Warning", "ignore:.*private pytest class or function.*:Warning",]
 
 [tool.coverage.run]
@@ -45,3 +135,20 @@ skip = ['./docs/build', './*.egg-info', './build', './htmlcov']
 count = true
 quiet-level = 3
 ignore-words-list = ['wont', 'cant', 'ANS', 'doesnt', 'arent', 'ans', 'thats', 'datas', 'isnt', 'wile']
+
+[tool.cibuildwheel.linux]
+before-all = "curl --proto '=https' --tlsv1.2 --fail --silent --show-error https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.95.0"
+environment = { PATH = "/root/.cargo/bin:$PATH", CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
+
+[tool.cibuildwheel.macos]
+# Rust x86_64 requires macOS 10.12. cibuildwheel enforces newer interpreter/ARM floors.
+environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON", MACOSX_DEPLOYMENT_TARGET = "10.12" }
+
+[tool.cibuildwheel.windows]
+environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
+
+[[tool.cibuildwheel.overrides]]
+select = "*-musllinux_*"
+inherit.environment = "append"
+# Rust's musl target defaults to static CRT linking, which disables cdylib.
+environment = { RUSTFLAGS = "$RUSTFLAGS -C target-feature=-crt-static" }

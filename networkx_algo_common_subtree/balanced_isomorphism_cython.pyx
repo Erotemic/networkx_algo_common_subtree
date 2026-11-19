@@ -81,7 +81,7 @@ Benchmark
 >>> print(ti.summary())
 """
 cimport cython
-
+from libc.math cimport isfinite
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
@@ -89,6 +89,10 @@ def _lcsi_iter_cython(full_seq1, full_seq2, open_to_close, node_affinity, open_t
     """
     Cython implementation of :func:`_lcsi_iter`.
     """
+    if not full_seq1 or not full_seq2:
+        empty = (full_seq1[:0], full_seq2[:0])
+        return 0, empty, 0, empty
+
     all_decomp1 = generate_all_decomp_nocat_cython(full_seq1, open_to_close, open_to_node)
     all_decomp2 = generate_all_decomp_nocat_cython(full_seq2, open_to_close, open_to_node)
     key0 = (full_seq1, full_seq2)
@@ -198,7 +202,13 @@ def _lcsi_iter_cython(full_seq1, full_seq2, open_to_close, node_affinity, open_t
                 best_lvl = cand_lvl_t1s2
 
             # Case 1: The LCS involves this edge
-            affinity = float(node_affinity(t1, t2))
+            affinity_value = node_affinity(t1, t2)
+            try:
+                affinity = float(affinity_value)
+            except (TypeError, ValueError, OverflowError) as ex:
+                raise ValueError("node affinities must be finite nonnegative numbers") from ex
+            if not isfinite(affinity) or affinity < 0:
+                raise ValueError("node affinities must be finite nonnegative numbers")
             if affinity:
                 try_key = (head1, head2)
                 if try_key in _results:

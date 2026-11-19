@@ -1,0 +1,1317 @@
+# Reproducing verification
+
+CI scope (2026-11-19): the complete `lean` research-library/extraction/example
+job is opt-in. In Actions, dispatch `verification.yml` with
+`run_full_lean=true` to run it. A reported exit 143 terminated a partial CI run;
+it establishes neither a proof failure nor a successful complete check.
+
+The `rational-python` job remains automatic. It builds a wheel with
+`BUILD_LEAN_BACKEND=ON` (Cython/Rust disabled for that dedicated artifact),
+installs it and requires the exact-rational backend tests outside the checkout.
+CMake runs `lake build verified_ordered`, so the executable's proof dependencies
+are still checked, using caches where available. The tested wheel is retained
+as `verified-lean-wheel-linux`. This is distinct from ordinary Rust/Cython/ABI3
+wheels; those builds and tests also remain automatic. The full research-library
+audit and independent local reproduction commands below remain available.
+
+Local check of the revised wheel job: the same Lean-only wheel configuration
+built successfully (using the existing checked Lean cache). A fresh environment
+installed it, resolved the executable inside `site-packages/_bin`, and passed
+all **10 rational-backend tests**, with `COMMON_SUBTREE_REQUIRE_LEAN=1` and no
+external executable override. Wheel SHA256:
+`372b17f2608c8706e5911d7c74195a310da655e54300f799b8ed4ce25d5da7ec`.
+The workflow passes structural actionlint; other native/oracle/ABI3 job
+definitions are unchanged. This does not constitute a new whole-library audit.
+
+The scored-cache/hash/equality optimization retains the exact public theorem
+statements and uses the same build/test commands below. Current evidence is
+244 strict installed tests, seven Lean examples, 72 audited declarations and
+a 2.79× median paired-case speedup. The benchmark script additionally accepts
+`--integer-weights`, `--sizes 64,128` and `--repeat N` for focused comparisons.
+See [the optimization report](../dev/benchmarks/2026-11-18-rational-optimization.md)
+for old/new wheel identities, raw data and the remaining dense-input frontier.
+
+The complete exact rational ordered-isomorphism backend is `verified-lean`.
+It directly compiles the proved memoized Lean algorithm; optimized Rust source
+refinement is a separate path. It supports both root policies, exact integer/
+Fraction affinities, original-input witnesses and Fraction scores. Python/graph/
+JSON conversion remains a tested boundary. See
+[user/build instructions](../docs/source/verified_rational_ordered.rst) and
+[the 243-test installed-wheel/benchmark evidence](../dev/benchmarks/2026-11-18-verified-rational-ordered.md).
+
+From the repository root, prepare caches with `dev/setup-build-caches.sh` and
+`dev/setup-build-caches.sh --status`. Then, from `proofs/`:
+
+```bash
+lake exe cache get
+lake build
+lake build verified_ordered
+lake env lean Tests/RationalOrderedSolver.lean
+```
+
+Build a wheel containing the executable from the repository root, using local
+disk for the complete CMake build directory (including its actual Cargo output):
+
+```bash
+python -m pip wheel . --no-deps --wheel-dir /var/tmp/subtree-wheels \
+  --config-settings=build-dir=/var/tmp/subtree-wheel-build \
+  --config-settings=cmake.define.BUILD_LEAN_BACKEND=ON \
+  --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
+```
+
+After installing that wheel and test dependencies, run **outside the checkout**:
+
+```bash
+COMMON_SUBTREE_REQUIRE_LEAN=1 COMMON_SUBTREE_REQUIRE_PARITY_BACKENDS=1 \
+  python -m pytest -q /path/to/checkout/tests
+python /path/to/checkout/dev/bench_verified_rational.py --output result.json
+```
+
+No Lean toolchain/development submodule is needed at runtime: the wheel bundles
+`networkx_algo_common_subtree/_bin/verified_ordered`. Standard wheels without
+`BUILD_LEAN_BACKEND=ON` may omit it; explicit requests then fail, without fallback.
+CI has a separate installed-wheel job requiring the rational backend.
+
+The active delivery priority is efficient ordered Python APIs with functional
+correctness; running-time proofs are deferred. See the current budgetable
+backlog in [the planning README](../docs/planning/README.md#active-priority-efficient-python-apis-with-functional-correctness).
+The prior long fourteen-case `SourceRecursiveExecution` run was intentionally
+cancelled for reprioritization (exit 143), without a pass/fail claim. Historical
+pending observations below describe their checkpoints; do not automatically
+restart that optional addressed-resource run for the new milestone. Keep the
+existing CI and reproduction commands available for separately funded research.
+
+The exact-score extraction spike O00 reproduces with
+`dev/regenerate_rust_lean.sh --score-model-only --check` from the repository
+root, after cache setup. From `proofs/`, run `lake build` and
+`lake env lean Tests/ScoreModel.lean`. The main regeneration and CI commands
+also include this spike. It has an explicit rational primitive model, not a
+native `f64` correspondence theorem; compiler outputs use local `/var/tmp`.
+See [the report](experiments/ordered_score_model/README.md) for exact endpoints,
+commands, test cases and the remaining production-kernel frontier.
+
+The maintained project uses Lean 4.35.0, Mathlib commit
+`56a005855ea17e0b0958f73ec801ae140b0a1679`, and Aeneas commit
+`5a392f4b80a4d0d05abc240eb2a7fa70622a9a35`. Lake fetches both Git
+dependencies; no sibling repository, submodule, or local path is required.
+
+Run from this repository:
+
+```bash
+(cd proofs && lake exe cache get && lake build)
+dev/regenerate_rust_lean.sh --check
+cargo test --locked --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml
+cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
+cargo test --locked --manifest-path rust/crates/verified_assignment_core/Cargo.toml
+(cd proofs && lake env lean Tests/RootedDynamicProgram.lean)
+(cd proofs && lake env lean Tests/OrderedIsomorphism.lean)
+(cd proofs && lake env lean Tests/LookupEvents.lean)
+(cd proofs && lake env lean Tests/LookupSource.lean)
+(cd proofs && lake env lean Tests/LookupSourceFrontend.lean)
+(cd proofs && lake env lean Tests/LookupSourceTypes.lean)
+(cd proofs && lake env lean Tests/LookupTypePreservation.lean)
+(cd proofs && lake env lean Tests/LookupSpatial.lean)
+(cd proofs && lake env lean Tests/LookupStack.lean)
+(cd proofs && lake env lean Tests/LookupBorrow.lean)
+(cd proofs && lake env lean Tests/LookupRegions.lean)
+(cd proofs && lake env lean Tests/MemoSource.lean)
+(cd proofs && lake env lean Tests/MemoHeap.lean)
+(cd proofs && lake env lean Tests/MemoTypes.lean)
+(cd proofs && lake env lean Tests/MemoSpatial.lean)
+(cd proofs && lake env lean Tests/MemoStack.lean)
+(cd proofs && lake env lean Tests/MemoBorrow.lean)
+(cd proofs && lake env lean Tests/MemoRegions.lean)
+(cd proofs && lake env lean Tests/SourcePartial.lean)
+(cd proofs && lake env lean Tests/SourceEval.lean)
+(cd proofs && lake env lean Tests/SourceEvalHelpers.lean)
+(cd proofs && lake env lean Tests/SourceEvalChoice.lean)
+(cd proofs && lake env lean Tests/SourceEvalBase.lean)
+(cd proofs && lake env lean Tests/SourceEvalRecursion.lean)
+(cd proofs && lake env lean Tests/SourceEvalTypes.lean)
+(cd proofs && lake env lean Tests/SourceEvalTypeExecution.lean)
+(cd proofs && lake env lean Tests/SourceEvalRegions.lean)
+(cd proofs && lake env lean Tests/SourcePartialHeap.lean)
+(cd proofs && lake env lean Tests/SourceLocalBorrow.lean)
+(cd proofs && lake env lean Tests/SourceFrameUpdates.lean)
+(cd proofs && lake env lean Tests/SourceAddressedExpressions.lean)
+(cd proofs && lake env lean Tests/SourceFrameInventory.lean)
+(cd proofs && lake env lean Tests/SourceStorageLifecycle.lean)
+(cd proofs && lake env lean Tests/SourceAddressedControl.lean)
+(cd proofs && lake env lean Tests/SourceCacheMissSetup.lean)
+(cd proofs && lake env lean Tests/SourceHelperCalls.lean)
+(cd proofs && lake env lean Tests/SourceCallingProgram.lean)
+(cd proofs && lake env lean Tests/SourceLoanEndings.lean)
+(cd proofs && lake env lean Tests/SourceRecursiveCalls.lean)
+(cd proofs && lake env lean Tests/SourceTypedCalls.lean)
+(cd proofs && lake env lean Tests/SourceRecursiveExecution.lean)
+(cd proofs && lake env lean Tests/LookupHeap.lean)
+(cd proofs && lake env lean Tests/LookupFrame.lean)
+(cd proofs && lake env lean Tests/Memo.lean)
+(cd proofs && lake env lean Tests/EditDistance.lean)
+(cd proofs && lake env lean Tests/MemoWork.lean)
+python3 proofs/checks/test_lookup_source_reifier.py
+python -m pytest tests
+# Build the opt-in proved-core extension through the actual package build:
+python -m pip wheel . --no-deps --wheel-dir /tmp/common-subtree-wheels \
+  --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF \
+  --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
+```
+
+A source-only `git archive 6dbf81e` was unpacked at
+`/tmp/common-subtree-clean`, with no copied `.lake` or project build artifacts.
+`lake exe cache get && lake build` fetched its pinned dependencies and succeeded
+(3,473 jobs). The Mathlib download cache was reused; project modules rebuilt.
+
+The GitHub workflow `.github/workflows/verification.yml` builds the library,
+checks regeneration, executes all three standalone Rust crates, and runs the
+independent finite oracles. Its Python extension job installs a built package
+and exercises the backend tests outside the checkout. Its first remote execution
+is still pending.
+
+Local extension evidence: the CMake/scikit-build wheel with Rust required and
+Cython disabled builds under Python 3.13.2. It was installed using `pip --target`
+into `/tmp/common-subtree-verified-wheel-install`; from `/tmp`, both
+`test_verified_rust_backend.py` and `test_rust_backend.py` pass (23 tests) with
+that installation on `PYTHONPATH`. With the locally built source-tree extension,
+the full Python suite passes (86 tests). Python/PyO3 token conversion is tested
+integration, while the source-refinement theorem covers the Rust Boolean core.
+
+The scoped region increment adds `Rust/LookupRegion*.lean` and
+`Tests/LookupRegions.lean`. It checks actual free/body region scope and helper
+call arities, retains regional local types and proves erasure equivalence under
+an explicit immutable retained-world lifetime. Both actual source snapshots
+pass kernel certificates; `lookup_source_total` composes source parsing,
+recursive regional traces, native success, prior safety/readback and costs.
+The main 3,823-job build, sixteen suites, native WP example, seven Python tests
+and 414-endpoint audit pass. See the
+[region report](../docs/planning/lean-complexity-campaign/evidence/lookup-region-erasure.md)
+for exact assumptions and remaining compiler/runtime and memo-composition work.
+
+The actual concatenation/insertion pilot adds `Rust/MemoSource*.lean`,
+`Generated/MemoSource{Input,Program}.lean`, `dev/regenerate_memo_source.py` and
+`Tests/MemoSource.lean`. The main regeneration command now also checks these
+fresh pinned extractions. Shared primitive/control semantics and parsing are
+polymorphic in callees; all prior lookup refinements still specialize to their
+original targets. New kernel source certificates and native-input totality
+retain complete costs and agree with independent append/prepend models and
+translated Rust. The main 3,829-job build, seventeen suites, nine Python tests,
+thirteen ordered Rust tests, full regeneration and 430-endpoint audit pass.
+See the [memo primitive report](../docs/planning/lean-complexity-campaign/evidence/memo-source-primitives.md)
+for exact event counts and remaining addressed safety/evaluator obligations.
+
+The addressed memo increment adds `Rust/MemoHeap*.lean` and
+`Tests/MemoHeap.lean`. Generic addressed instruction simulation preserves the
+certified source's complete costs; exact output layouts establish fresh
+concatenation ownership and transfer of insertion's original table. Native
+success, independent typed readback, allocation growth and complete owner
+ledgers/frame preservation compile. The 3,835-job build, eighteen suites, native
+WP, nine Python tests and 461-endpoint audit pass. No source regeneration is
+needed: Rust, generated artifacts and pins are unchanged. See the
+[addressed memo report](../docs/planning/lean-complexity-campaign/evidence/memo-heap-ownership.md)
+for exact assumptions and remaining intermediate invariants/evaluator work.
+
+The memo typing/scope increment adds `MemoSourceTypes`, `MemoType*.lean`,
+`MemoRegion*.lean` and `Tests/MemoTypes.lean`. Actual source type/region checks
+are kernel-certified, generic preservation consumes checked static constraints,
+and ordinary results contain no shared reference even inside owned payloads.
+Insertion's owned argument and distinct value/region arities are explicit.
+The 3,842-job build, nineteen suites, native WP, nine Python tests and
+484-endpoint audit pass. Source/generated files and pins are unchanged; no
+new regeneration is needed. See the
+[memo typing/scope report](../docs/planning/lean-complexity-campaign/evidence/memo-source-typing.md)
+for assumptions and remaining guard/storage/spatial/loan/lifetime work.
+
+The memo guard/spatial increment adds `MemoFrame*.lean`, `MemoSpatial*.lean`
+and `Tests/MemoSpatial.lean`. Generic checker/soundness interfaces retain old
+lookup entry points and allow insertion's owned table role. Recursive concrete
+traces preserve complete local/temporary/caller ownership lists and all costs;
+native source/heap endpoints retain typed readback, events and old-table identity.
+The 3,847-job build, twenty suites, native WP, nine Python tests and
+516-endpoint audit pass. Rust/generated artifacts, readers, tools and pins are
+unchanged. See the [memo spatial report](../docs/planning/lean-complexity-campaign/evidence/memo-spatial-ownership.md)
+for explicit frame premises and remaining storage/loan/lifetime obligations.
+
+The memo storage increment adds `MemoStack*.lean` and `Tests/MemoStack.lean`.
+Generic retained-marker lowering and storage checker soundness preserve original
+lookup entry points. Kernel actual-body/count checks and fuel induction produce
+normal storage/initialization traces; native endpoints compose prior full-cost
+source/heap, typed readback, guarded/spatial and owner-transfer results.
+The 3,850-job build, 21 suites, native WP, nine Python tests and
+531-endpoint axiom audit pass. Rust/generated artifacts, parser, tools and pins are
+unchanged. See the [memo storage report](../docs/planning/lean-complexity-campaign/evidence/memo-stack-initialization.md)
+for exact scope and remaining dynamic loans/lifetimes/evaluator work.
+
+The memo loan/region increment adds `MemoBorrow*.lean`, `MemoRegionCalls.lean`,
+`MemoRegionRefinement.lean`, `Tests/MemoBorrow.lean` and `Tests/MemoRegions.lean`.
+Generic loan soundness retains original lookup APIs. Actual source checks now
+compose routes with scoped declarations; recursive memo traces preserve typed
+caller loans and interpret actual checked annotations in retained heap worlds.
+Native endpoints retain all previous safety/readback/cost conclusions and
+ordinary output closure. The 3,855-job build, 23 suites, native WP, nine Python tests and
+552-endpoint axiom audit pass. Rust/generated artifacts,
+source parser, tools and pins are unchanged. See the
+[memo loan/region report](../docs/planning/lean-complexity-campaign/evidence/memo-loan-regions.md)
+for exact lifetime scope and remaining actual evaluator/core work.
+
+The evaluator partial-local increment adds `SourcePartial*.lean` and
+`Tests/SourcePartial.lean`. It proves partial readback/moves, preserved siblings,
+exact remaining declared destruction work, local frames and old whole-local
+compatibility. These primitives are not yet composed into actual evaluator
+source/heap execution. The 3,858-job build, 24 suites, native WP, nine Python tests and
+572-endpoint axiom audit pass. Rust/generated artifacts,
+parser/reifier and pins are unchanged. See the
+[partial-local report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-partial-locals.md)
+for the pinned extraction command and exact remaining obligations.
+
+The actual evaluator profile adds six `SourceEval*.lean` modules and
+`Generated/SourceEvalInput.lean`. The full regeneration command now runs
+`dev/regenerate_eval_source.py`, reusing pinned extraction/data generation.
+Actual source reading/covers/counts/execution binding and native checked-add
+agreement are kernel certified; common control/frontend semantics are reused.
+`Tests/SourceEval.lean` includes kernel primitive/rejection checks and native
+behavioral guards on the actual decoded program. The 3,865-job build, 25 suites, native WP, nine Python tests, thirteen Rust
+tests, full regeneration check and 592-endpoint axiom audit pass.
+See the [evaluator profile report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-profile.md)
+for exact reference/destruction scope and remaining universal refinement/safety.
+
+The expanded helper bridge adds `SourcePartialReadback`, four
+`SourceEvalLegacy*` and three `SourceEvalHelper*` modules, with
+`Tests/SourceEvalHelpers.lean` in CI. Kernel identity of actual helper bodies,
+recursive exact-work simulation and native/addressed safety compositions reuse
+the completed earlier helper chains. The numeric domain and one-way success
+scope have explicit regression cases. All 3,873 library jobs, 26 suites, native WP and nine Python tests pass; the
+624-endpoint audit remains within `propext`, `Classical.choice`, `Quot.sound`.
+Shared `leanq` inspected the recursive and insertion-totality statement closures
+(1,239 records). Rust/generated data, interpreters and dependency pins are
+unchanged; the preceding full regeneration and thirteen Rust tests remain the
+provenance/behavior baseline. See the
+[helper bridge report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-bridge.md).
+
+Four `SourceEvalChoice*` modules add the complete kernel-certified actual score
+choice body, universal native/tie agreement and exact losing-witness destructor
+currency. `Tests/SourceEvalChoice.lean` checks distinct-word ties, inconsistent
+scores and exact work/Box counts. All 3,877 library jobs, 27 Lean suites, native WP, nine Python tests and the
+634-endpoint axiom audit pass; shared statement inspection covers 706 records. No Rust,
+generated data, parser/executor or pins change. See the
+[owned-choice report](../docs/planning/lean-complexity-campaign/evidence/memo-owned-choice.md)
+for scope and reproduction.
+
+Four `SourceEval{Body,BodyCertificate,Base,BaseRefinement}` modules add the
+complete kernel-identified evaluator control and universal cache-hit/empty-query
+source/native base contracts. `Tests/SourceEvalBase.lean` includes a maximal-
+score unsound duplicate-key cache, exact cold events and universal actual JSON
+execution/native agreement. All 3,881 library jobs, 28 Lean suites, native WP,
+nine Python tests and the 645-endpoint audit pass. Shared statement inspection
+covers 838 unique declaration records. Source/profile interpreters, Rust/generated inputs and pins are unchanged.
+See the [evaluator base report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-base-paths.md)
+for exact remaining recursive and addressed safety obligations.
+
+Nine new source-control/evaluator modules add full-cost fuel monotonicity,
+all recursive success/failure/overflow composition and universal actual
+source/native totality for arbitrary finite words/warm tables. Independent
+consistency/memo results reuse their original assumptions. The new
+`Tests/SourceEvalRecursion.lean` exercises both checked-add exits and recursive
+failure propagation with exact tables, destruction and call counts. All 3,890
+library jobs, 29 Lean suites, native WP, nine Python tests and the 675-endpoint
+axiom audit pass. Shared statement inspection covers 837 unique declarations. Rust/generated data,
+interpreters/frontends and pins are unchanged. See the
+[universal evaluator report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-native-totality.md)
+for reproduction and remaining typed addressed/global resource scope.
+
+
+Eight `SourceEvalType*`/`SourcePartialTyp*` modules check all nine actual source
+declaration/control profiles, both Option layouts and nested annotations,
+then prove independent partial-local read/move/store/clear and expanded
+operand/expression/action preservation. `Tests/SourceEvalTypes.lean` consumes
+actual evaluator/public-entry constraints and checks scalar/option/shared-move
+counterexamples plus typed partial tuple moves. Recursive typing and addressed
+owner/storage/loan/region/destruction composition remain required. The 3,898-job
+build, all 30 Lean suites, native WP, nine Python tests and 706-endpoint axiom
+audit pass; statement inspection covers 752 unique declaration records. See the
+[type evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-source-typing.md).
+
+
+Six modules now discharge actual recursive source typing and retain all nine
+scoped signature/local profiles. New `SourceEvalTypeExecution` and
+`SourceEvalRegions` suites consume actual JSON/native/type and binder endpoints,
+including the polymorphic Box, fallthrough, call-region arity and dynamic-lifetime
+false neighbors. The new type/region proofs preserve the original complete
+costs; full addressed ownership/storage/local-loan/destructor interpretation
+remains required. The 3,904-job build, 32 Lean suites, native WP, nine Python
+tests and 734-endpoint audit pass; statement inspection exports 1,046 unique
+declarations with no unknown references. See the [recursive typing evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-typing.md).
+
+
+Six addressed partial-value modules now connect stored cells, initialized masks,
+complete owner lists, concrete move/readback, fresh Boxes and logical destruction
+to existing source primitives. `Tests/SourcePartialHeap.lean` checks a nested
+payload move retaining its Box shell, precise retirement/visit/work counts and
+caller ownership, plus duplicate-owner, stale-data and shared-alias false
+neighbors. Whole addressed execution and loan/storage/destructor interpretation
+remain required. The 3,910-job build, 33 Lean suites, native WP, nine Python
+tests and 780-endpoint audit pass; statement inspection exports 275 unique
+declarations with no unknown references. See the [addressed partial evidence](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-partials.md).
+
+
+The local-storage increment adds `SourceHeapReachability`, `SourceHeapPlaces`,
+`SourceHeapStorage`, `SourceEvalLocalBorrow` and `Tests/SourceLocalBorrow.lean`.
+Actual initialized partial place reads retain concrete pointers, transitive
+shared reference graphs and live classified storage roots. Source address/Box/
+drop primitives compose with retained caller frames. Mutation/initialization
+conflicts, actual recursive frame traces and dynamic region/destructor
+interpretation remain open. See the
+[local storage report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-local-storage.md).
+The 3,914-job build, all 34 Lean suites, native WP, nine Python tests and
+830-endpoint audit pass; shared statement inspection exports 278 unique
+records without unknown references. Rust/generated files and pins are unchanged.
+
+Four modules add `SourceHeapTransport`, `SourceHeapWrites`, `SourceFrameUpdates`
+and `SourceEvalFrameActions`, with `Tests/SourceFrameUpdates.lean`. Guarded read/
+owner transport supports actual in-place local writes; source scalar assignment,
+store continuations and storage-live/dead markers preserve retained frames.
+Nonowning initialized references may end storage; Box shells may not silently
+lose owners. Actual full RHS/move/frame/control/callee and region/destructor
+composition remain open. See the
+[frame write report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-frame-writes.md).
+The 3,918-job build, all 35 Lean suites, native WP, nine Python tests and
+867-endpoint axiom audit pass. Shared statement inspection covers 245 unique
+declarations with no unknown references.
+
+Seven modules add partial graph/frame moves, executable addressed operands/RHSs,
+finite ghost graph tracing, guarded assignment and reverse simulation under
+independent physical move-route permissions. `Tests/SourceAddressedExpressions.lean`
+checks sequential moves/aggregates, concrete comparisons/reborrows, shape and
+conflict rejection, complete assignment/cost correspondence and caller retention.
+Actual frame/guard/ownership/control/callee and dynamic region/destructor traces
+remain open. See the
+[addressed RHS report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-rhs.md).
+The 3,925-job build, all 36 Lean suites, native WP, nine Python tests and
+888-endpoint axiom audit pass. Shared statement inspection covers 283 unique
+declarations with no unknown references.
+
+Four modules add `SourceHeapResources`, `SourceFrameInventory`,
+`SourceActivationInventory` and `SourceEvalDerivedAssignments`, with
+`Tests/SourceFrameInventory.lean`. They derive actual bounded active/caller
+read/owner/loan inventories and remaining contexts. Assignment computes its
+guards/context and preserves exact caller resources at unchanged source cost.
+Actual initial/control/callee, exclusive owner/spatial and dynamic region/
+destructor traces remain open. See the
+[computed inventory report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-derived-inventories.md).
+The 3,929-job build, all 37 Lean suites, native WP, nine Python tests and
+929-endpoint axiom audit pass. Shared statement inspection covers 313 unique
+declarations with no unknown references.
+
+Four modules add `SourceActivationInitial`, `SourceEvalDerivedStorage`,
+`SourceEvalDerivedDrop` and `SourceEvalDerivedActions`, with
+`Tests/SourceStorageLifecycle.lean`. Initial frames use actual parsed local
+counts. Computed storage/drop guards protect stack roots and classified unique
+Box owners; non-call sequences retain original complete source execution/costs
+and final activation/caller/world validity. Calls, switches/returns, all actual
+branch check success, global exclusive transfer and region/destructor traces
+remain open. See the
+[storage/action report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-storage-actions.md).
+The 3,933-job build, all 38 Lean suites, native WP, nine Python tests and
+949-endpoint axiom audit pass. Shared statement inspection covers 456 unique
+declarations with no unknown references.
+
+Four modules add `SourceEvalAddressedScrutinees`, `SourceEvalAddressedReturn`,
+`SourceEvalAddressedControl` and `SourceEvalAddressedChoice`, with
+`Tests/SourceAddressedControl.lean`. Retained concrete tags support partial moves;
+boolean routing and return packets reuse the shared control engine. Successful
+addressed runs preserve source results/complete costs and frame/caller/packet
+validity. The actual choice bridge reuses the checked native rule and source
+body. Calls, all actual physical check success and complete exclusive/storage/
+region/destructor composition remain open. See the
+[addressed control report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-addressed-control.md).
+The 3,937-job build, all 39 Lean suites, native WP, nine Python tests and
+962-endpoint axiom audit pass. Shared statement inspection covers 920 unique
+declarations with no unknown references.
+
+Nine modules add `SourceHeapReadback`, `SourceHeapHelperWorld`,
+`SourceHeapOutputReadback`, `SourceEvalHeapHelpers`, `SourceEvalHeapMemo`,
+`SourceEvalHeapLookup`, `SourceEvalHeapIntrinsics`, `SourceEvalDerivedCalls` and
+`SourceEvalHelperCalls`, with `Tests/SourceHelperCalls.lean`. They reuse existing
+concrete helper execution over mixed prefixes, reconstruct actual live output
+metadata, preserve ownership transfers/costs and compose one-pass argument/callee/
+result-store execution. Native shapes/fuel discharge local callee contracts.
+Control/recursive integration, choice/evaluator/maximum service and all actual
+readiness/check/global ownership/storage/region obligations remain open. See the
+[helper-call report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-calls.md).
+The 3,946-job build, all 40 Lean suites, native WP, nine Python tests and
+1,007-endpoint axiom audit pass. Shared statement inspection covers 914 unique
+declarations with no unknown references.
+
+The latest calling-entry increment adds five maintained modules, actual
+post-argument suspended-stack passing, call/control composition, parsed entry
+and zero-owner return cleanup. The actual parsed choice consumer preserves its
+native result/tie rule and complete cost while retiring remaining stack roots.
+Recursive dispatch, whole-run protected caller preservation, all-path readiness/
+physical success and global ownership/region/destructor obligations remain.
+See the [calling-entry report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-calling-entry.md).
+The 3,951-job build, all 41 Lean suites, native WP, nine Python tests and
+1,030-endpoint axiom audit pass. Shared statement inspection covers 1,124 unique
+declarations from five seeds with no unknown references.
+
+The recursive-calls increment adds five maintained modules, strengthens old
+suspended-action results with stored-byte preservation, and composes actual
+parsed recursive choice/evaluator/maximum dispatch with the existing helpers.
+Choice readiness/native refinement are discharged; evaluator refinement retains
+independent readiness and physical success. The complete cold empty execution
+agrees with source/native output and costs. A nonempty cache hit exposes the
+remaining initialized-reference versus active-loan distinction; the report
+contains its exact failing action and reproduction. See the
+[recursive-calls report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-recursive-calls.md).
+The 3,956-job build, all 43 Lean suites, native WP, nine Python tests and
+1,055-endpoint axiom audit pass. Shared statement inspection covers 1,225 unique
+declarations from six seeds with no unknown references.
+
+The certified loan-ending increment adds `SourceEvalLoanObservations`,
+`SourceEvalLoanEndings` and `SourceActivationLoanViews`. Complete source/cost
+invariance justifies ending unused shared-reference resource views in the calling
+executor without changing pointer storage, owners or other live aliases. The
+known cold nonempty evaluator and maximum now succeed with complete source
+value/table/cost equality and checked live-output coverage. Universal readiness,
+budgets/physical success and global ownership/region/destructor obligations
+remain. See the [loan-ending report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-loan-endings.md)
+for exact endpoints, adversaries and reproduction.
+The 3,959-job build, all 44 Lean suites, native WP, nine Python tests and
+13 ordered Rust tests pass. The 1,082-endpoint axiom audit retains only
+`propext`, `Classical.choice` and `Quot.sound`. Shared statement inspection covers
+1,243 unique declarations from eight seeds with no unknown references.
+
+The typed-call increment adds seven proof modules for successful old-helper
+reflection, independent numeric/type bridges, derived selected call domains and
+recursive typed source/native refinement. The stronger evaluator endpoint removes
+the supplied `Recursive.Ready` premise; concrete success remains explicit.
+Short-circuit helper success, scalar-width rejection, actual typed control and
+the upgraded arbitrary-query/warm-table native consumer are maintained. See the
+[typed-call report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-typed-calls.md)
+for exact statements, checks and remaining physical/global ownership obligations.
+The 3,966-job build, all 45 Lean suites, native WP and nine Python tests pass.
+The 1,115-endpoint axiom audit retains only `propext`, `Classical.choice` and
+`Quot.sound`. Shared statement inspection covers 1,139 unique declarations from
+eight selected seeds with no unknown references.
+
+The owner-packet increment adds eight proof modules and the maintained
+`Tests/SourceOwnerFrames.lean` suite. Actual moves/RHS packets, guarded assignment,
+exact Box retirement, callee input packets, returns and checked closure retain complete owner identities
+and explicit uniqueness/class/liveness/coverage resources. Shared reads may alias.
+See the [owner-packet report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-packets.md)
+for exact endpoints, limits and reproduction. The 3,974-job build, all 46 Lean
+suites, native WP and nine Python tests pass. The 1,166-endpoint axiom audit
+includes all 51 new theorems and retains only `propext`, `Classical.choice` and
+`Quot.sound`. Eight selected statement seeds export 333 unique declarations with
+no unknown references. Callee output/whole recursive ownership, budgets/physical
+success and full region/destructor interpretation remain open.
+
+The owner-lifecycle increment adds three modules and the maintained
+`Tests/SourceOwnerLifecycle.lean` suite. Actual entry/storage and finite non-call
+sequences retain complete owner resources, unique removed occurrences, exact
+source Box destructor counts and initially live/finally dead Box identities.
+The [owner-lifecycle report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-lifecycle.md)
+gives exact statements and reproduction. The 3,977-job root build and four
+affected consumer suites pass. The 1,186-endpoint audit includes twenty new
+theorems and only the accepted axiom baseline. Eight selected statement seeds
+cover 335 unique declarations with no unknown references. CI lists 47 suites;
+the preceding full 46-suite/native-WP/nine-Python run remains evidence at
+`40bcb57`; no new whole-suite/Rust run is claimed by this increment.
+
+The global-owner increment adds eleven proof modules and strengthens existing
+helper/owner/typed/recursive consumers. Exact successful old-helper ledgers,
+independent typed profiles, full actual calls, selected control, real entry/close
+and recursive dispatch preserve complete global owner resources. The stronger
+native evaluator combines these with its existing result/table/full-cost and
+protected-byte refinement. See the [global-owner report](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-global-owners.md)
+for exact premises, remaining physical/region obligations and reproduction.
+The 3,988-job build, all 47 maintained Lean suites, native WP and nine Python
+tests pass. The runtime suite's new nonempty evaluator/maximum owner uniqueness,
+live-Box class and coverage checks pass. The 1,243-endpoint audit includes all
+57 new theorems and only the accepted axiom baseline. Ten selected statement
+seeds export 1,388 unique declarations with no unknown references. Rust/generated
+files are unchanged; the earlier Rust evidence is not a fresh run.
+
+[Typed helper totality and sufficient budgets](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-helper-totality.md) now derives actual
+success for all eight helpers/intrinsics from independently typed readable input
+packets. Sufficient fuel and ghost readback thresholds require no supplied native
+height, expected output or successful run. Larger readback budgets preserve the
+identical world/packet/full cost; source agreement and complete output/caller/
+external ownership compose. Interpreted choice/evaluator/maximum physical success,
+dynamic regions/destructors, public teardown/wrappers/resources/G3 and the other
+planning targets remain open. The full goal is active.
+The 3,992-job build and all four affected helper/typed/recursive/runtime suites
+pass, including five new warm-cache/overflow/failure paths with complete owner
+and cleanup checks. The 1,270-endpoint audit includes 27 new theorems with only the accepted axiom baseline;
+eight selected statement seeds cover 828 unique declarations with no unknown
+references. Full-suite/native-WP/Python/Rust evidence is inherited, not rerun here.
+
+[Stable recursive fuel and readback budgets](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-stable-budgets.md) now preserve every
+completed actual run's exact world/packet/full cost at all larger bounds.
+Independently typed helper inputs give fixed joint sufficient thresholds, a stable
+output and complete owner resources. Interpreted physical success and all other
+planning obligations remain open. The 3,996-job build and two affected consumers
+pass; 19 new theorems bring the accepted-baseline audit to 1,289 endpoints.
+Eight selected statement seeds cover 1,070 unique declarations with no unknown
+references. Broader regression evidence is inherited from the preceding commits.
+
+[Constructed recursive helper and choice calls](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-call-totality.md) now compose actual
+argument extraction, callee execution and checked result storage from independent
+local source steps, types, ownership and selected loan permissions. Choice runs
+through recursive dispatch with one fuel; whole helper calls have fixed joint
+sufficient fuel/readback bounds and stable final state/full cost. Shared helper
+aliases remain permitted; choice constrains only transferred owners versus actual
+post-argument suspended loans. Evaluator/maximum all-path scope/loan discharge,
+recursive budget composition, dynamic regions/destructors and the other planning
+targets remain open. The 4,022-job build and five affected suites pass, including
+all eight recursive runtime cases. The 1,401-endpoint audit includes 18 new
+theorems with only the accepted axiom baseline. Eight selected statement seeds
+cover 1,125 unique declarations with no unknown references. The full goal is active.
+
+[Constructed native evaluator entry and lookup prefix](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-native-prefix.md) now derives
+all physical permissions for the actual parsed 113-local entry and first eleven
+instructions through lookup/result storage. Native graph structure and preserved
+old caller reads permit shared query/table aliases, including queries inside a
+table-owned Box. Fixed sufficient fuel/readback thresholds retain one final
+machine with protected caller bytes and complete ownership/coverage. Retirement
+of lookup temporaries, every branch/recursive return/closure, public maximum,
+dynamic regions/destructors and the other planning targets remain open.
+The 4,035-job build and five affected suites pass, including all eight recursive
+runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
+accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
+declarations with no unknown references. The full goal is active.
+
+[Universal checked public maximum and table teardown](../docs/planning/lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
+now constructs the complete public core under the existing addressed native
+frame model: actual seven-local entry, all 17 parsed instructions, evaluator
+call, result-field transfer, table destruction, return and checked stack close.
+Cold whole-packet provenance survives guarded storage and the partial tuple
+move, deriving the actual table-drop permission while retaining legal aliases.
+No child contract, parent success, desired post-frame or successful table drop
+is a premise of the public endpoint. Arbitrary finite queries retain native
+optional/overflow behavior, matching pure source/full costs, readable output,
+complete caller/external resources, every caller read, fresh output owners and
+identical world/packet/cost at all larger sufficient fuel/readback bounds.
+The separate mathematical endpoint keeps both independent semilength bounds
+below 2^32 and proves an optimal ordered tree with the exact edge score.
+The 4,360-job library build and eleven affected Lean suites pass. A kernel
+consumer uses aliased three-edge queries beside an old dead Box/live scalar
+stack cell. A focused actual public maximum checks aliased caller-owned inputs,
+2,704 complete steps/five solver calls, full source/addressed cost equality and
+retirement of every discarded table owner/new stack cell. All 2,163 audited
+endpoints retain the accepted axioms; eight statement seeds export 1,311 unique
+records without unknown references. Thirteen Rust tests and nine Python checks
+pass. CI lists 59 suites. The separate fourteen-case runtime process remains
+live and pending, not counted as a pass. See the evidence report for commands.
+Next integrate actual dynamic parsed-region/destructor-instance interpretation,
+then indexed/token/reconstruction wrappers, input/error policy/G3 and remaining
+resource/representation/global time/space/APP and other planning requirements.
+No full SRC-01/C3 or production resource closure is claimed; the full goal stays
+active. Source-operation counts and logical retirement retain the D12 boundary.
+
+[Cold evaluator ownership provenance](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-cold-provenance.md)
+now derives freshness of the complete cold output packet, including its actual
+updated table. Backward live-Box provenance excludes old dead-cell resurrection
+and stack-to-Box conversion through actual stores/actions/helpers, selected
+control, recursive dispatch, entry and checked close. Full caller-read
+preservation retains caller owner identities even for smaller requested guards.
+Complete old live-Box coverage and final owner uniqueness then exclude every old
+owner from ownership-free input's returned packet. The cold universal endpoint
+constructs actual execution, native/pure-source/full-cost agreement, complete
+resources, all caller reads, whole-packet freshness and larger-bound stability;
+no child contract, parent success, desired fresh table, cache soundness or width
+bound is a premise. Mathematical consistency keeps its independent hypotheses.
+The 4,349-job library build and new kernel consumer pass. The consumer uses
+aliased three-edge queries beside an old dead Box and live scalar stack cell;
+every returned owner lies beyond the entire nine-cell original heap. The public
+maximum's exact 17-instruction body also has kernel identity to the parsed
+source. Eight affected Lean suites, all 2,146 audited endpoints, thirteen Rust
+tests and nine Python checks pass; eight statement seeds export 1,268 unique
+records without unknown references. CI lists 57 suites. The prior fourteen-case
+runtime process remains live and pending; it is not counted as a pass.
+Validation details are in the evidence report.
+Next construct the maximum's actual preparation/call/result-field transfer/table
+drop/retirement/return with exact costs, using the proved cold provenance.
+Dynamic parsed-region/destructor interpretation, wrappers/input policy/G3,
+remaining resource/representation/global time/space/APP and other planning
+requirements stay open. No full SRC-01/C3 or production resource closure is
+claimed; the full goal remains active.
+
+[Universal checked evaluator totality and witness provenance](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-universal-fresh.md)
+now proves `native_total_fresh` for every finite native word pair and arbitrary
+typed warm table under the existing legal native/caller/external frame model.
+All four smaller contracts are discharged by induction on independent query
+semilength, including both contractions. Actual cache/option/checked-add cases
+reuse the checked branch constructors; independent functional evaluations supply
+child native equations. No smaller contract, desired parent execution/post-frame
+or preselected bound remains a premise. The old `NativeTotal` projection and
+one-edge theorem remain available unchanged.
+The direct endpoint constructs checked dispatch and pure `Evaluation` at the
+same complete cost, native result/actual updated table, readable output,
+well-formed memory, protected reads, complete ownership/live-Box coverage,
+witness-only provenance and exact world/packet/cost at every larger sufficient
+fuel/budget. The separate mathematical consistency endpoint retains `TableSound`
+and both input semilength bounds below 2^32. It returns Some with the independent
+mathematical witness and a sound table; arbitrary warm source execution still
+retains every None/overflow behavior. Production complexity does not follow.
+The 4,343-job library build and eleven affected Lean suites pass; the larger
+fourteen-case runtime suite is running in its original process. The new kernel
+consumer supplies two references to one old seven-owner cold three-edge query,
+uses no smaller calling contracts and obtains the direct mathematical/source/
+resource/stability guarantees. All 2,121 audited endpoints retain the accepted
+axioms; five new theorems in three new proof modules are included. Eight statement
+seeds export 1,084 unique records without unknown references. Thirteen Rust tests
+and nine Python checks pass. CI lists fifty-six suites; this checkpoint runs the
+twelve affected suites, not all fifty-six. See the evidence report for commands.
+Next compose the public maximum body/cold-table teardown and actual dynamic
+parsed-region/destructor interpretation. Indexed/token/reconstruction wrappers,
+input/error policy, G3 adversaries, W04/MEM-03/W05/MEM-04 resources, representations/
+global time/space, APP and all other planning requirements remain. This is scoped
+addressed-source adequacy under D12; no full SRC-01/C3, physical allocator/compiler
+or production resource closure is claimed. The full goal stays active.
+
+[Helper owner provenance and constructive concatenation cleanup](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owner-provenance.md)
+now derives descendant-owner freshness from the actual helper allocation ledger.
+Copy/lookup/concatenation helpers receive no owned input cells; every result Box
+lies beyond the incoming heap. Guarded storage retains the exact packet owner
+list. The native concatenation endpoint derives provenance relative to the
+original heap and constructs its guarded owned-word drop while retaining legal
+original query/table/caller aliases. Canonical inventories, closed reference
+preparation and checked anchored-machine advances preserve established provenance.
+Insertion/`boxNew` remain outside this fresh-output class because they transfer
+owned descendants. The existing `NativeTotal` contract is unchanged.
+The 4,218-job build and seven affected Lean suites pass, including eight runtime
+cases. All 1,882 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,002 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Nonempty table-owned cache
+aliases exercise fresh copy/lookup results and full derived storage; a parsed
+nonempty concatenation derives and drops all four result Boxes; actual insertion
+retains an old input owner, checking the freshness boundary.
+The parent frontier remains the checked seventeen-checkpoint right-result scope.
+Recursive witness provenance through complete evaluator execution, payload/
+field transfers and choice still needs proof; helper provenance alone does not
+supply it. Both optional joins, successful right payload transfer, general owned
+cleanup, overflow exits, insertion, remaining parent returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and the remaining planning targets stay open.
+The full goal remains active.
+
+[Actual right recursion and complete right-result scope](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-right-scope.md) now
+constructs all remaining twenty-one right-region instructions and the full
+36-instruction prefix through seventeen stable checkpoints from parsed entry.
+Original left-query view 91 and fresh right-word views 93/92 remain separate;
+actual preparation ends 93, the call consumes 91/92/94, and original loan
+origins are restored before physical retirement. Native option/table 88/89,
+empty bound payload 95, both owned queries, held left witness, matched candidate,
+exact original aliases and complete ownership/coverage persist. Every future
+parent root at index 96 or above is unbound. Both actual contraction calls and
+their complete costs are exposed. The fourth smaller `NativeTotal` premise is
+explicit; the right result/table are derived. No physical parent success,
+expected right post-frame/result, cache soundness or witness freshness is assumed.
+The 4,214-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,871 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,312 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Three new consumers discharge
+all four smaller calls with proved empty contracts: all seventeen checkpoints
+with table-owned aliases; a two-Box left witness/six-Box candidate through right
+cleanup; and cold head/left/right insertions reaching the actual right switch.
+Both optional joins, successful right payload transfer, recursive witness
+provenance/general owned cleanup, overflow exits, choice, insertion, remaining
+parent returns and full pair/pair induction remain. Dynamic regions/destructors,
+public maximum/cold-table teardown, wrappers/input policy/resources/G3 and the
+remaining planning targets stay open. The full goal remains active.
+
+[Successful-left payload and actual right-query concatenation](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-right-concatenation.md) now
+constructs all fifteen initial right-region instructions through thirteen stable
+prefix checkpoints from parsed entry. The owned left witness moves through
+scratch 82 into 81; original right child reborrows execute concatenation into
+85 and retire 86/87. The matched candidate, native table, exact original query
+aliases and complete ownership/coverage persist; all future parent roots at
+index 88 or above are unbound. Native append, helper events and the full actual
+concatenation call cost are identified. Smaller head/tail/left `NativeTotal`
+and independent native success/addition equations, including native left
+success, remain explicit. No physical parent success/post-frame, cache soundness
+or recursive witness freshness is assumed.
+The 4,204-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,859 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,306 unique declarations with no unknown references.
+Thirteen Rust tests and nine Python checks pass. Three new consumers cover all
+thirteen checkpoints with table-owned repeated aliases, actual transfer of a
+two-Box left witness beside a six-Box candidate, and a four-Box right query.
+Right argument/fresh-view setup, right recursion and its remaining twenty-one
+instructions, both optional joins, recursive witness provenance/owned cleanup,
+overflow exits, choice, insertion, remaining parent returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and all other planning targets
+stay open. The full goal remains active.
+
+[Complete actual left contraction result scope](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-left-scope.md) now reaches the
+real optional-result switch through twelve stable prefix boundaries and exposes
+the composed sixty-instruction matched/left-contraction prefix. All eleven
+instructions 49–59 retire moved arguments, extract option/table into 74/75,
+clean the moved tuple, retire ended view/output roots and open payload 81.
+Actual continuation preparation ends view 78; moved/ended masks restore the
+strictly original loan family before physical stack retirement. Complete
+ownership/coverage, exact queries, matched candidate, owned word 71 and native
+left output survive. Every future parent local at index 82 or above is unbound.
+Generic fresh-write memory preservation includes already retired cells; parent
+root-change certificates cross actual calls. Smaller head/tail/left `NativeTotal`
+and independent native head/tail/score successes remain explicit; no successful
+physical parent run, expected post-frame, expected left result, cache soundness,
+recursive witness freshness or global alias ban is supplied.
+The 4,195-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,849 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,311 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Three added kernel
+consumers discharge all smaller contracts with proved empty cases: repeated
+table-owned aliases derive all twelve checkpoints/full sixty-instruction prefix;
+a six-Box matched candidate survives real cleanup; and cold recursive insertion
+reaches native fields 74/75 and empty bound payload 81 at the actual switch.
+Successful-left payload extraction, right concatenation/views/call, both left/
+right joins, recursive witness provenance/owned cleanup, overflow exits, choice,
+insertion, remaining parent returns and full pair/pair induction remain. Dynamic
+regions/destructors, public maximum/cold-table teardown, wrappers/input policy/
+resources/G3 and every other planning target stay open. The full goal is active.
+
+[Constructed actual left contraction call](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-left-recursion.md) now reaches its native
+recursive return through eleven stable actual prefix boundaries from parsed
+entry. Four argument instructions reborrow the original right query into 79
+and move the owned table from 42 into 80; the actual evaluator call consumes
+77/79/80 and stores its native optional/table output in 76. The retained argument
+checkpoint exposes one fixed actual call and complete call cost at every larger
+shared helper bound pair. Complete ownership/coverage, exact original queries,
+owned word 71, matched candidate, scalar holes and original/fresh loan provenance
+persist. The explicit third recursive premise is universal `NativeTotal` for
+the strictly smaller concatenated-left request. No successful physical parent
+run, expected post-callee frame, expected left result, cache soundness, recursive
+witness freshness or global alias ban is supplied.
+The 4,185-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,833 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,304 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Three new consumers
+discharge all smaller contracts with proved empty cases: table-owned repeated
+aliases derive all eleven prefixes and exact-cost call; a six-Box matched
+candidate survives real recursion; and a cold external-alias parent executes
+a contraction miss that inserts a second native table key.
+Instructions 49–59 still require moved-argument retirement, result/table
+extraction, fresh-view ending, moved-tuple cleanup and payload opening before
+the actual left-result switch. Left/right contraction branches, recursive
+witness provenance/owned cleanup, overflow exits, choice, insertion, remaining
+parent returns and full pair/pair induction remain. Dynamic regions/destructors,
+public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every
+other planning target stay open. The full goal remains active.
+
+[Constructed fresh owned-word views](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-owned-word-loans.md) now reaches actual references
+78/77 to concatenated word 71 through nine stable prefix boundaries from parsed
+entry. All five setup instructions construct result/reference storage, borrow
+the owned word and reborrow through the first reference. `AnchoredLoanMachine`
+retains strict pre-entry bounds for original query loans and separate precise
+support for fresh word loans. The word's actual read footprint contains its
+Box owners and own stack root; other selected stack roots remain available
+for moves/stores/retirement. Complete owner uniqueness also separates this
+anchor from other locals' owners, leaving original-query destructor obligations
+explicit. Exact native queries, matched candidate, updated table and original
+origins persist. Smaller head/tail `NativeTotal` and independent native successes
+remain explicit; no successful physical parent run, cache soundness, recursive
+witness freshness or global alias ban is supplied.
+The 4,177-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,820 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,293 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. New table-owned alias
+and nonempty four-Box consumers discharge smaller contracts with proved empty
+cases, derive all nine prefixes/result-root permission and separate matched
+candidate owners from the fresh-loan anchor.
+Right argument 79, table argument 80, the left contraction call and anchored
+call preservation/cleanup remain. Recursive witness provenance/owned cleanup,
+overflow exits, both contraction joins, choice, insertion, remaining returns
+and full pair/pair induction remain. Dynamic regions/destructors, public maximum/
+cold-table teardown, wrappers/input policy/resources/G3 and every other planning
+target stay open. The full goal remains active.
+
+[Constructed left-query concatenation](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-left-concatenation.md) now reaches owned appended word
+71 through eight stable actual prefix boundaries from parsed evaluator entry.
+All nine concatenation instructions construct original child reborrows, execute
+the unchanged helper, retire moved argument roots and retain the matched
+candidate, table, total and all seven exact original query/view snapshots.
+Generic mask preservation supports actual calls and suffix preparation; exact
+native append, structural helper events and complete concatenation call cost
+are identified. Both native contraction requests strictly decrease the independent
+Dyck-word induction measure. Smaller head/tail `NativeTotal` and independent
+native success equations remain explicit; no successful physical parent run,
+cache soundness, recursive witness freshness or global alias ban is supplied.
+The 4,168-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,788 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,309 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Two additional kernel
+consumers discharge smaller contracts with proved empty cases: table-owned
+repeated aliases derive all eight prefixes, and two nonempty concatenation
+operands produce a four-Box owned word with complete external/table ownership.
+Fresh references to word 71 and their selected loan permissions, both contraction
+calls, recursive witness provenance/owned cleanup, overflow exits, choice,
+insertion, remaining returns and full pair/pair induction remain. Dynamic
+regions/destructors, public maximum/cold-table teardown, wrappers/input policy/
+resources/G3 and every other planning target stay open. The full goal is active.
+
+[Constructed owned matched witness](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-matched-scope.md) now
+constructs the first thirty actual successful-root-score instructions through
+matched candidate 64: total extraction, two real Box allocations, owned pair-word
+assembly, score attachment and all moved-out temporary cleanup. The parsed
+`Evaluator.entry_pair_matched_scope_complete` retains seven actual prefix
+boundaries at shared sufficient bounds, complete original-loan machinery,
+native candidate, scalar-only head/tail masks and fresh concatenation storage.
+Smaller head/tail `NativeTotal` and independent native score successes stay
+explicit; no physical parent success, cache soundness, witness freshness or
+global alias ban is supplied. Generic Box/aggregate constructions transfer
+complete owners through the unchanged actual helpers and checked stores.
+The 4,158-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,757 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,301 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Table-owned alias
+consumers discharge both smaller contracts with proved empty cases: one derives
+all seven prefixes; another uses nonempty cached witnesses and constructs a
+candidate with six owned Boxes, preserving complete ownership and coverage.
+Retaining exact query/view snapshots through the matched prefix, concatenation,
+fresh query-loan tracking, both contraction calls, recursive witness provenance/
+owned cleanup, overflow exits, choice, insertion, remaining returns and full
+pair/pair induction remain. Dynamic regions/destructors, public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and every other planning target
+remain open. The full goal stays active.
+
+[Constructed root-score arithmetic and native switch](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-root-score-scope.md) now
+constructs all twelve actual root-score instructions after successful subtotal:
+scalar payload copying, subtotal/temporary retirement, fresh total/result storage,
+checked addition of the literal one and argument cleanup. The parsed endpoint
+`Evaluator.entry_pair_root_score_scope_complete` retains all six actual prefix
+boundaries, both owned witnesses, the updated table, native subtotal and exact
+root-score result/overflow. `Calling.Prefix.shape` derives activation count and
+untouched-root support across actual calls without extra readiness assumptions.
+Smaller head/tail `NativeTotal` and independent native success equations remain
+explicit; no physical parent success, cache soundness or alias ban is assumed.
+The 4,148-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,744 audited endpoints retain the accepted axiom baseline; eight
+statement seeds resolve 1,295 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Kernel consumers derive
+root-score `Some 1` with table-owned query aliases, and root overflow from a valid
+maximum-width subtotal with distinct cached head/tail scores and explicit external
+query ownership. Both recursive contracts are discharged by proved empty cases.
+Matched-witness construction, concatenated contraction queries and fresh query
+loan tracking, recursive witness freshness/owned cleanup, overflow exits, both
+contraction calls, choice, insertion, remaining returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and every other planning target stay open.
+The full goal remains active.
+
+[Constructed subtotal arithmetic and actual result switch](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-subtotal-scope.md) now
+constructs all fifteen score-prefix instructions after native head/tail success:
+owned tail extraction, both scalar score copies, actual checked addition and
+argument retirement. `Evaluator.entry_pair_score_scope_complete` connects parsed
+entry and all five common/miss/head/tail/score prefix boundaries at shared
+sufficient bounds, retaining both owned witnesses, the updated table and the
+actual subtotal discriminant. Native-width result/overflow and complete cost
+are identified by source reflection. Smaller head/tail `NativeTotal` contracts
+remain explicit. `original_checked_add_operands_complete` also supports the
+literal operand needed by the subsequent root-score addition.
+The 4,140-job build and six affected Lean suites pass, including eight runtime
+cases. All 1,730 audited endpoints use only the accepted axiom baseline; eight
+statement seeds resolve 1,314 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python checks pass. Two kernel consumers
+use proved empty-input contracts with table-owned query aliases: a head miss/
+tail hit yielding subtotal zero, and warm maximum-width scores selecting overflow
+without cache soundness or a successful physical parent premise.
+Root-score arithmetic, recursive witness freshness/owned cleanup, overflow exits,
+contractions, choice, insertion, remaining parent returns and full pair/pair
+induction remain open. Dynamic regions/destructors, public maximum/cold-table
+teardown, wrappers/input policy/resources/G3 and every other planning target
+remain. The full goal stays active.
+
+[Complete tail scope and owned-drop support](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-tail-scope.md) now
+constructs all twenty-four tail-prefix instructions through the actual tail-result
+switch: argument retirement, native optional/table extraction, moved-output
+cleanup and fresh payload storage. `Evaluator.entry_pair_tail_scope_complete`
+connects parsed entry and all four actual prefix boundaries at shared sufficient
+bounds. The successful-tail path additionally moves its owned witness into 47
+through the first six score instructions, retaining the owned head witness.
+`OriginalLoanMachine.drop_fresh` constructs nonzero owned drops from explicit
+selected-owner freshness, preserving original loan origins; deriving that
+freshness for recursive witnesses remains open. No caller alias ban or successful
+physical parent premise is added. Full pair/pair induction remains open.
+The 4,133-job build, six affected Lean suites (including eight runtime cases),
+1,719-endpoint axiom audit, eight elaborated statement seeds (1,302 unique
+records, no unknown references), thirteen ordered Rust tests and nine Python
+checks pass. A repeated table-owned alias consumer discharges both smaller
+contracts using proved empty-input totality and reaches the actual tail switch.
+Score arithmetic, recursive witness freshness and owned cleanup, overflow,
+contractions, choice, insertion and remaining parent returns are still open,
+as are dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and every other planning target.
+The full goal remains active.
+
+[Complete head failure and constructed tail recursion](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-head-failure-tail-call.md) now
+constructs the entire selected head-failure invocation, including routing,
+output/temporary cleanup, return, checked closure, complete ownership and stable
+exact world/packet/full cost. The successful-head path also reaches the actual
+tail recursive call through fourteen instructions, retaining the owned head
+embedding, native queries/views and tail output. Both paths use explicit
+universal contracts for strictly smaller requests; full pair/pair induction is
+open. `Evaluator.head_failure_total` and
+`Evaluator.entry_pair_tail_prefix_complete` record these endpoints. A repeated
+table-owned alias consumer discharges both smaller contracts with proved empty
+base cases and exercises a head miss followed by a tail hit.
+The 4,127-job build and six affected Lean suites pass, including all eight
+runtime cases. All 1,710 audited endpoints retain only the accepted axiom
+baseline; ten statement seeds cover 1,321 unique declarations with no unknown
+references. Thirteen ordered Rust tests and nine Python checks pass.
+Tail result/argument cleanup, owned-witness destructor loan provenance, score
+and contraction/choice/insertion paths, other parent returns and full pair/pair
+induction remain. Dynamic regions/destructors, public maximum/cold-table teardown,
+wrappers/input policy/resources/G3 and all other planning targets stay open.
+The full goal remains active.
+
+[Constructed pair/pair head recursion and result scope](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-head-scope.md) now
+constructs parsed entry, common lookup, miss setup and all twenty-six actual
+head-prefix instructions, including the recursive call, result/table extraction,
+temporary retirement and head-result inspection. The explicit induction premise
+is universal totality for the strictly smaller head query pair; no global
+pair/pair instance or parent return is assumed. `Rust.SourceEval.Evaluator.entry_pair_head_scope_complete` retains native queries/Box-field views, fresh
+payload/return storage, complete ownership, original loan origins and stable
+prefix worlds at every larger helper bound pair. A repeated table-owned alias
+consumer discharges the smaller contract using proved empty-input totality.
+The 4,112-job build and six affected Lean suites pass, including all eight
+recursive runtime cases. All 1,686 audited endpoints retain only the accepted
+axiom baseline; ten statement seeds cover 1,322 unique declarations with no
+unknown references. Thirteen ordered Rust tests and nine Python checks pass.
+Selected head failure/tail recursion, overflow/contraction/choice/insertion,
+parent return/closure and full pair/pair induction remain. Dynamic regions/
+destructors, public maximum/cold-table teardown, wrappers/input policy/resources/
+G3 and every other planning obligation remain open. The full goal stays active.
+
+[Complete actual evaluator empty-query miss execution](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-empty-totality.md) now
+constructs parsed entry, lookup, all eleven miss-setup and 47 empty-branch
+actions, native insertion, both empty routes, return and checked closure.
+`Rust.SourceEval.Evaluator.empty_miss_total` derives the empty witness/inserted
+table, readable output, complete ownership/coverage and one exact final world,
+packet and full cost at every larger fuel/readback pair. Original query-tuple
+loans and temporary embedding views permit legal query/table/caller aliases;
+no successful physical run, cache soundness or global owner/loan disjointness
+is assumed. The 4,093-job build and six affected Lean suites pass, including
+eight recursive runtime cases and two whole-invocation table-alias consumers.
+Thirteen ordered Rust tests and nine Python frontend regressions pass.
+All 1,652 audited endpoints retain only the accepted axiom baseline; ten
+statement seeds cover 1,314 unique declarations with no unknown references.
+Pair/pair recursion/overflow/failure, dynamic regions/destructors, public
+maximum/cold-table teardown, wrappers/input policy/resources/G3 and every other
+planning obligation remain open. The full goal remains active.
+
+[Constructed evaluator miss setup and native word routing](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-miss-setup.md) now
+constructs all eleven miss-setup instructions after parsed native entry and the
+common lookup prefix. Exact shared-pointer copies assemble tuple 13, whose loans
+are proved to originate below the pre-entry memory bound; all temporary roots
+retire. `Rust.SourceEval.Evaluator.entry_miss_setup_complete` retains complete
+ownership, native inputs/tuple, fresh empty return storage and stable prefix
+worlds at every larger helper fuel/readback pair. Both actual word inspections
+and native routing check. A table-owned repeated-query-alias consumer passes.
+The 4,072-job build and six affected Lean suites pass, including eight recursive
+runtime cases. All 1,599 audited endpoints use only the accepted axiom baseline;
+ten statement seeds cover 1,109 unique declarations with no unknown references.
+Thirteen ordered Rust tests and nine Python frontend regressions pass. Empty-
+branch insertion/return, pair/pair recursion/overflow/failure, public maximum,
+dynamic regions/destructors and the remaining planning targets stay open.
+The full goal remains active.
+
+[Complete actual evaluator cache-hit execution](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-cache-hit-totality.md) now
+constructs parsed entry, lookup, all twenty hit actions, return and checked closure
+from independent native readable packets and complete ownership. Query-loan
+origins derive selected fresh stack-root permissions while permitting queries
+inside table-owned Boxes. `Rust.SourceEval.Evaluator.cache_hit_total` returns the
+cached result and unchanged native table, complete output/caller/external owner
+resources, and one exact final world/packet/full cost at every larger fuel/readback
+pair. No cache soundness or successful physical run is assumed. The 4,061-job
+build and five affected suites pass, including eight recursive runtime cases and
+a whole-invocation table-alias consumer. All 1,559 audited endpoints use only the
+accepted axiom baseline; ten statement seeds cover 1,326 unique declarations with
+zero unknown references. Thirteen ordered Rust tests and nine Python frontend
+checks pass. Empty-query misses,
+pair/pair recursion/overflow/failure, public maximum, dynamic regions/destructors
+and the remaining planning targets stay open; the full goal remains active.
+
+[Complete common evaluator prefix and native lookup routing](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-common-prefix.md) now
+constructs actual parsed entry and all fourteen common instructions through
+lookup-temporary retirement, followed by actual native hit/miss inspection.
+The checked scope retains the independent lookup answer, ended table view 6,
+fresh empty return storage, original caller bytes and complete ownership/coverage.
+Shared query/table/caller aliases remain allowed. Branch bodies, recursive
+budget composition, return/closure, public maximum, dynamic regions/destructors
+and the other planning targets remain open. The 4,042-job build and five affected
+suites pass, including all eight recursive runtime cases and new warm-alias/cold-
+caller consumers. The 1,480-endpoint audit includes 15 new theorems with only the
+accepted axiom baseline. Ten selected statement seeds cover 1,085 unique
+declarations with no unknown references. The full goal remains active.
+
+## VM caches
+
+On virtiofs VMs, put build outputs on VM-local disk before running Lean,
+Cargo, Charon, or extension builds. From the repository root:
+
+```bash
+dev/setup-build-caches.sh
+dev/setup-build-caches.sh --status
+```
+
+The helper mounts the **nested** `proofs/.lake`, experiment Lake caches,
+`rust/target`, and every standalone crate's `target`. It uses local storage
+under `/var/cache/common-subtree/<device:inode>/`, so separate checkouts have
+separate caches. Override with an absolute `SUBTREE_BUILD_CACHE_ROOT` on local
+disk if necessary; use the same override when checking or unmounting.
+Every mounted path must report `bind-mounted` and a local filesystem such as
+ext4. Existing unrelated mounts and symlinks are refused. Local-disk hosts and
+CI are left alone. The helper does not copy host caches: first builds populate
+independent guest caches. It does not require the tools submodule.
+
+Mounts disappear on reboot. Rerun setup before resuming; use
+`dev/setup-build-caches.sh --unmount` after stopping builds to reveal the
+untouched host directories.
+Do not replace cache directories with symlinks into the VM. The shared tools'
+`setup-lake-cache.sh` resolves Git roots and would mount the wrong `.lake`
+for this repository's nested project.
+
+`CARGO_TARGET_DIR` or `--target-dir` can redirect Cargo away from the mounted
+paths; verify the actual output directory if either is set. CMake supplies an
+explicit `<build-dir>/cargo-target`, so `CARGO_TARGET_DIR` alone does not relocate
+wheel builds. Use a local build directory, for example:
+
+```bash
+local_build=$(mktemp -d /var/tmp/subtree-wheel.XXXXXX)
+findmnt -T "$local_build"  # must be local disk, e.g. ext4
+python3 -m pip wheel . --no-deps --wheel-dir /tmp/common-subtree-wheels \
+  --config-settings=build-dir="$local_build" \
+  --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF \
+  --config-settings=cmake.define.REQUIRE_RUST_EXTENSIONS=ON
+```
+
+Keep Cargo/Rustup homes and any additional custom output directories on local
+disk as well. Confirm with `findmnt -T <path>`.
+
+## Optional formalization tools
+
+The pinned `submodules/aiq-lean-formalization-tools` checkout provides `leanq`,
+`aiq-lean`, `lake-build-report`, and `lean-warning-fix`. It is development
+tooling; ordinary builds still fetch only their pinned Lake dependencies.
+
+```bash
+git submodule update --init submodules/aiq-lean-formalization-tools
+python3 -m pip install -e ./submodules/aiq-lean-formalization-tools
+leanq --project proofs libs
+leanq --project proofs --lib SubtreeProofs index
+leanq --project proofs --lib SubtreeProofs query --name maximum_common
+```
+
+Use `leanq axioms`, `deps`, `rdeps`, and `statement` for elaborated evidence;
+see the submodule's `docs/leanq.md`. Indexes under `.leanq/` are ignored.
+
+## Rust extraction boundary
+
+`dev/regenerate_rust_lean.sh` downloads the x86-64 Linux release
+`nightly-2026.11.09-5a392f4`, verifies archive SHA-256
+`54982f0f6bb8ec7080ef9d2a23932aebe6e3c032f32015963bbccc43103f723a`,
+and invokes its bundled Charon and Aeneas. The compatible Charon revision is
+`454586e9b770231e66d2062993e632dfc06463e2`; extraction uses Rust
+`nightly-2026-09-17` with `rustc-dev`, `rust-src`, and `miri`. Set `AENEAS_BIN_DIR`
+to an existing copy of this exact release to reuse an installation. The
+release archive includes its Lean backend sources, but Lake fetches those
+sources independently at the pinned revision.
+
+The script regenerates both `verified_ordered_core` and
+`verified_assignment_core`; `--check` compares fresh outputs with their
+maintained generated modules.
+It also regenerates the four-function normal-path operational lookup model
+and a real temporary Rust extra-comparison mutation using the same pinned
+Charon/Rust toolchain. It also retains the entire JSON of both extractions,
+normalizing only the two output-destination options. The Lean reader and
+kernel-checked concrete certificates validate both control normalizations;
+the Python control reifier is no longer trusted for those certificates.
+The immutable-reference/primitive model, typed heap adequacy and Charon/Rust
+extraction remain explicit boundaries. These are source-control cost results,
+not heapful Rust/Aeneas runtime semantics. See the
+[source certificates](../docs/planning/lean-complexity-campaign/evidence/lookup-source-certificates.md)
+and historical [lookup pilot report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-pilot.md).
+Intermediate LLBC files are generated locally and ignored. Generated Lean
+must never be edited to make a proof pass.
+
+`Rust/LookupHeap{Memory,Typing,Primitives,Execution,Inputs,Refinement}.lean`
+adds addressed execution and typed readback for represented immutable heap
+inputs, with exact source currencies and fresh Box-cell growth. It proves
+lookup success at sufficient fuel and constructs input layouts for every native
+table/query. Unique ownership/destruction, stack references, checked JSON field
+typing and official LLBC/Rust adequacy remain open. These are logical source
+currencies, not constant-time list-store or physical memory/runtime guarantees.
+See the [heap realization report](../docs/planning/lean-complexity-campaign/evidence/lookup-heap-realization.md).
+
+`Rust/LookupHeap{Ownership,Layout,ReturnOwnership}.lean` now proves exclusive
+returned ownership for the generated copy/result-copy/lookup bodies. Exact
+cell/heap layout proofs connect actual addressed execution to fresh postorder
+regions. The output ownership-occurrence list covers every new Box exactly
+once and has length equal to the allocation counter; no input Box is reused as
+owned output. Intermediate resets/destruction, stack lifetimes and official
+source adequacy remain separate. The existing `Tests/LookupHeap.lean` command
+also checks ownership countermodels. See the
+[returned ownership report](../docs/planning/lean-complexity-campaign/evidence/lookup-return-ownership.md).
+
+`Rust/LookupFrame*.lean` now kernel-checks both actual bodies' local ownership
+transitions and proves soundness with concrete guarded execution traces.
+Completed normal runs discard no owned Box at local reset/overwrite, consume
+moved drops only when empty, satisfy callee ownership profiles and leave no
+owned non-result locals on return. Recursive callee contracts are discharged
+by fuel induction; source-certificate composition retains the complete cost.
+`Tests/LookupFrame.lean` is in Lean CI. Spatial ownership, complete source
+typing/lifetimes and failed/unwind paths remain open; see the
+[frame-safety report](../docs/planning/lean-complexity-campaign/evidence/lookup-frame-safety.md).
+
+`Rust/LookupSourceTypes.lean`, `LookupTypedCode.lean` and
+`LookupType{Reader,Annotations,Certificate}.lean` now check lifetime-erased
+field layouts, signatures, local/nested type annotations, generic instances
+and static body constraints against independent `Heap.Shape`. Both concrete
+retained extractions pass `decide +kernel`; coverage includes all four ordinary
+helpers. `Tests/LookupSourceTypes.lean` rejects false annotations and type
+errors missed by control/ownership-class checks and is in Lean CI.
+These certificates do not prove operational type preservation or borrow/region
+semantics. Intermediate spatial ownership, stack liveness/lifetimes and
+official source adequacy remain open; see the
+[source-type report](../docs/planning/lean-complexity-campaign/evidence/lookup-source-typing.md).
+
+`Rust/LookupType{Primitives,Execution,Calls,Refinement}.lean` now proves actual
+successful-run type preservation from those checked constraints. It preserves
+reachable-cell/local typing through operations and control, discharges recursive
+callee contracts including generic Box, and composes both retained source
+programs with full cost/allocation correspondence. The source reader additionally
+retains checked argument/return local-prefix proofs. Both concrete certificates
+are kernel-checked with this stronger reader. `Tests/LookupTypePreservation.lean`
+is in Lean CI. This does not establish initialization/progress, intermediate
+spatial ownership, stack/borrow lifetimes or official typed LLBC/Rust adequacy.
+See the [preservation report](../docs/planning/lean-complexity-campaign/evidence/lookup-type-preservation.md).
+
+`Rust/LookupSpatial{Ownership,Locals,Primitives,Execution,Calls,Refinement}.lean`
+proves duplicate-free complete Box footprints across all active owner roots:
+live locals, operand temporaries and suspended caller frames. Recursive traces
+erase to the actual completed normal execution and retain complete cost.
+Both real programs are covered at all fuels; `lookup_spatial_total` composes
+native-input success, spatial/frame safety, exclusive returned ownership,
+independent typed readback and exact event/allocation bounds.
+`Tests/LookupSpatial.lean` is in Lean CI. Stack allocation/liveness, borrow
+lifetimes, official source adequacy, freeing/mutation and failure/unwind paths
+remain open. Shared pointees do not become owners merely by representation.
+See the [spatial report](../docs/planning/lean-complexity-campaign/evidence/lookup-spatial-ownership.md).
+
+`Rust/LookupStack{Code,State,Primitives,Execution,Calls,Certificate,Refinement}.lean`
+retains distinct allocation/deallocation markers and proves initialized reads,
+allocated writes and exact local storage/value-state consistency through
+completed normal recursive runs. Both retained source bodies and exact local
+declaration counts pass kernel certificates. `lookup_stack_total` composes
+storage/spatial/frame traces, native success, returned ownership, typed readback
+and existing costs. `Tests/LookupStack.lean` is in Lean CI. The concrete
+certificate module can take several minutes for full kernel reduction; keep
+the same live build session until it finishes. Logical local-storage discipline
+does not model physical stack addresses or borrow-region/lifetime semantics,
+official source adequacy, freeing/mutation or failed/unwind paths. See the
+[storage report](../docs/planning/lean-complexity-campaign/evidence/lookup-stack-storage.md).
+
+`Rust/LookupBorrow{Loans,Places,Primitives,Certificate,Execution,Calls,Outputs,Refinement}.lean`
+proves dynamic immutable shared loans backed by actual typed earlier-heap reads.
+Both retained programs pass kernel-checked source route/type/body certificates.
+Intermediate local/temporary loan traces, recursive calls and borrow-free
+ordinary results compose with native lookup's storage/spatial/frame safety,
+typed readback and exact existing currencies. `Tests/LookupBorrow.lean` is in
+Lean CI. A fresh-root borrow can be well typed while outside this stronger
+old-root profile; the tests do not claim such a borrow is Rust-invalid.
+Source region binding/outlives and official interpretation adequacy remain
+open, as do physical provenance, mutable/freeing and failed/unwind behavior.
+See the [shared-loan report](../docs/planning/lean-complexity-campaign/evidence/lookup-shared-loans.md).
+
+`Rust.contractionBudget_refines_tree` proves that a genuine tree edge
+contraction agrees with the generated `remaining_edges_after_contraction`
+operation whenever a `u32` represents the input edge count. The positive
+case cannot underflow, and zero returns `None`. This establishes the W6
+feasibility spike. The later `Rust/OrderedSolver.lean` module verifies the
+actual structural-witness solver: `largest_common_embedding_of_trees`
+proves successful execution, an independent maximum tree, and the exact
+edge score whenever both input trees have fewer than 2^32 edges. Rust
+representation/Dyck-word round trips are proved. Its reference recursion
+is exponential. `Rust/MemoizedOrderedSolver.lean` additionally verifies the
+actual owned-memo entry point and the exact returned-cache correspondence,
+including uniqueness and state bounds. Its association-list scans and payload
+copies remain representation costs to refine; index witnesses, adapter
+verification and efficient dictionary performance are open. The Aeneas model abstracts
+allocation and recursive stack resources, so the theorem is a functional
+correctness result rather than a platform memory-budget guarantee.
+Rust compilation, Charon/Aeneas translation, and the models of supported Rust
+operations are explicit translation trust boundaries. Lean checks the resulting
+refinement proof. The mathematical tree relation remains independent of them.
+
+The ordered crate's root-preserving and arbitrary-root isomorphism reference
+APIs are also verified in `Rust/OrderedRootedIsomorphism.lean` and
+`Rust/OrderedArbitraryIsomorphism.lean`. For inputs below the u32 edge-count
+limit they return independently maximum adjacency-preserving ordered subtrees
+with exact scores. Structural forest interpretation agrees with the existing
+two-sided Dyck/tree bridge. These exponential reference functions make no
+memoization or running-time claim; original index maps and vertex-pair Python
+conversion remain open.
+
+The original-index LCBE wrapper is verified in `Rust/IndexedOrderedEntrypoint.lean`.
+`maximum_common_embedding_indexed_of_trees` composes the actual memoized optimum,
+checked canonical preorder numbering and total indexed reconstruction. It returns
+an independently maximum tree, exact score and actual deletions from both canonical
+originals. Original edge/pair indices are unique and in bounds, with exactly one
+per scored edge. The input bound is fewer than 2^32 edges per tree. These are pair
+positions, with token/vertex conversion separate. Backtracking reconstruction has
+no optimized cost theorem; the shape memo operation bound does not bound this
+complete wrapper's runtime.
+
+`Rust/TokenParserEntrypoint.parse_balanced_tokens_total_spec` verifies the
+actual flat Boolean parser on every represented input: exact independent
+acceptance/rejection, complete original shape and original opening/closing
+coordinate table. The admitted domain is the independent Dyck encoding with
+fewer than 2^32 pairs. Universal source safety/termination and accepted-input
+coordinate contents are proved separately and composed. Token emission and
+Python/NetworkX conversion remain open; the same operation/allocation model
+boundary applies.
+
+The exact assignment core has reproducible generated semantics and complete
+public entry-point total correctness in `Rust/AssignmentEntrypoint.lean`.
+`min_cost_assignment_total_spec` verifies every represented input, returning
+an independent optimum with exact feasible/tight exported potentials on
+admitted square i64 matrices, or the specified size/shape rejection. Numeric
+ranges, search/augmentation termination and all driver invariants are derived
+inside the proof. `Rust/MatchingEntrypoint.lean` proves the actual rectangular
+optional signed-i64 partial-matching public API total contract, including exact
+input-index pair membership, list uniqueness, independent global optimality,
+exact weight and prescribed shape/size rejection. Actual construction,
+assignment, decoding and checked weight conversion are verified. Graph/Python
+integration and implementation costs remain open. The actual deletion-family
+reference API is verified by
+`Rust/MatchingDeletionEntrypoint.max_weight_matching_deletions_total_spec`,
+including the original optimum, all deleted optima, exact original indices,
+weights and unmatched-result reuse. It fully recomputes matched deletions;
+paper one-augmentation repair and optimized costs remain separate obligations. The same supported-operation
+and allocation-model boundaries apply. The pinned release
+emits a generic unknown-externals warning in single-file mode for this crate;
+a split-file diagnostic emitted only `Types.lean` and `Funs.lean`, and the
+maintained module compiles against the supplied Aeneas models without a custom
+external-model file. This diagnostic is not a substitute for final endpoint
+dependency review.
+
+`Rust/AssignmentArithmetic.lean` locally imports the bodies of the pinned signed
+checked-addition/subtraction aliases with `import all` for their respective
+`Aeneas.Std.Scalar.CheckedOps` modules. Their published specifications name the
+underlying generic operations rather than the machine aliases. These scoped
+imports permit ordinary definitional bridges; the dependency pin and generated
+Rust module are unchanged by those proofs.
+
+## Endpoint dependency audit
+
+An opt-in audit module is `BaselineAudit.lean`. Run it at a milestone and
+capture output, rather than putting declaration inventories in normal builds:
+
+```bash
+(cd proofs && lake env lean BaselineAudit.lean) > /tmp/subtree-axioms.log
+```
+
+The initial reviewed baseline permits `propext`, `Classical.choice`, and
+`Quot.sound`. Later dependency audits compare against that set and report
+only differences. This audit is separate from routine compilation.

@@ -1,0 +1,104 @@
+# Verified ordered-tree reference core
+
+This safe Rust crate represents an unlabeled balanced word by an empty case or
+a matched pair's interior and suffix. Every value is balanced by construction.
+The singleton tree has the empty word and edge score zero.
+
+`largest_common_embedding` returns a structural witness and an exact `u32`
+edge count using the 2004 three-branch recurrence. It uses checked arithmetic;
+`None` reports candidate-score overflow. `copy_word`, `concatenate`, and
+`choose_longer` use the subset supported by the pinned Charon/Aeneas release.
+Explicit Option matches avoid a missing model for Rust's `?` implementation in
+that release. Generated Lean is never edited.
+
+The Lean theorem
+`SubtreeProofs.Rust.OrderedSolver.largest_common_embedding_of_trees`
+proves: for every pair of independently specified finite ordered trees with
+fewer than 2^32 edges each, the actual translated Rust function succeeds,
+returns an independently maximum common contracted tree, and reports its exact
+edge count. Both representation round trips are proved. Checked additions fit
+under those input bounds; no overflow or divergence is admitted in the theorem.
+
+`maximum_common_embedding` is the memoized entry point. Its real generated
+function is certified by `Rust.MemoizedOrderedSolver.maximum_common_embedding_of_trees`.
+Every cache update refines the numeric Lean memo table exactly;
+`memoized_common_embedding_cache_bound` transfers the finite D-product bound
+and uniqueness of cached keys to the actual Rust result. The owned association
+list has linear scans and copies witnesses; it is not the paper's expected
+constant-time dictionary. `largest_common_embedding` remains the independent
+exponential source baseline. Both are checked against all tree pairs through
+six edges.
+
+`isomorphism::rooted_common_isomorphism` preserves both tree roots;
+`isomorphism::largest_common_isomorphism` may choose any actual descendant
+root. They skip whole child subtrees and preserve adjacency, rather than
+splicing grandchildren as contractions do. Both have compiled end-to-end
+refinement theorems under `Rust.OrderedIsomorphism` with suffix
+`rooted_common_isomorphism_of_trees` and `largest_common_isomorphism_of_trees`.
+For every pair of ordered trees with fewer than 2^32 edges each, the actual
+translated functions terminate successfully, return independently optimal
+tree witnesses and report exact edge scores. All checked ranges are derived.
+Both are exponential reference recursions and are separately checked against
+whole-tree pruning/descendant enumeration on all 38,809 pairs through six edges.
+The shared historical `CommonEmbedding` payload stores a word and score;
+the new APIs have their own independent isomorphism contracts.
+
+`indexed_isomorphism::maximum_common_isomorphism_indexed` now reconstructs
+original preorder pair identities around those structural isomorphism solvers.
+`token_matching::maximum_common_token_isomorphism` composes parsing, structural
+optimization, indexed reconstruction and token emission. The opt-in Python
+`reference-rust` backend exposes this unweighted API through balanced sequences
+and NetworkX, for general and root-preserving modes. The **new reconstruction
+and token composition are tested/extracted, not yet source proved**. Existing
+structural proofs are preserved; their theorem does not establish the new
+indexed boundary. This remains an exponential small-input reference and is
+never selected by `auto`.
+
+`indexed::maximum_common_embedding_indexed` is a new tested/extracted reference
+that reconstructs the optimum shape in both original inputs. Its indexed words
+carry zero-based opening/preorder pair identities. Independent labeled-tree
+contraction tests validate all feasible/infeasible requested shapes and both
+public optimum witnesses on all 38,809 pairs through six edges. Copying,
+concatenation, checked preorder numbering and total reconstruction now have
+compiled source proofs. Reconstruction rejects exactly independently infeasible
+patterns and otherwise returns a valid indexed contraction of the requested
+shape. The complete actual public API is proved by
+`Rust.IndexedOrderedSolver.maximum_common_embedding_indexed_of_trees`:
+an independently maximum tree, exact score and deletions from both canonical
+original indexed inputs. `maximum_common_embedding_indexed_indices` proves
+unique original edge/pair identities in bounds, one per output edge. These
+are pair preorder indices; token-position and NetworkX vertex conversion are
+separate obligations.
+This is a backtracking reconstruction and makes no optimized cost claim.
+
+`tokens::parse_balanced_tokens` is a tested/extracted flat-input prototype:
+`false` opens and `true` closes, and each pair records both original token
+positions in preorder. Unmatched tokens and an excluded u32 pair count have
+explicit errors. An independent stack oracle checks all 32,767 Boolean words
+through length fourteen, including every returned coordinate. The actual public parser is now proved by
+`Rust.TokenParser.parse_balanced_tokens_total_spec`: every represented input
+terminates, accepts exactly the independently balanced/bounded domain, and
+returns exact shape and original opening/closing coordinates on success.
+All accesses, mutable updates and arithmetic ranges are derived. Embedding token emission/composition is now proved by
+`Rust.TokenMatching.maximum_common_token_embedding_total_spec`.
+Python conversion remains a tested boundary; the new isomorphism indexed
+composition described above has its own open source-proof obligations.
+
+The established embedding/isomorphism entry points return tree witnesses;
+the new indexed reference additionally retains original input pair identities.
+The optimized existing PyO3 backend remains an independent baseline.
+The Aeneas allocation and recursive-call model does not establish an OS-level
+memory/stack budget. Performance refinement and the public input adapter remain
+separate obligations; this crate is not the default Python backend.
+
+Deterministic shape measurements are recorded in
+[`ordered benchmarks`](../../../dev/benchmarks/2026-11-14-ordered-memo.md).
+An independent test enumerates ordered-tree contractions directly and validates
+both the optimum and returned witness. The generation/build procedure and exact
+pins are documented in [`proofs/VERIFICATION.md`](../../../proofs/VERIFICATION.md).
+
+```bash
+cargo test --locked --manifest-path rust/crates/verified_ordered_core/Cargo.toml
+dev/regenerate_rust_lean.sh --check
+(cd proofs && lake build)
+```

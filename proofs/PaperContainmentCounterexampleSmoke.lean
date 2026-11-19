@@ -1,0 +1,12 @@
+module
+
+import SubtreeProofs
+
+#check SubtreeProofs.Paper2004.OrderedTree.PrintedContains.one_pair_drop_top_level
+#check SubtreeProofs.Paper2004.OrderedTree.nested_unique_top_level_decomposition
+#check SubtreeProofs.Paper2004.OrderedTree.PrintedContains.one_pair_drop_nested
+#check SubtreeProofs.Paper2004.OrderedTree.branching_example_not_printed
+#check SubtreeProofs.Paper2004.OrderedTree.branching_example_printed_common_at_most_one
+#check SubtreeProofs.Paper2004.OrderedTree.branching_example_operational_common
+#check SubtreeProofs.Paper2004.OrderedTree.branching_example_operational_common_optimal
+#check SubtreeProofs.Paper2004.OrderedTree.printed_containment_not_complete

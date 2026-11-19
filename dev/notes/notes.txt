@@ -1,0 +1,30 @@
+Might be able to implement the non-ordered algorithm from: 
+
+https://drops.dagstuhl.de/storage/00lipics/lipics-vol058-mfcs2016/LIPIcs.MFCS.2016.33/LIPIcs.MFCS.2016.33.pdf 2016
+
+Faster Algorithms for the Maximum Common Subtree Isomorphism Problem - 2016, Droschinsky, Kriege, Mutzel - https://arxiv.org/abs/1602.07210
+
+Largest Weight Common Subtree Embeddings with Distance Penalties - 2018, Droschinsky, Kriege, Mutzel - https://arxiv.org/pdf/1805.00821
+
+
+In [Droschinsky_2018] they claim there is a difference between:
+
+
+Simply state the definition of each problem:
+
+The largest common embeddable subtree (studied by Gupta and Nishimura)
+ - https://www.academia.edu/download/71168500/pl0000921220211003-10199-s9znfj.pdf
+ - /ipfs/QmRX2X97Lap6HyaJwkN2KcnrQ4q3grVqKyhz7W4UgA1CtW
+
+The maximum common embedded subtree (studied by Lozano and Valiente)
+
+
+
+2025-03-12
+
+Got a response from Droschinsky with reference implementations.
+
+
+2026-05-12
+
+Ported the safe to make public parts of those implementations to Rust.

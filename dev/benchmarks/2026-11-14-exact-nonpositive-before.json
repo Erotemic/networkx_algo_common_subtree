@@ -1,0 +1,1502 @@
+{
+  "python": "3.13.2 (main, Mar 17 2025, 21:02:54) [Clang 20.1.0 ]",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "package_path": "/tmp/common-subtree-exact-family-install/networkx_algo_common_subtree/__init__.py",
+  "extension_path": "/tmp/common-subtree-exact-family-install/networkx_algo_common_subtree/_rust.cpython-313-x86_64-linux-gnu.so",
+  "extension_sha256": "66287efaa186f9d6df921738ffa03d37456165ad9e2f8408b84e1954c46ca7a9",
+  "configuration": {
+    "sizes": "4,8",
+    "repeat": 3,
+    "warmup": 1,
+    "seed": 2016,
+    "json": "/home/joncrall/code/networkx_algo_common_subtree/dev/benchmarks/2026-11-14-exact-nonpositive-before.json"
+  },
+  "cases": [
+    {
+      "shape": "uniform",
+      "left_size": 4,
+      "right_size": 4,
+      "weights": [
+        [
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "shape": "signed-sparse",
+      "left_size": 4,
+      "right_size": 4,
+      "weights": [
+        [
+          1,
+          9,
+          0,
+          null
+        ],
+        [
+          0,
+          -7,
+          null,
+          1
+        ],
+        [
+          1,
+          null,
+          0,
+          -7
+        ],
+        [
+          -7,
+          0,
+          -7,
+          0
+        ]
+      ]
+    },
+    {
+      "shape": "unused-right",
+      "left_size": 4,
+      "right_size": 8,
+      "weights": [
+        [
+          -7,
+          -7,
+          -7,
+          1,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          1,
+          0,
+          null,
+          9,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          -7,
+          0,
+          9,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          0,
+          9,
+          -7,
+          1,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "shape": "tall",
+      "left_size": 8,
+      "right_size": 4,
+      "weights": [
+        [
+          0,
+          null,
+          1,
+          null
+        ],
+        [
+          0,
+          1,
+          null,
+          -7
+        ],
+        [
+          9,
+          9,
+          null,
+          1
+        ],
+        [
+          9,
+          -7,
+          0,
+          -7
+        ],
+        [
+          0,
+          null,
+          1,
+          9
+        ],
+        [
+          null,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          -7,
+          0,
+          null
+        ],
+        [
+          9,
+          9,
+          null,
+          9
+        ]
+      ]
+    },
+    {
+      "shape": "nonpositive",
+      "left_size": 4,
+      "right_size": 4,
+      "weights": [
+        [
+          0,
+          0,
+          0,
+          -7
+        ],
+        [
+          0,
+          null,
+          -7,
+          null
+        ],
+        [
+          0,
+          -7,
+          0,
+          0
+        ],
+        [
+          null,
+          null,
+          null,
+          0
+        ]
+      ]
+    },
+    {
+      "shape": "zero-columns",
+      "left_size": 4,
+      "right_size": 0,
+      "weights": [
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "shape": "uniform",
+      "left_size": 8,
+      "right_size": 8,
+      "weights": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "shape": "signed-sparse",
+      "left_size": 8,
+      "right_size": 8,
+      "weights": [
+        [
+          -7,
+          0,
+          1,
+          9,
+          9,
+          -7,
+          null,
+          0
+        ],
+        [
+          9,
+          9,
+          0,
+          0,
+          null,
+          null,
+          0,
+          1
+        ],
+        [
+          null,
+          -7,
+          0,
+          -7,
+          -7,
+          9,
+          9,
+          1
+        ],
+        [
+          null,
+          -7,
+          null,
+          9,
+          null,
+          0,
+          0,
+          1
+        ],
+        [
+          -7,
+          -7,
+          null,
+          1,
+          -7,
+          -7,
+          9,
+          -7
+        ],
+        [
+          1,
+          -7,
+          9,
+          9,
+          0,
+          null,
+          0,
+          1
+        ],
+        [
+          -7,
+          1,
+          1,
+          0,
+          -7,
+          -7,
+          1,
+          1
+        ],
+        [
+          9,
+          -7,
+          0,
+          null,
+          -7,
+          0,
+          9,
+          1
+        ]
+      ]
+    },
+    {
+      "shape": "unused-right",
+      "left_size": 8,
+      "right_size": 16,
+      "weights": [
+        [
+          1,
+          null,
+          null,
+          9,
+          1,
+          1,
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          0,
+          0,
+          null,
+          9,
+          9,
+          -7,
+          9,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          0,
+          -7,
+          0,
+          1,
+          null,
+          null,
+          -7,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          -7,
+          1,
+          9,
+          1,
+          0,
+          null,
+          9,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          1,
+          1,
+          null,
+          1,
+          -7,
+          9,
+          -7,
+          -7,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          0,
+          -7,
+          0,
+          9,
+          1,
+          null,
+          1,
+          -7,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          1,
+          -7,
+          0,
+          -7,
+          0,
+          null,
+          1,
+          9,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          1,
+          null,
+          9,
+          0,
+          9,
+          9,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "shape": "tall",
+      "left_size": 16,
+      "right_size": 8,
+      "weights": [
+        [
+          1,
+          9,
+          -7,
+          null,
+          1,
+          -7,
+          1,
+          1
+        ],
+        [
+          -7,
+          -7,
+          1,
+          null,
+          1,
+          1,
+          -7,
+          9
+        ],
+        [
+          1,
+          -7,
+          0,
+          1,
+          9,
+          9,
+          9,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          1,
+          9,
+          null,
+          1
+        ],
+        [
+          1,
+          1,
+          0,
+          1,
+          9,
+          null,
+          0,
+          0
+        ],
+        [
+          9,
+          0,
+          9,
+          0,
+          0,
+          1,
+          null,
+          0
+        ],
+        [
+          1,
+          0,
+          9,
+          0,
+          9,
+          -7,
+          9,
+          -7
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          9
+        ],
+        [
+          0,
+          -7,
+          9,
+          -7,
+          9,
+          -7,
+          0,
+          9
+        ],
+        [
+          9,
+          null,
+          0,
+          null,
+          -7,
+          1,
+          -7,
+          -7
+        ],
+        [
+          0,
+          -7,
+          9,
+          1,
+          0,
+          -7,
+          1,
+          9
+        ],
+        [
+          -7,
+          9,
+          9,
+          9,
+          1,
+          1,
+          null,
+          0
+        ],
+        [
+          0,
+          9,
+          0,
+          null,
+          null,
+          -7,
+          -7,
+          -7
+        ],
+        [
+          0,
+          null,
+          1,
+          null,
+          9,
+          -7,
+          -7,
+          1
+        ],
+        [
+          -7,
+          -7,
+          -7,
+          0,
+          9,
+          -7,
+          1,
+          1
+        ],
+        [
+          9,
+          null,
+          9,
+          9,
+          9,
+          null,
+          0,
+          9
+        ]
+      ]
+    },
+    {
+      "shape": "nonpositive",
+      "left_size": 8,
+      "right_size": 8,
+      "weights": [
+        [
+          -7,
+          null,
+          null,
+          -7,
+          null,
+          0,
+          0,
+          null
+        ],
+        [
+          -7,
+          null,
+          0,
+          -7,
+          null,
+          -7,
+          null,
+          0
+        ],
+        [
+          -7,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          null
+        ],
+        [
+          0,
+          0,
+          null,
+          0,
+          0,
+          -7,
+          0,
+          0
+        ],
+        [
+          -7,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          0
+        ],
+        [
+          -7,
+          -7,
+          -7,
+          0,
+          null,
+          0,
+          null,
+          null
+        ],
+        [
+          -7,
+          0,
+          null,
+          -7,
+          null,
+          -7,
+          0,
+          null
+        ],
+        [
+          -7,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          -7
+        ]
+      ]
+    },
+    {
+      "shape": "zero-columns",
+      "left_size": 8,
+      "right_size": 0,
+      "weights": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "case_id": 0,
+      "backend": "public-family",
+      "samples_seconds": [
+        2.0967e-05,
+        1.7065e-05,
+        1.5944e-05
+      ],
+      "median_seconds": 1.7065e-05,
+      "weights": [
+        4,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "case_id": 0,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        1.2907e-05,
+        1.3065e-05,
+        1.2799e-05
+      ],
+      "median_seconds": 1.2907e-05,
+      "weights": [
+        4,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "case_id": 0,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        2.5303e-05,
+        3.4158e-05,
+        2.4449e-05
+      ],
+      "median_seconds": 2.5303e-05,
+      "weights": [
+        4,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "case_id": 1,
+      "backend": "public-family",
+      "samples_seconds": [
+        2.7842e-05,
+        1.3752e-05,
+        1.2896e-05
+      ],
+      "median_seconds": 1.3752e-05,
+      "weights": [
+        11,
+        10,
+        2,
+        11,
+        10
+      ]
+    },
+    {
+      "case_id": 1,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        9.987e-06,
+        1.0368e-05,
+        1.0221e-05
+      ],
+      "median_seconds": 1.0221e-05,
+      "weights": [
+        11,
+        10,
+        2,
+        11,
+        10
+      ]
+    },
+    {
+      "case_id": 1,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        2.2887e-05,
+        2.2748e-05,
+        2.3495e-05
+      ],
+      "median_seconds": 2.2887e-05,
+      "weights": [
+        11,
+        10,
+        2,
+        11,
+        10
+      ]
+    },
+    {
+      "case_id": 2,
+      "backend": "public-family",
+      "samples_seconds": [
+        2.5372e-05,
+        2.5245e-05,
+        2.3686e-05
+      ],
+      "median_seconds": 2.5245e-05,
+      "weights": [
+        27,
+        27,
+        18,
+        18,
+        19,
+        27,
+        27,
+        27,
+        27
+      ]
+    },
+    {
+      "case_id": 2,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        2.0185e-05,
+        2.0824e-05,
+        2.0324e-05
+      ],
+      "median_seconds": 2.0324e-05,
+      "weights": [
+        27,
+        27,
+        18,
+        18,
+        19,
+        27,
+        27,
+        27,
+        27
+      ]
+    },
+    {
+      "case_id": 2,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        6.6269e-05,
+        6.596e-05,
+        6.5698e-05
+      ],
+      "median_seconds": 6.596e-05,
+      "weights": [
+        27,
+        27,
+        18,
+        18,
+        19,
+        27,
+        27,
+        27,
+        27
+      ]
+    },
+    {
+      "case_id": 3,
+      "backend": "public-family",
+      "samples_seconds": [
+        2.8199e-05,
+        3.2647e-05,
+        2.6838e-05
+      ],
+      "median_seconds": 2.8199e-05,
+      "weights": [
+        28,
+        19,
+        19,
+        27,
+        19
+      ]
+    },
+    {
+      "case_id": 3,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        3.0931e-05,
+        2.4153e-05,
+        3.0472e-05
+      ],
+      "median_seconds": 3.0472e-05,
+      "weights": [
+        28,
+        19,
+        19,
+        27,
+        19
+      ]
+    },
+    {
+      "case_id": 3,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        4.4415e-05,
+        4.1108e-05,
+        3.9719e-05
+      ],
+      "median_seconds": 4.1108e-05,
+      "weights": [
+        28,
+        19,
+        19,
+        27,
+        19
+      ]
+    },
+    {
+      "case_id": 4,
+      "backend": "public-family",
+      "samples_seconds": [
+        6.178e-06,
+        6.001e-06,
+        5.992e-06
+      ],
+      "median_seconds": 6.001e-06,
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case_id": 4,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        3.384e-06,
+        3.593e-06,
+        3.311e-06
+      ],
+      "median_seconds": 3.384e-06,
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case_id": 4,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        2.3864e-05,
+        2.3712e-05,
+        2.3809e-05
+      ],
+      "median_seconds": 2.3809e-05,
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case_id": 5,
+      "backend": "public-family",
+      "samples_seconds": [
+        2.953e-06,
+        2.652e-06,
+        2.654e-06
+      ],
+      "median_seconds": 2.654e-06,
+      "weights": [
+        0
+      ]
+    },
+    {
+      "case_id": 5,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        1.248e-06,
+        1.396e-06,
+        1.177e-06
+      ],
+      "median_seconds": 1.248e-06,
+      "weights": [
+        0
+      ]
+    },
+    {
+      "case_id": 5,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        2.867e-06,
+        2.736e-06,
+        2.628e-06
+      ],
+      "median_seconds": 2.736e-06,
+      "weights": [
+        0
+      ]
+    },
+    {
+      "case_id": 6,
+      "backend": "public-family",
+      "samples_seconds": [
+        8.4972e-05,
+        8.3894e-05,
+        8.1434e-05
+      ],
+      "median_seconds": 8.3894e-05,
+      "weights": [
+        8,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ]
+    },
+    {
+      "case_id": 6,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        8.3154e-05,
+        7.7734e-05,
+        7.5967e-05
+      ],
+      "median_seconds": 7.7734e-05,
+      "weights": [
+        8,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ]
+    },
+    {
+      "case_id": 6,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        0.000109312,
+        0.000119186,
+        0.000131411
+      ],
+      "median_seconds": 0.000119186,
+      "weights": [
+        8,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ]
+    },
+    {
+      "case_id": 7,
+      "backend": "public-family",
+      "samples_seconds": [
+        0.000120243,
+        9.1553e-05,
+        7.08e-05
+      ],
+      "median_seconds": 9.1553e-05,
+      "weights": [
+        64,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        63
+      ]
+    },
+    {
+      "case_id": 7,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        6.5536e-05,
+        6.6097e-05,
+        6.5813e-05
+      ],
+      "median_seconds": 6.5813e-05,
+      "weights": [
+        64,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        63
+      ]
+    },
+    {
+      "case_id": 7,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        9.9058e-05,
+        9.7355e-05,
+        0.000121994
+      ],
+      "median_seconds": 9.9058e-05,
+      "weights": [
+        64,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        63
+      ]
+    },
+    {
+      "case_id": 8,
+      "backend": "public-family",
+      "samples_seconds": [
+        0.000198119,
+        0.000183721,
+        0.000177765
+      ],
+      "median_seconds": 0.000183721,
+      "weights": [
+        55,
+        54,
+        55,
+        47,
+        46,
+        47,
+        47,
+        47,
+        46,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55
+      ]
+    },
+    {
+      "case_id": 8,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        0.000189027,
+        0.000168782,
+        0.000165076
+      ],
+      "median_seconds": 0.000168782,
+      "weights": [
+        55,
+        54,
+        55,
+        47,
+        46,
+        47,
+        47,
+        47,
+        46,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55
+      ]
+    },
+    {
+      "case_id": 8,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        0.000450456,
+        0.000460378,
+        0.000444548
+      ],
+      "median_seconds": 0.000450456,
+      "weights": [
+        55,
+        54,
+        55,
+        47,
+        46,
+        47,
+        47,
+        47,
+        46,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55
+      ]
+    },
+    {
+      "case_id": 9,
+      "backend": "public-family",
+      "samples_seconds": [
+        0.000205141,
+        0.000218942,
+        0.000205316
+      ],
+      "median_seconds": 0.000205316,
+      "weights": [
+        72,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63
+      ]
+    },
+    {
+      "case_id": 9,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        0.000179831,
+        0.000200974,
+        0.000197961
+      ],
+      "median_seconds": 0.000197961,
+      "weights": [
+        72,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63
+      ]
+    },
+    {
+      "case_id": 9,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        0.000259779,
+        0.00027777,
+        0.00025775
+      ],
+      "median_seconds": 0.000259779,
+      "weights": [
+        72,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63,
+        63
+      ]
+    },
+    {
+      "case_id": 10,
+      "backend": "public-family",
+      "samples_seconds": [
+        1.5007e-05,
+        1.43e-05,
+        1.3864e-05
+      ],
+      "median_seconds": 1.43e-05,
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case_id": 10,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        1.1325e-05,
+        1.148e-05,
+        1.1385e-05
+      ],
+      "median_seconds": 1.1385e-05,
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case_id": 10,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        0.000122936,
+        0.000122274,
+        0.000135655
+      ],
+      "median_seconds": 0.000122936,
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case_id": 11,
+      "backend": "public-family",
+      "samples_seconds": [
+        5.26e-06,
+        4.786e-06,
+        4.698e-06
+      ],
+      "median_seconds": 4.786e-06,
+      "weights": [
+        0
+      ]
+    },
+    {
+      "case_id": 11,
+      "backend": "raw-pyo3-family",
+      "samples_seconds": [
+        3.204e-06,
+        3.153e-06,
+        3.146e-06
+      ],
+      "median_seconds": 3.153e-06,
+      "weights": [
+        0
+      ]
+    },
+    {
+      "case_id": 11,
+      "backend": "public-single-loop",
+      "samples_seconds": [
+        4.63e-06,
+        4.657e-06,
+        4.481e-06
+      ],
+      "median_seconds": 4.63e-06,
+      "weights": [
+        0
+      ]
+    }
+  ]
+}

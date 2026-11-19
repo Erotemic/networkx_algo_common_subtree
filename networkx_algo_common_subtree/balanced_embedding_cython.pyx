@@ -93,6 +93,7 @@ python -c "from networkx_algo_common_subtree import balanced_embedding_cython; p
 
 """
 cimport cython
+from libc.math cimport isfinite
 
 from cpython.ref cimport PyObject
 from cpython.ref cimport Py_XINCREF, Py_XDECREF
@@ -131,12 +132,15 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
     """
     Depth first stack trajectory and replace try except statements with ifs
     """
-    cdef float pval_h, pval_t, val3, affinity
+    cdef double pval_h, pval_t, val3, affinity
     cdef SeqT seq1, seq2
     cdef SeqT a1, b1, head1, tail1, head_tail1
     cdef SeqT a2, b2, head2, tail2, head_tail2
     cdef SeqT subseq1, subseq2
     cdef SeqT new_head1, new_head2, new_tail1, new_tail2
+
+    if not full_seq1 or not full_seq2:
+        return 0, (full_seq1[:0], full_seq2[:0])
 
     if open_to_node is None:
         open_to_node = IdentityDictCython()
@@ -194,7 +198,13 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
                 continue
 
             # Case 1: The LCS involves this edge
-            affinity = float(node_affinity(t1, t2))
+            affinity_value = node_affinity(t1, t2)
+            try:
+                affinity = float(affinity_value)
+            except (TypeError, ValueError, OverflowError) as ex:
+                raise ValueError("node affinities must be finite nonnegative numbers") from ex
+            if not isfinite(affinity) or affinity < 0:
+                raise ValueError("node affinities must be finite nonnegative numbers")
             if affinity:
                 try_key = (head1, head2)
                 if try_key in _results:
@@ -223,7 +233,13 @@ def _lcse_iter_cython(SeqT full_seq1, SeqT full_seq2, dict open_to_close, node_a
                 cand3 = (-1, None)
 
             # We solved the frame
-            _results[key] = max(cand1, cand2, cand3)
+            # Objective ties do not impose an ordering on arbitrary tokens.
+            selected = cand1
+            if cand2[0] > selected[0]:
+                selected = cand2
+            if cand3[0] > selected[0]:
+                selected = cand3
+            _results[key] = selected
         stack.pop()
 
     found = _results[key0]
@@ -241,8 +257,8 @@ cdef tuple balanced_decomp_unsafe_cython(SeqT sequence, dict open_to_close):
     cdef int head_stop = 1
     cdef SeqT pop_open, pop_close, head, tail, head_tail
 
-    cdef str tok_curr = sequence[0]
-    cdef str want_close = open_to_close[tok_curr]
+    cdef object tok_curr = sequence[0]
+    cdef object want_close = open_to_close[tok_curr]
 
     for head_stop in range(1, len(sequence)):
         tok_curr = sequence[head_stop]

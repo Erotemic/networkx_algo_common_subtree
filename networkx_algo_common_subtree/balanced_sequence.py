@@ -24,6 +24,43 @@ class IdentityDict:
         return key
 
 
+def _normalize_node_affinity(affinity, *, check_weights=True):
+    """Normalize ordered scoring; custom affinities are finite nonnegative f64."""
+    import operator
+    from math import isfinite
+
+    if affinity == "auto" or affinity == "eq":
+        return operator.eq
+    if affinity is None:
+        return lambda a, b: True
+    if not callable(affinity):
+        raise ValueError("node_affinity must be None, 'auto', 'eq', or callable")
+    if not check_weights:
+        # Compiled backends check their extracted f64 directly.
+        return affinity
+
+    def checked(a, b):
+        output = affinity(a, b)
+        try:
+            value = float(output)
+        except (TypeError, ValueError, OverflowError) as ex:
+            raise ValueError("node affinities must be finite nonnegative numbers") from ex
+        if not isfinite(value) or value < 0:
+            raise ValueError("node affinities must be finite nonnegative numbers")
+        return value
+    return checked
+
+
+def _read_token_indices(sequence, indices):
+    """Read original token positions, retaining string/list/tuple containers."""
+    items = [sequence[index] for index in indices]
+    if isinstance(sequence, str):
+        return "".join(items)
+    if isinstance(sequence, list):
+        return items
+    return tuple(items)
+
+
 def generate_all_decomp(seq, open_to_close, open_to_node=None):
     """
     Generates all decompositions of a single balanced sequence by

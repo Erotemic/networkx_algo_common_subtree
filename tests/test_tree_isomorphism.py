@@ -273,8 +273,22 @@ def test_custom_large_case():
     tree1 = random_ordered_tree(10, seed=3)
     tree2 = random_ordered_tree(10, seed=2)
     tree1.add_edges_from(tree2.edges, weight=1)
+    # Ensure all edges have numeric weights for compatibility across
+    # networkx versions (some retain None for pre-existing edges).
+    nx.set_edge_attributes(
+        tree1,
+        {(u, v): (d.get("weight", 1) if d.get("weight", None) is not None else 1)
+         for u, v, d in tree1.edges(data=True)},
+        "weight",
+    )
     tree1 = nx.minimum_spanning_arborescence(tree1)
     tree2.add_edges_from(tree1.edges, weight=1)
+    nx.set_edge_attributes(
+        tree2,
+        {(u, v): (d.get("weight", 1) if d.get("weight", None) is not None else 1)
+         for u, v, d in tree2.edges(data=True)},
+        "weight",
+    )
     tree2 = nx.minimum_spanning_arborescence(tree2)
 
     tree1.remove_edge(4, 7)

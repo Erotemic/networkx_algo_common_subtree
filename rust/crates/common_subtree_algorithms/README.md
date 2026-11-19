@@ -1,0 +1,132 @@
+# Common subtree algorithms
+
+This crate is a deliberately sequestered Rust implementation space for weighted
+common-subtree algorithms on labeled trees. It is intended to become a compact
+third-party reference implementation of the graph algorithms described in these
+two public papers:
+
+- A. Droschinsky, N. M. Kriege, and P. Mutzel, "Faster Algorithms for the
+  Maximum Common Subtree Isomorphism Problem", arXiv:1602.07210,
+  https://arxiv.org/abs/1602.07210
+- A. Droschinsky, N. M. Kriege, and P. Mutzel, "Largest Weight Common Subtree
+  Embeddings with Distance Penalties", arXiv:1805.00821,
+  https://arxiv.org/abs/1805.00821
+
+## Name and terminology
+
+The crate is named `common_subtree_algorithms` so readers can understand the
+scope without already knowing paper-specific acronyms. When an acronym is useful
+in comments or tests, use it only after defining it:
+
+- **MCSI** means **maximum common subtree isomorphism**, the problem addressed by
+  the 2016 paper.
+- **Common subtree embedding with distance penalties** refers to the
+  largest-weight embedding objective from the 2018 paper. The crate currently
+  spells this out in public API names instead of introducing another acronym.
+
+## Scope
+
+The API is graph-only. It works with ordinary labeled trees, explicit scoring
+hooks, and weighted bipartite matching subproblems. It intentionally excludes
+application-specific parsing, visualization, chemistry/domain labels, and
+general-graph preprocessing. Those concerns can be layered above this crate later
+if the tree primitives prove correct and useful.
+
+Implemented in this overlay:
+
+- maximum-weight bipartite matching with optional forbidden edges and unmatched
+  vertices;
+- maximum-weight common connected subtree isomorphism for labeled trees, using
+  rooted dynamic programming and child matchings as in the 2016 paper;
+- an experimental largest-weight common subtree embedding routine with a
+  per-skipped-vertex distance penalty, following the high-level recurrence
+  structure of the 2018 paper.
+
+The embedding routine is intentionally conservative. It is meant to stabilize the
+core recurrence and test expectations before optimizing the repeated matching
+instances or adding a public Python/NetworkX-facing wrapper.
+
+## Validation strategy
+
+The crate now has several layers of tests:
+
+- hand-written smoke tests for the public API;
+- deterministic bipartite-matching tests that compare the Hungarian-based solver
+  against a brute-force matching oracle on small matrices;
+- maximum common subtree isomorphism tests that compare the dynamic program
+  against a slow exhaustive connected-subtree oracle on small labeled trees;
+- embedding tests that exercise skipped vertices, high-penalty fallback, zero
+  penalty long-path embeddings, and input-order symmetry.
+
+A separate pure-Python reference implementation lives in
+`networkx_algo_common_subtree.common_subtree_reference`. It directly enumerates
+small vertex subsets and bijections. That implementation is intentionally too
+slow for production, but it provides a readable executable specification for
+future conformance tests.
+
+Run the Rust-side tests with:
+
+```bash
+cargo test --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml
+```
+
+Run the Python reference tests with:
+
+```bash
+python -m pytest tests/test_common_subtree_reference.py
+```
+
+This crate is not wired into the Python extension yet. That is intentional: the
+Rust API and conformance tests should stabilize before exposing it through PyO3
+or a NetworkX conversion layer.
+
+
+## Verified foundations and the 2018 correction
+
+The reference embedding DP implements the separate mapped/skipped states in
+Lemma 5. When either realized path skips a vertex, the path contributes only
+penalties; edge compatibility and rewards apply only when both paths are
+single edges (Definition 4). Both paper discriminator fixtures return 1.75.
+The independent partial-injection test enumerates small mappings and reconstructs
+their paths, rather than using the solver recurrence or production scorer.
+The existing APIs permit an empty result of weight zero. Explicit
+`maximum_nonempty_common_subtree_isomorphism` and
+`largest_weight_nonempty_common_subtree_embedding_with_distance_penalty`
+entry points retain negative/zero nonempty optima and return `None` when no
+compatible vertex pair exists. Corresponding Python reference functions
+use the same explicit names. Negative or nonfinite penalties are rejected.
+Selected gains are compared strictly; every positive gain is eligible and
+lexicographic tie breaking applies only to exactly equal scores. Scoring queries
+must be deterministic and finite (or `None` for incompatibility). Nonfinite
+queried weights and accumulated scores panic in Rust and raise `ValueError` in
+the Python oracle. IEEE rounding and matching arithmetic still prevent an
+exact-real correctness claim for these floating reference solvers.
+
+Lean proves independent contraction/matching optima, the exact real dummy
+assignment reduction, 2016's rooted matching equality and fixed-root reduction,
+and explicit topological witness bridges for 2018. The separate ordered Rust
+core has verified reference and memoized solvers. These results do not verify
+this crate's Hungarian routine, graph representations or tree DP implementation. See
+[`proof evidence`](../../../proofs/PROOF_STATUS.md) and
+[`reproduction`](../../../proofs/VERIFICATION.md).
+
+## PyTorch-sized benchmarks
+
+The crate includes deterministic ResNet-like module-tree fixtures for performance
+regression tests.  They are approximate PyTorch module-containment trees, not
+full tensor data-flow graphs, and are intended to exercise partial weight-loading
+style perturbations such as wrapper modules, auxiliary squeeze-excitation blocks,
+adapters, and different depths.
+
+Run the quick benchmark with:
+
+```bash
+cargo bench --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml --bench pytorch_sized_trees
+```
+
+Run the full corpus with:
+
+```bash
+COMMON_SUBTREE_BENCH_PROFILE=full COMMON_SUBTREE_BENCH_REPEAT=10 \
+    cargo bench --manifest-path rust/crates/common_subtree_algorithms/Cargo.toml --bench pytorch_sized_trees
+```

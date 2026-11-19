@@ -1,0 +1,4 @@
+# Render source and native Reveal.js/PDF slide export.
+manim>=0.19,<0.21
+manim-slides>=5.6,<6
+PyMuPDF>=1.24,<2

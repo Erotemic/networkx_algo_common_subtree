@@ -1,0 +1,115 @@
+{
+  "date": "2026-11-16",
+  "proof_checkpoint": "267f35f",
+  "environment": {
+    "python": "3.13.2",
+    "packages": {
+      "manim": "0.20.1",
+      "manim-slides": "5.7.0",
+      "PyMuPDF": "1.28.2",
+      "numpy": "2.5.5",
+      "av": "19.0.2"
+    },
+    "ffmpeg": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+    "latex": "pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian)"
+  },
+  "source_sha256": {
+    "presentations/deck.py": "682f38b06599b3b780f246b8a89a077f759a6f2619682706fb676ff6bfe1d512",
+    "presentations/droschinsky_scenes.py": "16b6c9313645ef768a1e2dbcde744a89aeef3c6fc87ea45e40a78ab12144bd72",
+    "presentations/export.py": "ebb1be30d5c9a8255d86d662d4b9532c6dc7c5020428ac2f3addf0b50f23166c",
+    "presentations/formalization_scenes.py": "183c27497395fa6f4047b4d2b3f2c294a778b2de2f18692e5ea0eb7c77343027",
+    "presentations/lecture_primitives.py": "3940bd5544bbd2b0f23d9724013464e8cdef4e634777239b305254fdf9796c92",
+    "presentations/lozano_scenes.py": "8d3670638d08d31798426f83d922c139060faceb778cbcea9351739724bd961b",
+    "presentations/math_examples.py": "2887bb45eb076ace20f5b02198b672ce35e8e06c891a57fbab8c3ea8e601d4f8",
+    "presentations/narration.py": "5d09fa774e172c7bb268b32580d3aec722c128360a7a29b15bd91adf6f3addf8",
+    "presentations/render.py": "a61e96642a0dcc0442e048a4360a836cb946a89b0de3002ef2fbc9e4d0319ec3",
+    "presentations/scenes.py": "3af2b149636101370737e7d7083871d0712c11d89019691c081136846f4bba42",
+    "presentations/tex_preflight.py": "97d072707b967e9f9c4b04c9aa76ea5ae43662cdfe537ef3e6bcf84efa9a5b5c",
+    "presentations/visuals.py": "1c85dff34369b00b0cff63f9e72f62703862070249c92287971a01dbd8e9fcf1"
+  },
+  "quality": "l",
+  "tests": {
+    "command": "python presentations/render.py --check",
+    "passed": 32
+  },
+  "decks": {
+    "lozano": {
+      "scenes": 17,
+      "builds": 68,
+      "pdf_pages": 68,
+      "video_dimensions": [
+        [
+          854,
+          480
+        ]
+      ],
+      "minimum_fragment_frames": 8,
+      "local_html_video_references": 68,
+      "html": "presentations/renders/lozano-valiente-2004.html",
+      "html_sha256": "768f97a9d99b0c0b307f34c13fea6b26eb567191673bf11bfe676a032c1c5657",
+      "pdf": "presentations/renders/lozano-valiente-2004.pdf",
+      "pdf_sha256": "90fc9b66d30c0deabc302c441e71c82b54e8836763b8afbfbea3878bfdb3395c"
+    },
+    "droschinsky": {
+      "scenes": 19,
+      "builds": 73,
+      "pdf_pages": 73,
+      "video_dimensions": [
+        [
+          854,
+          480
+        ]
+      ],
+      "minimum_fragment_frames": 16,
+      "local_html_video_references": 73,
+      "html": "presentations/renders/droschinsky-2016-2018.html",
+      "html_sha256": "ff704d8f7476dc20eaae3924ec2a67e8afe97036211c45be7f089e8a87bbefce",
+      "pdf": "presentations/renders/droschinsky-2016-2018.pdf",
+      "pdf_sha256": "c565a23bd7cd81ab792fb7b4f5c049c6ce0165319d8b13511d563faa2ac9c2ca"
+    },
+    "formalization": {
+      "scenes": 15,
+      "builds": 54,
+      "pdf_pages": 54,
+      "video_dimensions": [
+        [
+          854,
+          480
+        ]
+      ],
+      "minimum_fragment_frames": 10,
+      "local_html_video_references": 54,
+      "html": "presentations/renders/common-subtree-formalization.html",
+      "html_sha256": "9f746bcf403a0ff605c0bdfa7ba0aa8e26867d0e0d8baf6dfffe0cfa4aaa2627",
+      "pdf": "presentations/renders/common-subtree-formalization.pdf",
+      "pdf_sha256": "4497a4c1f863b04bcd7ffadad1241fd9809aa9d3c074ea79e0847056e2e909d9"
+    },
+    "mathematics": {
+      "scenes": 14,
+      "builds": 42,
+      "pdf_pages": 42,
+      "video_dimensions": [
+        [
+          854,
+          480
+        ]
+      ],
+      "minimum_fragment_frames": 8,
+      "local_html_video_references": 42,
+      "html": "presentations/renders/common-subtree-mathematics.html",
+      "html_sha256": "1937997086c62103bb8f9d33a563b2cd73cd84b49f36a39def49916fe2d60469",
+      "pdf": "presentations/renders/common-subtree-mathematics.pdf",
+      "pdf_sha256": "fb8d5d8d9a4b8ba00f2e95cf7c170ff802c679ec2ec676df500e793c16c7cbed"
+    }
+  },
+  "visual_review": {
+    "scope": "Final build of every unique scene; new augmentation and collision intermediate builds; corrected depth, degree-bound and assurance slides.",
+    "new_scenes": [
+      "L10ChildSiblingTraversal",
+      "L11RecurrenceReuse",
+      "D14AugmentingPath",
+      "D15BranchCollision"
+    ],
+    "limitations": "Low-quality 854x480 preview; no live audience pacing assessment or browser navigation session."
+  }
+}

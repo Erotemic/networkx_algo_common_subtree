@@ -2,11 +2,13 @@
 Core python implementations for the longest common balanced sequence
 subproblem, which is used by :mod:`tree_embedding`.
 """
-import operator
+from math import isfinite
 from .balanced_sequence import (
     IdentityDict,
     generate_all_decomp,
     balanced_decomp_unsafe,
+    generate_balance,
+    _normalize_node_affinity,
 )
 
 __all__ = [
@@ -22,12 +24,16 @@ def longest_common_balanced_embedding(
     Finds the longest common balanced sequence embedding between two sequences
 
     This is used as a subproblem to solve the maximum common embedded subtree
-    problem described in [1].
+    problem described in [1]_. The containment used here is operational balanced
+    pair deletion.
 
     Parameters
     ----------
     seq1, seq2: Sequence[TokT]
-        two input balanced sequences
+        Two balanced strings or tuples of hashable tokens. Tokens do not need
+        to define an ordering. String witnesses preserve Python Unicode,
+        including lone surrogates. Ties are deterministic within a backend;
+        different backends may return different optimal witnesses.
 
     open_to_close : Dict[TokT, TokT]
         a mapping from opening to closing tokens in the balanced sequence
@@ -44,18 +50,26 @@ def longest_common_balanced_embedding(
 
     node_affinity : None | str | callable
         Function for to determine if two nodes can be matched. The function
-        should take two arguments `node1` and `node2` and return a non-negative
+        should take two arguments `node1` and `node2` and return a finite non-negative
         affinity score that is zero if the nodes are not allowed to match and
         some positive value indicating the strength of the match.  The return
-        is interpreted as a weight that is used to break ties. If
+        is a weight added for each matched node pair. If
         ``node_affinity=None`` then any node can match any other node and only
         the topology is important.  The default is "auto", which will use
         ``operator.eq`` to do a simple equality test on the nodes.
+        Custom affinities use f64 precision across backends and are summed as
+        the optimization objective. Nonfinite/negative affinities and total
+        overflow raise ``ValueError``. Malformed typed sequences raise
+        ``UnbalancedException``, even when the other input is empty.
 
     impl : str
         Determines the backend implementation. Available choices are given by
         :func:`available_impls_longest_common_balanced_embedding`. The default
-        is "auto", which chooses "iter-cython" if available, otherwise "iter".
+        is "auto", which chooses "iter-rust" if available, then "iter-cython", otherwise "iter".
+        "verified-rust" explicitly selects the proved unweighted Boolean core
+        and requires ``node_affinity=None``. It preserves original typed tokens
+        and uses shared-memo guided reconstruction; it is not selected by
+        "auto". Python token conversion is outside the Lean theorem.
 
     Returns
     -------
@@ -185,23 +199,30 @@ def longest_common_balanced_embedding(
     subseq1 = '{{}[][]()(({()})){}}'
     >>> assert value == 10
     """
-    if node_affinity == "auto" or node_affinity == "eq":
-        node_affinity = operator.eq
-    if node_affinity is None:
+    if impl == "verified-rust":
+        if node_affinity is not None:
+            raise ValueError("verified-rust requires node_affinity=None (unweighted matching)")
+        from .balanced_embedding_rust import _lcse_verified_rust
 
-        def _matchany(a, b):
-            return True
+        return _lcse_verified_rust(seq1, seq2, open_to_close)
 
-        node_affinity = _matchany
+    if impl == "auto":
+        if _rust_lcse_backend(error="ignore"):
+            impl = "iter-rust"
+        elif _cython_lcse_backend(error="ignore"):
+            impl = "iter-cython"
+        else:
+            impl = "iter"
+
+    if impl != "iter-rust":
+        for sequence in (seq1, seq2):
+            for _ in generate_balance(sequence, open_to_close):
+                pass
+    node_affinity = _normalize_node_affinity(node_affinity, check_weights=impl not in {"iter-rust", "iter-cython"})
     if open_to_node is None:
         open_to_node = IdentityDict()
     full_seq1 = seq1
     full_seq2 = seq2
-    if impl == "auto":
-        if _cython_lcse_backend(error="ignore"):
-            impl = "iter-cython"
-        else:
-            impl = "iter"
 
     if impl == "iter":
         value, best = _lcse_iter(
@@ -210,6 +231,10 @@ def longest_common_balanced_embedding(
     elif impl == "iter-cython":
         balanced_embedding_cython = _cython_lcse_backend(error="raise")
         value, best = balanced_embedding_cython._lcse_iter_cython(
+            full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
+        )
+    elif impl == "iter-rust":
+        value, best = _lcse_iter_rust(
             full_seq1, full_seq2, open_to_close, node_affinity, open_to_node
         )
     elif impl == "recurse":
@@ -226,13 +251,20 @@ def longest_common_balanced_embedding(
         )
     else:
         raise KeyError(impl)
+    if not isfinite(value):
+        raise ValueError("ordered affinity total overflow: score must be finite")
     return best, value
 
 
-def available_impls_longest_common_balanced_embedding():
+def available_impls_longest_common_balanced_embedding(include_restricted=False):
     """
-    Returns all available implementations for
+    Returns available implementations for
     :func:`longest_common_balanced_embedding`.
+
+    Args:
+        include_restricted (bool): Include "verified-rust" when its extension
+            entry point is present. It requires ``node_affinity=None``;
+            the default list contains implementations supporting affinities.
 
     Returns
     -------
@@ -240,6 +272,13 @@ def available_impls_longest_common_balanced_embedding():
         the string code for each available implementation
     """
     impls = []
+    backend = _rust_lcse_backend()
+    if include_restricted and backend and hasattr(backend, "maximum_common_token_embedding"):
+        impls.append("verified-rust")
+    if backend:
+        impls += [
+            "iter-rust",
+        ]
     if _cython_lcse_backend():
         impls += [
             "iter-cython",
@@ -251,6 +290,25 @@ def available_impls_longest_common_balanced_embedding():
         "recurse",
     ]
     return impls
+
+
+def _rust_lcse_backend(error="ignore"):
+    """Returns the rust backend if available, otherwise None."""
+    try:
+        from .balanced_embedding_rust import _rust_lcse_backend as _backend
+    except Exception:
+        if error == "ignore":
+            return None
+        if error == "raise":
+            raise
+        raise KeyError(error)
+    return _backend(error=error)
+
+
+def _lcse_iter_rust(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node):
+    from .balanced_embedding_rust import _lcse_iter_rust as _backend
+
+    return _backend(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
 
 
 def _cython_lcse_backend(error="ignore", verbose=0):
@@ -299,6 +357,9 @@ def _lcse_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
     >>> print(embeddings[0])
     [][[]]
     """
+    if not full_seq1 or not full_seq2:
+        return 0, (full_seq1[:0], full_seq2[:0])
+
     all_decomp1 = generate_all_decomp(full_seq1, open_to_close, open_to_node)
     all_decomp2 = generate_all_decomp(full_seq2, open_to_close, open_to_node)
 
@@ -384,7 +445,13 @@ def _lcse_iter(full_seq1, full_seq2, open_to_close, node_affinity, open_to_node)
                 cand3 = (-1, None)
 
             # We solved the frame
-            _results[key] = max(cand1, cand2, cand3)
+            # Compare the objective only: hashable tokens need not be ordered.
+            selected = cand1
+            if cand2[0] > selected[0]:
+                selected = cand2
+            if cand3[0] > selected[0]:
+                selected = cand3
+            _results[key] = selected
         stack.pop()
 
     found = _results[key0]
