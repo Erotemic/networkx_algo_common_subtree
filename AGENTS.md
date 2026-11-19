@@ -17,6 +17,9 @@ The maintainer release action is `git push origin main:release`; xcookie
 publishes to PyPI before creating the version tag and GitHub release.
 Keep project-specific proof/native checks in `verification.yml` or xcookie's
 source-check hooks. See `docs/releasing.md` for scoped regeneration commands.
+The full research Lean audit is manual (`run_full_lean=true`). Keep the
+`rational-python` proved-wheel build and installed tests automatic, along with
+Rust/Python package checks; building its Lean target checks its dependencies.
 
 ## Lean and Rust work
 

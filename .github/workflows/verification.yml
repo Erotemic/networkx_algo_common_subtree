@@ -4,9 +4,16 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      run_full_lean:
+        description: Run the full Lean library, extraction and research examples (expensive)
+        type: boolean
+        default: false
 
 jobs:
   lean:
+    # The complete research audit is opt-in; the proved wheel build stays automatic below.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_full_lean }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
@@ -100,11 +107,20 @@ jobs:
       - name: Restore mathematical dependencies
         working-directory: proofs
         run: lake exe cache get
-      - name: Install a wheel containing the proved rational executable
-        run: python -m pip install '.[tests]' --config-settings=cmake.define.BUILD_LEAN_BACKEND=ON --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF --config-settings=cmake.define.BUILD_RUST_EXTENSIONS=OFF
+      - name: Build a wheel containing the proved rational executable
+        run: python -m pip wheel . --no-deps --wheel-dir lean-wheelhouse --config-settings=cmake.define.BUILD_LEAN_BACKEND=ON --config-settings=cmake.define.BUILD_CYTHON_EXTENSIONS=OFF --config-settings=cmake.define.BUILD_RUST_EXTENSIONS=OFF
+      - name: Install the built rational wheel and test dependencies
+        run: |
+          wheels=(lean-wheelhouse/*.whl)
+          python -m pip install "${wheels[0]}[tests]"
       - name: Require the installed rational backend outside the checkout
         working-directory: /tmp
         run: COMMON_SUBTREE_REQUIRE_LEAN=1 python -m pytest -q "${{ github.workspace }}/tests/test_verified_rational_isomorphism.py"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-lean-wheel-linux
+          path: lean-wheelhouse/*.whl
+          if-no-files-found: error
   rust:
     runs-on: ubuntu-latest
     steps:

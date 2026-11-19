@@ -11,6 +11,15 @@ Version **0.3.0** was selected by the user. The unordered 2016/2018 Python and
 Rust endpoints already exist; improve discoverability and validate the actual
 distributed endpoints rather than duplicating implementations.
 
+CI scope clarification: the user reported termination (exit 143) partway through
+the full Lean research library. This log is not an elaboration failure or a
+completed proof check. The broad `lean` job is now opt-in through manual
+`run_full_lean=true`. Keep `rational-python` automatic: it builds the proved
+exact-rational executable's dependency chain, installs/tests its wheel and
+uploads `verified-lean-wheel-linux`. Rust/Python/oracle/ABI3 jobs remain automatic.
+Formal wheel building continues; only the unrelated whole-library audit is
+removed from automatic runs. Ordinary PyPI wheel contents are unchanged.
+
 Release work: public examples/API guidance, honest proof coverage, version and
 changelog, clean source-archive/native wheel builds, installed tests and native
 endpoint smoke checks, portable ABI3 validation, and repaired release CI.

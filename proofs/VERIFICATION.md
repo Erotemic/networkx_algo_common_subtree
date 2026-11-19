@@ -1,5 +1,28 @@
 # Reproducing verification
 
+CI scope (2026-11-19): the complete `lean` research-library/extraction/example
+job is opt-in. In Actions, dispatch `verification.yml` with
+`run_full_lean=true` to run it. A reported exit 143 terminated a partial CI run;
+it establishes neither a proof failure nor a successful complete check.
+
+The `rational-python` job remains automatic. It builds a wheel with
+`BUILD_LEAN_BACKEND=ON` (Cython/Rust disabled for that dedicated artifact),
+installs it and requires the exact-rational backend tests outside the checkout.
+CMake runs `lake build verified_ordered`, so the executable's proof dependencies
+are still checked, using caches where available. The tested wheel is retained
+as `verified-lean-wheel-linux`. This is distinct from ordinary Rust/Cython/ABI3
+wheels; those builds and tests also remain automatic. The full research-library
+audit and independent local reproduction commands below remain available.
+
+Local check of the revised wheel job: the same Lean-only wheel configuration
+built successfully (using the existing checked Lean cache). A fresh environment
+installed it, resolved the executable inside `site-packages/_bin`, and passed
+all **10 rational-backend tests**, with `COMMON_SUBTREE_REQUIRE_LEAN=1` and no
+external executable override. Wheel SHA256:
+`372b17f2608c8706e5911d7c74195a310da655e54300f799b8ed4ce25d5da7ec`.
+The workflow passes structural actionlint; other native/oracle/ABI3 job
+definitions are unchanged. This does not constitute a new whole-library audit.
+
 The scored-cache/hash/equality optimization retains the exact public theorem
 statements and uses the same build/test commands below. Current evidence is
 244 strict installed tests, seven Lean examples, 72 audited declarations and

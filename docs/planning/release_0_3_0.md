@@ -112,6 +112,13 @@ Updated review artifacts are in `dist/0.3.0-xcookie-fix/`.
 
 ## Remaining release steps
 
+The broad Lean research audit is now manual (`run_full_lean=true`) after the
+user reported CI termination with exit 143. The dedicated exact-rational Lean
+wheel still builds and runs installed tests automatically and is uploaded as
+`verified-lean-wheel-linux`. Its own proof dependencies are checked by building
+`verified_ordered`. Source-proved Rust cores, package behavior and ABI3 checks
+also remain automatic; standard PyPI wheel contents are unchanged.
+
 Run generated `BinPyCI`/`SourceChecks` and the relevant project checks on the
 reviewed commit, including a remote Intel macOS rerun. The earlier local
 Linux evidence does not substitute for macOS/Windows execution.

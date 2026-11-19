@@ -11,6 +11,14 @@ Configure `[tool.xcookie]` in `pyproject.toml`; keep project build/test behavior
 in its hooks. Do not replace the generated workflows. `verification.yml` is
 project-owned and retains the proof, native parity and ABI3 runtime checks.
 
+The full `lean` research audit runs only when manually dispatching that workflow
+with `run_full_lean=true`. Automatic CI still builds/tests the source-proved
+Rust cores and the optional exact-rational Lean wheel (`rational-python`).
+That wheel build targets `lake build verified_ordered`, which checks its
+required proof dependencies; it does not request the full research library.
+The tested Lean wheel is retained as the `verified-lean-wheel-linux` CI artifact.
+Ordinary PyPI wheels still omit that optional Lean executable.
+
 Use the adjacent `../xcookie` checkout, including generator fixes in commit
 `0de04bc` (Windows conditions, optional environment blocks and release action
 version). In a development environment with that checkout installed:
