@@ -20,8 +20,12 @@ endif()
 
 option(BUILD_CYTHON_EXTENSIONS "Build Cython extension modules" ${_build_cython_default})
 option(BUILD_RUST_EXTENSIONS "Build Rust extension module" ${_build_rust_default})
-option(REQUIRE_RUST_EXTENSIONS "Fail configure if Rust extension cannot be built" OFF)
+option(REQUIRE_RUST_EXTENSIONS "Fail configure if Rust extension cannot be built" ${BUILD_RUST_EXTENSIONS})
 option(BUILD_LEAN_BACKEND "Build and install the proved exact rational ordered backend" OFF)
+
+if(REQUIRE_RUST_EXTENSIONS AND NOT BUILD_RUST_EXTENSIONS)
+  message(FATAL_ERROR "REQUIRE_RUST_EXTENSIONS=ON conflicts with BUILD_RUST_EXTENSIONS=OFF")
+endif()
 
 if(BUILD_LEAN_BACKEND)
   find_program(LAKE_EXECUTABLE lake REQUIRED)

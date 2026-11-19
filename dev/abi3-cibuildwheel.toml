@@ -13,6 +13,7 @@ repair-wheel-command = "auditwheel repair --plat manylinux_2_28_x86_64 -w {dest_
 test-extras = ["tests"]
 test-command = """
 set -e
+python {project}/dev/check_release.py --require-rust
 python -c '
 import importlib.util
 from networkx_algo_common_subtree import _rust

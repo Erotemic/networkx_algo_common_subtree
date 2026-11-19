@@ -9,8 +9,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "networkx_algo_common_subtree"
-version = "0.2.3"
-description = "A networkx implementation of algorithms to find common ordered subtree minors and isomorphisms"
+version = "0.3.0"
+description = "Fast ordered and weighted unordered common subtree algorithms for NetworkX"
 readme = "README.rst"
 requires-python = ">=3.10"
 license = { text = "Apache 2" }
@@ -27,13 +27,14 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "networkx>=2.7",
+  "networkx>=2.8.8",
 ]
 
 [project.optional-dependencies]
-runtime = ["networkx>=2.7"]
+runtime = ["networkx>=2.8.8"]
 tests = [
   "xdoctest>=1.1.3",
   "pytest>=7.4.4",
@@ -53,16 +54,20 @@ benchmarks = [
 
 [project.urls]
 Homepage = "https://github.com/Erotemic/networkx_algo_common_subtree"
+Documentation = "https://networkx-algo-common-subtree.readthedocs.io/"
+Issues = "https://github.com/Erotemic/networkx_algo_common_subtree/issues"
+Changelog = "https://github.com/Erotemic/networkx_algo_common_subtree/blob/main/CHANGELOG.md"
 
 [tool.scikit-build]
 cmake.version = ">=3.21"
 wheel.packages = ["networkx_algo_common_subtree"]
+sdist.exclude = ["submodules/**", "dev/*.enc", "**/.lake/**", "**/target/**", ".leanq/**"]
 
 [tool.cibuildwheel]
 build = "cp310-* cp311-* cp312-* cp313-*"
 build-frontend = "build"
 build-verbosity = 1
-test-command = "python -c \"import importlib, os; disabled=os.getenv('DISABLE_RUST_EXTENSIONS', '').lower() in {'1', 'true', 'on', 'yes'}; print('rust disabled=', disabled); importlib.import_module('networkx_algo_common_subtree._rust') if not disabled else None\" && python {project}/run_tests.py"
+test-command = "python {project}/dev/check_release.py --require-rust --require-cython && python -m pytest -q {project}/tests"
 test-extras = ["tests", "runtime"]
 
 [tool.mypy]
@@ -78,7 +83,7 @@ url = 'https://github.com/Erotemic/networkx_algo_common_subtree'
 min_python = '3.10'
 author = "Jon Crall"
 author_email = "erotemic@gmail.com"
-description = "A networkx implementation of algorithms to find common ordered subtree minors and isomorphisms"
+description = "Fast ordered and weighted unordered common subtree algorithms for NetworkX"
 license = "Apache 2"
 dev_status = "alpha"
 xdoctest_style="freeform"
@@ -102,7 +107,7 @@ quiet-level = 3
 ignore-words-list = ['wont', 'cant', 'ANS', 'doesnt', 'arent', 'ans', 'thats', 'datas', 'isnt', 'wile']
 
 [tool.cibuildwheel.linux]
-before-all = "curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain stable"
+before-all = "curl --proto '=https' --tlsv1.2 --fail --silent --show-error https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.95.0"
 environment = { PATH = "/root/.cargo/bin:$PATH", CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
 
 [tool.cibuildwheel.macos]
@@ -110,3 +115,9 @@ environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
 
 [tool.cibuildwheel.windows]
 environment = { CMAKE_ARGS = "-DREQUIRE_RUST_EXTENSIONS=ON" }
+
+[[tool.cibuildwheel.overrides]]
+select = "*-musllinux_*"
+inherit.environment = "append"
+# Rust's musl target defaults to static CRT linking, which disables cdylib.
+environment = { RUSTFLAGS = "$RUSTFLAGS -C target-feature=-crt-static" }

@@ -1,273 +1,221 @@
-The networkx_algo_common_subtree Module
-=======================================
+Common subtree algorithms for NetworkX
+======================================
 
-|Pypi| |PypiDownloads| |GithubActions| |Codecov|
+|Pypi| |GithubActions|
 
-Networkx algorithms for maximum common ordered subtree minors (or embedding)
-and maximum common subtree isomorphism. Contains pure python and cython
-optimized versions, plus Rust/PyO3 backends. Weighted unordered isomorphism
-(Droschinsky 2016), distance-penalized embedding (2018), and exact integer
-assignment/partial matching are also available from Python.
+Find common structure in trees with fast Rust-backed Python algorithms:
+ordered subtree embeddings and isomorphisms, weighted **unordered** subtree
+isomorphism, and topological embeddings with penalties for skipped vertices.
+Results retain original input nodes so you can inspect, validate and use the
+matching. Version 0.3.0 adds the unordered public APIs and exact integer matching.
 
-The default build includes Rust and Cython. An opt-in Rust-only ``cp310-abi3``
-wheel is tested across CPython 3.10–3.14; see `build and validation details
-<docs/packaging.md>`_. This does not change the package's partial verification
-status.
+Install
+-------
 
-Weighted unordered trees
-------------------------
+.. code:: bash
 
-Install with ``python -m pip install .`` (Rust/Cargo and a C/C++ toolchain are
-needed for source builds). The default build includes Rust and Cython.
+    python -m pip install networkx-algo-common-subtree
+
+Python 3.10 or newer is required. Binary wheels include the fast Rust backend;
+ordinary runtime use needs NetworkX 2.8.8 or newer. Rust, Lean and development
+submodules are not runtime dependencies. The Linux stable-ABI wheel also
+supports Python 3.14; the regular Rust/Cython wheel matrix targets 3.10–3.13. If pip needs to build from source, install Cargo/Rust and a C/C++
+toolchain first. See `build and platform details <docs/packaging.md>`_.
+
+Choose an algorithm
+-------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 50 25
+
+   * - Problem
+     - Public function
+     - Inputs
+   * - Ordered embedding; edges may be contracted
+     - ``maximum_common_ordered_subtree_embedding``
+     - Directed simple forests; child order matters
+   * - Ordered isomorphism; preserve adjacency
+     - ``maximum_common_ordered_subtree_isomorphism``
+     - Directed simple forests; child order matters
+   * - Weighted unordered isomorphism (2016)
+     - ``maximum_common_subtree_isomorphism``
+     - Undirected simple trees
+   * - Weighted unordered embedding with skipped vertices (2018)
+     - ``largest_weight_common_subtree_embedding_with_distance_penalty``
+     - Undirected simple trees
+
+For unordered inputs, node iteration and child order do not define the problem.
+Ordered inputs use the order in which children appear in the graph. Both ordered
+APIs default to equality of node identities; use ``node_affinity=None`` when
+matching structure independently of node names.
+
+Unordered subtree isomorphism
+-----------------------------
 
 .. code:: python
 
     import networkx as nx
     import networkx_algo_common_subtree as common
 
-    left, right = nx.path_graph(3), nx.path_graph(4)
-    result = common.maximum_common_subtree_isomorphism(left, right, impl="rust")
-    assert result.weight == 5  # three vertices plus two edges
+    left = nx.path_graph(["a", "b", "c"])
+    right = nx.path_graph(["w", "x", "y", "z"])
+    result = common.maximum_common_subtree_isomorphism(left, right)
+
+    assert result.weight == 5  # three matched vertices plus two matched edges
     assert common.score_common_subtree_isomorphism(left, right, result) == 5
-    print(result.mapping)  # original input vertices
+    print(result.mapping)      # original input nodes
+    print(result.edge_paths)   # corresponding original edges/paths
 
-    embedded = common.largest_weight_common_subtree_embedding_with_distance_penalty(
-        left, right, skip_vertex_penalty=0.25, impl="rust")
-    print(embedded.edge_paths)  # aligned paths, including skipped vertices
-
-Inputs are undirected simple connected NetworkX trees, or empty graphs.
-``node_label="name"`` and ``edge_label="name"`` require equality of the named
-attributes; omitted labels allow any pair. ``node_weight`` and ``edge_weight``
+``node_label="kind"`` and ``edge_label="kind"`` require equality of the named
+attributes. Omitted labels allow any pair. ``node_weight`` and ``edge_weight``
 accept finite signed numbers or callbacks on original nodes/endpoint pairs;
-a callback may return ``None`` to forbid a pair. Callbacks are evaluated once
-per compatible pair before the Rust solver. ``allow_empty=False`` preserves
-negative nonempty optima and returns ``None`` when no nonempty solution exists.
-The default ``impl="auto"`` selects Rust if installed; ``impl="python"`` is
-an independent exhaustive reference suitable for small inputs.
+returning ``None`` forbids a pair. The default is one per matched vertex/edge.
 
-The 2018 objective rewards and checks edge labels only when both matched paths
-are single edges. Longer paths incur penalties for their skipped vertices.
-The independent ``score_common_subtree_embedding`` validates the mapping and
-paths and recomputes this objective. Ties are deterministic within a backend
-for fixed input iteration order; witnesses can differ between backends.
-Graph weights use f64, with nonfinite inputs/overflow rejected. These graph
-Rust implementations are tested reference dynamic programs; their production
-source refinement and published optimized complexity are still pending.
+The empty, score-zero result is allowed by default. ``allow_empty=False`` retains
+negative nonempty optima and returns ``None`` when no compatible nonempty match
+exists. Empty graphs are supported; cycles, disconnected nonempty graphs,
+directed graphs and multigraphs are rejected by the unordered APIs.
 
-Exact weighted matching
------------------------
+Unordered embedding with distance penalties
+-------------------------------------------
+
+An embedding can match an edge to a longer path. This example matches two
+endpoints while skipping the middle vertex in the second tree:
+
+.. code:: python
+
+    left = nx.Graph()
+    left.add_nodes_from([("a", {"kind": "end"}), ("b", {"kind": "end"})])
+    left.add_edge("a", "b")
+    right = nx.path_graph(["x", "middle", "y"])
+    nx.set_node_attributes(right, {"x": "end", "middle": "gap", "y": "end"}, "kind")
+
+    result = common.largest_weight_common_subtree_embedding_with_distance_penalty(
+        left, right, node_label="kind", edge_weight=0,
+        skip_vertex_penalty=0.25,
+    )
+    assert result.weight == 1.75  # two matched vertices minus one skipped vertex
+    assert common.score_common_subtree_embedding(
+        left, right, result, node_label="kind", edge_weight=0,
+        skip_vertex_penalty=0.25,
+    ) == result.weight
+
+The 2018 objective applies an edge reward and edge-label compatibility only
+when **both** matched paths are single edges. Longer paths contribute penalties
+for their skipped vertices. ``skip_vertex_penalty=float("inf")`` forbids skipping.
+
+Both unordered functions accept ``roots=(left_root, right_root)`` to fix ambient
+orientations, and ``root_to_root=True`` to require those roots to match. See the
+`algorithm guide <docs/source/common_subtree_algorithm_families.rst>`_ and API
+reference for these distinct root contracts.
+
+Ordered trees
+-------------
+
+.. code:: python
+
+    first = nx.DiGraph([(0, 1), (0, 2)])
+    second = nx.DiGraph([("root", "x"), ("root", "y")])
+    subtree1, subtree2, value = common.maximum_common_ordered_subtree_isomorphism(
+        first, second, node_affinity=None, rooted=True,
+    )
+    assert value == 3
+
+``rooted=True`` preserves the input root level; the default may choose descendant
+roots. Ordered affinities are finite nonnegative weights, with zero forbidding a
+match. The embedding variant permits edge contractions; its output edges need
+not be edges of the input. Original node identities are retained in both modes.
+
+Exact integer matching
+----------------------
 
 .. code:: python
 
     optimum = common.min_cost_assignment([[3, -2], [0, 4]])
     assert optimum.cost == -2
     assert optimum.column_for_row == (1, 0)
+
     matching = common.max_weight_partial_matching([[None, 5], [-2, 3]])
     assert matching.pairs == ((0, 1),)
     assert matching.weight == 5
 
-    family = common.max_weight_partial_matching_deletions([[None, 5], [-2, 3]])
-    assert family.original == matching
-    assert family.without_right[0] == matching
-    assert family.without_right[1].weight == 0
+These native APIs accept signed i64 entries and return checked i128 totals as
+exact Python integers. Assignment requires a square matrix and includes dual
+certificates. Partial matching allows rectangular matrices, unmatched vertices
+and forbidden ``None`` entries. ``max_weight_partial_matching_deletions`` also
+returns the optimum after deleting each original right vertex.
 
-These Rust-only APIs accept i64 integer entries and return exact checked i128
-totals as Python integers. Assignment requires a square matrix and returns
-attaining dual potentials; partial matching permits rectangular matrices,
-forbidden ``None`` edges and unmatched vertices. The actual integer Rust cores
-have Lean correctness/refinement proofs. The Python conversion and wrappers
-are tested, and the floating-point matching used inside the graph algorithms
-has a separate assurance boundary.
+Backends and performance
+------------------------
 
-The exact deletion-family API returns one optimum per original right vertex,
-with original pair indices. Its existing Lean source proof covers the Rust
-family. This reference reuses unaffected optima and recomputes affected cases;
-the sparse one-augmentation family integration remains under development.
+``impl="auto"`` selects Rust when installed. The ordered APIs also retain Cython
+and Python implementations. For unordered algorithms, ``impl="python"`` is an
+independent exhaustive reference for **small inputs**. Use ``impl="rust"`` to
+require the fast graph backend instead of allowing a reference fallback, and
+``common.available_unordered_backends()`` to inspect availability.
 
+Floating implementations use f64. Very close scores and large integers can be
+affected by rounding; nonfinite inputs and arithmetic overflow are rejected.
+Witnesses are deterministic within a backend for fixed input iteration order;
+equally optimal witnesses can differ between backends. Performance depends on
+size, degree, shape and scoring. `Installed-API benchmark records
+<dev/benchmarks/>`_ include conversion and witness validation.
 
-At its core the ``maximum_common_ordered_subtree_embedding`` function is an implementation of:
+Correctness and formal verification
+-----------------------------------
 
-.. code::
+The optimized ordered and unordered implementations are tested with independent
+small-input oracles, differential comparisons and original-witness rescoring.
+**Their complete production implementations are not yet formally verified.**
+Lean proofs establish related mathematical specifications and selected actual
+implementations; that distinction is part of this release's documented scope.
 
-    Lozano, Antoni, and Gabriel Valiente.
-        "On the maximum common embedded subtree problem for ordered trees."
-        String Algorithmics (2004): 155-170.
-        https://pdfs.semanticscholar.org/0b6e/061af02353f7d9b887f9a378be70be64d165.pdf
+The exact integer matching cores have source-connected Lean correctness proofs.
+Optional ordered modes expose proved implementations:
 
+* ``impl="verified-rust", node_affinity=None``: ordered embedding with original
+  token witnesses.
+* ``impl="reference-rust", node_affinity=None``: the slower structural ordered
+  isomorphism reference, for either root policy.
+* ``impl="verified-lean"``: exact rational weighted ordered isomorphism, for
+  either root policy. It accepts ``int``/``fractions.Fraction`` and returns a
+  ``Fraction`` score. Its optional native executable requires a build with
+  ``BUILD_LEAN_BACKEND=ON``; it is not bundled into ordinary release wheels.
 
-And ``maximum_common_ordered_subtree_isomorphism`` is a variant of the above
-algorithm that returns common subtree ismorphism instead of subtree minors.
+Python/NetworkX conversion and native boundaries remain tested integration
+layers. No published optimized running-time theorem is claimed for the native
+kernels. `Proof coverage <proofs/PROOF_STATUS.md>`_ and
+`exact rational usage <docs/source/verified_rational_ordered.rst>`_ describe the
+checked endpoints and gaps. These optional modes do not change fast defaults.
 
-For ordered isomorphism, ``rooted=True`` preserves the input root level:
-every nonempty result for connected input trees retains both original roots.
-The default allows descendant roots. The balanced-sequence isomorphism API
-accepts the same option to preserve its implicit forest parent. Both modes
-support the existing affinity scoring and original-node mappings.
-
-
-Demo
-----
-
-Consider two directed ordered trees (the algorithm also works on undirected
-ordered trees):
-
-.. code:: python
-
-    >>> import networkx as nx
-    >>> tree1 = nx.DiGraph()
-    >>> tree2 = nx.DiGraph()
-    >>> tree1.add_edges_from([(0, 2), (5, 7), (5, 4), (5, 3), (2, 5), (2, 6), (3, 1)])
-    >>> tree2.add_edges_from([(0, 6), (0, 1), (1, 5), (6, 2), (5, 4), (5, 3), (5, 7)])
-    >>> print('Tree 1:')
-    >>> nx.write_network_text(tree1)
-    >>> print('Tree 2:')
-    >>> nx.write_network_text(tree2)
-    Tree 1:
-    ╙── 0
-        └─╼ 2
-            ├─╼ 5
-            │   ├─╼ 7
-            │   ├─╼ 4
-            │   └─╼ 3
-            │       └─╼ 1
-            └─╼ 6
-    Tree 2:
-    ╙── 0
-        ├─╼ 6
-        │   └─╼ 2
-        └─╼ 1
-            └─╼ 5
-                ├─╼ 4
-                ├─╼ 3
-                └─╼ 7
-
-
-The maximum common ordered isomorphism (a strict common subtree structure) is:
-
-.. code:: python
-
-    >>> import networkx_algo_common_subtree
-    >>> subtree1, subtree2, score = networkx_algo_common_subtree.maximum_common_ordered_subtree_isomorphism(tree1, tree2)
-    >>> print(f'{score=}')
-    >>> print('Isomorphic Subtree 1:')
-    >>> nx.write_network_text(subtree1)
-    >>> print('Isomorphic Subtree 2:')
-    >>> nx.write_network_text(subtree2)
-    score=3
-    Isomorphic Subtree 1:
-    ╙── 5
-        ├─╼ 4
-        └─╼ 3
-    Isomorphic Subtree 2:
-    ╙── 5
-        ├─╼ 4
-        └─╼ 3
-
-The biggest common structure between both of the original trees is the subtree
-involving 5, 3, 4. Notice that the (5, 7) edge is not included because these
-are **ordered** subtrees. In tree 1, the (5, 7) edge is before the (5, 4) edge
-and in the second it is after it, so it is not included because the edges are
-not in the same order.
-
-
-This substructure can be generalized by allowing edges in the original graphs
-to be collapsed, which can produce larger common substructures. This is the
-maximum common ordered embedding.
-
-.. code:: python
-
-    >>> import networkx_algo_common_subtree
-    >>> subtree1, subtree2, score = networkx_algo_common_subtree.maximum_common_ordered_subtree_embedding(tree1, tree2)
-    >>> print(f'{score=}')
-    >>> print('Embedded Subtree 1:')
-    >>> nx.write_network_text(subtree1)
-    >>> print('Embedded Subtree 2:')
-    >>> nx.write_network_text(subtree2)
-    score=4
-    Embedded Subtree 1:
-    ╙── 0
-        └─╼ 5
-            ├─╼ 4
-            └─╼ 3
-    Embedded Subtree 2:
-    ╙── 0
-        └─╼ 5
-            ├─╼ 4
-            └─╼ 3
-
-In this example, the edges (0, 2) and (2, 5) in first tree were collapsed into
-(0, 5). Similarly in the second tree the edges (0, 1) and (1, 5) were collapsed
-into (0, 5), thus increasing the size of the common ordered subtree.
-
-Other Information
------------------
-
-Standalone versions of code were originally submitted as PRs to networkx
-proper:
-
-https://github.com/networkx/networkx/pull/4350
-https://github.com/networkx/networkx/pull/4327
-
-However, these algorithms are roughly ``O(N⁴)``, they require a a fast binary
-(e.g. C / cython) implementation to work on graphs of reasonable size. Thus
-they are unlikely to be added to mainline networkx.
-
-
-These algorithms are components of algorithms in ``torch_liberator``, see related
-information:
-
-+----------------------+------------------------------------------------------------+
-| TorchLiberator       | https://gitlab.kitware.com/computer-vision/torch_liberator |
-+----------------------+------------------------------------------------------------+
-| Torch Hackathon 2021 | `Youtube Video`_ and `Google Slides`_                      |
-+----------------------+------------------------------------------------------------+
-
-.. _Youtube Video: https://www.youtube.com/watch?v=GQqtn61iNsc
-.. _Google Slides: https://docs.google.com/presentation/d/1w9XHkPjtLRj29dw50WP0rSHRRlEfhksP_Sf8XldTSYE
-
-
-
-
-.. |Pypi| image:: https://img.shields.io/pypi/v/networkx_algo_common_subtree.svg
-    :target: https://pypi.python.org/pypi/networkx_algo_common_subtree
-
-.. |PypiDownloads| image:: https://img.shields.io/pypi/dm/networkx_algo_common_subtree.svg
-    :target: https://pypistats.org/packages/networkx_algo_common_subtree
-
-.. |GithubActions| image:: https://github.com/Erotemic/networkx_algo_common_subtree/actions/workflows/tests.yml/badge.svg?branch=main
-    :target: https://github.com/Erotemic/networkx_algo_common_subtree/actions?query=branch%3Amain
-
-.. |Codecov| image:: https://codecov.io/github/Erotemic/networkx_algo_common_subtree/badge.svg?branch=main&service=github
-    :target: https://codecov.io/github/Erotemic/networkx_algo_common_subtree?branch=main
-
-
-Build Notes
------------
-
-This project now uses ``scikit-build-core`` as its PEP 517 backend. Typical
-local workflows are:
+Building and contributing
+-------------------------
 
 .. code:: bash
 
-    pip install -e .
-    pip wheel .
+    python -m pip install -e '.[tests]'
+    python -m pytest tests
 
-Build toggles:
+The default source build includes Rust and Cython and requires Cargo. Explicit
+``DISABLE_RUST_EXTENSIONS=1`` and ``DISABLE_C_EXTENSIONS=1`` disable their
+respective builds. The optional Lean toolchain is needed only to build the
+verified Lean executable or work on proofs. Guest-VM build-cache instructions
+are in ``AGENTS.md``. `Release instructions <docs/releasing.md>`_ describe the
+source/wheel validation and publication procedure.
 
-* ``DISABLE_C_EXTENSIONS=1`` disables Cython extension builds.
-* ``DISABLE_RUST_EXTENSIONS=1`` disables the Rust extension build.
+References
+----------
 
-Rust backend notes:
+* Lozano and Valiente (2004), *On the maximum common embedded subtree problem
+  for ordered trees*.
+* Droschinsky, Kriege and Mutzel (2016), *Faster Algorithms for the Maximum
+  Common Subtree Isomorphism Problem*, arXiv:1602.07210.
+* Droschinsky, Kriege and Mutzel (2018), *Largest Weight Common Subtree
+  Embeddings with Distance Penalties*, arXiv:1805.00821.
 
-* The Rust extension module is ``networkx_algo_common_subtree._rust``.
-* If built, ``impl="auto"`` prefers Rust, then Cython, then pure Python.
+.. |Pypi| image:: https://img.shields.io/pypi/v/networkx_algo_common_subtree.svg
+   :target: https://pypi.org/project/networkx-algo-common-subtree/
 
-* ``impl="verified-rust", node_affinity=None`` opts into the proved unweighted
-  Boolean contraction core. Typed bracket pairs are validated and original
-  string/list/tuple values are preserved. It is a reference implementation with
-  shared-memo guided reconstruction; automatic dispatch continues to use the existing
-  general affinity backend. Include restricted implementations in discovery with
-  ``available_impls_longest_common_balanced_embedding(include_restricted=True)``.
-  The Lean theorem covers the Rust Boolean core and original token indices;
-  Python token conversion, PyO3 and NetworkX graph conversion are tested
-  integration boundaries. See ``proofs/PROOF_STATUS.md`` for exact coverage.
+.. |GithubActions| image:: https://github.com/Erotemic/networkx_algo_common_subtree/actions/workflows/tests.yml/badge.svg?branch=main
+   :target: https://github.com/Erotemic/networkx_algo_common_subtree/actions/workflows/tests.yml

@@ -1,5 +1,25 @@
 # Current implementation capabilities
 
+Release priority, 2026-11-19: prepare **0.3.0**, selected by the user. Both
+unordered families already have public Python and native Rust endpoints.
+The README now documents their installation, weights, roots, witnesses and
+selection. Standard wheels contain fast Rust; optional compiled Lean delivery
+remains available separately. Further verification/optimization research is
+deferred and is not a gate for this package release.
+
+The release candidate is checked from a filtered source archive, including
+native Rust/Cython and portable Rust-only ABI3 Linux wheels. The same portable
+artifact passes **234 tests, 10 optional Lean skips** on each CPython 3.10–3.14;
+the minimum NetworkX dependency is now **2.8.8**. The normal installed wheel
+passes the same suite with required Rust/Cython parity. All **82 standalone
+Rust tests** pass. Public unordered benchmarks include independent witness
+rescoring and small exhaustive references. See the
+[release evidence](../../dev/packaging/2026-11-19-release-0.3.0.json) and
+[remaining release steps](release_0_3_0.md). These checks do not establish new
+Lean endpoints or a complete optimized-kernel proof.
+
+The dated implementation and research records below remain historical evidence.
+
 Priority update, 2026-11-18: the active product milestone is efficient ordered
 Python APIs with source-connected Lean functional correctness, prioritizing
 exact integer affinities and an exact rational/integer proof model. Performance
@@ -36,7 +56,8 @@ production Rust runtime, backend selection and wheel evidence are unchanged.
 Inspected 2026-11-14, incorporating the parity overlay, the compiled Cython
 empty-input fix, and graph/matching Python integration. This matrix distinguishes exposed production
 APIs from standalone Rust/Lean implementations. Update it with implementation
-milestones; full verification remains a final verified-release requirement.
+milestones; a future fully verified release has additional proof gates beyond
+the ordinary 0.3.0 package release.
 
 | Algorithm / mode | Usable Python API / default | Implementations and independent checks | Performance and verification boundary |
 | --- | --- | --- | --- |

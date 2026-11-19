@@ -3,7 +3,7 @@ name = "common_subtree_algorithms"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "Experimental graph-only Rust reference implementations for weighted common subtree algorithms"
+description = "Weighted unordered subtree isomorphism and distance-penalized tree embedding"
 publish = false
 
 [lib]

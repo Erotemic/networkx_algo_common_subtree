@@ -3094,14 +3094,16 @@
     ]
   },
   "delivery_priority": {
-    "date": "2026-11-18",
+    "date": "2026-11-19",
     "source": "Explicit user clarification in this session; prioritization supersedes the earlier unbounded execution order.",
-    "active": "Requested exact rational ordered-isomorphism Python milestone delivered as verified-lean, both root policies. Further performance/Rust/embedding work is separately prioritizable; running-time proofs remain deferred.",
+    "active": "Prepare the user-selected 0.3.0 release: fast usable Python algorithms, honest proof coverage, installed distribution tests and repaired package CI. The verified rational ordered-isomorphism milestone remains delivered.",
     "numeric_model": "verified-lean executes exact Lean rational arithmetic and accepts int/Fraction affinities with Fraction results. The optimized float API remains separate and still converts Python integer affinities to f64. Python/graph/JSON conversion is a tested boundary; no IEEE-754 proof is required or claimed.",
     "budget_policy": "User chooses each time/token budget. Present task-level token and elapsed ranges with confidence, report actual consumption and remaining frontier; do not assume a fixed tranche or autonomously exhaust the full research program.",
     "backlog": "../../README.md#budgetable-ordered-work-recommended-order",
-    "recommended_next": "The first verified-backend optimization is complete. Next budget choices: prove sparse/depth-aware or demand-driven rooted affinity delivery to avoid the dense input bottleneck, or integrate an in-process native Lean interface. The optimized Rust proof and weighted embedding remain separate tasks; no further tranche is started.",
+    "recommended_next": "Finish the release candidate and run the remote Package CI platform matrix. Tagging and PyPI publication are explicit maintainer steps on the tested commit. Further proof or verified-backend optimization requires a new user-selected budget.",
     "deferred": [
+      "Further verified-backend speed optimization (sparse affinity delivery or native interop)",
+      "Optimized Rust functional refinement and weighted ordered embedding proofs",
       "Running-time/space/asymptotic proofs",
       "New resource/region/destructor interpretation unless needed to unblock functional refinement",
       "Generic complexity frameworks and optimized-paper-bound proofs",
@@ -3191,7 +3193,7 @@
         "cold_worker_ms": 124.7,
         "policy": "Keep optimized/tested backends selectable; auto unchanged."
       },
-      "delivery_route_decision": "Direct compilation delivers the user-requested full rational Python algorithm alongside the earlier Rust-first plan; O01–O03 optimized Rust refinement is not falsely marked complete.",
+      "delivery_route_decision": "Direct compilation delivers the user-requested full rational Python algorithm alongside the earlier Rust-first plan; O01\u2013O03 optimized Rust refinement is not falsely marked complete.",
       "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
     },
     "completed_optimization": {
@@ -3234,18 +3236,24 @@
       "frontier": [
         {
           "task": "Proved sparse/depth-aware or demand-driven rooted affinity delivery plus compact transport",
-          "tokens": "80–250k",
-          "elapsed": "1–4 hours",
+          "tokens": "80\u2013250k",
+          "elapsed": "1\u20134 hours",
           "confidence": "Low before interface/proof spike"
         },
         {
           "task": "Linux-first in-process native Lean interface with exact BigInt marshaling, initialization, ownership, packaging and concurrency tests",
-          "tokens": "100–300k",
-          "elapsed": "2–6 hours",
+          "tokens": "100\u2013300k",
+          "elapsed": "2\u20136 hours",
           "confidence": "Low"
         }
       ],
       "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
+    },
+    "release_0_3_0": {
+      "plan": "../../release_0_3_0.md",
+      "evidence": "../../../../dev/packaging/2026-11-19-release-0.3.0.json",
+      "policy": "A package release may ship independently tested optimized kernels with clearly documented incomplete verification. Research goals remain available but are not package-release gates.",
+      "publication": "Not performed locally; manual workflow validates tested artifacts, checksums and matching tag."
     }
   }
 }

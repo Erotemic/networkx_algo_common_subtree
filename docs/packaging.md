@@ -1,5 +1,34 @@
 # Package builds and optional stable-ABI wheels
 
+## 0.3.0 release candidate (2026-11-19)
+
+Ordinary source builds require Cargo/Rust and include both Rust and Cython.
+Missing Cargo fails explicitly; `DISABLE_RUST_EXTENSIONS=1` remains available
+for deliberate reference-only builds. Python **3.10+** and NetworkX **2.8.8+**
+are required. The normal wheel matrix covers CPython 3.10–3.13 on Linux,
+macOS and Windows; the Linux Rust-only stable-ABI wheel supports 3.10–3.14.
+Musllinux builds disable Rust's default static CRT mode to build the shared
+extension. The package's normal wheel contains no Lean runtime/executable.
+
+Fresh native and portable Linux distributions are rebuilt from the filtered
+0.3.0 source archive. Installed tests require all nine Rust endpoints; normal
+wheels also require both Cython modules. **234 tests pass, with 10 skips** for
+the opt-in compiled Lean backend absent from standard wheels. The same ABI3
+artifact is exercised on each CPython 3.10–3.14, and the 3.10 run uses minimum
+NetworkX 2.8.8. Strict ABI auditing and Linux symbol-policy checks pass.
+All four README Python examples and 82 standalone Rust tests pass.
+
+The source archive excludes build caches, the optional development submodule
+and legacy encrypted CI credentials. Package CI validates installed behavior
+and collects tested distributions with checksums; publication is a separate
+manual workflow using those same artifacts. Local Linux evidence does not
+stand in for the remote macOS/Windows matrix. See
+[exact artifact/check evidence](../dev/packaging/2026-11-19-release-0.3.0.json),
+[release checklist](planning/release_0_3_0.md) and
+[maintainer instructions](releasing.md).
+
+The older experiments below establish their own dated baselines and hashes.
+
 The default source build includes Rust/PyO3 and both Cython extensions:
 
 ```bash

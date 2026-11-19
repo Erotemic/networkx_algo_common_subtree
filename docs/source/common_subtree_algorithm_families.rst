@@ -83,7 +83,17 @@ implementation, and the fixture/property tests used to connect them.
 Status in this repository
 -------------------------
 
-The Lozano-Valiente family is the mature existing API. The
-Droschinsky-Kriege-Mutzel family is currently sequestered as an experimental
-Rust crate plus a slow Python reference implementation. It should remain behind
-extra tests until the exact semantics and Python-facing API are stable.
+Both families have public Python endpoints and fast native Rust implementations
+in version 0.3.0. Ordinary wheels include the native backend. The unordered
+functions return original-node mappings and paths, with independent witness
+rescorers; Python reference implementations remain available for small inputs.
+The public APIs cover labels, signed weights, empty/nonempty objectives, fixed
+ambient roots and forced root pairs. An infinite 2018 skip penalty forbids
+skipped vertices.
+
+The optimized floating implementations are validated by independent small-input
+oracles, differential tests and witness rescoring. Their full production Lean
+refinement remains open. Separate verified exact matching and ordered reference
+backends are available; :doc:`verified_rational_ordered` describes the optional
+exact rational ordered-isomorphism backend. These assurance distinctions are
+documented without requiring new proof work for an ordinary package release.

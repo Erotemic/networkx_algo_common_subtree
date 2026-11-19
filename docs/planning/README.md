@@ -3,6 +3,14 @@
 For the latest stopping point and new-machine commands, read
 [RESUME.md](RESUME.md).
 
+**Current priority (2026-11-19): ship a usable, fast 0.3.0 release.** The user
+selected 0.3.0 and explicitly deferred further proof/performance research.
+The unordered algorithms already have Python and Rust endpoints. Focus on
+documentation, installed API usability, distribution/CI validation and honest
+verification scope. See [the release plan](release_0_3_0.md). The historical
+formalization and optimization backlog below stays available for later budgets;
+its remaining proof obligations are not ordinary package-release gates.
+
 This folder contains the intended destination, proof obligations, implementation
 work and concrete status for the Lozano-Valiente and Droschinsky formalization
 program. Read these in order:

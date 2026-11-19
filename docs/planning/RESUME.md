@@ -2,7 +2,44 @@
 
 Branch: `Droschinsky-algos`.
 
-## Active priority after the user's 2026-11-18 clarification
+## Active priority: 0.3.0 usability and release readiness (2026-11-19)
+
+The user explicitly deprioritized further verified-backend optimization and
+production proof closure. Prepare a usable, fast package release, explain
+verification scope in the README, and preserve research plans for later.
+Version **0.3.0** was selected by the user. The unordered 2016/2018 Python and
+Rust endpoints already exist; improve discoverability and validate the actual
+distributed endpoints rather than duplicating implementations.
+
+Release work: public examples/API guidance, honest proof coverage, version and
+changelog, clean source-archive/native wheel builds, installed tests and native
+endpoint smoke checks, portable ABI3 validation, and repaired release CI.
+The legacy duplicate jobs and removed `setup.py` publication references are
+replaced by one package build/test gate and manual publication of its tested
+artifacts. Standard release wheels keep fast Rust/Cython;
+optional Lean tooling/executables are not a normal installation dependency.
+See [the 0.3.0 release plan](release_0_3_0.md). No further proof work is a release
+blocker. Publication/tagging has not been performed.
+
+Local candidate checks are complete: native Rust/Cython, portable ABI3 glibc
+2.28 and musllinux 1.2 wheels rebuilt from the filtered source archive. All
+nine Rust endpoints are required; the normal wheel also requires both Cython
+modules. The installed suite passes **234 tests, with 10 optional Lean skips**
+on each CPython 3.10–3.14 and in both floor containers. All **82 Rust tests**,
+four README examples, strict artifact/ABI audits and workflow lint pass.
+NetworkX minimum is now 2.8.8 after a clean-import failure on 2.7; the minimum
+is exercised on Python 3.10. The musllinux shared-library build issue is fixed.
+
+The VM-local artifacts and `SHA256SUMS` are in
+`/var/tmp/subtree-release-0.3.0-candidate/`, copied to ignored `dist/0.3.0/`
+for host/user review. Exact source/artifact identities,
+benchmark results and commands are in
+[the release evidence](../../dev/packaging/2026-11-19-release-0.3.0.json).
+Next: run final committed Package CI remotely, including Intel/ARM macOS,
+Windows and the complete Linux matrix, then matching tag/manual publication.
+Do not restart proof/performance research as a release gate.
+
+## Historical priority after the user's 2026-11-18 clarification
 
 Latest optimization of the exact backend: cached scores with erased exactness
 proofs, cheap original-ID hashing with full collision-safe structural equality,
