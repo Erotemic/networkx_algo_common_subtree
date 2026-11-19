@@ -393,3 +393,5 @@ public import SubtreeProofs.Rust.SourceColdEvaluatorProvenance
 public import SubtreeProofs.Rust.SourceMaximumBody
 
 public import SubtreeProofs.Rust.SourceMaximumTotality
+
+public import SubtreeProofs.Rust.ScoreModel.Correctness

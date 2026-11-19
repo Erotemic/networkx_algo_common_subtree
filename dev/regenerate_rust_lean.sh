@@ -7,8 +7,14 @@ archive_sha256=54982f0f6bb8ec7080ef9d2a23932aebe6e3c032f32015963bbccc43103f723a
 cache_root=${XDG_CACHE_HOME:-$HOME/.cache}/common-subtree-verification
 binary_dir=${AENEAS_BIN_DIR:-$cache_root/$release}
 check=0
-if [[ ${1:-} == --check ]]; then check=1; shift; fi
-if [[ $# != 0 ]]; then echo 'usage: dev/regenerate_rust_lean.sh [--check]' >&2; exit 2; fi
+score_model_only=0
+for arg in "$@"; do
+    case "$arg" in
+        --check) check=1 ;;
+        --score-model-only) score_model_only=1 ;;
+        *) echo 'usage: dev/regenerate_rust_lean.sh [--check] [--score-model-only]' >&2; exit 2 ;;
+    esac
+done
 if [[ ! -x $binary_dir/aeneas || ! -x $binary_dir/charon ]]; then
     if [[ $(uname -s) != Linux || $(uname -m) != x86_64 ]]; then
         echo 'Set AENEAS_BIN_DIR to the pinned release for this platform.' >&2
@@ -25,6 +31,10 @@ if [[ ! -x $binary_dir/aeneas || ! -x $binary_dir/charon ]]; then
 fi
 "$binary_dir/aeneas" -version | grep -Fx "aeneas $release" > /dev/null
 rustup toolchain install nightly-2026-09-17 --profile minimal --component rustc-dev --component rust-src --component miri
+score_args=(--charon "$binary_dir/charon" --aeneas "$binary_dir/aeneas")
+if [[ $check == 1 ]]; then score_args+=(--check); fi
+python3 "$repo_root/dev/regenerate_score_model.py" "${score_args[@]}"
+if [[ $score_model_only == 1 ]]; then exit 0; fi
 output_dir=$(mktemp -d)
 trap 'rm -rf "$output_dir"' EXIT
 for entry in verified_ordered_core:VerifiedOrderedCore verified_assignment_core:VerifiedAssignmentCore; do

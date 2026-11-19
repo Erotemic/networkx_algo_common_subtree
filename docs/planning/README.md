@@ -110,6 +110,17 @@ proof frontier; the user chooses how much of the next task to fund.
 | O05 | Weighted ordered embedding: independent affinity/contraction optimum, fast DP/source refinement, witnesses and Python composition, reusing score/state infrastructure where valid | Hard; broader frontier | 500k–2M | 1–4 working days; low, split again after mathematics audit |
 | O06 | Floating-point engineering note and targeted rational-oracle regression: exact-integer range, finite-value policy, score-gap/error reasoning, near ties and large magnitudes | Moderate; independent practical win | 40–120k | 0.5–3 h; medium |
 
+O00 is complete: the pinned tools extract a real Rust local score/selection
+step using four opaque arithmetic primitives with maintained rational
+definitions. Lean proves total local selection, optimum score, invariant
+preservation and agreement with the independent rooted recurrence given correct
+child scores. Native float extraction is separately rejected as expected;
+integer inputs alone demonstrably do not guarantee exact sums. The 4,365-job
+library, six Lean examples, existing isomorphism suite and two Rust tests pass.
+See the [O00 evidence and reproduction commands](../../proofs/experiments/ordered_score_model/README.md).
+O01 is next; production state/dictionary/callback extraction is still untested,
+so its estimate remains 100–300k tokens / 1–4 hours rather than a firm quote.
+
 O02 gives a useful rooted-mode milestone before O03 closes the general mode.
 O04 is required before calling a supported Python mode complete. Preserve the
 existing scalar/callback API; do not quietly reinterpret float output as an
@@ -129,10 +140,11 @@ model here; no analytic real-number machinery is needed.
 
 The [pinned Aeneas source](https://github.com/AeneasVerif/aeneas/blob/5a392f4b80a4d0d05abc240eb2a7fa70622a9a35/src/symbolic/SynthesizeSymbolic.ml#L78)
 rejects floats in symbolic expansion. Its [external/opaque model mechanism](https://github.com/AeneasVerif/aeneas/blob/5a392f4b80a4d0d05abc240eb2a7fa70622a9a35/README.md#adding-models-of-rust-definitions-to-the-lean-backend)
-offers a route through an abstract score type
-with exact operations in Lean. O00 must demonstrate the precise extraction
-route; there is no already-validated global switch making arbitrary `f64` code
-exact. Do not edit generated files or insert new axioms to simulate a proof.
+provides the route now demonstrated in O00: an opaque score type and four
+primitive operations with explicit rational definitions in Lean. This validates
+the extracted local step under that ideal model; there is no global switch or
+correspondence theorem making arbitrary native `f64` execution exact. Do not
+edit generated files or insert new axioms to simulate a proof.
 
 The informal float analysis should bound score aggregation error under stated
 finite-value/no-overflow assumptions and explain stability when competing

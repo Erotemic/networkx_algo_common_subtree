@@ -20,10 +20,21 @@ Do not silently substitute an unverified backend for a verified request or
 remove the faster tested implementation just because it is not yet proved.
 `auto` is an implementation policy, not a formal-verification guarantee.
 
-Start with the bounded numeric-model/extraction spike, then the fast ordered
-isomorphism kernel, whose exact-affinity mathematics and reconstruction proofs
-already exist. The production DP/memo/state refinement is still open. Weighted
-embedding needs a separate affinity-specification audit. The current fast API
+The bounded numeric-model/extraction spike O00 is complete. Pinned Charon/Aeneas
+extract actual Rust local selection/aggregation with four opaque primitives;
+maintained Lean definitions use rationals without new model axioms. Checked
+endpoints include `Rust.ScoreModel.level_step_score`, `level_step_preserves`
+and `level_step_recurrence_score` (correct child scores remain premises).
+The 4,365-job library, six Lean examples, existing isomorphism suite, two Rust
+tests and byte-for-byte regeneration pass. See the
+[spike report](../../proofs/experiments/ordered_score_model/README.md).
+No production kernel, Python dispatch, integer-execution guarantee or installed
+performance claim changed. O01 is next (roughly 100–300k tokens / 1–4 hours):
+separate/extract the actual fast ordered kernel, preserving original IDs,
+callback/error behavior and installed-path measurements. Its exact-affinity
+mathematics and reconstruction proofs already exist; state/dictionary/callback
+extraction remains untested. The production DP/memo/state refinement is still
+open. Weighted embedding needs a separate affinity-specification audit. The current fast API
 converts even integer affinities to `f64`; do not claim an unrestricted exact
 integer guarantee from integral inputs alone.
 

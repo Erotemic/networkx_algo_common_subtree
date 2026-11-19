@@ -25,6 +25,7 @@ jobs:
           lake build
           lake env lean Tests/RootedDynamicProgram.lean
           lake env lean Tests/OrderedIsomorphism.lean
+          lake env lean Tests/ScoreModel.lean
           lake env lean Tests/LookupEvents.lean
           lake env lean Tests/LookupSource.lean
           lake env lean Tests/LookupSourceFrontend.lean

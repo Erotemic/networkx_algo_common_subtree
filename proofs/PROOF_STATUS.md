@@ -8,6 +8,17 @@ The older fourteen-case addressed-runtime run was deliberately cancelled for
 reprioritization (exit 143); it provides no new pass/fail result. Previously
 accepted proofs and the focused public-maximum regression remain valid.
 
+O00 numeric extraction is complete: actual Rust local selection and aggregation
+translate with four opaque arithmetic primitives, modeled by rational
+definitions. `Rust.ScoreModel.level_step_eq`, `level_step_score`,
+`level_step_preserves` and `level_step_recurrence_score` are checked (namespace
+`SubtreeProofs`); the last retains correct child scores as premises. The
+4,365-job library, six kernel examples, existing isomorphism suite, two Rust
+tests and regeneration comparison pass. Axiom closures retain only the existing
+accepted three axioms. This is not a complete production DP/Python theorem or
+native `f64` correspondence. O01 production-kernel separation/extraction is
+next. See the [spike evidence](experiments/ordered_score_model/README.md).
+
 [Universal checked public maximum and table teardown](../docs/planning/lean-complexity-campaign/evidence/memo-public-maximum-totality.md)
 now constructs the complete public core under the existing addressed native
 frame model: actual seven-local entry, all 17 parsed instructions, evaluator

@@ -3100,7 +3100,7 @@
     "numeric_model": "Exact rational/integer score arithmetic; no Lean IEEE-754 proof required. Floating execution has an explicit arithmetic boundary, informal error/stability analysis and rational-oracle tests. Unrestricted exact-integer execution still needs an integer arithmetic path or a validated exact-representability domain; current fast API converts Python integers to f64.",
     "budget_policy": "User chooses each time/token budget. Present task-level token and elapsed ranges with confidence, report actual consumption and remaining frontier; do not assume a fixed tranche or autonomously exhaust the full research program.",
     "backlog": "../../README.md#budgetable-ordered-work-recommended-order",
-    "recommended_next": "O00 bounded numeric-model/extraction spike, then fast ordered isomorphism kernel and source refinement using existing exact-affinity mathematics and reconstruction proofs. Weighted embedding requires a separate affinity-specification audit.",
+    "recommended_next": "O00 complete; next O01: separate and extract the actual fast ordered score/choice/state kernel from PyO3, preserve original IDs and callback/error behavior, and measure the installed path. State/dictionary/callback extraction remains untested; rough estimate 100–300k tokens / 1–4 hours. Weighted embedding requires a separate affinity-specification audit.",
     "deferred": [
       "Running-time/space/asymptotic proofs",
       "New resource/region/destructor interpretation unless needed to unblock functional refinement",
@@ -3125,6 +3125,29 @@
       "optimized_delivery": "Retain the optimized, independently empirically tested implementation as a selectable Python backend, including when the verified implementation has a speed penalty.",
       "benchmark_acceptance": "O04 requires installed-API comparisons of verified, optimized and relevant reference implementations on the same applicable domains, including conversion/computation/reconstruction, warmed repeated latency/variation, memory where practical, required compiled backends and independently validated/rescored witnesses.",
       "release_policy": "A verified Python mode can ship with a documented slowdown. Functional delivery and competitive performance are reported separately; auto selection does not imply proof coverage. No dispatch change or backend removal is part of this planning update."
+    },
+    "completed_discovery": {
+      "task": "O00",
+      "date": "2026-11-18",
+      "report": "../../../../proofs/experiments/ordered_score_model/README.md",
+      "source": "proofs/experiments/ordered_score_model/score_model.rs",
+      "status": "Checked actual local-step extraction with explicit rational arithmetic primitives; no production DP/Python or native float correspondence claim.",
+      "endpoints": [
+        "SubtreeProofs.Rust.ScoreModel.level_step_eq",
+        "SubtreeProofs.Rust.ScoreModel.level_step_score",
+        "SubtreeProofs.Rust.ScoreModel.level_step_preserves",
+        "SubtreeProofs.Rust.ScoreModel.level_step_recurrence_score"
+      ],
+      "assumptions": "Four external primitives are maintained rational definitions, not axioms. Recurrence bridge assumes correct child scores; full state/memo/arena provenance remains open.",
+      "checks": {
+        "library_jobs": 4365,
+        "lean_examples": 6,
+        "existing_ordered_isomorphism_suite": "pass",
+        "rust_tests": 2,
+        "regeneration": "byte-for-byte pass",
+        "native_float_extraction": "expected rejection at unsupported float operations"
+      },
+      "token_usage": "No reliable task-scoped token counter available; no actual token figure asserted."
     }
   }
 }

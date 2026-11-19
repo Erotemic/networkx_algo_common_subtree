@@ -9,6 +9,15 @@ pending observations below describe their checkpoints; do not automatically
 restart that optional addressed-resource run for the new milestone. Keep the
 existing CI and reproduction commands available for separately funded research.
 
+The exact-score extraction spike O00 reproduces with
+`dev/regenerate_rust_lean.sh --score-model-only --check` from the repository
+root, after cache setup. From `proofs/`, run `lake build` and
+`lake env lean Tests/ScoreModel.lean`. The main regeneration and CI commands
+also include this spike. It has an explicit rational primitive model, not a
+native `f64` correspondence theorem; compiler outputs use local `/var/tmp`.
+See [the report](experiments/ordered_score_model/README.md) for exact endpoints,
+commands, test cases and the remaining production-kernel frontier.
+
 The maintained project uses Lean 4.35.0, Mathlib commit
 `56a005855ea17e0b0958f73ec801ae140b0a1679`, and Aeneas commit
 `5a392f4b80a4d0d05abc240eb2a7fa70622a9a35`. Lake fetches both Git
