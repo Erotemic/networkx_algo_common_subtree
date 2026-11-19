@@ -1,8 +1,8 @@
 import SubtreeProofs.Rust.SourceOwnerRecursive
 
 /-! Executable regression of the pinned evaluator through parsed recursive
-entry, helper calls and checked cleanup. This runtime test complements the
-kernel-checked conditional source/native theorems; it is not universal totality. -/
+entry, helper calls and checked cleanup. This finite runtime regression
+complements the separate kernel-checked universal evaluator totality theorem. -/
 
 namespace SourceRecursiveExecutionTests
 
@@ -113,9 +113,9 @@ private def warmFixture (left right : BalancedWord) (table : MemoTable) : World 
 private def overflowTable : MemoTable := .Entry ⟨.Empty, .Empty, ⟨.Empty, 4294967295#u32⟩⟩ .Empty
 
 private def checkWarm (label : String) (left right : BalancedWord) (expectNone : Bool) (steps calls : Nat)
-    (table : MemoTable := overflowTable) : IO Unit := do
+    (table : MemoTable := overflowTable) (fuel : Nat := 48) : IO Unit := do
   let (world, caller, args, guards) := warmFixture left right table
-  match SourceEval.run SourceEval.Certificate.original.body 48 .evaluate (args.map Prod.snd) with
+  match SourceEval.run SourceEval.Certificate.original.body fuel .evaluate (args.map Prod.snd) with
   | none => throw (IO.userError s!"warm source failed: {label}")
   | some (value, work) =>
     let noneResult := match value with
@@ -123,7 +123,7 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
       | _ => false
     unless noneResult == expectNone && work.work.steps == steps && work.solverCalls == calls do
       throw (IO.userError s!"wrong warm source result/cost: {label}")
-    match Recursive.original 128 48 world guards [caller] .evaluate args with
+    match Recursive.original 128 fuel world guards [caller] .evaluate args with
     | none => throw (IO.userError s!"warm addressed execution failed: {label}")
     | some (final, packet, cost) =>
       unless value == packet.2 && decide (work = cost) do
@@ -174,5 +174,9 @@ private def checkWarm (label : String) (left right : BalancedWord) (expectNone :
     (.Entry ⟨.Empty, .Empty, ⟨pairWord, 2147483648#u32⟩⟩
       (.Entry ⟨.Empty, pairWord, ⟨pairWord, 0#u32⟩⟩
         (.Entry ⟨.Empty, .Pair .Empty pairWord, ⟨pairWord, 0#u32⟩⟩ .Empty)))
+  -- A cold three-edge query exercises deeper general recursion, memo insertions
+  -- and positive witness cleanup, retaining both complete suspended caller words.
+  checkWarm "universal-cold-three-edge" (.Pair pairWord pairWord) (.Pair pairWord pairWord) false 56435 37
+    (table := .Empty) (fuel := 64)
 
 end SourceRecursiveExecutionTests

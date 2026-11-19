@@ -2715,6 +2715,64 @@
           "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited. This checkpoint freshly ran the eleven affected suites, not all55 CI suites."
         },
         "next": "Assemble universal pair/pair NativeTotalFresh induction from all checked branch constructors. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      },
+      "evaluator_universal_native_totality_followup": {
+        "baseline_commit": "c2b4349",
+        "evidence": "memo-evaluator-universal-fresh.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_evaluate_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_evaluate_total_consistent",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_total",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.pair_native_total_fresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.NativeTotalFresh",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.NativeTotalFresh.total",
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_minimal_pair_total_fresh"
+        ],
+        "status": "Proved universal native_total_fresh for every finite BalancedWord pair and arbitrary typed warm table under the existing legal native/caller/external frame model, with no smaller-call, expected post-frame, desired parent execution or preselected bound premise. Pair closure splits the actual cache/child-option/checked-add cases and reuses complete checked branch constructors; independent functional evaluate_total supplies child native equations. All four recursive contracts decrease independent query semilength, including both native concatenations. The native_total projection preserves the old contract. Direct native_evaluate_total_fresh constructs checked dispatch and pure Evaluation at the exact full cost, native result/actual updated table, readable output, well-formed world, protected reads, complete ownership/live-Box coverage, witness-only provenance and fixed world/packet/cost at every larger sufficient bound. The separate consistent endpoint preserves independent TableSound and both <2^32 input-size hypotheses to return a mathematical witness and sound output table with the same guarantees. The former minimal-pair theorem reuses universal totality unchanged. Universal addressed evaluator adequacy is proved in the scoped source interpretation; dynamic parsed-region/destructor interpretation, public maximum/teardown and remaining SRC-01/C3 obligations stay open.",
+        "validation": {
+          "library_jobs": 4343,
+          "new_proof_files": 3,
+          "proof_modules_touched": 6,
+          "new_theorems": 5,
+          "affected_lean_suites": [
+            "SourceUniversalFresh",
+            "SourceRightFailure",
+            "SourceLeftFailure",
+            "SourceRootOverflow",
+            "SourceSubtotalOverflow",
+            "SourceNoneResultProvenance",
+            "SourceCacheMissSetup",
+            "SourceParentOutput",
+            "SourceParentChoices",
+            "SourceAddressedControl",
+            "SourceOwnerLifecycle",
+            "SourceRecursiveExecution"
+          ],
+          "fresh_lean_suites": "Eleven suites passed; the fourteen-case runtime suite is running in its original live process.",
+          "universal_consumer": "passed: two references alias one old seven-owner cold three-edge query; no smaller calling/native-result/physical-success/post-frame premise. Direct consistent universal endpoint constructs a mathematical witness/sound table with pure Evaluation and checked dispatch at the full same cost, complete output/external ownership/coverage, witness provenance and both source and dispatcher stability at all larger sufficient bounds.",
+          "larger_runtime": "pure source derived as56435 steps/37 solver calls for cold three-edge identity at fuel64; checked dispatch/readback budget128 still running with all fourteen runtime cases",
+          "recursive_runtime_cases": 14,
+          "audited_endpoints": 2121,
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1084,
+          "unknown_statement_references": 0,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "ci_lean_suites": 56,
+          "ci_added_suites": [
+            "SourceUniversalFresh"
+          ],
+          "ci_added_commands_passed": true,
+          "inherited_regression": "Full 47-suite/native-WP evidence at d49f638 remains inherited. This checkpoint runs the twelve affected suites, not all56 CI suites.",
+          "runtime_local_state": "/var/tmp/subtree-universal-fresh-runtime-state.json records the original live session/process/log; pending result is not a pass and must be verified from terminal state before updating."
+        },
+        "next": "Compose the public maximum body and cold-table provenance/teardown with universal evaluator totality; integrate actual dynamic parsed-region/destructor interpretation. Indexed/token/reconstruction wrappers, input/error policy, G3 adversaries, W04/MEM-03/W05/MEM-04 resources, representation/global time/space, APP and all other mathematical/software/release/application planning requirements remain. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -2903,7 +2961,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now also constructs whole right-contraction None body and checked dispatch/closure, real failure packing/right cleanup, zero-owner retained81 and all six cleanup joins from four explicit smaller fresh contracts and independent native equations. All pair/pair success/failure constructors are available. Assemble universal pair/pair NativeTotalFresh induction from all checked branch constructors. Dynamic regions/destructors, public maximum/cold-table teardown, wrappers/input policy/resources/G3 and every remaining planning requirement remain open. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      "W06-C3 now has universal addressed evaluator existence/adequacy, complete output/caller/external ownership, protected reads, witness provenance and exact full-cost larger-bound stability for all finite words/arbitrary typed warm tables. The separate mathematical consistency corollary retains TableSound and both input-width bounds. Compose the public maximum body and cold-table provenance/teardown with universal evaluator totality; integrate actual dynamic parsed-region/destructor interpretation. Indexed/token/reconstruction wrappers, input/error policy, G3 adversaries, W04/MEM-03/W05/MEM-04 resources, representation/global time/space, APP and all other mathematical/software/release/application planning requirements remain. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

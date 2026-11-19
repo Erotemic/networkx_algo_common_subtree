@@ -6,8 +6,8 @@ public import SubtreeProofs.Rust.SourceEmptyOwnerProvenance
 /-! A separate stronger induction contract bounds only the returned witness's
 owners. Its empty-query bases include arbitrary typed warm-table hits, even
 nonempty cached witnesses, and requested-key misses. The original NativeTotal
-contract is unchanged and follows by projection. Pair/pair induction remains
-an obligation; no universal stronger instance is assumed. -/
+contract is unchanged and follows by projection. The universal instance is proved
+separately in SourceEvaluatorNativeFreshTotality; these bases assume no instance. -/
 
 @[expose] public section
 

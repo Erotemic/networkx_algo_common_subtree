@@ -5,8 +5,8 @@ public import SubtreeProofs.Rust.SourceCacheHitTotality
 
 /-! The universal native calling contract used as the induction hypothesis for
 smaller evaluator requests. Empty inputs satisfy the complete contract, allowing
-arbitrary warm tables and legal query/table/caller aliases. Pair/pair totality
-remains an explicit obligation rather than an assumed global instance. -/
+arbitrary warm tables and legal query/table/caller aliases. SourceEvaluatorNativeFreshTotality proves the universal projection separately;
+this contract and its empty bases assume no global instance. -/
 
 @[expose] public section
 

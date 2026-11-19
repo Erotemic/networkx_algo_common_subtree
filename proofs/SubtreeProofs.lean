@@ -385,3 +385,5 @@ public import SubtreeProofs.Rust.SourceLeftFailureTotality
 public import SubtreeProofs.Rust.SourceMinimalPairTotality
 
 public import SubtreeProofs.Rust.SourceRightFailureTotality
+
+public import SubtreeProofs.Rust.SourceUniversalEvaluatorTotality

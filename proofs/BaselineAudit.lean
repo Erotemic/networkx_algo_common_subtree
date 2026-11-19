@@ -2244,3 +2244,9 @@ import SubtreeProofs
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.entry_right_failure_body_complete
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_native
 #print axioms SubtreeProofs.Rust.SourceEval.Evaluator.right_failure_total_fresh
+
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.pair_native_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_total
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_evaluate_total_fresh
+#print axioms SubtreeProofs.Rust.SourceEval.Evaluator.native_evaluate_total_consistent

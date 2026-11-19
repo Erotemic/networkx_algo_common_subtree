@@ -86,37 +86,38 @@ W04's other interfaces and W06-C3 remain retained work.
 
 ## W06. Source-to-cost bridge
 
-[Complete right-contraction failure dispatch](evidence/memo-evaluator-right-failure.md)
-now constructs the whole original parent body, guarded return and checked
-dispatch/closure when left contraction succeeds and right contraction returns
-None. Four smaller `NativeTotalFresh` contracts and independent native head/
-tail/subtotal/root/left success and right-failure equations remain explicit.
-Actual failure packing retains its right-cleanup suffix; the real join drops
-the owned right query85 and held left witness81. Exact mask counts derive zero
-owners in still-bound81 before outer left cleanup retires it and drops the held
-left query71 and candidate64. All six cleanup joins and parameter return execute.
-Complete ownership/coverage, allowed old query/table aliases, protected reads,
-source/native agreement, None-result provenance and exact world/packet/full cost
-at larger sufficient bounds survive. Every pair/pair success/failure constructor
-is now available from its explicit smaller contracts; universal induction remains.
-The 4,340-job library build and all eleven affected Lean suites pass. All
-thirteen runtime cases pass; the new owned right-failure case checks 4,252 source
-steps/seven solver calls, complete source/addressed value/table/cost equality,
-caller guard bytes/liveness and full owner coverage.
-The new kernel consumer discharges all four contracts with proved empty-input/
-minimal-pair instances. Both queries borrow inside the old table; cleanup retires
-a two-owner right query, two-owner left witness and six-owner candidate. Returned
-None/table owns eighteen cells with complete coverage and stable larger bounds.
-All 2,116 audited endpoints retain the accepted axioms; six new theorems in five
-new proof modules are included. Eight statement seeds export 1,347 unique records
-without unknown references. Thirteen Rust tests and nine Python checks pass.
-CI now includes fifty-five suites; this checkpoint freshly ran the eleven
-affected suites, not the full fifty-five. See the evidence report for exact commands.
-Next assemble universal pair/pair `NativeTotalFresh` induction. Dynamic regions/
-destructors, public maximum/cold-table teardown, wrappers/input policy/resources/
-G3 and every other planning requirement remain open. No full SRC-01/C3 or
-production resource closure is claimed; the full goal stays active. Earlier
-[left failure](evidence/memo-evaluator-left-failure.md), root/subtotal overflow, head/tail failure and successful-parent endpoints remain checked.
+[Universal checked evaluator totality and witness provenance](evidence/memo-evaluator-universal-fresh.md)
+now proves `native_total_fresh` for every finite native word pair and arbitrary
+typed warm table under the existing legal native/caller/external frame model.
+All four smaller contracts are discharged by induction on independent query
+semilength, including both contractions. Actual cache/option/checked-add cases
+reuse the checked branch constructors; independent functional evaluations supply
+child native equations. No smaller contract, desired parent execution/post-frame
+or preselected bound remains a premise. The old `NativeTotal` projection and
+one-edge theorem remain available unchanged.
+The direct endpoint constructs checked dispatch and pure `Evaluation` at the
+same complete cost, native result/actual updated table, readable output,
+well-formed memory, protected reads, complete ownership/live-Box coverage,
+witness-only provenance and exact world/packet/cost at every larger sufficient
+fuel/budget. The separate mathematical consistency endpoint retains `TableSound`
+and both input semilength bounds below 2^32. It returns Some with the independent
+mathematical witness and a sound table; arbitrary warm source execution still
+retains every None/overflow behavior. Production complexity does not follow.
+The 4,343-job library build and eleven affected Lean suites pass; the larger
+fourteen-case runtime suite is running in its original process. The new kernel
+consumer supplies two references to one old seven-owner cold three-edge query,
+uses no smaller calling contracts and obtains the direct mathematical/source/
+resource/stability guarantees. All 2,121 audited endpoints retain the accepted
+axioms; five new theorems in three new proof modules are included. Eight statement
+seeds export 1,084 unique records without unknown references. Thirteen Rust tests
+and nine Python checks pass. CI lists fifty-six suites; this checkpoint runs the
+twelve affected suites, not all fifty-six. See the evidence report for commands.
+Next compose the public maximum body/cold-table teardown and actual dynamic
+parsed-region/destructor interpretation. Indexed/token/reconstruction wrappers,
+input/error policy, G3 adversaries, W04/MEM-03/W05/MEM-04 resources, representations/
+global time/space, APP and all other planning requirements remain. This is scoped
+addressed-source adequacy under D12; no full SRC-01/C3, physical allocator/compiler
+or production resource closure is claimed. The full goal stays active.
 
 [Helper owner provenance and constructive concatenation cleanup](evidence/memo-evaluator-owner-provenance.md)
 now derives descendant-owner freshness from the actual helper allocation ledger.

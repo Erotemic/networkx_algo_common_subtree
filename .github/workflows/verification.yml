@@ -56,6 +56,7 @@ jobs:
           lake env lean Tests/SourceRootOverflow.lean
           lake env lean Tests/SourceLeftFailure.lean
           lake env lean Tests/SourceRightFailure.lean
+          lake env lean Tests/SourceUniversalFresh.lean
           lake env lean Tests/SourceNoneResultProvenance.lean
           lake env lean Tests/SourceParentOutput.lean
           lake env lean Tests/SourceParentChoices.lean
