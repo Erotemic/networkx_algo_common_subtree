@@ -34,13 +34,46 @@ part of this milestone. Keep the wider research program available as deferred
 work. The user chooses each work budget; do not start an unbounded campaign or
 assume a fixed tranche budget.
 
-The product acceptance target is a fast Rust kernel actually called by Python,
-with a source-connected Lean theorem proving feasible, optimal original-input
-witnesses and the correct score on the stated domain. A mathematical recurrence
-alone, a slow verified reference, or a fast tested implementation alone does not
-complete that target. Python/PyO3 conversion and any external primitive model
-must have a named assurance boundary and direct integration tests. Efficiency
-is assessed with installed-API benchmarks, without a running-time theorem.
+The product acceptance target includes Python exposure of the formally verified
+Rust algorithm, with a source-connected Lean theorem proving feasible, optimal
+original-input witnesses and the correct score on its stated domain. Retain
+the optimized, empirically tested implementation as a separately selectable
+Python backend. A verified mode may ship with a documented speed penalty;
+competitive performance is a measured optimization target, rather than a reason
+to hide a useful verified implementation or remove the faster tested one.
+A mathematical recurrence without an implementation connection does not close
+the source-proof milestone. Python/PyO3 conversion and any external primitive
+model must have a named assurance boundary and direct integration tests.
+Efficiency is assessed with installed-API benchmarks, without a running-time
+theorem.
+
+### Python delivery and backend choice
+
+- Expose verified and optimized/tested implementations through the same public
+  algorithm interfaces, with explicit selection and documented feature/scoring
+  support. Preserve current backend names until an intentional API change;
+  existing `verified-rust`, `reference-rust` and `iter-rust` have different scopes.
+- An explicitly requested verified backend must enforce its proved input/model
+  domain and report unsupported or unavailable modes. It must not silently run
+  an unverified solver. The proof/primitive/numeric boundary must be visible.
+- Keep the faster unverified implementation available while it remains useful
+  and independently tested. Its documentation says empirically validated, not
+  formally verified. `auto` may select an applicable optimized backend; it does
+  not imply a formal guarantee. No default-selection change is part of this
+  planning update.
+- O04 must benchmark installed Python calls for both backends and relevant
+  reference implementations on the same machine, inputs, scoring and root
+  policies. Include conversion, core computation and witness reconstruction;
+  report warmed repeated latency/variation, memory where practical, revisions,
+  build mode and any speed penalty. Native-only timing is supplementary.
+- Require the intended compiled backends in integration/benchmark runs so a
+  fallback cannot masquerade as either implementation. Check both against
+  independent small-input oracles and validate/rescore original-input witnesses;
+  equally optimal tie witnesses need not be identical unless the API promises it.
+
+Python delivery, a clear backend comparison and empirical correctness coverage
+are release criteria for each supported mode. A slower verified release closes
+that functional delivery milestone while leaving its performance gap explicit.
 
 ### Current frontier
 
@@ -73,7 +106,7 @@ proof frontier; the user chooses how much of the next task to fund.
 | O01 | Separate a proof-friendly ordered score/choice kernel from Python callbacks and bindings; preserve current behavior, retain original IDs, demonstrate extraction and measure the installed path | Moderate–hard | 100–300k | 1–4 h; low–medium until O00 |
 | O02 | Source correctness of fast root-preserving affinity isomorphism: state decomposition/interning, memo invariant, score optimum and reconstruction composed with existing mathematics | Hard; highest-value first algorithm proof | 300k–1M | 3–12 h; low before O01 |
 | O03 | General isomorphism: descendant-root search and tie policy composed with the rooted proof; original-index witnesses and errors retained | Hard, but reuses O02 | 200–600k | 2–8 h; low |
-| O04 | Exact-integer execution/API contract and installed Python release gate for the proved modes: reject unsupported/overflow cases, require the intended backend, validate conversions and benchmark actual calls | Moderate; some work can accompany O01 | 80–250k | 1–4 h; medium after kernel/arithmetic choices |
+| O04 | Exact-integer execution/API contract and installed Python release gate: expose verified and optimized/tested backends explicitly, reject unsupported/overflow cases, require intended compiled paths, validate conversions/witnesses and benchmark both end to end against relevant references | Moderate; some work can accompany O01 | 80–250k | 1–4 h; medium after kernel/arithmetic choices |
 | O05 | Weighted ordered embedding: independent affinity/contraction optimum, fast DP/source refinement, witnesses and Python composition, reusing score/state infrastructure where valid | Hard; broader frontier | 500k–2M | 1–4 working days; low, split again after mathematics audit |
 | O06 | Floating-point engineering note and targeted rational-oracle regression: exact-integer range, finite-value policy, score-gap/error reasoning, near ties and large magnitudes | Moderate; independent practical win | 40–120k | 0.5–3 h; medium |
 

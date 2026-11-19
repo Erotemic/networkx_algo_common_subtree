@@ -9,6 +9,13 @@ The implementation/performance matrix below remains historical evidence; the
 current fast ordered affinity path uses `f64`, including for Python integer
 weights, so an unrestricted exact-integer execution guarantee is still work.
 
+Delivery policy: keep verified and optimized/empirically tested implementations
+selectable from Python. A documented speed penalty is acceptable for a verified
+mode; benchmark both through installed public APIs against the same applicable
+references. Explicit verified selection must enforce its assurance domain and
+must not silently fall back to unverified code. `auto` alone conveys no proof
+guarantee. See [backend policy](backend_parity_and_cython_retirement.md).
+
 Proof-only follow-up, 2026-11-16: the [reified lookup operational pilot](lean-complexity-campaign/evidence/lookup-source-pilot.md)
 now has checked instruction accounting and universal value/event contracts
 inside its declared read-only model. The 3,750-job library and four Lean

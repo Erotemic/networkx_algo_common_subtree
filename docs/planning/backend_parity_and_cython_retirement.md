@@ -1,5 +1,27 @@
 # Backend parity, benchmark evidence, and Cython retirement criteria
 
+## Current dual-backend delivery policy
+
+User clarification, 2026-11-18: formally verified algorithms must be exposed in
+Python and benchmarked against relevant non-verified implementations. Retain
+the optimized, independently tested implementation as a selectable backend
+even if the verified implementation is slower. A verified release with a
+documented speed penalty is useful; improving that penalty remains a separate
+performance target. Retiring a backend is not required merely because another
+backend has stronger proof coverage.
+
+Document assurance, supported scoring/root/input domains and measured speed for
+each backend. Explicit verified selection must not silently invoke an unverified
+fallback. `auto` may choose an applicable optimized backend and must not be
+described as a formal guarantee. Preserve current dispatch until a separately
+implemented and tested selection change. Installed-API benchmarks must include
+conversion, computation and witness reconstruction, require the intended native
+paths, and compare equal domains on repeated warmed inputs. Validate results
+against independent oracles/rescorers, allowing distinct optimal tie witnesses.
+
+The older Cython-retirement proposal below is conditional future work; it does
+not override this policy or authorize removal of a useful tested fast backend.
+
 Status: overlay incorporated 2026-11-14; strict compiled parity, installed-wheel
 validation and comparative measurements pass. Remaining default-backend gates
 are production source coverage, intended scoring extensions and performance.
@@ -16,7 +38,9 @@ Cython, then Python. The Aeneas/Lean-verified ordered embedding is explicitly
 selected with `impl="verified-rust"`, and currently requires
 `node_affinity=None`. The structural ordered-isomorphism reference is exposed
 as `impl="reference-rust"`, also unweighted; its indexed readback refinement
-remains open and its exponential performance keeps it outside `auto`.
+and complete token entry point now have source-correctness proofs, while
+Python/PyO3 conversion is tested integration. Its exponential performance keeps
+it outside `auto`.
 Consequently, making
 `verified-rust` the default is a distinct future change, not a synonym for
 preferentially using legacy `iter-rust`.

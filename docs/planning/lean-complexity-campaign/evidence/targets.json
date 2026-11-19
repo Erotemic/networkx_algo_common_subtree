@@ -3119,6 +3119,12 @@
       "path": "proofs/SubtreeProofs/Rust/SourceDropInstanceTypes.lean",
       "status": "Unfinished optional checker draft preserved in local Git; no accepted new endpoint claimed."
     },
-    "existing_mathematics_checked": "AffinityDP.level_correct and AffinityDP.anywhere_correct instantiate at both Q and Z under the current pinned Lean project."
+    "existing_mathematics_checked": "AffinityDP.level_correct and AffinityDP.anywhere_correct instantiate at both Q and Z under the current pinned Lean project.",
+    "python_backend_policy": {
+      "verified_delivery": "Expose the formally verified implementation through the Python public API, with explicit proof/input/numeric boundary and no silent unverified fallback for an explicit verified request.",
+      "optimized_delivery": "Retain the optimized, independently empirically tested implementation as a selectable Python backend, including when the verified implementation has a speed penalty.",
+      "benchmark_acceptance": "O04 requires installed-API comparisons of verified, optimized and relevant reference implementations on the same applicable domains, including conversion/computation/reconstruction, warmed repeated latency/variation, memory where practical, required compiled backends and independently validated/rescored witnesses.",
+      "release_policy": "A verified Python mode can ship with a documented slowdown. Functional delivery and competitive performance are reported separately; auto selection does not imply proof coverage. No dispatch change or backend removal is part of this planning update."
+    }
   }
 }

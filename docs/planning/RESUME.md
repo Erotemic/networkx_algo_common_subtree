@@ -12,6 +12,14 @@ The user selects budgets; give task-level token/time estimates, then report
 actual consumption and the next frontier. See the O00–O06 backlog and confidence
 bands in [README.md](README.md#budgetable-ordered-work-recommended-order).
 
+User clarification on Python delivery: expose both formally verified and
+optimized, empirically tested backends, even when verification entails a speed
+penalty. O04 requires installed-API benchmarks against the relevant references,
+including conversion and reconstruction, and explicit proof/domain labels.
+Do not silently substitute an unverified backend for a verified request or
+remove the faster tested implementation just because it is not yet proved.
+`auto` is an implementation policy, not a formal-verification guarantee.
+
 Start with the bounded numeric-model/extraction spike, then the fast ordered
 isomorphism kernel, whose exact-affinity mathematics and reconstruction proofs
 already exist. The production DP/memo/state refinement is still open. Weighted
