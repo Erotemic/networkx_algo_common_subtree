@@ -2773,6 +2773,61 @@
           "runtime_local_state": "/var/tmp/subtree-universal-fresh-runtime-state.json records the original live session/process/log; pending result is not a pass and must be verified from terminal state before updating."
         },
         "next": "Compose the public maximum body and cold-table provenance/teardown with universal evaluator totality; integrate actual dynamic parsed-region/destructor interpretation. Indexed/token/reconstruction wrappers, input/error policy, G3 adversaries, W04/MEM-03/W05/MEM-04 resources, representation/global time/space, APP and all other mathematical/software/release/application planning requirements remain. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      },
+      "evaluator_cold_packet_provenance_followup": {
+        "baseline_commit": "f34c3fd",
+        "evidence": "memo-evaluator-cold-provenance.md",
+        "endpoints": [
+          "SubtreeProofs.Rust.SourceEval.Evaluator.native_evaluate_cold_total",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_fresh_output_of_no_input_owners",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_boxOrigin",
+          "SubtreeProofs.Rust.SourceEval.Addressed.Recursive.original_callers_preserved",
+          "SubtreeProofs.Rust.LookupSource.Partial.Addressed.Storage.BoxOrigin.fresh_output",
+          "SubtreeProofs.Rust.SourceEval.Maximum.actual_body"
+        ],
+        "status": "Checked whole-packet cold evaluator freshness and actual public maximum body identity; maximum execution/table teardown and full SRC-01/C3 remain open.",
+        "derivation": "Actual allocation/write/retirement/helper/control/recursive entry/close transitions preserve backward live-Box provenance. Full actual caller reads retain caller-owner identities even for smaller requested guards. Complete old live-Box coverage and final owner uniqueness exclude old owners from an ownership-free input result, while backward provenance excludes resurrection and stack-to-Box conversion. Universal evaluator totality constructs the cold actual run and supplies native/pure-source/full-cost/resource/larger-bound agreement.",
+        "hypotheses": [
+          "Finite native query words; readable shared inputs; well-formed actual world and legal native/caller/external complete owner frame and live-Box coverage; requested guards belong to actual caller reads.",
+          "No smaller calling contract, desired successful parent execution/post-frame, fresh output table, cache soundness or input-width bound is a premise of the cold execution theorem. Mathematical consistency retains independent sound-cache/input-width hypotheses."
+        ],
+        "public_maximum_body": "Kernel equality to the actual parsed 17-instruction body: eight preparation actions, evaluator call, eight cleanup actions then return. Result option moves from tuple local 3 before explicit table drop; no successful maximum execution or cleanup permission follows from identity alone.",
+        "validation": {
+          "library_build_jobs": 4349,
+          "fresh_lean_suites": [
+            "SourceColdProvenance",
+            "SourceUniversalFresh",
+            "SourceOwnerLifecycle",
+            "SourceOwnerProvenance",
+            "SourceRecursiveCalls",
+            "SourceCallingProgram",
+            "SourceAddressedControl",
+            "SourceHelperCalls"
+          ],
+          "fresh_lean_suites_status": "All eight pass.",
+          "cold_consumer": "Passed: repeated references to one three-edge query, seven old external owners, unrelated old dead Box and live scalar stack cell; all actual output/table owners are at or beyond the complete nine-cell original heap. Negative boundary consumers reject resurrection and stack-to-Box conversion.",
+          "new_theorems": 25,
+          "new_proof_modules": 6,
+          "audited_endpoints": 2146,
+          "axiom_baseline": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ],
+          "selected_statement_seeds": 8,
+          "unique_statement_records": 1268,
+          "unknown_statement_references": 0,
+          "ordered_rust_tests": 13,
+          "python_frontend_tests": 9,
+          "ci_lean_suites": 57,
+          "ci_added_suites": [
+            "SourceColdProvenance"
+          ],
+          "ci_added_commands_passed": true,
+          "pending_runtime": "Original fourteen-case SourceRecursiveExecution process is still live; pending is not a pass. Inspect /var/tmp/subtree-universal-fresh-runtime-state.json and poll the same session/process before any restart.",
+          "inherited_regression": "Thirteen runtime cases at c2b4349; full 47-suite/native-WP evidence at d49f638. This checkpoint freshly ran eight affected suites, not all 57 CI suites."
+        },
+        "next": "Construct actual public maximum preparation/call/result-field transfer/table drop/retirement/return with exact complete costs using proved whole-packet cold provenance. Integrate actual dynamic parsed-region/destructor interpretation; finish wrappers/input policy/G3, W04/MEM-03/W05/MEM-04 resources, representations/global time/space, APP and every remaining planning requirement. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
       }
     },
     {
@@ -2961,7 +3016,7 @@
     "next": [
       "W04 remaining D1-D4 checked substitution/size/adequacy contracts",
       "MEM-03/W05 remaining input/body/key/materialization costs; declared-currency run envelopes checked",
-      "W06-C3 now has universal addressed evaluator existence/adequacy, complete output/caller/external ownership, protected reads, witness provenance and exact full-cost larger-bound stability for all finite words/arbitrary typed warm tables. The separate mathematical consistency corollary retains TableSound and both input-width bounds. Compose the public maximum body and cold-table provenance/teardown with universal evaluator totality; integrate actual dynamic parsed-region/destructor interpretation. Indexed/token/reconstruction wrappers, input/error policy, G3 adversaries, W04/MEM-03/W05/MEM-04 resources, representation/global time/space, APP and all other mathematical/software/release/application planning requirements remain. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
+      "W06-C3 now has universal addressed evaluator existence/adequacy and whole-packet cold provenance, including the actual returned table. Actual recursive execution excludes old dead-cell resurrection and stack-to-Box conversion and preserves all caller reads. The public maximum 17-instruction body has kernel source identity. Construct actual public maximum preparation/call/result-field transfer/table drop/retirement/return with exact complete costs using proved whole-packet cold provenance. Integrate actual dynamic parsed-region/destructor interpretation; finish wrappers/input policy/G3, W04/MEM-03/W05/MEM-04 resources, representations/global time/space, APP and every remaining planning requirement. No full SRC-01/C3 or production resource closure is claimed; the full goal stays active."
     ],
     "still_open": [
       "G0 remaining reconnaissance",

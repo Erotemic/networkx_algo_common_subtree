@@ -489,6 +489,34 @@ runtime cases. The 1,465-endpoint audit includes 64 new theorems with only the
 accepted axiom baseline. Ten selected statement seeds cover 1,097 unique
 declarations with no unknown references. The full goal is active.
 
+[Cold evaluator ownership provenance](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-cold-provenance.md)
+now derives freshness of the complete cold output packet, including its actual
+updated table. Backward live-Box provenance excludes old dead-cell resurrection
+and stack-to-Box conversion through actual stores/actions/helpers, selected
+control, recursive dispatch, entry and checked close. Full caller-read
+preservation retains caller owner identities even for smaller requested guards.
+Complete old live-Box coverage and final owner uniqueness then exclude every old
+owner from ownership-free input's returned packet. The cold universal endpoint
+constructs actual execution, native/pure-source/full-cost agreement, complete
+resources, all caller reads, whole-packet freshness and larger-bound stability;
+no child contract, parent success, desired fresh table, cache soundness or width
+bound is a premise. Mathematical consistency keeps its independent hypotheses.
+The 4,349-job library build and new kernel consumer pass. The consumer uses
+aliased three-edge queries beside an old dead Box and live scalar stack cell;
+every returned owner lies beyond the entire nine-cell original heap. The public
+maximum's exact 17-instruction body also has kernel identity to the parsed
+source. Eight affected Lean suites, all 2,146 audited endpoints, thirteen Rust
+tests and nine Python checks pass; eight statement seeds export 1,268 unique
+records without unknown references. CI lists 57 suites. The prior fourteen-case
+runtime process remains live and pending; it is not counted as a pass.
+Validation details are in the evidence report.
+Next construct the maximum's actual preparation/call/result-field transfer/table
+drop/retirement/return with exact costs, using the proved cold provenance.
+Dynamic parsed-region/destructor interpretation, wrappers/input policy/G3,
+remaining resource/representation/global time/space/APP and other planning
+requirements stay open. No full SRC-01/C3 or production resource closure is
+claimed; the full goal remains active.
+
 [Universal checked evaluator totality and witness provenance](../docs/planning/lean-complexity-campaign/evidence/memo-evaluator-universal-fresh.md)
 now proves `native_total_fresh` for every finite native word pair and arbitrary
 typed warm table under the existing legal native/caller/external frame model.

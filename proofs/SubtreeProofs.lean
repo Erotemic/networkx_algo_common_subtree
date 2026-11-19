@@ -387,3 +387,7 @@ public import SubtreeProofs.Rust.SourceMinimalPairTotality
 public import SubtreeProofs.Rust.SourceRightFailureTotality
 
 public import SubtreeProofs.Rust.SourceUniversalEvaluatorTotality
+
+public import SubtreeProofs.Rust.SourceColdEvaluatorProvenance
+
+public import SubtreeProofs.Rust.SourceMaximumBody

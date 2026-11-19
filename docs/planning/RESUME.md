@@ -2,6 +2,34 @@
 
 Branch: `Droschinsky-algos`.
 
+[Cold evaluator ownership provenance](lean-complexity-campaign/evidence/memo-evaluator-cold-provenance.md)
+now derives freshness of the complete cold output packet, including its actual
+updated table. Backward live-Box provenance excludes old dead-cell resurrection
+and stack-to-Box conversion through actual stores/actions/helpers, selected
+control, recursive dispatch, entry and checked close. Full caller-read
+preservation retains caller owner identities even for smaller requested guards.
+Complete old live-Box coverage and final owner uniqueness then exclude every old
+owner from ownership-free input's returned packet. The cold universal endpoint
+constructs actual execution, native/pure-source/full-cost agreement, complete
+resources, all caller reads, whole-packet freshness and larger-bound stability;
+no child contract, parent success, desired fresh table, cache soundness or width
+bound is a premise. Mathematical consistency keeps its independent hypotheses.
+The 4,349-job library build and new kernel consumer pass. The consumer uses
+aliased three-edge queries beside an old dead Box and live scalar stack cell;
+every returned owner lies beyond the entire nine-cell original heap. The public
+maximum's exact 17-instruction body also has kernel identity to the parsed
+source. Eight affected Lean suites, all 2,146 audited endpoints, thirteen Rust
+tests and nine Python checks pass; eight statement seeds export 1,268 unique
+records without unknown references. CI lists 57 suites. The prior fourteen-case
+runtime process remains live and pending; it is not counted as a pass.
+Validation details are in the evidence report.
+Next construct the maximum's actual preparation/call/result-field transfer/table
+drop/retirement/return with exact costs, using the proved cold provenance.
+Dynamic parsed-region/destructor interpretation, wrappers/input policy/G3,
+remaining resource/representation/global time/space/APP and other planning
+requirements stay open. No full SRC-01/C3 or production resource closure is
+claimed; the full goal remains active.
+
 [Universal checked evaluator totality and witness provenance](lean-complexity-campaign/evidence/memo-evaluator-universal-fresh.md)
 now proves `native_total_fresh` for every finite native word pair and arbitrary
 typed warm table under the existing legal native/caller/external frame model.
@@ -1017,11 +1045,14 @@ The universal proof and eleven other affected Lean suites already pass.
    a successful parent-run premise. The consistent corollary separately retains
    the independent sound-cache and input-width hypotheses. Reuse these endpoints
    and all checked forward storage/move/call/drop/return facts.
-   Next construct the public seven-local maximum body and cold-table provenance/
-   teardown, including its exact cleanup/cost traces. The evaluator's witness-only
-   freshness contract permits old table owners; justify the public table drop
-   from the actual cold input and ownership evolution rather than assuming a
-   desired final table/frame. Preserve legal query/insertion/shared aliases,
+   Whole-packet cold provenance and the exact 17-instruction public body identity
+   are now proved. Next construct the public seven-local maximum execution and
+   table teardown, including its exact cleanup/cost traces. Reuse
+   `native_evaluate_cold_total` and
+   `original_fresh_output_of_no_input_owners` for full witness/table freshness.
+   Derive public table-drop permission through the actual result-field transfer;
+   do not assume a desired final table/frame. Preserve legal query/insertion/shared
+   aliases,
    reference-local permissions and exact source destructor costs.
 2. **Dynamic loans, lifetimes and destructor interpretation.** Universal checked
    evaluator execution now carries complete ownership through all 113 locals. Compose those
@@ -1032,7 +1063,8 @@ The universal proof and eleven other affected Lean suites already pass.
    physical allocator/compiler/runtime boundaries explicit under D12. Logical
    owner retirement is not a physical free-cost or peak-space theorem.
 3. **Public core and separate wrappers.** Compose `maximum_common_embedding`
-   (the actual seven-local source body is already parsed) with evaluator totality,
+   (the actual seven-local source body now has a reviewable 17-instruction
+   identity) with evaluator totality,
    table teardown and the remaining safety/cost traces. Then indexed/token/
    reconstruction wrappers, input/error policy and required G3 adversaries.
 4. **Remaining resources and research scope.** Keep W04 size/substitution,
